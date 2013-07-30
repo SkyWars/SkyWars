@@ -4,11 +4,11 @@
 package net.daboross.bukkitdev.skywars;
 
 import net.daboross.bukkitdev.commandexecutorbase.CommandExecutorBase;
-import net.daboross.bukkitdev.skywars.subcommands.CancelCommand;
-import net.daboross.bukkitdev.skywars.subcommands.JoinCommand;
-import net.daboross.bukkitdev.skywars.subcommands.LeaveCommand;
-import net.daboross.bukkitdev.skywars.subcommands.SetLobby;
-import net.daboross.bukkitdev.skywars.subcommands.SetPortal;
+import net.daboross.bukkitdev.skywars.commands.CancelCommand;
+import net.daboross.bukkitdev.skywars.commands.JoinCommand;
+import net.daboross.bukkitdev.skywars.commands.LeaveCommand;
+import net.daboross.bukkitdev.skywars.commands.SetLobbyCommand;
+import net.daboross.bukkitdev.skywars.commands.SetPortalCommand;
 import org.bukkit.command.CommandExecutor;
 
 /**
@@ -29,8 +29,8 @@ public class CommandBase {
     private void initCommands() {
         base.addSubCommand(new JoinCommand(plugin));
         base.addSubCommand(new LeaveCommand(plugin));
-        base.addSubCommand(new SetLobby(plugin));
-        base.addSubCommand(new SetPortal(plugin));
+        base.addSubCommand(new SetLobbyCommand(plugin));
+        base.addSubCommand(new SetPortalCommand(plugin));
         base.addSubCommand(new CancelCommand(plugin));
     }
 

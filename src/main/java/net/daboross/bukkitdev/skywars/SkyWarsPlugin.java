@@ -42,15 +42,13 @@ public class SkyWarsPlugin extends JavaPlugin {
     }
 
     private void setupMetrics() {
-        MetricsLite metrics = null;
+        MetricsLite metrics;
         try {
             metrics = new MetricsLite(this);
         } catch (IOException ex) {
-            getLogger().warning("Unable to create Metrics");
+            return;
         }
-        if (metrics != null) {
-            metrics.start();
-        }
+        metrics.start();
     }
 
     private void setupPermissions() {

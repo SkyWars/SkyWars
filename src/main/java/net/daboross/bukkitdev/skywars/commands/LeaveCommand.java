@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2013 Dabo Ross <www.daboross.net>
  */
-package net.daboross.bukkitdev.skywars.subcommands;
+package net.daboross.bukkitdev.skywars.commands;
 
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
@@ -13,22 +13,18 @@ import org.bukkit.command.CommandSender;
  *
  * @author daboross
  */
-public class CancelCommand extends SubCommand {
+public class LeaveCommand extends SubCommand {
 
     private final SkyWarsPlugin plugin;
 
-    public CancelCommand(SkyWarsPlugin plugin) {
-        super("cancel", true, "skywars.cancel", new String[]{"ID"}, "Cancels a current game with the given id");
+    public LeaveCommand(SkyWarsPlugin plugin) {
+        super("leave", true, "skywars.leave", "Leaves the queue or the game you are in");
         this.plugin = plugin;
     }
 
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        if (subCommandArgs.length == 0) {
-            sender.sendMessage(ColorList.ERR + "Not enough arguments!");
-            sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
-            return;
-        } else if (subCommandArgs.length > 1) {
+        if (subCommandArgs.length != 0) {
             sender.sendMessage(ColorList.ERR + "Too many arguments!");
             sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
             return;

@@ -1,30 +1,27 @@
 /*
  * Copyright (C) 2013 Dabo Ross <www.daboross.net>
  */
-package net.daboross.bukkitdev.skywars.subcommands;
+package net.daboross.bukkitdev.skywars.commands;
 
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
-import net.daboross.bukkitdev.skywars.storage.ArenaLocation;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 /**
  *
  * @author daboross
  */
-public class SetLobby extends SubCommand {
-    
-    private static final String CONFIRMATION = ColorList.REG + "The lobby is now at your current location.";
+public class JoinCommand extends SubCommand {
+
     private final SkyWarsPlugin plugin;
-    
-    public SetLobby(SkyWarsPlugin plugin) {
-        super("setlobby", false, "skywars.setlobby", "Sets the lobby position");
+
+    public JoinCommand(SkyWarsPlugin plugin) {
+        super("join", true, "skywars.join", "Joins the queue for the next game");
         this.plugin = plugin;
     }
-    
+
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         if (subCommandArgs.length != 0) {
@@ -32,8 +29,5 @@ public class SetLobby extends SubCommand {
             sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
             return;
         }
-        Player player = (Player) sender;
-        plugin.getLocationStore().setLobbyPosition(new ArenaLocation(player));
-        sender.sendMessage(CONFIRMATION);
     }
 }
