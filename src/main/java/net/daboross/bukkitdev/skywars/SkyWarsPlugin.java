@@ -4,7 +4,12 @@
 package net.daboross.bukkitdev.skywars;
 
 import java.io.IOException;
+import net.daboross.bukkitdev.skywars.game.CurrentGames;
+import net.daboross.bukkitdev.skywars.game.GameHandler;
+import net.daboross.bukkitdev.skywars.game.GameIdHandler;
+import net.daboross.bukkitdev.skywars.game.GameQueue;
 import net.daboross.bukkitdev.skywars.storage.LocationStore;
+import net.daboross.bukkitdev.skywars.world.SkyWorldHandler;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
@@ -21,11 +26,20 @@ import org.mcstats.MetricsLite;
 public class SkyWarsPlugin extends JavaPlugin {
 
     private LocationStore locationStore;
+    private GameQueue gameQueue;
+    private CurrentGames currentGames;
+    private GameHandler gameCreator;
+    private GameIdHandler idHandler;
+    private SkyWorldHandler worldCreator;
 
     @Override
     public void onEnable() {
         setupMetrics();
         locationStore = new LocationStore(this);
+        gameQueue = new GameQueue(this);
+        currentGames = new CurrentGames();
+        gameCreator = new GameHandler(this);
+        worldCreator = new SkyWorldHandler();
         setupPermissions();
         setupCommands();
     }
@@ -105,5 +119,25 @@ public class SkyWarsPlugin extends JavaPlugin {
 
     public LocationStore getLocationStore() {
         return locationStore;
+    }
+
+    public GameQueue getGameQueue() {
+        return gameQueue;
+    }
+
+    public CurrentGames getCurrentGames() {
+        return currentGames;
+    }
+
+    public GameHandler getGameCreator() {
+        return gameCreator;
+    }
+
+    public GameIdHandler getIdHandler() {
+        return idHandler;
+    }
+
+    public SkyWorldHandler getWorldHandler() {
+        return worldCreator;
     }
 }

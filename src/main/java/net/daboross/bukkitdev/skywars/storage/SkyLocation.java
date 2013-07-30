@@ -16,29 +16,29 @@ import org.bukkit.entity.Entity;
  * @author daboross
  */
 @SerializableAs("SkyLocation")
-public class ArenaLocation implements ConfigurationSerializable {
+public class SkyLocation implements ConfigurationSerializable {
 
     public final int x;
     public final int y;
     public final int z;
     public final String world;
 
-    public ArenaLocation(int x, int y, int z, String world) {
+    public SkyLocation(int x, int y, int z, String world) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.world = world;
     }
 
-    public ArenaLocation(Block block) {
+    public SkyLocation(Block block) {
         this(block.getX(), block.getY(), block.getZ(), block.getWorld().getName());
     }
 
-    public ArenaLocation(Location location) {
+    public SkyLocation(Location location) {
         this(location.getBlockX(), location.getBlockY(), location.getBlockZ(), location.getWorld().getName());
     }
 
-    public ArenaLocation(Entity entity) {
+    public SkyLocation(Entity entity) {
         this(entity.getLocation());
     }
 
@@ -65,7 +65,7 @@ public class ArenaLocation implements ConfigurationSerializable {
         return map;
     }
 
-    public static ArenaLocation deserialize(Map<String, Object> map) {
+    public static SkyLocation deserialize(Map<String, Object> map) {
         Object xObject = map.get("xpos"),
                 yObject = map.get("ypos"),
                 zObject = map.get("zpos"),
@@ -78,15 +78,15 @@ public class ArenaLocation implements ConfigurationSerializable {
         }
         Integer x = (Integer) xObject, y = (Integer) yObject, z = (Integer) zObject;
         String worldString = worldObject.toString();
-        return new ArenaLocation(x, y, z, worldString);
+        return new SkyLocation(x, y, z, worldString);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof ArenaLocation)) {
+        if (!(obj instanceof SkyLocation)) {
             return false;
         }
-        ArenaLocation l = (ArenaLocation) obj;
+        SkyLocation l = (SkyLocation) obj;
         return l.x == x && l.y == y && l.z == z && l.world.equals(world);
     }
 

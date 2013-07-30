@@ -17,14 +17,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class LocationStore {
 
     private final JavaPlugin plugin;
-    private final List<ArenaLocation> portals = new ArrayList<ArenaLocation>();
-    private ArenaLocation lobbyPosition;
+    private final List<SkyLocation> portals = new ArrayList<SkyLocation>();
+    private SkyLocation lobbyPosition;
     private FileConfiguration storage;
     private File configFile;
 
     public LocationStore(JavaPlugin plugin) {
         this.plugin = plugin;
-        ConfigurationSerialization.registerClass(ArenaLocation.class);
+        ConfigurationSerialization.registerClass(SkyLocation.class);
         load();
     }
 
@@ -35,8 +35,8 @@ public class LocationStore {
         storage = YamlConfiguration.loadConfiguration(configFile);
         Object lobbyO = storage.get("lobby");
         if (lobbyO != null) {
-            if (lobbyO instanceof ArenaLocation) {
-                lobbyPosition = (ArenaLocation) lobbyO;
+            if (lobbyO instanceof SkyLocation) {
+                lobbyPosition = (SkyLocation) lobbyO;
             } else {
                 plugin.getLogger().warning("Lobby is not ArenaLocation");
             }
@@ -44,8 +44,8 @@ public class LocationStore {
         List<?> list = storage.getList("portals");
         if (list != null) {
             for (Object obj : list) {
-                if (obj instanceof ArenaLocation) {
-                    portals.add((ArenaLocation) obj);
+                if (obj instanceof SkyLocation) {
+                    portals.add((SkyLocation) obj);
                 } else {
                     plugin.getLogger().warning("Non-ArenaLocation found in portals list");
                 }
@@ -65,15 +65,15 @@ public class LocationStore {
         }
     }
 
-    public ArenaLocation getLobbyPosition() {
+    public SkyLocation getLobbyPosition() {
         return lobbyPosition;
     }
 
-    public void setLobbyPosition(ArenaLocation lobbyPosition) {
+    public void setLobbyPosition(SkyLocation lobbyPosition) {
         this.lobbyPosition = lobbyPosition;
     }
 
-    public List<ArenaLocation> getPortals() {
+    public List<SkyLocation> getPortals() {
         return portals;
     }
 }
