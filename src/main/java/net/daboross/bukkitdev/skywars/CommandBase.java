@@ -1,9 +1,15 @@
 /*
- * Copyright (C) 2013 Dabo Ross <www.daboross.net>
+ * Copyright (C) 2013 Dabo Ross <http://www.daboross.net/>
  */
 package net.daboross.bukkitdev.skywars;
 
 import net.daboross.bukkitdev.commandexecutorbase.CommandExecutorBase;
+import net.daboross.bukkitdev.skywars.subcommands.CancelCommand;
+import net.daboross.bukkitdev.skywars.subcommands.JoinCommand;
+import net.daboross.bukkitdev.skywars.subcommands.LeaveCommand;
+import net.daboross.bukkitdev.skywars.subcommands.SetLobbySpawn;
+import net.daboross.bukkitdev.skywars.subcommands.SetPortal;
+import org.bukkit.command.CommandExecutor;
 
 /**
  *
@@ -16,6 +22,19 @@ public class CommandBase {
 
     public CommandBase(SkyWarsPlugin plugin) {
         this.plugin = plugin;
-        this.base=new CommandExecutorBase(null);
+        this.base = new CommandExecutorBase(null);
+        this.initCommands();
+    }
+
+    private void initCommands() {
+        base.addSubCommand(new JoinCommand(plugin));
+        base.addSubCommand(new LeaveCommand(plugin));
+        base.addSubCommand(new SetLobbySpawn(plugin));
+        base.addSubCommand(new SetPortal(plugin));
+        base.addSubCommand(new CancelCommand(plugin));
+    }
+
+    public CommandExecutor getExecutor() {
+        return base;
     }
 }
