@@ -15,9 +15,11 @@ import org.bukkit.WorldType;
 public class SkyWorldHandler {
 
     private final World world;
+    private final World warriors;
 
     public SkyWorldHandler() {
         this.world = createWorld();
+        this.warriors = createWarriorsWorld();
     }
 
     private World createWorld() {
@@ -26,7 +28,16 @@ public class SkyWorldHandler {
         wc.generator(new VoidGenerator());
         wc.type(WorldType.FLAT);
         wc.seed(0);
-        return null;
+        return wc.createWorld();
+    }
+
+    private World createWarriorsWorld() {
+        WorldCreator wc = new WorldCreator("SkyblockWarriors");
+        wc.generateStructures(false);
+        wc.generator(new VoidGenerator());
+        wc.type(WorldType.FLAT);
+        wc.seed(0);
+        return wc.createWorld();
     }
 
     public World getWorld() {

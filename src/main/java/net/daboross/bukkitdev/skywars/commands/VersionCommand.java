@@ -8,36 +8,30 @@ import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 /**
  *
  * @author daboross
  */
-public class JoinCommand extends SubCommand {
+public class VersionCommand extends SubCommand {
 
-    private final String CONFIRMATION = ColorList.REG + "You have joined the queue.";
-    private final String ALREADY_QUEUED = ColorList.ERR + "You were already in the queue.";
+    private static final String CREDITS = "Skyblock Warriors map created by SwipeShot";
+    private static final String VERSION = ColorList.REG + "SkyWars plugin " + ColorList.DATA + "v%s" + ColorList.REG + " created by Dabo Ross";
     private final SkyWarsPlugin plugin;
 
-    public JoinCommand(SkyWarsPlugin plugin) {
-        super("join", false, "skywars.join", "Joins the queue for the next game");
+    public VersionCommand(SkyWarsPlugin plugin) {
+        super("status", true, "skywars.version", "Gives version");
         this.plugin = plugin;
     }
 
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        Player player = (Player) sender;
         if (subCommandArgs.length != 0) {
             sender.sendMessage(ColorList.ERR + "Too many arguments!");
             sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
             return;
         }
-        if (plugin.getGameQueue().inQueue(player.getName())) {
-            sender.sendMessage(ALREADY_QUEUED);
-        } else {
-            sender.sendMessage(CONFIRMATION);
-            plugin.getGameQueue().queuePlayer(player.getName());
-        }
+        sender.sendMessage(CREDITS);
+        sender.sendMessage(String.format(VERSION, plugin.getDescription().getVersion()));
     }
 }

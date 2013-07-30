@@ -39,6 +39,7 @@ public class SkyWarsPlugin extends JavaPlugin {
         gameQueue = new GameQueue(this);
         currentGames = new CurrentGames();
         gameCreator = new GameHandler(this);
+        idHandler = new GameIdHandler();
         worldCreator = new SkyWorldHandler();
         setupPermissions();
         setupCommands();
@@ -73,18 +74,24 @@ public class SkyWarsPlugin extends JavaPlugin {
         Permission setLobby = getPermission("skywars.setlobby", pm);
         Permission setPortal = getPermission("skywars.setportal", pm);
         Permission cancel = getPermission("skywars.cancel", pm);
+        Permission status = getPermission("skywars.status", pm);
+        Permission version = getPermission("skywars.version", pm);
         star.setDefault(PermissionDefault.FALSE);
         join.setDefault(PermissionDefault.TRUE);
         leave.setDefault(PermissionDefault.TRUE);
         setLobby.setDefault(PermissionDefault.OP);
         setPortal.setDefault(PermissionDefault.OP);
         cancel.setDefault(PermissionDefault.OP);
+        status.setDefault(PermissionDefault.OP);
+        version.setDefault(PermissionDefault.TRUE);
         join.addParent(star, true);
         leave.addParent(star, true);
         setLobby.addParent(star, true);
         setPortal.addParent(star, true);
         cancel.addParent(star, true);
-        updateAndAddAll(pm, star, join, leave, setLobby, setPortal, cancel);
+        status.addParent(star, true);
+        version.addParent(star, true);
+        updateAndAddAll(pm, star, join, leave, setLobby, setPortal, cancel, status, version);
 
     }
 
