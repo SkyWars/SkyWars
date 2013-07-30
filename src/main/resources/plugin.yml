@@ -3,3 +3,5 @@ main: net.daboross.bukkitdev.skywars.SkyWarsPlugin
 version: ${project.version}
 author: Dabo Ross
 description: Skywars plugin
+commands:
+  sw:
