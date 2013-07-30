@@ -32,6 +32,7 @@ public class SkyWarsPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        locationStore.save();
     }
 
     @Override
@@ -57,20 +58,22 @@ public class SkyWarsPlugin extends JavaPlugin {
         Permission star = getPermission("skywars.*", pm);
         Permission join = getPermission("skywars.join", pm);
         Permission leave = getPermission("skywars.leave", pm);
-        Permission setLobbySpawn = getPermission("skywars.setlobbyspawn", pm);
+        Permission setLobby = getPermission("skywars.setlobby", pm);
         Permission setPortal = getPermission("skywars.setportal", pm);
         Permission cancel = getPermission("skywars.cancel", pm);
         star.setDefault(PermissionDefault.FALSE);
         join.setDefault(PermissionDefault.TRUE);
         leave.setDefault(PermissionDefault.TRUE);
-        setLobbySpawn.setDefault(PermissionDefault.OP);
+        setLobby.setDefault(PermissionDefault.OP);
         setPortal.setDefault(PermissionDefault.OP);
         cancel.setDefault(PermissionDefault.OP);
         join.addParent(star, true);
         leave.addParent(star, true);
-        setLobbySpawn.addParent(star, true);
+        setLobby.addParent(star, true);
         setPortal.addParent(star, true);
         cancel.addParent(star, true);
+        updateAndAddAll(pm, star, join, leave, setLobby, setPortal, cancel);
+
     }
 
     private Permission getPermission(String name, PluginManager pm) {
@@ -79,6 +82,20 @@ public class SkyWarsPlugin extends JavaPlugin {
             permission = new Permission(name);
         }
         return permission;
+    }
+
+    private void updateAndAddAll(PluginManager pm, Permission... permissions) {
+        for (Permission permission : permissions) {
+            updateAndAdd(pm, permission);
+        }
+    }
+
+    private void updateAndAdd(PluginManager pm, Permission permission) {
+        Permission oldPerm = pm.getPermission(permission.getName());
+        if (oldPerm == null) {
+            pm.addPermission(permission);
+        }
+        permission.recalculatePermissibles();
     }
 
     private void setupCommands() {

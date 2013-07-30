@@ -9,12 +9,13 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.entity.Entity;
 
 /**
  *
  * @author daboross
  */
-@SerializableAs("CopsAndRobberLocation")
+@SerializableAs("SkyLocation")
 public class ArenaLocation implements ConfigurationSerializable {
 
     public final int x;
@@ -35,6 +36,10 @@ public class ArenaLocation implements ConfigurationSerializable {
 
     public ArenaLocation(Location location) {
         this(location.getBlockX(), location.getBlockY(), location.getBlockZ(), location.getWorld().getName());
+    }
+
+    public ArenaLocation(Entity entity) {
+        this(entity.getLocation());
     }
 
     public boolean isSame(Block block) {
