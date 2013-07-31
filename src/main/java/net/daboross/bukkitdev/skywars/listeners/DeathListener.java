@@ -6,7 +6,6 @@ package net.daboross.bukkitdev.skywars.listeners;
 import java.util.HashSet;
 import java.util.Set;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
-import net.daboross.bukkitdev.skywars.game.CurrentGames;
 import net.daboross.bukkitdev.skywars.game.KillBroadcaster;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

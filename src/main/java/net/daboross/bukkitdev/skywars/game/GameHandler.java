@@ -13,6 +13,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  *
@@ -52,6 +53,7 @@ public class GameHandler {
         String[] players = idh.getPlayers(id);
         idh.gameFinished(id);
         Location lobby = plugin.getLocationStore().getLobbyPosition().toLocation();
+        String winner = null;
         for (String playerName : players) {
             if (playerName != null) {
                 Player player = Bukkit.getPlayerExact(playerName);
@@ -60,12 +62,31 @@ public class GameHandler {
                 }
                 player.teleport(lobby);
                 cg.removePlayer(playerName);
+                if (winner == null) {
+                    winner = playerName;
+                } else {
+                    winner += ", " + playerName;
+                }
             }
         }
+        final String message;
+        if (winner == null) {
+            message = Messages.NONE_WON;
+        } else if (winner.contains(", ")) {
+            message = String.format(Messages.MULTI_WON, winner);
+        } else {
+            message = String.format(Messages.SINGLE_WON, winner);
+        }
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                Bukkit.broadcastMessage(message);
+            }
+        }.runTask(plugin);
     }
 
     public void removePlayerFromGame(String playerName, boolean teleportAndBroadcast) {
-        playerName=playerName.toLowerCase();
+        playerName = playerName.toLowerCase();
         CurrentGames cg = plugin.getCurrentGames();
         GameIdHandler idh = plugin.getIdHandler();
         Integer id = cg.getGameID(playerName);
@@ -74,12 +95,14 @@ public class GameHandler {
         }
         cg.removePlayer(playerName);
         String[] players = idh.getPlayers(id);
-        boolean playersLeft = false;
+        int playersLeft = 0;
         for (int i = 0; i < 4; i++) {
-            if (players[i].equalsIgnoreCase(playerName)) {
-                players[i] = null;
-            } else if (players[i] != null) {
-                playersLeft = true;
+            if (players[i] != null) {
+                if (players[i].equalsIgnoreCase(playerName)) {
+                    players[i] = null;
+                } else {
+                    playersLeft++;
+                }
             }
         }
         if (teleportAndBroadcast) {
@@ -98,7 +121,7 @@ public class GameHandler {
                 Bukkit.broadcastMessage(String.format(Messages.FORFEITED_BY, damagerName, player.getName()));
             }
         }
-        if (!playersLeft) {
+        if (playersLeft < 2) {
             endGame(id);
         }
     }
