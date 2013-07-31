@@ -60,7 +60,7 @@ public class SkyWarsPlugin extends JavaPlugin {
     public void onDisable() {
         locationStore.save();
         for (int id : idHandler.getCurrentIds()) {
-            gameHandler.endGame(id);
+            gameHandler.endGame(id, false);
         }
     }
 

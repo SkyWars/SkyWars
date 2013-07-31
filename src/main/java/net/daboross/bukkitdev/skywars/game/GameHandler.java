@@ -50,7 +50,7 @@ public class GameHandler {
         }
     }
 
-    public void endGame(int id) {
+    public void endGame(int id, boolean broadcast) {
         CurrentGames cg = plugin.getCurrentGames();
         GameIdHandler idh = plugin.getIdHandler();
         String[] players = idh.getPlayers(id);
@@ -76,20 +76,22 @@ public class GameHandler {
                 }
             }
         }
-        final String message;
-        if (winner == null) {
-            message = Messages.NONE_WON;
-        } else if (winner.contains(", ")) {
-            message = String.format(Messages.MULTI_WON, winner);
-        } else {
-            message = String.format(Messages.SINGLE_WON, winner);
-        }
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                Bukkit.broadcastMessage(message);
+        if (broadcast) {
+            final String message;
+            if (winner == null) {
+                message = Messages.NONE_WON;
+            } else if (winner.contains(", ")) {
+                message = String.format(Messages.MULTI_WON, winner);
+            } else {
+                message = String.format(Messages.SINGLE_WON, winner);
             }
-        }.runTask(plugin);
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    Bukkit.broadcastMessage(message);
+                }
+            }.runTask(plugin);
+        }
     }
 
     public void removePlayerFromGame(String playerName, boolean teleport, boolean broadcast) {
@@ -133,7 +135,7 @@ public class GameHandler {
             }
         }
         if (playersLeft < 2) {
-            endGame(id);
+            endGame(id, true);
         }
     }
 }

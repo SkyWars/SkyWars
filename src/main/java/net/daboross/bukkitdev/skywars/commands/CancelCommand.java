@@ -47,6 +47,6 @@ public class CancelCommand extends SubCommand {
             return;
         }
         sender.sendMessage(ColorList.REG + "Canceling game " + ColorList.DATA + id);
-        plugin.getGameHandler().endGame(id);
+        plugin.getGameHandler().endGame(id, true);
     }
 }

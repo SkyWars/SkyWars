@@ -15,8 +15,8 @@ import org.bukkit.command.CommandSender;
  */
 public class VersionCommand extends SubCommand {
 
-    private static final String CREDITS = "Skyblock Warriors map created by SwipeShot";
-    private static final String VERSION = ColorList.REG + "SkyWars plugin " + ColorList.DATA + "v%s" + ColorList.REG + " created by Dabo Ross";
+    private static final String CREDITS = ColorList.REG + "Skyblock Warriors map created by " + ColorList.NAME + "SwipeShot";
+    private static final String VERSION = ColorList.REG + "SkyWars plugin v" + ColorList.DATA + "%s" + ColorList.REG + " created by " + ColorList.NAME + "Dabo Ross";
     private final SkyWarsPlugin plugin;
 
     public VersionCommand(SkyWarsPlugin plugin) {
