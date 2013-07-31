@@ -24,5 +24,6 @@ public class QuitListener implements Listener {
     public void onQuit(PlayerQuitEvent evt) {
         String name = evt.getPlayer().getName();
         plugin.getGameHandler().removePlayerFromGame(name, true, true);
+        plugin.getGameQueue().removePlayer(name);
     }
 }

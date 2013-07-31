@@ -5,6 +5,7 @@ package net.daboross.bukkitdev.skywars.commands;
 
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
+import net.daboross.bukkitdev.skywars.Messages;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -16,9 +17,6 @@ import org.bukkit.entity.Player;
  */
 public class JoinCommand extends SubCommand {
 
-    private final String CONFIRMATION = ColorList.REG + "You have joined the queue.";
-    private final String ALREADY_QUEUED = ColorList.ERR + "You were already in the queue.";
-    private final String IN_GAME = ColorList.REG + "You can't join now, you are already in a game.";
     private final SkyWarsPlugin plugin;
 
     public JoinCommand(SkyWarsPlugin plugin) {
@@ -36,11 +34,11 @@ public class JoinCommand extends SubCommand {
         }
         String name = player.getName().toLowerCase();
         if (plugin.getCurrentGames().getGameID(name) != null) {
-            sender.sendMessage(IN_GAME);
+            sender.sendMessage(Messages.Join.IN_GAME);
         } else if (plugin.getGameQueue().inQueue(name)) {
-            sender.sendMessage(ALREADY_QUEUED);
+            sender.sendMessage(Messages.Join.ALREADY_QUEUED);
         } else {
-            sender.sendMessage(CONFIRMATION);
+            sender.sendMessage(Messages.Join.CONFIRMATION);
             plugin.getGameQueue().queuePlayer(name);
         }
     }

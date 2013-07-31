@@ -46,6 +46,13 @@ public class SkyLocation implements ConfigurationSerializable {
         return new SkyLocation(x + modX, y + modY, z + modZ, world);
     }
 
+    public boolean isNear(Location loc) {
+        return world.equals(loc.getWorld().getName())
+                && x <= loc.getX() + 1 && x >= loc.getX() - 1
+                && y <= loc.getY() + 1 && y >= loc.getY() - 1
+                && z <= loc.getZ() + 1 && z >= loc.getZ() - 1;
+    }
+
     public Location toLocation() {
         World bukkitWorld = Bukkit.getWorld(world);
         if (bukkitWorld == null) {
@@ -98,5 +105,10 @@ public class SkyLocation implements ConfigurationSerializable {
         hash = 79 * hash + this.z;
         hash = 79 * hash + (this.world != null ? this.world.hashCode() : 0);
         return hash;
+    }
+
+    @Override
+    public String toString() {
+        return "SkyLocation:x=" + x + ":y=" + y + ":z=" + z + ":world=" + world;
     }
 }
