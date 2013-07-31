@@ -16,15 +16,15 @@ import org.bukkit.entity.Player;
  * @author daboross
  */
 public class SetLobbyCommand extends SubCommand {
-    
+
     private static final String CONFIRMATION = ColorList.REG + "The lobby is now at your current location.";
     private final SkyWarsPlugin plugin;
-    
+
     public SetLobbyCommand(SkyWarsPlugin plugin) {
         super("setlobby", false, "skywars.setlobby", "Sets the lobby position");
         this.plugin = plugin;
     }
-    
+
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         if (subCommandArgs.length != 0) {

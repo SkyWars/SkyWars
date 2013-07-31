@@ -92,14 +92,14 @@ public class GameHandler {
         }.runTask(plugin);
     }
 
-    public void removePlayerFromGame(String playerName, boolean teleportAndBroadcast) {
+    public void removePlayerFromGame(String playerName, boolean teleport, boolean broadcast) {
         playerName = playerName.toLowerCase();
         CurrentGames cg = plugin.getCurrentGames();
-        GameIdHandler idh = plugin.getIdHandler();
         Integer id = cg.getGameID(playerName);
         if (id == null) {
-            throw new IllegalStateException("Player not in game");
+            return;
         }
+        GameIdHandler idh = plugin.getIdHandler();
         cg.removePlayer(playerName);
         String[] players = idh.getPlayers(id);
         int playersLeft = 0;
@@ -112,20 +112,24 @@ public class GameHandler {
                 }
             }
         }
-        if (teleportAndBroadcast) {
-            Location lobby = plugin.getLocationStore().getLobbyPosition().toLocation();
+        if (teleport || broadcast) {
             Player player = Bukkit.getPlayerExact(playerName);
-            player.teleport(lobby);
-            EntityDamageEvent ede = player.getLastDamageCause();
-            Entity damager = null;
-            if (ede instanceof EntityDamageByEntityEvent) {
-                damager = ((EntityDamageByEntityEvent) ede).getDamager();
+            if (teleport) {
+                Location lobby = plugin.getLocationStore().getLobbyPosition().toLocation();
+                player.teleport(lobby);
             }
-            if (damager == null) {
-                Bukkit.broadcastMessage(String.format(Messages.FORFEITED, player.getName()));
-            } else {
-                String damagerName = (damager instanceof LivingEntity) ? ((LivingEntity) damager).getCustomName() : damager.getType().getName();
-                Bukkit.broadcastMessage(String.format(Messages.FORFEITED_BY, damagerName, player.getName()));
+            if (broadcast) {
+                EntityDamageEvent ede = player.getLastDamageCause();
+                Entity damager = null;
+                if (ede instanceof EntityDamageByEntityEvent) {
+                    damager = ((EntityDamageByEntityEvent) ede).getDamager();
+                }
+                if (damager == null) {
+                    Bukkit.broadcastMessage(String.format(Messages.FORFEITED, player.getName()));
+                } else {
+                    String damagerName = (damager instanceof LivingEntity) ? ((LivingEntity) damager).getCustomName() : damager.getType().getName();
+                    Bukkit.broadcastMessage(String.format(Messages.FORFEITED_BY, damagerName, playerName));
+                }
             }
         }
         if (playersLeft < 2) {

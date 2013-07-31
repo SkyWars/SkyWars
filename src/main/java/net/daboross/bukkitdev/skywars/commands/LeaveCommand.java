@@ -36,7 +36,7 @@ public class LeaveCommand extends SubCommand {
             plugin.getGameQueue().removePlayer(sender.getName());
             sender.sendMessage(REMOVED_FROM_QUEUE);
         } else if (plugin.getCurrentGames().getGameID(sender.getName()) != null) {
-            plugin.getGameHandler().removePlayerFromGame(sender.getName(), true);
+            plugin.getGameHandler().removePlayerFromGame(sender.getName(), true, true);
             sender.sendMessage(REMOVED_FROM_GAME);
         } else {
             sender.sendMessage(NOT_IN);

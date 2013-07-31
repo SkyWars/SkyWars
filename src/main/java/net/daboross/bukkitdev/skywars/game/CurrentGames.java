@@ -5,7 +5,6 @@ package net.daboross.bukkitdev.skywars.game;
 
 import java.util.HashMap;
 import java.util.Map;
-import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 
 /**
  *

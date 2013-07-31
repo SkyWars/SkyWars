@@ -31,7 +31,7 @@ public class DeathListener implements Listener {
         if (id != null) {
             String name = evt.getEntity().getName().toLowerCase();
             evt.setDeathMessage(KillBroadcaster.getMessage(evt.getEntity()));
-            plugin.getGameHandler().removePlayerFromGame(name, false);
+            plugin.getGameHandler().removePlayerFromGame(name, false, false);
             playersAwaitingRespawn.add(name);
         }
     }

@@ -15,14 +15,14 @@ import org.bukkit.command.CommandSender;
  * @author daboross
  */
 public class CancelCommand extends SubCommand {
-    
+
     private final SkyWarsPlugin plugin;
-    
+
     public CancelCommand(SkyWarsPlugin plugin) {
         super("cancel", true, "skywars.cancel", new String[]{"ID"}, "Cancels a current game with the given id");
         this.plugin = plugin;
     }
-    
+
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         if (subCommandArgs.length == 0) {

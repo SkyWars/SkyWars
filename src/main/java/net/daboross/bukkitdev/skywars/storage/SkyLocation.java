@@ -42,8 +42,8 @@ public class SkyLocation implements ConfigurationSerializable {
         this(entity.getLocation());
     }
 
-    public boolean isSame(Block block) {
-        return block != null && x == block.getX() && y == block.getY() && z == block.getZ();
+    public SkyLocation add(int modX, int modY, int modZ) {
+        return new SkyLocation(x + modX, y + modY, z + modZ, world);
     }
 
     public Location toLocation() {
