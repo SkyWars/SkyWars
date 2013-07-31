@@ -32,7 +32,7 @@ public class SkyWarsPlugin extends JavaPlugin {
     private LocationStore locationStore;
     private GameQueue gameQueue;
     private CurrentGames currentGames;
-    private GameHandler gameCreator;
+    private GameHandler gameHandler;
     private GameIdHandler idHandler;
     private SkyWorldHandler worldCreator;
 
@@ -42,7 +42,7 @@ public class SkyWarsPlugin extends JavaPlugin {
         locationStore = new LocationStore(this);
         gameQueue = new GameQueue(this);
         currentGames = new CurrentGames();
-        gameCreator = new GameHandler(this);
+        gameHandler = new GameHandler(this);
         idHandler = new GameIdHandler();
         worldCreator = new SkyWorldHandler();
         setupPermissions();
@@ -57,6 +57,9 @@ public class SkyWarsPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         locationStore.save();
+        for (int id : idHandler.getCurrentIds()) {
+            gameHandler.endGame(id);
+        }
     }
 
     @Override
@@ -146,7 +149,7 @@ public class SkyWarsPlugin extends JavaPlugin {
     }
 
     public GameHandler getGameHandler() {
-        return gameCreator;
+        return gameHandler;
     }
 
     public GameIdHandler getIdHandler() {
