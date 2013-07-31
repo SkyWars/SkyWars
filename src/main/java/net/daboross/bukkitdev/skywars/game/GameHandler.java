@@ -47,7 +47,7 @@ public class GameHandler {
             cg.setGameID(name, gameID);
             player.teleport(spawnLocations[i]);
             player.setGameMode(GameMode.SURVIVAL);
-            player.setHealth(20);//player.getMaxHealth());
+            player.setHealth(player.getMaxHealth());
             player.getInventory().clear();
             player.getInventory().setArmorContents(new ItemStack[4]);
             player.setFoodLevel(20);
@@ -78,7 +78,7 @@ public class GameHandler {
                 cg.removePlayer(playerName);
                 player.teleport(lobby);
                 player.setGameMode(GameMode.SURVIVAL);
-                player.setHealth(20);//player.getMaxHealth());
+                player.setHealth(player.getMaxHealth());
                 player.getInventory().clear();
                 player.getInventory().setArmorContents(new ItemStack[4]);
                 player.setFoodLevel(20);

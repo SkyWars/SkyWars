@@ -61,7 +61,7 @@ public class SkyWorldHandler {
         System.out.println("Creating arena: " + id);
         int modX = (id % 2) * 200;
         int modZ = (id / 2) * 200;
-        System.out.println("X:"+modX+" Z:"+modZ);
+        System.out.println("X:" + modX + " Z:" + modZ);
         int modY = 100;
         Location center = new Location(world, modX, modY, modZ);
         center.getBlock().getRelative(0, -2, 0).setType(Material.STONE);
@@ -80,6 +80,7 @@ public class SkyWorldHandler {
             }
             taken[next] = true;
             finalLocations[next] = REL_SPAWNS[next].add(modX, modY, modZ).toLocation();
+            System.out.println("Next location is " + finalLocations[next]);
         }
         return finalLocations;
     }
