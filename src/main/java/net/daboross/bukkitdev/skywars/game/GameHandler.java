@@ -3,6 +3,7 @@
  */
 package net.daboross.bukkitdev.skywars.game;
 
+import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.skywars.Messages;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import org.bukkit.Bukkit;
@@ -13,6 +14,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -35,6 +37,7 @@ public class GameHandler {
         CurrentGames cg = plugin.getCurrentGames();
         int gameID = plugin.getIdHandler().addNewGame(queued);
         Location[] spawnLocations = plugin.getWorldHandler().createArena(gameID);
+        StringBuilder players = new StringBuilder(ColorList.NAME);
         for (int i = 0; i < 4; i++) {
             String name = queued[i];
             Player player = Bukkit.getPlayerExact(name);
@@ -46,8 +49,17 @@ public class GameHandler {
             player.setGameMode(GameMode.SURVIVAL);
             player.setHealth(player.getMaxHealth());
             player.getInventory().clear();
+            player.getInventory().setArmorContents(new ItemStack[4]);
             player.setFoodLevel(20);
+            if (i == 4) {
+                players.append(ColorList.BROADCAST).append(" and ").append(ColorList.NAME).append(player.getName());
+            } else if (i > 0) {
+                players.append(ColorList.BROADCAST).append(", ").append(ColorList.NAME).append(player.getName());
+            } else {
+                players.append(ColorList.NAME).append(player.getName());
+            }
         }
+        Bukkit.broadcastMessage(String.format(Messages.GAME_STARTING, players.toString()));
     }
 
     public void endGame(int id, boolean broadcast) {
@@ -68,6 +80,7 @@ public class GameHandler {
                 player.setGameMode(GameMode.SURVIVAL);
                 player.setHealth(player.getMaxHealth());
                 player.getInventory().clear();
+                player.getInventory().setArmorContents(new ItemStack[4]);
                 player.setFoodLevel(20);
                 if (winner == null) {
                     winner = playerName;

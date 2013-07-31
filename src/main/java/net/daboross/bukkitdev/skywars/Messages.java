@@ -21,6 +21,7 @@ public class Messages {
     public static final String SINGLE_WON = PREFIX + ColorList.NAME + "%s" + ColorList.BROADCAST + " has won the SkyWars!";
     public static final String MULTI_WON = PREFIX + ColorList.NAME + "%s" + ColorList.BROADCAST + " have won the SkyWars!";
     public static final String NONE_WON = PREFIX + ColorList.NAME + "No one won the SkyWars!";
+    public static final String GAME_STARTING = PREFIX + "Game starting with " + ColorList.NAME + "%s" + ColorList.BROADCAST + "!";
 
     public static class Join {
 

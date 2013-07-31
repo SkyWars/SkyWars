@@ -4,6 +4,7 @@
 package net.daboross.bukkitdev.skywars;
 
 import java.io.IOException;
+import java.util.List;
 import net.daboross.bukkitdev.skywars.game.CurrentGames;
 import net.daboross.bukkitdev.skywars.game.GameHandler;
 import net.daboross.bukkitdev.skywars.game.GameIdHandler;
@@ -59,7 +60,8 @@ public class SkyWarsPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         locationStore.save();
-        for (int id : idHandler.getCurrentIds()) {
+        List<Integer> ids =  idHandler.getCurrentIds();
+        for (int id : ids) {
             gameHandler.endGame(id, false);
         }
     }

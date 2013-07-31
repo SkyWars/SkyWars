@@ -19,7 +19,8 @@ public class CancelCommand extends SubCommand {
     private final SkyWarsPlugin plugin;
 
     public CancelCommand(SkyWarsPlugin plugin) {
-        super("cancel", true, "skywars.cancel", new String[]{"ID"}, "Cancels a current game with the given id");
+        super("cancel", true, "skywars.cancel", "Cancels a current game with the given id");
+        addArgumentNames("ID");
         this.plugin = plugin;
     }
 
