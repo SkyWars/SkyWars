@@ -10,6 +10,7 @@ import net.daboross.bukkitdev.skywars.commands.LeaveCommand;
 import net.daboross.bukkitdev.skywars.commands.SetLobbyCommand;
 import net.daboross.bukkitdev.skywars.commands.SetPortalCommand;
 import net.daboross.bukkitdev.skywars.commands.StatusCommand;
+import net.daboross.bukkitdev.skywars.commands.VersionCommand;
 import org.bukkit.command.CommandExecutor;
 
 /**
@@ -34,6 +35,7 @@ public class CommandBase {
         base.addSubCommand(new SetPortalCommand(plugin));
         base.addSubCommand(new CancelCommand(plugin));
         base.addSubCommand(new StatusCommand(plugin));
+        base.addSubCommand(new VersionCommand(plugin));
     }
 
     public CommandExecutor getExecutor() {
