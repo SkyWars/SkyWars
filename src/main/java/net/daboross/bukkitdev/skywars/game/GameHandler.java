@@ -44,6 +44,9 @@ public class GameHandler {
             cg.setGameID(name, gameID);
             player.teleport(spawnLocations[i]);
             player.setGameMode(GameMode.SURVIVAL);
+            player.setHealth(player.getMaxHealth());
+            player.getInventory().clear();
+            player.setFoodLevel(20);
         }
     }
 
@@ -60,8 +63,12 @@ public class GameHandler {
                 if (player == null) {
                     throw new IllegalStateException("Player in game that isn't online");
                 }
-                player.teleport(lobby);
                 cg.removePlayer(playerName);
+                player.teleport(lobby);
+                player.setGameMode(GameMode.SURVIVAL);
+                player.setHealth(player.getMaxHealth());
+                player.getInventory().clear();
+                player.setFoodLevel(20);
                 if (winner == null) {
                     winner = playerName;
                 } else {

@@ -4,7 +4,6 @@
 package net.daboross.bukkitdev.skywars.game;
 
 import net.daboross.bukkitdev.skywars.Messages;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -28,7 +27,7 @@ public class KillBroadcaster {
                 case VOID:
                     return String.format(Messages.SUICIDE_VOID, player.getName());
                 default:
-                    return String.format(Messages.FORFEITED, player.getName());
+                    return String.format(Messages.SUICIDE, player.getName());
             }
         } else {
             String damagerName = (damager instanceof LivingEntity) ? ((LivingEntity) damager).getCustomName() : damager.getType().getName();

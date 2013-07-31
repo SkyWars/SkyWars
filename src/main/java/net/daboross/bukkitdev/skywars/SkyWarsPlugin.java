@@ -141,7 +141,7 @@ public class SkyWarsPlugin extends JavaPlugin {
         return currentGames;
     }
 
-    public GameHandler getGameCreator() {
+    public GameHandler getGameHandler() {
         return gameCreator;
     }
 

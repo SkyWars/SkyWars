@@ -18,6 +18,7 @@ public class JoinCommand extends SubCommand {
 
     private final String CONFIRMATION = ColorList.REG + "You have joined the queue.";
     private final String ALREADY_QUEUED = ColorList.ERR + "You were already in the queue.";
+    private final String IN_GAME = ColorList.REG + "You can't join now, you are already in a game.";
     private final SkyWarsPlugin plugin;
 
     public JoinCommand(SkyWarsPlugin plugin) {
@@ -33,11 +34,14 @@ public class JoinCommand extends SubCommand {
             sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
             return;
         }
-        if (plugin.getGameQueue().inQueue(player.getName())) {
+        String name = player.getName().toLowerCase();
+        if (plugin.getCurrentGames().getGameID(name) != null) {
+            sender.sendMessage(IN_GAME);
+        } else if (plugin.getGameQueue().inQueue(name)) {
             sender.sendMessage(ALREADY_QUEUED);
         } else {
             sender.sendMessage(CONFIRMATION);
-            plugin.getGameQueue().queuePlayer(player.getName());
+            plugin.getGameQueue().queuePlayer(name);
         }
     }
 }

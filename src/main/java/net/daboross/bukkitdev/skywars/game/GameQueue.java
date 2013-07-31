@@ -31,7 +31,7 @@ public class GameQueue {
             currentlyQueued.add(player);
         }
         if (currentlyQueued.size() == 4) {
-            plugin.getGameCreator().startNewGame();
+            plugin.getGameHandler().startNewGame();
             currentlyQueued.clear();
         }
     }
