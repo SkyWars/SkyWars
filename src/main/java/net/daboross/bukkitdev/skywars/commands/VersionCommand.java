@@ -20,7 +20,7 @@ public class VersionCommand extends SubCommand {
     private final SkyWarsPlugin plugin;
 
     public VersionCommand(SkyWarsPlugin plugin) {
-        super("status", true, "skywars.version", "Gives version");
+        super("version", true, "skywars.version", "Gives version");
         this.plugin = plugin;
     }
 
