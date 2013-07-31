@@ -22,7 +22,7 @@ public class CommandListener implements Listener {
 
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent evt) {
-        if (!evt.getMessage().substring(1, 3).equalsIgnoreCase("sw")) {
+        if (evt.getMessage().length() < 3 || !evt.getMessage().substring(1, 3).equalsIgnoreCase("sw")) {
             if (plugin.getCurrentGames().getGameID(evt.getPlayer().getName()) != null) {
                 evt.setCancelled(true);
             }
