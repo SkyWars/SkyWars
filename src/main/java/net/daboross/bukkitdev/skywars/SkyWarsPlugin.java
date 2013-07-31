@@ -8,6 +8,8 @@ import net.daboross.bukkitdev.skywars.game.CurrentGames;
 import net.daboross.bukkitdev.skywars.game.GameHandler;
 import net.daboross.bukkitdev.skywars.game.GameIdHandler;
 import net.daboross.bukkitdev.skywars.game.GameQueue;
+import net.daboross.bukkitdev.skywars.listeners.DeathListener;
+import net.daboross.bukkitdev.skywars.listeners.SpawnListener;
 import net.daboross.bukkitdev.skywars.storage.LocationStore;
 import net.daboross.bukkitdev.skywars.world.SkyWorldHandler;
 import org.bukkit.command.Command;
@@ -43,6 +45,9 @@ public class SkyWarsPlugin extends JavaPlugin {
         worldCreator = new SkyWorldHandler();
         setupPermissions();
         setupCommands();
+        PluginManager pm = getServer().getPluginManager();
+        pm.registerEvents(new SpawnListener(), this);
+        pm.registerEvents(new DeathListener(this), this);
     }
 
     @Override

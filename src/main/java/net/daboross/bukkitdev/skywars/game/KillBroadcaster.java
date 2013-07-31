@@ -17,8 +17,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
  */
 public class KillBroadcaster {
 
-    public void broadcastKill(Player player) {
-
+    public static String getMessage(Player player) {
         EntityDamageEvent ede = player.getLastDamageCause();
         Entity damager = null;
         if (ede instanceof EntityDamageByEntityEvent) {
@@ -27,21 +26,18 @@ public class KillBroadcaster {
         if (damager == null) {
             switch (ede.getCause()) {
                 case VOID:
-                    Bukkit.broadcastMessage(String.format(Messages.SUICIDE_VOID, player.getName()));
-                    break;
+                    return String.format(Messages.SUICIDE_VOID, player.getName());
                 default:
-                    Bukkit.broadcastMessage(String.format(Messages.FORFEITED, player.getName()));
-                    break;
+                    return String.format(Messages.FORFEITED, player.getName());
             }
         } else {
             String damagerName = (damager instanceof LivingEntity) ? ((LivingEntity) damager).getCustomName() : damager.getType().getName();
             switch (ede.getCause()) {
                 case VOID:
-                    Bukkit.broadcastMessage(String.format(Messages.KILLED_VOID, damagerName, player.getName()));
-                    break;
+                    return String.format(Messages.KILLED_VOID, damagerName, player.getName());
                 default:
-                    Bukkit.broadcastMessage(String.format(Messages.KILLED, damagerName, player.getName()));
-                    break;
+                    return String.format(Messages.KILLED, damagerName, player.getName());
+
             }
         }
     }
