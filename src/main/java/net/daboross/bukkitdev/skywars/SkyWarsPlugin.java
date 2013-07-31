@@ -8,6 +8,7 @@ import net.daboross.bukkitdev.skywars.game.CurrentGames;
 import net.daboross.bukkitdev.skywars.game.GameHandler;
 import net.daboross.bukkitdev.skywars.game.GameIdHandler;
 import net.daboross.bukkitdev.skywars.game.GameQueue;
+import net.daboross.bukkitdev.skywars.listeners.CommandListener;
 import net.daboross.bukkitdev.skywars.listeners.DeathListener;
 import net.daboross.bukkitdev.skywars.listeners.PortalListener;
 import net.daboross.bukkitdev.skywars.listeners.QuitListener;
@@ -52,6 +53,7 @@ public class SkyWarsPlugin extends JavaPlugin {
         pm.registerEvents(new DeathListener(this), this);
         pm.registerEvents(new QuitListener(this), this);
         pm.registerEvents(new PortalListener(this), this);
+        pm.registerEvents(new CommandListener(this), this);
     }
 
     @Override
