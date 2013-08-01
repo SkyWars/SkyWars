@@ -16,9 +16,11 @@ import net.daboross.bukkitdev.skywars.listeners.QuitListener;
 import net.daboross.bukkitdev.skywars.listeners.SpawnListener;
 import net.daboross.bukkitdev.skywars.storage.LocationStore;
 import net.daboross.bukkitdev.skywars.world.SkyWorldHandler;
+import net.daboross.bukkitdev.skywars.world.VoidGenerator;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.PluginManager;
@@ -60,9 +62,11 @@ public class SkyWarsPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         locationStore.save();
-        List<Integer> ids =  idHandler.getCurrentIds();
+        List<Integer> ids = idHandler.getCurrentIds();
         for (int id : ids) {
-            gameHandler.endGame(id, false);
+            if (idHandler.getPlayers(id) != null) {
+                gameHandler.endGame(id, false);
+            }
         }
     }
 
@@ -92,14 +96,16 @@ public class SkyWarsPlugin extends JavaPlugin {
         Permission cancel = getPermission("skywars.cancel", pm);
         Permission status = getPermission("skywars.status", pm);
         Permission version = getPermission("skywars.version", pm);
+        Permission lobby = getPermission("skywars.lobby", pm);
         star.setDefault(PermissionDefault.FALSE);
         join.setDefault(PermissionDefault.TRUE);
         leave.setDefault(PermissionDefault.TRUE);
         setLobby.setDefault(PermissionDefault.OP);
         setPortal.setDefault(PermissionDefault.OP);
         cancel.setDefault(PermissionDefault.OP);
-        status.setDefault(PermissionDefault.OP);
+        status.setDefault(PermissionDefault.TRUE);
         version.setDefault(PermissionDefault.TRUE);
+        lobby.setDefault(PermissionDefault.TRUE);
         join.addParent(star, true);
         leave.addParent(star, true);
         setLobby.addParent(star, true);
@@ -107,7 +113,8 @@ public class SkyWarsPlugin extends JavaPlugin {
         cancel.addParent(star, true);
         status.addParent(star, true);
         version.addParent(star, true);
-        updateAndAddAll(pm, star, join, leave, setLobby, setPortal, cancel, status, version);
+        lobby.addParent(star, true);
+        updateAndAddAll(pm, star, join, leave, setLobby, setPortal, cancel, status, version, lobby);
 
     }
 
@@ -162,5 +169,10 @@ public class SkyWarsPlugin extends JavaPlugin {
 
     public SkyWorldHandler getWorldHandler() {
         return worldCreator;
+    }
+
+    @Override
+    public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
+        return new VoidGenerator();
     }
 }

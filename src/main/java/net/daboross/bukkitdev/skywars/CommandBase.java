@@ -7,6 +7,7 @@ import net.daboross.bukkitdev.commandexecutorbase.CommandExecutorBase;
 import net.daboross.bukkitdev.skywars.commands.CancelCommand;
 import net.daboross.bukkitdev.skywars.commands.JoinCommand;
 import net.daboross.bukkitdev.skywars.commands.LeaveCommand;
+import net.daboross.bukkitdev.skywars.commands.LobbyCommand;
 import net.daboross.bukkitdev.skywars.commands.SetLobbyCommand;
 import net.daboross.bukkitdev.skywars.commands.SetPortalCommand;
 import net.daboross.bukkitdev.skywars.commands.StatusCommand;
@@ -36,6 +37,7 @@ public class CommandBase {
         base.addSubCommand(new CancelCommand(plugin));
         base.addSubCommand(new StatusCommand(plugin));
         base.addSubCommand(new VersionCommand(plugin));
+        base.addSubCommand(new LobbyCommand(plugin));
     }
 
     public CommandExecutor getExecutor() {

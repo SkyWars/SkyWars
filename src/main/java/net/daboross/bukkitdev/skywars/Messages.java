@@ -29,4 +29,10 @@ public class Messages {
         public static final String ALREADY_QUEUED = ColorList.ERR + "You were already in the queue.";
         public static final String IN_GAME = ColorList.REG + "You can't join now, you are already in a game.";
     }
+
+    public static class Lobby {
+
+        public static final String IN_GAME = ColorList.REG + "You can't teleport to the lobby, you are in a game.";
+        public static final String CONFIRMATION = ColorList.REG + "Teleporting to lobby";
+    }
 }
