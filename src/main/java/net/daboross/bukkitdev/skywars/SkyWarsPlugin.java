@@ -4,6 +4,7 @@
 package net.daboross.bukkitdev.skywars;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import net.daboross.bukkitdev.skywars.game.CurrentGames;
 import net.daboross.bukkitdev.skywars.game.GameHandler;
@@ -25,6 +26,7 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.mcstats.MetricsLite;
 
 /**
@@ -48,7 +50,12 @@ public class SkyWarsPlugin extends JavaPlugin {
         currentGames = new CurrentGames();
         gameHandler = new GameHandler(this);
         idHandler = new GameIdHandler();
-        worldCreator = new SkyWorldHandler();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                worldCreator = new SkyWorldHandler();
+            }
+        }.runTask(this);
         setupPermissions();
         setupCommands();
         PluginManager pm = getServer().getPluginManager();
@@ -62,7 +69,7 @@ public class SkyWarsPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         locationStore.save();
-        List<Integer> ids = idHandler.getCurrentIds();
+        List<Integer> ids = new ArrayList<Integer>(idHandler.getCurrentIds());
         for (int id : ids) {
             if (idHandler.getPlayers(id) != null) {
                 gameHandler.endGame(id, false);
