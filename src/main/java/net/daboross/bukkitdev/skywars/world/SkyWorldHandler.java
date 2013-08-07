@@ -58,10 +58,8 @@ public class SkyWorldHandler {
      * @return A list of player spawn positions
      */
     public Location[] createArena(int id) {
-        System.out.println("Creating arena: " + id);
         int modX = (id % 2) * 200;
         int modZ = (id / 2) * 200;
-        System.out.println("X:" + modX + " Z:" + modZ);
         int modY = 100;
         Location center = new Location(world, modX, modY, modZ);
         center.getBlock().getRelative(0, -2, 0).setType(Material.STONE);
