@@ -6,26 +6,19 @@ package net.daboross.bukkitdev.skywars.world;
 import java.util.Random;
 import net.daboross.bukkitdev.skywars.events.GameStartEvent;
 import net.daboross.bukkitdev.skywars.storage.SkyLocation;
-import net.daboross.bukkitdev.skywars.storage.SkyLocationAccurate;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 /**
  *
  * @author daboross
  */
-public class SkyWorldHandler {
+public class SkyWorldHandler implements Listener {
 
-    private static final SkyLocationAccurate[] REL_SPAWNS = {
-        new SkyLocationAccurate(18.5, 6, -14.5, "SkyWarsArenaWorld"),
-        new SkyLocationAccurate(-17.5, 6, -14.5, "SkyWarsArenaWorld"),
-        new SkyLocationAccurate(-17.5, 6, 15.5, "SkyWarsArenaWorld"),
-        new SkyLocationAccurate(18.5, 6, 15.5, "SkyWarsArenaWorld")
-    };
     private final World world;
 
     public SkyWorldHandler() {
@@ -34,7 +27,7 @@ public class SkyWorldHandler {
     }
 
     private World createWorld() {
-        WorldCreator wc = new WorldCreator("SkyWarsArenaWorld");
+        WorldCreator wc = new WorldCreator(Statics.ARENA_WORLD_NAME);
         wc.generateStructures(false);
         wc.generator(new VoidGenerator());
         wc.type(WorldType.FLAT);
@@ -43,16 +36,12 @@ public class SkyWorldHandler {
     }
 
     private void createWarriorsWorld() {
-        WorldCreator wc = new WorldCreator("SkyblockWarriors");
+        WorldCreator wc = new WorldCreator(Statics.BASE_WORLD_NAME);
         wc.generateStructures(false);
         wc.generator(new VoidGenerator());
         wc.type(WorldType.FLAT);
         wc.seed(0);
         wc.createWorld();
-    }
-
-    public World getWorld() {
-        return world;
     }
 
     @EventHandler
@@ -67,12 +56,10 @@ public class SkyWorldHandler {
      * @param id The ID for the arena
      * @return A list of player spawn positions
      */
-    public Location[] createArena(int id) {
+    private Location[] createArena(int id) {
         int modX = (id % 2) * 200;
         int modZ = (id / 2) * 200;
         int modY = 100;
-        Location center = new Location(world, modX, modY, modZ);
-        center.getBlock().getRelative(0, -2, 0).setType(Material.STONE);
         WorldCopier.copyArena(new SkyLocation(modX, modY, modZ, world.getName()));
         return getSpawnLocations(modX, modY, modZ);
     }
@@ -87,8 +74,7 @@ public class SkyWorldHandler {
                 next = r.nextInt(4);
             }
             taken[next] = true;
-            finalLocations[next] = REL_SPAWNS[next].add(modX, modY, modZ).toLocation();
-            System.out.println("Next location is " + finalLocations[next]);
+            finalLocations[next] = Statics.RELATIVE_SPAWNS[next].add(modX, modY, modZ).toLocation();
         }
         return finalLocations;
     }

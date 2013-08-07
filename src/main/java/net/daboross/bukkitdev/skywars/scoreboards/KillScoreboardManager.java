@@ -5,9 +5,7 @@ package net.daboross.bukkitdev.skywars.scoreboards;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
@@ -40,7 +38,11 @@ public class KillScoreboardManager implements Listener {
     public KillScoreboardManager(SkyWarsPlugin plugin) {
         this.plugin = plugin;
         this.manager = this.plugin.getServer().getScoreboardManager();
-        saveFile = new File(plugin.getDataFolder(), "kills.yml");
+        File dataFolder = plugin.getDataFolder();
+        saveFile = new File(dataFolder, "kills.yml");
+        if (!dataFolder.exists()) {
+            dataFolder.mkdirs();
+        }
         if (!saveFile.exists()) {
             try {
                 saveFile.createNewFile();

@@ -19,11 +19,8 @@ import org.bukkit.inventory.ItemStack;
  */
 public class WorldCopier {
 
-    private static final SkyLocation warriorsMin = new SkyLocation(-205, 183, 78, "SkyblockWarriors");
-    private static final SkyLocation warriorsMax = new SkyLocation(-149, 190, 136, "SkyblockWarriors");
-
     public static void copyArena(SkyLocation toCenter) {
-        copy(warriorsMin, warriorsMax, toCenter);
+        copy(Statics.ARENA_MIN, Statics.ARENA_MAX, toCenter);
     }
 
     public static void destroyArena(SkyLocation center) {
@@ -31,8 +28,8 @@ public class WorldCopier {
         if (world == null) {
             throw new IllegalArgumentException("No world applicable.");
         }
-        int xLength = warriorsMax.x - warriorsMin.x;
-        int zLength = warriorsMax.z - warriorsMin.z;
+        int xLength = Statics.ARENA_MAX.x - Statics.ARENA_MIN.x;
+        int zLength = Statics.ARENA_MAX.z - Statics.ARENA_MIN.z;
         SkyLocation min = new SkyLocation(center.x - xLength / 2, 0, center.z - zLength / 2, center.world);
         SkyLocation length = new SkyLocation(xLength, world.getMaxHeight(), zLength, center.world);
         destroyArena(min, length, world);

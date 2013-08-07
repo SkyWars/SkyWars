@@ -3,7 +3,6 @@
  */
 package net.daboross.bukkitdev.skywars.game;
 
-import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.skywars.Messages;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.events.GameEndEvent;
@@ -16,7 +15,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  *
@@ -37,63 +35,20 @@ public class GameHandler {
         }
         GameStartEvent evt = new GameStartEvent(queued);
         plugin.getServer().getPluginManager().callEvent(evt);
-        int gameID = evt.getId();
-        Location[] spawnLocations = plugin.getWorldHandler().createArena(gameID);
-        StringBuilder players = new StringBuilder(ColorList.NAME);
-        for (int i = 0; i < 4; i++) {
-            String name = queued[i];
-            Player player = Bukkit.getPlayerExact(name);
-            if (player == null) {
-                throw new IllegalArgumentException("One or more of the players is not online");
-            }
-            player.teleport(spawnLocations[i]);
-            if (i == 4) {
-                players.append(ColorList.BROADCAST).append(" and ").append(ColorList.NAME).append(player.getName());
-            } else if (i > 0) {
-                players.append(ColorList.BROADCAST).append(", ").append(ColorList.NAME).append(player.getName());
-            } else {
-                players.append(ColorList.NAME).append(player.getName());
-            }
-        }
-        Bukkit.broadcastMessage(String.format(Messages.GAME_STARTING, players.toString()));
     }
 
     public void endGame(int id, boolean broadcast) {
         GameIdHandler idh = plugin.getIdHandler();
-        String[] players = idh.getPlayers(id);
-        plugin.getServer().getPluginManager().callEvent(new GameEndEvent(players, id));
+        String[] names = idh.getPlayers(id);
+        GameEndEvent evt = new GameEndEvent(names, id, broadcast);
+        plugin.getServer().getPluginManager().callEvent(evt);
+        Player[] players = evt.getPlayers();
         Location lobby = plugin.getLocationStore().getLobbyPosition().toLocation();
-        String winner = null;
-        for (String playerName : players) {
-            if (playerName != null) {
-                Player player = Bukkit.getPlayerExact(playerName);
-                if (player == null) {
-                    throw new IllegalStateException("Player in game that isn't online");
-                }
+        for (Player player : players) {
+            if (player != null) {
                 plugin.getServer().getPluginManager().callEvent(new PlayerLeaveGameEvent(id, player));
                 player.teleport(lobby);
-                if (winner == null) {
-                    winner = playerName;
-                } else {
-                    winner += ", " + playerName;
-                }
             }
-        }
-        if (broadcast) {
-            final String message;
-            if (winner == null) {
-                message = Messages.NONE_WON;
-            } else if (winner.contains(", ")) {
-                message = String.format(Messages.MULTI_WON, winner);
-            } else {
-                message = String.format(Messages.SINGLE_WON, winner);
-            }
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    plugin.getServer().broadcastMessage(message);
-                }
-            }.runTask(plugin);
         }
     }
 

@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import org.bukkit.Bukkit;
+import net.daboross.bukkitdev.skywars.world.Statics;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -42,7 +42,7 @@ public class LocationStore {
                 plugin.getLogger().warning("Lobby is not ArenaLocation");
             }
         } else {
-            lobbyPosition = new SkyLocation(0, 0, 0, Bukkit.getWorlds().get(0).getName());
+            lobbyPosition = new SkyLocation(0, 0, 0, Statics.ARENA_WORLD_NAME);
         }
         List<?> list = storage.getList("portals");
         if (list

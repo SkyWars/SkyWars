@@ -23,6 +23,7 @@ import net.daboross.bukkitdev.skywars.world.VoidGenerator;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.event.Listener;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -61,16 +62,16 @@ public class SkyWarsPlugin extends JavaPlugin {
         setupPermissions();
         setupCommands();
         PluginManager pm = getServer().getPluginManager();
-        pm.registerEvents(new SpawnListener(), this);
-        pm.registerEvents(new DeathListener(this), this);
-        pm.registerEvents(new QuitListener(this), this);
-        pm.registerEvents(new PortalListener(this), this);
-        pm.registerEvents(new CommandListener(this), this);
-        pm.registerEvents(idHandler, this);
-        pm.registerEvents(currentGames, this);
-        pm.registerEvents(gameQueue, this);
-        pm.registerEvents(new ResetHealthListener(), this);
-        pm.registerEvents(new KillScoreboardManager(this), this);
+        registerEvents(pm, new SpawnListener(), new DeathListener(this),
+                new QuitListener(this), new PortalListener(this),
+                new CommandListener(this), idHandler, currentGames, gameQueue,
+                worldCreator, new ResetHealthListener(), new KillScoreboardManager(this));
+    }
+
+    private void registerEvents(PluginManager pm, Listener... listeners) {
+        for (Listener l : listeners) {
+            pm.registerEvents(l, this);
+        }
     }
 
     @Override

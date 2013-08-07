@@ -31,7 +31,6 @@ public class GameStartEvent extends Event {
             }
             players[i] = p;
         }
-
     }
 
     public void setId(int id) {
