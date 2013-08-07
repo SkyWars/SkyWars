@@ -1,5 +1,18 @@
 /*
- * Copyright (C) 2013 Dabo Ross <www.daboross.net>
+ * Copyright (C) 2013 Dabo Ross <http://www.daboross.net/>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package net.daboross.bukkitdev.skywars.world;
 
@@ -19,9 +32,9 @@ import org.bukkit.event.Listener;
  */
 public class SkyWorldHandler implements Listener {
 
-    private final World world;
+    private World world;
 
-    public SkyWorldHandler() {
+    public void create() {
         this.world = createWorld();
         createWarriorsWorld();
     }
@@ -57,6 +70,9 @@ public class SkyWorldHandler implements Listener {
      * @return A list of player spawn positions
      */
     private Location[] createArena(int id) {
+        if (world == null) {
+            throw new IllegalStateException("World not created");
+        }
         int modX = (id % 2) * 200;
         int modZ = (id / 2) * 200;
         int modY = 100;

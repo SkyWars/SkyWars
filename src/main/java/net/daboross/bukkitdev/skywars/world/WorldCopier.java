@@ -1,5 +1,18 @@
 /*
- * Copyright (C) 2013 Dabo Ross <www.daboross.net>
+ * Copyright (C) 2013 Dabo Ross <http://www.daboross.net/>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package net.daboross.bukkitdev.skywars.world;
 
@@ -61,6 +74,8 @@ public class WorldCopier {
         int yLength = fromMax.y - fromMin.y;
         int zLength = fromMax.z - fromMin.z;
         SkyLocation toMin = new SkyLocation(toCenter.x - xLength / 2, toCenter.y - yLength / 2, toCenter.z - zLength / 2, toCenter.world);
+        System.out.println("fromMin: " + fromMin);
+        System.out.println("toMin: " + toMin);
         for (int x = 0; x <= xLength; x++) {
             for (int y = 0; y <= yLength; y++) {
                 for (int z = 0; z <= zLength; z++) {
