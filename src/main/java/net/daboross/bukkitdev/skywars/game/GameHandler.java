@@ -6,15 +6,16 @@ package net.daboross.bukkitdev.skywars.game;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.skywars.Messages;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import net.daboross.bukkitdev.skywars.events.GameEndEvent;
+import net.daboross.bukkitdev.skywars.events.GameStartEvent;
+import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameEvent;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -34,8 +35,9 @@ public class GameHandler {
         if (queued.length != 4) {
             throw new IllegalStateException("Queue size is not 4");
         }
-        CurrentGames cg = plugin.getCurrentGames();
-        int gameID = plugin.getIdHandler().addNewGame(queued);
+        GameStartEvent evt = new GameStartEvent(queued);
+        plugin.getServer().getPluginManager().callEvent(evt);
+        int gameID = evt.getId();
         Location[] spawnLocations = plugin.getWorldHandler().createArena(gameID);
         StringBuilder players = new StringBuilder(ColorList.NAME);
         for (int i = 0; i < 4; i++) {
@@ -44,13 +46,7 @@ public class GameHandler {
             if (player == null) {
                 throw new IllegalArgumentException("One or more of the players is not online");
             }
-            cg.setGameID(name, gameID);
             player.teleport(spawnLocations[i]);
-            player.setGameMode(GameMode.SURVIVAL);
-            player.setHealth(player.getMaxHealth());
-            player.getInventory().clear();
-            player.getInventory().setArmorContents(new ItemStack[4]);
-            player.setFoodLevel(20);
             if (i == 4) {
                 players.append(ColorList.BROADCAST).append(" and ").append(ColorList.NAME).append(player.getName());
             } else if (i > 0) {
@@ -63,10 +59,9 @@ public class GameHandler {
     }
 
     public void endGame(int id, boolean broadcast) {
-        CurrentGames cg = plugin.getCurrentGames();
         GameIdHandler idh = plugin.getIdHandler();
         String[] players = idh.getPlayers(id);
-        idh.gameFinished(id);
+        plugin.getServer().getPluginManager().callEvent(new GameEndEvent(players, id));
         Location lobby = plugin.getLocationStore().getLobbyPosition().toLocation();
         String winner = null;
         for (String playerName : players) {
@@ -75,13 +70,8 @@ public class GameHandler {
                 if (player == null) {
                     throw new IllegalStateException("Player in game that isn't online");
                 }
-                cg.removePlayer(playerName);
+                plugin.getServer().getPluginManager().callEvent(new PlayerLeaveGameEvent(id, player));
                 player.teleport(lobby);
-                player.setGameMode(GameMode.SURVIVAL);
-                player.setHealth(player.getMaxHealth());
-                player.getInventory().clear();
-                player.getInventory().setArmorContents(new ItemStack[4]);
-                player.setFoodLevel(20);
                 if (winner == null) {
                     winner = playerName;
                 } else {
@@ -101,7 +91,7 @@ public class GameHandler {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    Bukkit.broadcastMessage(message);
+                    plugin.getServer().broadcastMessage(message);
                 }
             }.runTask(plugin);
         }
@@ -115,7 +105,6 @@ public class GameHandler {
             return;
         }
         GameIdHandler idh = plugin.getIdHandler();
-        cg.removePlayer(playerName);
         String[] players = idh.getPlayers(id);
         int playersLeft = 0;
         for (int i = 0; i < 4; i++) {
@@ -127,8 +116,9 @@ public class GameHandler {
                 }
             }
         }
+        Player player = Bukkit.getPlayerExact(playerName);
+        plugin.getServer().getPluginManager().callEvent(new PlayerLeaveGameEvent(id, player));
         if (teleport || broadcast) {
-            Player player = Bukkit.getPlayerExact(playerName);
             if (teleport) {
                 Location lobby = plugin.getLocationStore().getLobbyPosition().toLocation();
                 player.teleport(lobby);

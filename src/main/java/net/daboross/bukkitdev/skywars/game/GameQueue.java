@@ -6,12 +6,13 @@ package net.daboross.bukkitdev.skywars.game;
 import java.util.ArrayList;
 import java.util.List;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import org.bukkit.event.Listener;
 
 /**
  *
  * @author daboross
  */
-public class GameQueue {
+public class GameQueue implements Listener {
 
     private final SkyWarsPlugin plugin;
     private final List<String> currentlyQueued;

@@ -8,12 +8,17 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.daboross.bukkitdev.skywars.events.GameEndEvent;
+import net.daboross.bukkitdev.skywars.events.GameStartEvent;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 
 /**
  *
  * @author daboross
  */
-public class GameIdHandler {
+public class GameIdHandler implements Listener {
 
     private final Map<Integer, String[]> currentGames = new HashMap<Integer, String[]>();
     private final List<Integer> currentIds = new ArrayList<Integer>();
@@ -22,22 +27,21 @@ public class GameIdHandler {
         return currentGames.get(id);
     }
 
-    public int addNewGame(String[] players) {
-        if (players == null || players.length != 4) {
-            throw new IllegalArgumentException();
-        }
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onGameStart(GameStartEvent evt) {
         int id = 0;
         while (currentGames.containsKey(id)) {
             id++;
         }
-        currentGames.put(id, players);
+        currentGames.put(id, evt.getNames());
         currentIds.add(id);
-        return id;
+        evt.setId(id);
     }
 
-    public void gameFinished(int id) {
-        currentGames.remove(id);
-        currentIds.remove(id);
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onGameEnd(GameEndEvent evt) {
+        currentGames.remove(evt.getId());
+        currentIds.remove(evt.getId());
     }
 
     public List<Integer> getCurrentIds() {

@@ -14,7 +14,9 @@ import net.daboross.bukkitdev.skywars.listeners.CommandListener;
 import net.daboross.bukkitdev.skywars.listeners.DeathListener;
 import net.daboross.bukkitdev.skywars.listeners.PortalListener;
 import net.daboross.bukkitdev.skywars.listeners.QuitListener;
+import net.daboross.bukkitdev.skywars.listeners.ResetHealthListener;
 import net.daboross.bukkitdev.skywars.listeners.SpawnListener;
+import net.daboross.bukkitdev.skywars.scoreboards.KillScoreboardManager;
 import net.daboross.bukkitdev.skywars.storage.LocationStore;
 import net.daboross.bukkitdev.skywars.world.SkyWorldHandler;
 import net.daboross.bukkitdev.skywars.world.VoidGenerator;
@@ -64,6 +66,11 @@ public class SkyWarsPlugin extends JavaPlugin {
         pm.registerEvents(new QuitListener(this), this);
         pm.registerEvents(new PortalListener(this), this);
         pm.registerEvents(new CommandListener(this), this);
+        pm.registerEvents(idHandler, this);
+        pm.registerEvents(currentGames, this);
+        pm.registerEvents(gameQueue, this);
+        pm.registerEvents(new ResetHealthListener(), this);
+        pm.registerEvents(new KillScoreboardManager(this), this);
     }
 
     @Override
