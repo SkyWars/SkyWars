@@ -6,6 +6,7 @@ package net.daboross.bukkitdev.skywars.world;
 import java.util.Arrays;
 import net.daboross.bukkitdev.skywars.storage.SkyLocation;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -23,6 +24,28 @@ public class WorldCopier {
 
     public static void copyArena(SkyLocation toCenter) {
         copy(warriorsMin, warriorsMax, toCenter);
+    }
+
+    public static void destroyArena(SkyLocation center) {
+        World world = Bukkit.getWorld(center.world);
+        if (world == null) {
+            throw new IllegalArgumentException("No world applicable.");
+        }
+        int xLength = warriorsMax.x - warriorsMin.x;
+        int zLength = warriorsMax.z - warriorsMin.z;
+        SkyLocation min = new SkyLocation(center.x - xLength / 2, 0, center.z - zLength / 2, center.world);
+        SkyLocation length = new SkyLocation(xLength, world.getMaxHeight(), zLength, center.world);
+        destroyArena(min, length, world);
+    }
+
+    public static void destroyArena(SkyLocation min, SkyLocation length, World world) {
+        for (int x = 0; x < length.x; x++) {
+            for (int y = 0; y < length.y; y++) {
+                for (int z = 0; z < length.z; z++) {
+                    world.getBlockAt(x, y, z).setType(Material.AIR);
+                }
+            }
+        }
     }
 
     public static void copy(SkyLocation fromMin, SkyLocation fromMax, SkyLocation toCenter) {

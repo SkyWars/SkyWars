@@ -4,6 +4,7 @@
 package net.daboross.bukkitdev.skywars.world;
 
 import java.util.Random;
+import net.daboross.bukkitdev.skywars.events.GameStartEvent;
 import net.daboross.bukkitdev.skywars.storage.SkyLocation;
 import net.daboross.bukkitdev.skywars.storage.SkyLocationAccurate;
 import org.bukkit.Location;
@@ -11,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
+import org.bukkit.event.EventHandler;
 
 /**
  *
@@ -51,6 +53,14 @@ public class SkyWorldHandler {
 
     public World getWorld() {
         return world;
+    }
+
+    @EventHandler
+    public void onGameStart(GameStartEvent evt) {
+        Location[] spawns = createArena(evt.getId());
+        for (int i = 0; i < 4; i++) {
+            evt.getPlayers()[i].teleport(spawns[i]);
+        }
     }
 
     /**
