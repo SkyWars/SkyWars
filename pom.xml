@@ -25,6 +25,12 @@
                 </includes>
                 <filtering>true</filtering>
             </resource>
+            <resource>
+                <directory>${project.basedir}/src/main/worlds</directory>
+                <includes>
+                    <include>**</include>
+                </includes>
+            </resource>
         </resources>
         <plugins>
             <plugin>

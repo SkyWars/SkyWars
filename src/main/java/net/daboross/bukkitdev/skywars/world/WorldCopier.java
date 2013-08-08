@@ -74,8 +74,8 @@ public class WorldCopier {
         int yLength = fromMax.y - fromMin.y;
         int zLength = fromMax.z - fromMin.z;
         SkyLocation toMin = new SkyLocation(toCenter.x - xLength / 2, toCenter.y - yLength / 2, toCenter.z - zLength / 2, toCenter.world);
-        System.out.println("fromMin: " + fromMin);
         System.out.println("toMin: " + toMin);
+        System.out.println("toMax: " + toMin.add(xLength, yLength, zLength));
         for (int x = 0; x <= xLength; x++) {
             for (int y = 0; y <= yLength; y++) {
                 for (int z = 0; z <= zLength; z++) {

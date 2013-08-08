@@ -17,15 +17,15 @@
 package net.daboross.bukkitdev.skywars.game;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
-import org.bukkit.event.Listener;
 
 /**
  *
  * @author daboross
  */
-public class GameQueue implements Listener {
+public class GameQueue {
 
     private final SkyWarsPlugin plugin;
     private final List<String> currentlyQueued;
@@ -54,7 +54,20 @@ public class GameQueue implements Listener {
         currentlyQueued.remove(player.toLowerCase());
     }
 
-    public String[] getQueueCopy() {
+    /**
+     * @throws IllegalStateException if queue size is not 4.
+     */
+    public String[] clearAndGetQueue() {
+        if (currentlyQueued.size() != 4) {
+            throw new IllegalStateException("Queue size not 4.");
+        }
+        Collections.shuffle(currentlyQueued);
+        String[] queueCopy = currentlyQueued.toArray(new String[currentlyQueued.size()]);
+        currentlyQueued.clear();
+        return queueCopy;
+    }
+
+    public String[] getCopy() {
         return currentlyQueued.toArray(new String[currentlyQueued.size()]);
     }
 }

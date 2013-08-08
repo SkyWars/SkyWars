@@ -16,13 +16,11 @@
  */
 package net.daboross.bukkitdev.skywars.world;
 
-import java.util.Random;
 import net.daboross.bukkitdev.skywars.events.GameStartEvent;
 import net.daboross.bukkitdev.skywars.storage.SkyLocation;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -32,66 +30,37 @@ import org.bukkit.event.Listener;
  */
 public class SkyWorldHandler implements Listener {
 
-    private World world;
-
     public void create() {
-        this.world = createWorld();
-        createWarriorsWorld();
-    }
-
-    private World createWorld() {
-        WorldCreator wc = new WorldCreator(Statics.ARENA_WORLD_NAME);
-        wc.generateStructures(false);
-        wc.generator(new VoidGenerator());
-        wc.type(WorldType.FLAT);
-        wc.seed(0);
-        return wc.createWorld();
-    }
-
-    private void createWarriorsWorld() {
-        WorldCreator wc = new WorldCreator(Statics.BASE_WORLD_NAME);
-        wc.generateStructures(false);
-        wc.generator(new VoidGenerator());
-        wc.type(WorldType.FLAT);
-        wc.seed(0);
-        wc.createWorld();
+        WorldCreator baseWorldCreator = new WorldCreator(Statics.BASE_WORLD_NAME);
+        baseWorldCreator.generateStructures(false);
+        baseWorldCreator.generator(new VoidGenerator());
+        baseWorldCreator.type(WorldType.FLAT);
+        baseWorldCreator.seed(0);
+        baseWorldCreator.createWorld();
+        WorldCreator arenaWorldCreator = new WorldCreator(Statics.ARENA_WORLD_NAME);
+        arenaWorldCreator.generateStructures(false);
+        arenaWorldCreator.generator(new VoidGenerator());
+        arenaWorldCreator.type(WorldType.FLAT);
+        arenaWorldCreator.seed(0);
+        arenaWorldCreator.createWorld();
+        SkyLocation center = getCenterLocation(0);
+        WorldCopier.copyArena(center);
     }
 
     @EventHandler
     public void onGameStart(GameStartEvent evt) {
-        Location[] spawns = createArena(evt.getId());
+        SkyLocation center = getCenterLocation(evt.getId());
+        WorldCopier.copyArena(center);
+        Player[] players = evt.getPlayers();
         for (int i = 0; i < 4; i++) {
-            evt.getPlayers()[i].teleport(spawns[i]);
+            players[i].teleport(Statics.RELATIVE_SPAWNS[i].add(center).toLocation());
         }
     }
 
-    /**
-     * @param id The ID for the arena
-     * @return A list of player spawn positions
-     */
-    private Location[] createArena(int id) {
-        if (world == null) {
-            throw new IllegalStateException("World not created");
-        }
+    private SkyLocation getCenterLocation(int id) {
         int modX = (id % 2) * 200;
         int modZ = (id / 2) * 200;
         int modY = 100;
-        WorldCopier.copyArena(new SkyLocation(modX, modY, modZ, world.getName()));
-        return getSpawnLocations(modX, modY, modZ);
-    }
-
-    private Location[] getSpawnLocations(int modX, int modY, int modZ) {
-        Random r = new Random();
-        Location[] finalLocations = new Location[4];
-        boolean[] taken = new boolean[4];
-        for (int i = 0; i < 4; i++) {
-            int next = r.nextInt(4);
-            while (taken[next]) {
-                next = r.nextInt(4);
-            }
-            taken[next] = true;
-            finalLocations[next] = Statics.RELATIVE_SPAWNS[next].add(modX, modY, modZ).toLocation();
-        }
-        return finalLocations;
+        return new SkyLocation(modX, modY, modZ, Statics.ARENA_WORLD_NAME);
     }
 }

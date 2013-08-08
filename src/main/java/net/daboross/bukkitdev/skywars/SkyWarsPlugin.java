@@ -19,6 +19,7 @@ package net.daboross.bukkitdev.skywars;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.game.CurrentGames;
 import net.daboross.bukkitdev.skywars.game.GameHandler;
 import net.daboross.bukkitdev.skywars.game.GameIdHandler;
@@ -33,6 +34,7 @@ import net.daboross.bukkitdev.skywars.scoreboards.KillScoreboardManager;
 import net.daboross.bukkitdev.skywars.storage.LocationStore;
 import net.daboross.bukkitdev.skywars.world.SkyWorldHandler;
 import net.daboross.bukkitdev.skywars.world.VoidGenerator;
+import net.daboross.bukkitdev.skywars.world.WorldUnzipper;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
@@ -61,6 +63,7 @@ public class SkyWarsPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         setupMetrics();
+        new WorldUnzipper(this).doWorldUnzip();
         locationStore = new LocationStore(this);
         gameQueue = new GameQueue(this);
         currentGames = new CurrentGames();
@@ -78,8 +81,8 @@ public class SkyWarsPlugin extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
         registerEvents(pm, new SpawnListener(), new DeathListener(this),
                 new QuitListener(this), new PortalListener(this),
-                new CommandListener(this), idHandler, currentGames, gameQueue,
-                worldCreator, new ResetHealthListener(), new KillScoreboardManager(this));
+                new CommandListener(this), idHandler, currentGames, worldCreator,
+                new ResetHealthListener(), new KillScoreboardManager(this));
     }
 
     private void registerEvents(PluginManager pm, Listener... listeners) {
@@ -110,6 +113,7 @@ public class SkyWarsPlugin extends JavaPlugin {
         try {
             metrics = new MetricsLite(this);
         } catch (IOException ex) {
+            getLogger().log(Level.WARNING, "Unable to create metrics.", ex);
             return;
         }
         metrics.start();

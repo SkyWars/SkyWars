@@ -62,6 +62,14 @@ public class SkyLocationAccurate implements ConfigurationSerializable {
         return new SkyLocationAccurate(this.x + x, this.y + y, this.z + z, world);
     }
 
+    public SkyLocationAccurate add(SkyLocation location) {
+        return new SkyLocationAccurate(this.x + location.x, this.y + location.y, this.z + location.z, world);
+    }
+
+    public SkyLocationAccurate add(SkyLocationAccurate location) {
+        return new SkyLocationAccurate(this.x + location.x, this.y + location.y, this.z + location.z, world);
+    }
+
     public SkyLocation round() {
         return new SkyLocation((int) x, (int) y, (int) z, world);
     }

@@ -62,6 +62,14 @@ public class SkyLocation implements ConfigurationSerializable {
         return new SkyLocation(x + modX, y + modY, z + modZ, world);
     }
 
+    public SkyLocation add(SkyLocation location) {
+        return new SkyLocation(this.x + location.x, this.y + location.y, this.z + location.z, world);
+    }
+
+    public SkyLocationAccurate add(SkyLocationAccurate location) {
+        return new SkyLocationAccurate(this.x + location.x, this.y + location.y, this.z + location.z, world);
+    }
+
     public boolean isNear(Location loc) {
         return world.equals(loc.getWorld().getName())
                 && x <= loc.getX() + 1 && x >= loc.getX() - 1

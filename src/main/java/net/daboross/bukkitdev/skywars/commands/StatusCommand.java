@@ -46,7 +46,7 @@ public class StatusCommand extends SubCommand {
         }
         GameIdHandler idh = plugin.getIdHandler();
         sender.sendMessage(String.format(ColorList.TOP_FORMAT, "SkyWars Status"));
-        sender.sendMessage(ColorList.REG + "In Queue: " + ColorList.DATA + ArrayHelpers.combinedWithSeperator(plugin.getGameQueue().getQueueCopy(), ColorList.REG + ", " + ColorList.DATA));
+        sender.sendMessage(ColorList.REG + "In Queue: " + ColorList.DATA + ArrayHelpers.combinedWithSeperator(plugin.getGameQueue().getCopy(), ColorList.REG + ", " + ColorList.DATA));
         sender.sendMessage(String.format(ColorList.TOP_FORMAT, "Current Arenas"));
         for (Integer id : idh.getCurrentIds()) {
             sender.sendMessage(ColorList.DATA + id + ColorList.REG + ": " + ColorList.DATA + ArrayHelpers.combinedWithSeperator(idh.getPlayers(id), ColorList.REG + ", " + ColorList.DATA));
