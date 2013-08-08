@@ -28,7 +28,6 @@ public class WorldUnzipper {
     public WorldUnzipResult doWorldUnzip() {
         File output = new File(Statics.BASE_WORLD_NAME);
         if (output.exists()) {
-            plugin.getLogger().log(Level.INFO, "Arena base world already exists. Not copying.");
             return WorldUnzipResult.ALREADY_THERE;
         }
         output.mkdir();
@@ -47,12 +46,12 @@ public class WorldUnzipper {
                         parent.mkdirs();
                     }
                     if (ze.isDirectory()) {
-                        plugin.getLogger().log(Level.INFO, "Making dir {0}", newFile);
+                        plugin.getLogger().log(Level.FINER, "Making dir {0}", newFile);
                         newFile.mkdir();
                     } else if (newFile.exists()) {
-                        plugin.getLogger().log(Level.INFO, "Already exists {0}", newFile);
+                        plugin.getLogger().log(Level.FINER, "Already exists {0}", newFile);
                     } else {
-                        plugin.getLogger().log(Level.INFO, "Copying {0}", newFile);
+                        plugin.getLogger().log(Level.FINER, "Copying {0}", newFile);
                         try (FileOutputStream fos = new FileOutputStream(newFile)) {
                             try {
                                 int next;
@@ -61,7 +60,7 @@ public class WorldUnzipper {
                                 }
                                 fos.flush();
                             } catch (IOException ex) {
-                                plugin.getLogger().log(Level.SEVERE, "Error copying file from zip", ex);
+                                plugin.getLogger().log(Level.WARNING, "Error copying file from zip", ex);
                                 return WorldUnzipResult.ERROR;
                             }
                             fos.close();
@@ -70,13 +69,13 @@ public class WorldUnzipper {
                     try {
                         ze = zis.getNextEntry();
                     } catch (IOException ex) {
-                        plugin.getLogger().log(Level.SEVERE, "Error getting next zip entry", ex);
+                        plugin.getLogger().log(Level.WARNING, "Error getting next zip entry", ex);
                         return WorldUnzipResult.ERROR;
                     }
                 }
             }
         } catch (Exception ex) {
-            plugin.getLogger().log(Level.WARNING, "Error", ex);
+            plugin.getLogger().log(Level.WARNING, "Error unzipping base world", ex);
             return WorldUnzipResult.ERROR;
         }
         return WorldUnzipResult.CREATED;

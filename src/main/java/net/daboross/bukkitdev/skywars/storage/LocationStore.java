@@ -21,12 +21,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import net.daboross.bukkitdev.skywars.events.SkyWarsSaveAndUnloadEvent;
+import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import net.daboross.bukkitdev.skywars.events.UnloadListener;
 import net.daboross.bukkitdev.skywars.world.Statics;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -34,7 +34,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * @author daboross
  */
-public class LocationStore implements Listener {
+public class LocationStore implements Listener, UnloadListener {
 
     private final JavaPlugin plugin;
     private final List<SkyLocation> portals = new ArrayList<SkyLocation>();
@@ -76,13 +76,14 @@ public class LocationStore implements Listener {
         }
     }
 
-    @EventHandler
-    public void onSaveAndUnload(SkyWarsSaveAndUnloadEvent evt) {
+    @Override
+    public void saveAndUnload(SkyWarsPlugin plugin) {
         save();
     }
 
     public void save() {
         if (storage != null) {
+            plugin.getLogger().log(Level.INFO, "Saving configuration");
             storage.set("portals", portals);
             storage.set("lobby", lobbyPosition);
             try {
@@ -90,6 +91,8 @@ public class LocationStore implements Listener {
             } catch (IOException ex) {
                 plugin.getLogger().log(Level.WARNING, "Failed to save to location store", ex);
             }
+        } else {
+            plugin.getLogger().log(Level.WARNING, "For some reason storage is trying to save when storage was never loaded");
         }
     }
 

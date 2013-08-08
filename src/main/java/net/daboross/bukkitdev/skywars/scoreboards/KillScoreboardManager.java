@@ -24,7 +24,7 @@ import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.events.GameEndEvent;
 import net.daboross.bukkitdev.skywars.events.GameStartEvent;
-import net.daboross.bukkitdev.skywars.events.SkyWarsSaveAndUnloadEvent;
+import net.daboross.bukkitdev.skywars.events.UnloadListener;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -41,7 +41,7 @@ import org.bukkit.scoreboard.ScoreboardManager;
  *
  * @author daboross
  */
-public class KillScoreboardManager implements Listener {
+public class KillScoreboardManager implements Listener, UnloadListener {
 
     private final ScoreboardManager manager;
     private final SkyWarsPlugin plugin;
@@ -110,8 +110,8 @@ public class KillScoreboardManager implements Listener {
         }
     }
 
-    @EventHandler
-    public void onSaveAndUnload(SkyWarsSaveAndUnloadEvent evt) {
+    @Override
+    public void saveAndUnload(SkyWarsPlugin plugin) {
         save();
     }
 

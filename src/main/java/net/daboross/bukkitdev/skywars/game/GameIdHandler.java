@@ -24,7 +24,7 @@ import java.util.Map;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.events.GameEndEvent;
 import net.daboross.bukkitdev.skywars.events.GameStartEvent;
-import net.daboross.bukkitdev.skywars.events.SkyWarsSaveAndUnloadEvent;
+import net.daboross.bukkitdev.skywars.events.UnloadListener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -33,7 +33,7 @@ import org.bukkit.event.Listener;
  *
  * @author daboross
  */
-public class GameIdHandler implements Listener {
+public class GameIdHandler implements Listener, UnloadListener {
 
     private final Map<Integer, String[]> currentGames = new HashMap<Integer, String[]>();
     private final List<Integer> currentIds = new ArrayList<Integer>();
@@ -59,9 +59,9 @@ public class GameIdHandler implements Listener {
         currentIds.remove(evt.getId());
     }
 
-    @EventHandler
-    public void onSaveAndUnload(SkyWarsSaveAndUnloadEvent evt) {
-        GameHandler handler = evt.getPlugin().getGameHandler();
+    @Override
+    public void saveAndUnload(SkyWarsPlugin plugin) {
+        GameHandler handler = plugin.getGameHandler();
         while (!currentIds.isEmpty()) {
             int id = currentIds.get(0);
             if (getPlayers(id) != null) {

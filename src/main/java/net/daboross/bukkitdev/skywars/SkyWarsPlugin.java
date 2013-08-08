@@ -17,8 +17,10 @@
 package net.daboross.bukkitdev.skywars;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
-import net.daboross.bukkitdev.skywars.events.SkyWarsSaveAndUnloadEvent;
+import net.daboross.bukkitdev.skywars.events.UnloadListener;
 import net.daboross.bukkitdev.skywars.game.CurrentGames;
 import net.daboross.bukkitdev.skywars.game.GameHandler;
 import net.daboross.bukkitdev.skywars.game.GameIdHandler;
@@ -30,7 +32,6 @@ import net.daboross.bukkitdev.skywars.listeners.PortalListener;
 import net.daboross.bukkitdev.skywars.listeners.QuitListener;
 import net.daboross.bukkitdev.skywars.listeners.ResetHealthListener;
 import net.daboross.bukkitdev.skywars.listeners.SpawnListener;
-import net.daboross.bukkitdev.skywars.scoreboards.KillScoreboardManager;
 import net.daboross.bukkitdev.skywars.storage.LocationStore;
 import net.daboross.bukkitdev.skywars.world.SkyWorldHandler;
 import net.daboross.bukkitdev.skywars.world.Statics;
@@ -61,6 +62,7 @@ public class SkyWarsPlugin extends JavaPlugin {
     private GameIdHandler idHandler;
     private SkyWorldHandler worldCreator;
     private boolean enabledCorrectly = false;
+    private final List<UnloadListener> unloadListeners = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -102,21 +104,30 @@ public class SkyWarsPlugin extends JavaPlugin {
         registerEvents(pm, new SpawnListener(), new DeathListener(this),
                 new QuitListener(this), new PortalListener(this),
                 new CommandListener(this), idHandler, currentGames, worldCreator,
-                new ResetHealthListener(), new GameBroadcastListener(this),
-                locationStore);
+                new ResetHealthListener(), new GameBroadcastListener(this), locationStore);
         enabledCorrectly = true;
     }
 
-    private void registerEvents(PluginManager pm, Listener... listeners) {
-        for (Listener l : listeners) {
-            pm.registerEvents(l, this);
+    private void registerEvents(PluginManager pm, Object... listeners) {
+        for (Object l : listeners) {
+            if (l instanceof Listener) {
+                pm.registerEvents((Listener) l, this);
+            } else if (l instanceof UnloadListener) {
+                unloadListeners.add((UnloadListener) l);
+            }
         }
     }
 
     @Override
     public void onDisable() {
         if (enabledCorrectly) {
-            getServer().getPluginManager().callEvent(new SkyWarsSaveAndUnloadEvent(this));
+            // I can't use an event because all listeners are already unregistered
+            for (UnloadListener l : unloadListeners) {
+                l.saveAndUnload(this);
+            }
+            getLogger().log(Level.INFO, "SkyWars disabled successfully");
+        } else {
+            getLogger().log(Level.INFO, "SkyWars not disabling due to not being enabled successfully.");
         }
     }
 
