@@ -21,17 +21,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import net.daboross.bukkitdev.skywars.events.SkyWarsSaveAndUnloadEvent;
 import net.daboross.bukkitdev.skywars.world.Statics;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  *
  * @author daboross
  */
-public class LocationStore {
+public class LocationStore implements Listener {
 
     private final JavaPlugin plugin;
     private final List<SkyLocation> portals = new ArrayList<SkyLocation>();
@@ -71,6 +74,11 @@ public class LocationStore {
                 }
             }
         }
+    }
+
+    @EventHandler
+    public void onSaveAndUnload(SkyWarsSaveAndUnloadEvent evt) {
+        save();
     }
 
     public void save() {

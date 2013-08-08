@@ -17,9 +17,8 @@
 package net.daboross.bukkitdev.skywars;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
+import net.daboross.bukkitdev.skywars.events.SkyWarsSaveAndUnloadEvent;
 import net.daboross.bukkitdev.skywars.game.CurrentGames;
 import net.daboross.bukkitdev.skywars.game.GameHandler;
 import net.daboross.bukkitdev.skywars.game.GameIdHandler;
@@ -69,14 +68,18 @@ public class SkyWarsPlugin extends JavaPlugin {
         WorldUnzipper.WorldUnzipResult unzipResult = new WorldUnzipper(this).doWorldUnzip();
         switch (unzipResult) {
             case ALREADY_THERE:
+                getLogger().log(Level.INFO, "World already created. Assuming valid.");
                 startPlugin();
                 break;
             case ERROR:
                 getLogger().log(Level.INFO, "Error creating world. Please delete " + Statics.BASE_WORLD_NAME + " and restart server.");
                 break;
             case CREATED:
-                getLogger().log(Level.INFO, "Created world, please restart server.");
+                getLogger().log(Level.INFO, "Created world, resuming plugin start.");
+                startPlugin();
                 break;
+            default:
+                getLogger().log(Level.INFO, "Invalid return for unzipResult.");
         }
     }
 
@@ -100,7 +103,7 @@ public class SkyWarsPlugin extends JavaPlugin {
                 new QuitListener(this), new PortalListener(this),
                 new CommandListener(this), idHandler, currentGames, worldCreator,
                 new ResetHealthListener(), new KillScoreboardManager(this),
-                new GameBroadcastListener(this));
+                new GameBroadcastListener(this), locationStore);
         enabledCorrectly = true;
     }
 
@@ -113,13 +116,7 @@ public class SkyWarsPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         if (enabledCorrectly) {
-            locationStore.save();
-            List<Integer> ids = new ArrayList<Integer>(idHandler.getCurrentIds());
-            for (int id : ids) {
-                if (idHandler.getPlayers(id) != null) {
-                    gameHandler.endGame(id, false);
-                }
-            }
+            getServer().getPluginManager().callEvent(new SkyWarsSaveAndUnloadEvent(this));
         }
     }
 

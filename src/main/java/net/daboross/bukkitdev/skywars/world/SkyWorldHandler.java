@@ -43,8 +43,6 @@ public class SkyWorldHandler implements Listener {
         arenaWorldCreator.type(WorldType.FLAT);
         arenaWorldCreator.seed(0);
         arenaWorldCreator.createWorld();
-        SkyLocation center = getCenterLocation(0);
-        WorldCopier.copyArena(center);
     }
 
     @EventHandler
