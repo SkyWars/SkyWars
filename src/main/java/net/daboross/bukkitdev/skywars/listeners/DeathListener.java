@@ -43,7 +43,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 public class DeathListener implements Listener {
 
     private final SkyWarsPlugin plugin;
-//    private Map<String, String> lastHit = new HashMap<String, String>();
+    private Map<String, String> lastHit = new HashMap<String, String>();
     private Set<String> causedVoid = new HashSet<String>();
 
     public DeathListener(SkyWarsPlugin plugin) {
@@ -53,7 +53,7 @@ public class DeathListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent evt) {
         String name = evt.getPlayer().getName().toLowerCase();
-//        lastHit.remove(name);
+        lastHit.remove(name);
         causedVoid.remove(name);
     }
 
@@ -62,23 +62,23 @@ public class DeathListener implements Listener {
         if (evt.getEntity() instanceof Player) {
             Player p = (Player) evt.getEntity();
             String name = p.getName().toLowerCase();
-//            Entity damager = evt.getDamager();
-//            if (damager instanceof HumanEntity) {
-//                lastHit.put(name, ((HumanEntity) damager).getName().toLowerCase());
-//            } else if (damager instanceof Projectile) {
-//                LivingEntity shooter = ((Projectile) damager).getShooter();
-//                if (shooter instanceof Player) {
-//                    lastHit.put(name, ((Player) shooter).getName());
-//                } else {
-//                    String customName = shooter.getCustomName();
-//                    lastHit.put(name, customName == null ? shooter.getType().getName() : customName);
-//                }
-//            } else if (damager instanceof LivingEntity) {
-//                String customName = ((LivingEntity) damager).getCustomName();
-//                lastHit.put(name, customName == null ? damager.getType().getName() : customName);
-//            } else {
-//                lastHit.put(name, evt.getDamager().getType().getName());
-//            }
+            Entity damager = evt.getDamager();
+            if (damager instanceof HumanEntity) {
+                lastHit.put(name, ((HumanEntity) damager).getName().toLowerCase());
+            } else if (damager instanceof Projectile) {
+                LivingEntity shooter = ((Projectile) damager).getShooter();
+                if (shooter instanceof Player) {
+                    lastHit.put(name, ((Player) shooter).getName());
+                } else {
+                    String customName = shooter.getCustomName();
+                    lastHit.put(name, customName == null ? shooter.getType().getName() : customName);
+                }
+            } else if (damager instanceof LivingEntity) {
+                String customName = ((LivingEntity) damager).getCustomName();
+                lastHit.put(name, customName == null ? damager.getType().getName() : customName);
+            } else {
+                lastHit.put(name, evt.getDamager().getType().getName());
+            }
             if (plugin.getCurrentGames().getGameID(name) != null) {
                 evt.setCancelled(false);
             }
@@ -102,7 +102,7 @@ public class DeathListener implements Listener {
         String name = evt.getEntity().getName().toLowerCase();
         Integer id = plugin.getCurrentGames().getGameID(name);
         if (id != null) {
-            evt.setDeathMessage(KillBroadcaster.getMessage(name, evt.getEntity().getKiller().getName(), causedVoid.contains(name)));
+            evt.setDeathMessage(KillBroadcaster.getMessage(evt.getEntity().getName(), lastHit.get(name), causedVoid.contains(name)));
             plugin.getGameHandler().removePlayerFromGame(name, false, false);
         }
     }
