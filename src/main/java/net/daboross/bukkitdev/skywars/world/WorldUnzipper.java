@@ -56,7 +56,7 @@ public class WorldUnzipper {
                         try (FileOutputStream fos = new FileOutputStream(newFile)) {
                             try {
                                 int next;
-                                while ((next = zis.read()) > 0) {
+                                while ((next = zis.read()) != -1) {
                                     fos.write(next);
                                 }
                                 fos.flush();
