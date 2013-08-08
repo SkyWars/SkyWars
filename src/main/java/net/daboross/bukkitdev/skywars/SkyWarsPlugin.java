@@ -26,6 +26,7 @@ import net.daboross.bukkitdev.skywars.game.GameIdHandler;
 import net.daboross.bukkitdev.skywars.game.GameQueue;
 import net.daboross.bukkitdev.skywars.listeners.CommandListener;
 import net.daboross.bukkitdev.skywars.listeners.DeathListener;
+import net.daboross.bukkitdev.skywars.listeners.GameBroadcastListener;
 import net.daboross.bukkitdev.skywars.listeners.PortalListener;
 import net.daboross.bukkitdev.skywars.listeners.QuitListener;
 import net.daboross.bukkitdev.skywars.listeners.ResetHealthListener;
@@ -33,6 +34,7 @@ import net.daboross.bukkitdev.skywars.listeners.SpawnListener;
 import net.daboross.bukkitdev.skywars.scoreboards.KillScoreboardManager;
 import net.daboross.bukkitdev.skywars.storage.LocationStore;
 import net.daboross.bukkitdev.skywars.world.SkyWorldHandler;
+import net.daboross.bukkitdev.skywars.world.Statics;
 import net.daboross.bukkitdev.skywars.world.VoidGenerator;
 import net.daboross.bukkitdev.skywars.world.WorldUnzipper;
 import org.bukkit.command.Command;
@@ -59,11 +61,26 @@ public class SkyWarsPlugin extends JavaPlugin {
     private GameHandler gameHandler;
     private GameIdHandler idHandler;
     private SkyWorldHandler worldCreator;
+    private boolean enabledCorrectly = false;
 
     @Override
     public void onEnable() {
         setupMetrics();
-        new WorldUnzipper(this).doWorldUnzip();
+        WorldUnzipper.WorldUnzipResult unzipResult = new WorldUnzipper(this).doWorldUnzip();
+        switch (unzipResult) {
+            case ALREADY_THERE:
+                startPlugin();
+                break;
+            case ERROR:
+                getLogger().log(Level.INFO, "Error creating world. Please delete " + Statics.BASE_WORLD_NAME + " and restart server.");
+                break;
+            case CREATED:
+                getLogger().log(Level.INFO, "Created world, please restart server.");
+                break;
+        }
+    }
+
+    private void startPlugin() {
         locationStore = new LocationStore(this);
         gameQueue = new GameQueue(this);
         currentGames = new CurrentGames();
@@ -82,7 +99,9 @@ public class SkyWarsPlugin extends JavaPlugin {
         registerEvents(pm, new SpawnListener(), new DeathListener(this),
                 new QuitListener(this), new PortalListener(this),
                 new CommandListener(this), idHandler, currentGames, worldCreator,
-                new ResetHealthListener(), new KillScoreboardManager(this));
+                new ResetHealthListener(), new KillScoreboardManager(this),
+                new GameBroadcastListener(this));
+        enabledCorrectly = true;
     }
 
     private void registerEvents(PluginManager pm, Listener... listeners) {
@@ -93,18 +112,20 @@ public class SkyWarsPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        locationStore.save();
-        List<Integer> ids = new ArrayList<Integer>(idHandler.getCurrentIds());
-        for (int id : ids) {
-            if (idHandler.getPlayers(id) != null) {
-                gameHandler.endGame(id, false);
+        if (enabledCorrectly) {
+            locationStore.save();
+            List<Integer> ids = new ArrayList<Integer>(idHandler.getCurrentIds());
+            for (int id : ids) {
+                if (idHandler.getPlayers(id) != null) {
+                    gameHandler.endGame(id, false);
+                }
             }
         }
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        sender.sendMessage("SkyWars doesn't know about the command /" + cmd.getName());
+        sender.sendMessage("SkyWars not started correctly. Check console for errors.");
         return true;
     }
 

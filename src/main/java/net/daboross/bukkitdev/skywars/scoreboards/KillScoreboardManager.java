@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.events.GameEndEvent;
 import net.daboross.bukkitdev.skywars.events.GameStartEvent;
+import net.daboross.bukkitdev.skywars.events.SkyWarsSaveAndUnloadEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -66,6 +67,14 @@ public class KillScoreboardManager implements Listener {
         save = YamlConfiguration.loadConfiguration(saveFile);
     }
 
+    public void save() {
+        try {
+            save.save(saveFile);
+        } catch (IOException ex) {
+            plugin.getLogger().log(Level.SEVERE, "Error saving kills.yml", ex);
+        }
+    }
+
     private Scoreboard createAndAddScoreboard(String[] playersToTrack) {
         Scoreboard scoreboard = this.manager.getNewScoreboard();
         Objective objective = scoreboard.registerNewObjective("Kills this game", "dummy");
@@ -99,6 +108,11 @@ public class KillScoreboardManager implements Listener {
         if (killer != null) {
             upKills(killer.getName().toLowerCase());
         }
+    }
+
+    @EventHandler
+    public void onSaveAndUnload(SkyWarsSaveAndUnloadEvent evt) {
+        save();
     }
 
     private void upKills(String lowerCaseName) {

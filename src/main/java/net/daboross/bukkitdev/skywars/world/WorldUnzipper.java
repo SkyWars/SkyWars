@@ -4,7 +4,6 @@
 package net.daboross.bukkitdev.skywars.world;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,114 +25,65 @@ public class WorldUnzipper {
         this.plugin = plugin;
     }
 
-    public boolean doWorldUnzip() {
+    public WorldUnzipResult doWorldUnzip() {
         File output = new File(Statics.BASE_WORLD_NAME);
         if (output.exists()) {
             plugin.getLogger().log(Level.INFO, "Arena base world already exists. Not copying.");
-            return true;
+            return WorldUnzipResult.ALREADY_THERE;
         }
         output.mkdir();
-        File folder = output.getParentFile();
-        byte[] buffer = new byte[1024];
         InputStream fis = this.getClass().getResourceAsStream(ZIP_FILE_PATH);
         if (fis == null) {
-            return false;
+            return WorldUnzipResult.ERROR;
         }
-        ZipInputStream zis = new ZipInputStream(fis);
-        ZipEntry ze;
         try {
-            ze = zis.getNextEntry();
-        } catch (IOException ex) {
-            plugin.getLogger().log(Level.SEVERE, null, ex);
-            return false;
-        }
-        while (ze != null) {
-            String fileName = ze.getName();
-            File newFile = new File(folder, fileName);
-            new File(newFile.getParent()).mkdirs();
-            FileOutputStream fos;
-            try {
-                fos = new FileOutputStream(newFile);
-            } catch (FileNotFoundException ex) {
-                plugin.getLogger().log(Level.SEVERE, null, ex);
-                return false;
-            }
-            int len;
-            try {
-                while ((len = zis.read(buffer)) > 0) {
-                    fos.write(buffer, 0, len);
-                }
-            } catch (IOException ex) {
-                plugin.getLogger().log(Level.SEVERE, null, ex);
-                return false;
-            } finally {
-                try {
-                    fos.close();
-                } catch (IOException ex) {
-                    plugin.getLogger().log(Level.SEVERE, null, ex);
-                    return false;
-                } finally {
-                    try {
-                        zis.closeEntry();
-                    } catch (IOException ex) {
-                        plugin.getLogger().log(Level.SEVERE, null, ex);
-                    } finally {
-                        try {
-                            zis.close();
-                        } catch (IOException ex) {
-                            plugin.getLogger().log(Level.SEVERE, null, ex);
+            try (ZipInputStream zis = new ZipInputStream(fis)) {
+                ZipEntry ze = zis.getNextEntry();
+                while (ze != null) {
+                    String fileName = ze.getName();
+                    File newFile = new File(output, fileName);
+                    File parent = newFile.getParentFile();
+                    if (parent != null) {
+                        parent.mkdirs();
+                    }
+                    if (ze.isDirectory()) {
+                        plugin.getLogger().log(Level.INFO, "Making dir {0}", newFile);
+                        newFile.mkdir();
+                    } else if (newFile.exists()) {
+                        plugin.getLogger().log(Level.INFO, "Already exists {0}", newFile);
+                    } else {
+                        plugin.getLogger().log(Level.INFO, "Copying {0}", newFile);
+                        try (FileOutputStream fos = new FileOutputStream(newFile)) {
+                            try {
+                                int next;
+                                while ((next = zis.read()) > 0) {
+                                    fos.write(next);
+                                }
+                                fos.flush();
+                            } catch (IOException ex) {
+                                plugin.getLogger().log(Level.SEVERE, "Error copying file from zip", ex);
+                                return WorldUnzipResult.ERROR;
+                            }
+                            fos.close();
                         }
                     }
-                }
-            }
-            try {
-                fos.close();
-            } catch (IOException ex) {
-                plugin.getLogger().log(Level.SEVERE, null, ex);
-                return false;
-            } finally {
-                try {
-                    zis.closeEntry();
-                } catch (IOException ex) {
-                    plugin.getLogger().log(Level.SEVERE, null, ex);
-                } finally {
                     try {
-                        zis.close();
+                        ze = zis.getNextEntry();
                     } catch (IOException ex) {
-                        plugin.getLogger().log(Level.SEVERE, null, ex);
+                        plugin.getLogger().log(Level.SEVERE, "Error getting next zip entry", ex);
+                        return WorldUnzipResult.ERROR;
                     }
                 }
             }
-            try {
-                ze = zis.getNextEntry();
-            } catch (IOException ex) {
-                plugin.getLogger().log(Level.SEVERE, null, ex);
-                return false;
-            } finally {
-                try {
-                    zis.closeEntry();
-                } catch (IOException ex) {
-                    plugin.getLogger().log(Level.SEVERE, null, ex);
-                } finally {
-                    try {
-                        zis.close();
-                    } catch (IOException ex) {
-                        plugin.getLogger().log(Level.SEVERE, null, ex);
-                    }
-                }
-            }
+        } catch (Exception ex) {
+            plugin.getLogger().log(Level.WARNING, "Error", ex);
+            return WorldUnzipResult.ERROR;
         }
-        try {
-            zis.closeEntry();
-        } catch (IOException ex) {
-            plugin.getLogger().log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                zis.close();
-            } catch (IOException ex) {
-                plugin.getLogger().log(Level.SEVERE, null, ex);
-            }
-        }
-        return true;
+        return WorldUnzipResult.CREATED;
+    }
+
+    public static enum WorldUnzipResult {
+
+        ERROR, CREATED, ALREADY_THERE
     }
 }
