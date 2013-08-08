@@ -102,8 +102,8 @@ public class SkyWarsPlugin extends JavaPlugin {
         registerEvents(pm, new SpawnListener(), new DeathListener(this),
                 new QuitListener(this), new PortalListener(this),
                 new CommandListener(this), idHandler, currentGames, worldCreator,
-                new ResetHealthListener(), new KillScoreboardManager(this),
-                new GameBroadcastListener(this), locationStore);
+                new ResetHealthListener(), new GameBroadcastListener(this),
+                locationStore);
         enabledCorrectly = true;
     }
 

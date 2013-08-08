@@ -16,12 +16,14 @@
  */
 package net.daboross.bukkitdev.skywars.world;
 
+import net.daboross.bukkitdev.skywars.events.GameEndEvent;
 import net.daboross.bukkitdev.skywars.events.GameStartEvent;
 import net.daboross.bukkitdev.skywars.storage.SkyLocation;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 /**
@@ -53,6 +55,12 @@ public class SkyWorldHandler implements Listener {
         for (int i = 0; i < 4; i++) {
             players[i].teleport(Statics.RELATIVE_SPAWNS[i].add(center).toLocation());
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onGameEnd(GameEndEvent evt) {
+        SkyLocation center = getCenterLocation(evt.getId());
+        WorldCopier.destroyArena(center);
     }
 
     private SkyLocation getCenterLocation(int id) {

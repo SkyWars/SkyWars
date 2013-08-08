@@ -28,6 +28,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -56,7 +57,7 @@ public class DeathListener implements Listener {
         causedVoid.remove(name);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onDamage(EntityDamageByEntityEvent evt) {
         if (evt.getEntity() instanceof Player) {
             Player p = (Player) evt.getEntity();
@@ -78,7 +79,9 @@ public class DeathListener implements Listener {
             } else {
                 lastHit.put(name, evt.getDamager().getType().getName());
             }
-            System.out.println("Damage! Last hit: " + lastHit.get(name));
+            if (plugin.getCurrentGames().getGameID(name) != null) {
+                evt.setCancelled(false);
+            }
         }
     }
 
