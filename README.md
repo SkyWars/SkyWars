@@ -5,4 +5,4 @@ SkyWars bukkit plugin
 
 Plugin for automating the Skyblock Warriors map!
 
-Download will be posted shortly.
+A lot more explanation is at http://dev.bukkit.org/bukkit-plugins/skywars/. Read that.
