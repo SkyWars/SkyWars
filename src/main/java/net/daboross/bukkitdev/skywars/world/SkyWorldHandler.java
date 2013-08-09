@@ -16,8 +16,8 @@
  */
 package net.daboross.bukkitdev.skywars.world;
 
-import net.daboross.bukkitdev.skywars.events.GameEndEvent;
-import net.daboross.bukkitdev.skywars.events.GameStartEvent;
+import net.daboross.bukkitdev.skywars.internalevents.PrepairGameEndEvent;
+import net.daboross.bukkitdev.skywars.internalevents.PrepairGameStartEvent;
 import net.daboross.bukkitdev.skywars.storage.SkyLocation;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
@@ -48,7 +48,7 @@ public class SkyWorldHandler implements Listener {
     }
 
     @EventHandler
-    public void onGameStart(GameStartEvent evt) {
+    public void onGameStart(PrepairGameStartEvent evt) {
         SkyLocation center = getCenterLocation(evt.getId());
         WorldCopier.copyArena(center);
         Player[] players = evt.getPlayers();
@@ -58,7 +58,7 @@ public class SkyWorldHandler implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGH)
-    public void onGameEnd(GameEndEvent evt) {
+    public void onGameEnd(PrepairGameEndEvent evt) {
         SkyLocation center = getCenterLocation(evt.getId());
         WorldCopier.destroyArena(center);
     }

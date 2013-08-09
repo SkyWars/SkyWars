@@ -22,9 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
-import net.daboross.bukkitdev.skywars.events.GameEndEvent;
-import net.daboross.bukkitdev.skywars.events.GameStartEvent;
-import net.daboross.bukkitdev.skywars.events.UnloadListener;
+import net.daboross.bukkitdev.skywars.internalevents.PrepairGameEndEvent;
+import net.daboross.bukkitdev.skywars.internalevents.PrepairGameStartEvent;
+import net.daboross.bukkitdev.skywars.internalevents.UnloadListener;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -88,7 +88,7 @@ public class KillScoreboardManager implements Listener, UnloadListener {
     }
 
     @EventHandler
-    public void onStart(GameStartEvent evt) {
+    public void onStart(PrepairGameStartEvent evt) {
         Scoreboard gameBoard = createAndAddScoreboard(evt.getNames());
         for (Player p : evt.getPlayers()) {
             p.setScoreboard(gameBoard);
@@ -97,7 +97,7 @@ public class KillScoreboardManager implements Listener, UnloadListener {
     }
 
     @EventHandler
-    public void onEnd(GameEndEvent evt) {
+    public void onEnd(PrepairGameEndEvent evt) {
         Scoreboard gameBoard = gameScoreboards.remove(evt.getId());
         gameBoard.getObjective("Kills this game").unregister();
     }

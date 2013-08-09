@@ -18,8 +18,8 @@ package net.daboross.bukkitdev.skywars.game;
 
 import java.util.HashMap;
 import java.util.Map;
-import net.daboross.bukkitdev.skywars.events.GameStartEvent;
-import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameEvent;
+import net.daboross.bukkitdev.skywars.internalevents.PrepairGameStartEvent;
+import net.daboross.bukkitdev.skywars.internalevents.PrepairPlayerLeaveGameEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -40,12 +40,12 @@ public class CurrentGames implements Listener {
     }
 
     @EventHandler
-    public void onPlayerLeaveGame(PlayerLeaveGameEvent evt) {
+    public void onPlayerLeaveGame(PrepairPlayerLeaveGameEvent evt) {
         currentlyInGame.remove(evt.getPlayer().getName().toLowerCase());
     }
 
     @EventHandler
-    public void onGameStart(GameStartEvent evt) {
+    public void onGameStart(PrepairGameStartEvent evt) {
         int id = evt.getId();
         for (String name : evt.getNames()) {
             setGameID(name, id);

@@ -3,7 +3,7 @@
     <groupId>net.daboross.bukkitdev</groupId>
     <artifactId>SkyWars</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.4</version>
+    <version>1.0.5-SNAPSHOT</version>
     <name>SkyWars</name>
     <repositories>
         <repository>
@@ -76,6 +76,7 @@
         </plugins>
     </build>
     <properties>
+        <netbeans.hint.license>gpl3</netbeans.hint.license>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>

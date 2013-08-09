@@ -22,9 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
-import net.daboross.bukkitdev.skywars.events.GameEndEvent;
-import net.daboross.bukkitdev.skywars.events.GameStartEvent;
-import net.daboross.bukkitdev.skywars.events.UnloadListener;
+import net.daboross.bukkitdev.skywars.internalevents.PrepairGameEndEvent;
+import net.daboross.bukkitdev.skywars.internalevents.PrepairGameStartEvent;
+import net.daboross.bukkitdev.skywars.internalevents.UnloadListener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -43,7 +43,7 @@ public class GameIdHandler implements Listener, UnloadListener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onGameStart(GameStartEvent evt) {
+    public void onGameStart(PrepairGameStartEvent evt) {
         int id = 0;
         while (currentGames.containsKey(id)) {
             id++;
@@ -54,7 +54,7 @@ public class GameIdHandler implements Listener, UnloadListener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onGameEnd(GameEndEvent evt) {
+    public void onGameEnd(PrepairGameEndEvent evt) {
         currentGames.remove(evt.getId());
         currentIds.remove(evt.getId());
     }

@@ -14,57 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.daboross.bukkitdev.skywars.events;
+package net.daboross.bukkitdev.skywars.internalevents;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.player.PlayerEvent;
 
 /**
  *
  * @author daboross
  */
-public class GameEndEvent extends Event {
+public class PrepairPlayerLeaveGameEvent extends PlayerEvent {
 
     private static final HandlerList handlerList = new HandlerList();
-    private final String[] playerNames;
-    private final Player[] players = new Player[4];
     private final int id;
-    private final boolean broadcast;
 
-    public GameEndEvent(String[] names, int id, boolean broadcast) {
-        if (names == null || names.length != 4) {
-            throw new IllegalArgumentException();
-        }
-        this.playerNames = names;
+    public PrepairPlayerLeaveGameEvent(int id, Player who) {
+        super(who);
         this.id = id;
-        this.broadcast = broadcast;
-        for (int i = 0; i < 4; i++) {
-            if (names[i] != null) {
-                Player p = Bukkit.getPlayer(names[i]);
-                if (p == null) {
-                    throw new IllegalArgumentException();
-                }
-                players[i] = p;
-            }
-        }
     }
 
     public int getId() {
         return id;
-    }
-
-    public String[] getPlayerNames() {
-        return playerNames;
-    }
-
-    public Player[] getPlayers() {
-        return players;
-    }
-
-    public boolean shouldBroadcast() {
-        return broadcast;
     }
 
     @Override

@@ -18,9 +18,9 @@ package net.daboross.bukkitdev.skywars.game;
 
 import net.daboross.bukkitdev.skywars.Messages;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
-import net.daboross.bukkitdev.skywars.events.GameEndEvent;
-import net.daboross.bukkitdev.skywars.events.GameStartEvent;
-import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameEvent;
+import net.daboross.bukkitdev.skywars.internalevents.PrepairGameEndEvent;
+import net.daboross.bukkitdev.skywars.internalevents.PrepairGameStartEvent;
+import net.daboross.bukkitdev.skywars.internalevents.PrepairPlayerLeaveGameEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -46,20 +46,20 @@ public class GameHandler {
         if (queued.length != 4) {
             throw new IllegalStateException("Queue size is not 4");
         }
-        GameStartEvent evt = new GameStartEvent(queued);
+        PrepairGameStartEvent evt = new PrepairGameStartEvent(queued);
         plugin.getServer().getPluginManager().callEvent(evt);
     }
 
     public void endGame(int id, boolean broadcast) {
         GameIdHandler idh = plugin.getIdHandler();
         String[] names = idh.getPlayers(id);
-        GameEndEvent evt = new GameEndEvent(names, id, broadcast);
+        PrepairGameEndEvent evt = new PrepairGameEndEvent(names, id, broadcast);
         plugin.getServer().getPluginManager().callEvent(evt);
         Player[] players = evt.getPlayers();
         Location lobby = plugin.getLocationStore().getLobbyPosition().toLocation();
         for (Player player : players) {
             if (player != null) {
-                plugin.getServer().getPluginManager().callEvent(new PlayerLeaveGameEvent(id, player));
+                plugin.getServer().getPluginManager().callEvent(new PrepairPlayerLeaveGameEvent(id, player));
                 player.teleport(lobby);
             }
         }
@@ -85,7 +85,7 @@ public class GameHandler {
             }
         }
         Player player = Bukkit.getPlayerExact(playerName);
-        plugin.getServer().getPluginManager().callEvent(new PlayerLeaveGameEvent(id, player));
+        plugin.getServer().getPluginManager().callEvent(new PrepairPlayerLeaveGameEvent(id, player));
         if (teleport || broadcast) {
             if (teleport) {
                 Location lobby = plugin.getLocationStore().getLobbyPosition().toLocation();

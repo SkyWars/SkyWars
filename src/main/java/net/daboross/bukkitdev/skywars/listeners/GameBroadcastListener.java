@@ -19,9 +19,9 @@ package net.daboross.bukkitdev.skywars.listeners;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.skywars.Messages;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
-import net.daboross.bukkitdev.skywars.events.GameEndEvent;
-import net.daboross.bukkitdev.skywars.events.GameStartEvent;
-import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameEvent;
+import net.daboross.bukkitdev.skywars.internalevents.PrepairGameEndEvent;
+import net.daboross.bukkitdev.skywars.internalevents.PrepairGameStartEvent;
+import net.daboross.bukkitdev.skywars.internalevents.PrepairPlayerLeaveGameEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,7 +41,7 @@ public class GameBroadcastListener implements Listener {
     }
 
     @EventHandler
-    public void onGameStart(GameStartEvent evt) {
+    public void onGameStart(PrepairGameStartEvent evt) {
         Player[] players = evt.getPlayers();
         StringBuilder playerNames = new StringBuilder();
         for (int i = 0; i < 4; i++) {
@@ -57,12 +57,12 @@ public class GameBroadcastListener implements Listener {
     }
 
     @EventHandler
-    public void onGameEnd(GameEndEvent evt) {
+    public void onGameEnd(PrepairGameEndEvent evt) {
         if (evt.shouldBroadcast()) {
             String winner = null;
             for (Player player : evt.getPlayers()) {
                 if (player != null) {
-                    Bukkit.getPluginManager().callEvent(new PlayerLeaveGameEvent(evt.getId(), player));
+                    Bukkit.getPluginManager().callEvent(new PrepairPlayerLeaveGameEvent(evt.getId(), player));
                     if (winner == null) {
                         winner = player.getName();
                     } else {

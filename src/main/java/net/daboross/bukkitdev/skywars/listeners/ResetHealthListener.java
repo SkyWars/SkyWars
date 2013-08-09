@@ -16,8 +16,8 @@
  */
 package net.daboross.bukkitdev.skywars.listeners;
 
-import net.daboross.bukkitdev.skywars.events.GameStartEvent;
-import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameEvent;
+import net.daboross.bukkitdev.skywars.internalevents.PrepairGameStartEvent;
+import net.daboross.bukkitdev.skywars.internalevents.PrepairPlayerLeaveGameEvent;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -31,7 +31,7 @@ import org.bukkit.inventory.ItemStack;
 public class ResetHealthListener implements Listener {
 
     @EventHandler
-    public void onGameStart(GameStartEvent evt) {
+    public void onGameStart(PrepairGameStartEvent evt) {
         for (Player p : evt.getPlayers()) {
             p.setGameMode(GameMode.SURVIVAL);
             p.setHealth(p.getMaxHealth());
@@ -42,7 +42,7 @@ public class ResetHealthListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerLeave(PlayerLeaveGameEvent evt) {
+    public void onPlayerLeave(PrepairPlayerLeaveGameEvent evt) {
         Player p = evt.getPlayer();
         p.setGameMode(GameMode.SURVIVAL);
         p.setHealth(p.getMaxHealth());

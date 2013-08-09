@@ -14,10 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.daboross.bukkitdev.skywars.events;
+package net.daboross.bukkitdev.skywars.internalevents;
 
-import java.util.Arrays;
-import java.util.Collections;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -27,41 +25,46 @@ import org.bukkit.event.HandlerList;
  *
  * @author daboross
  */
-public class GameStartEvent extends Event {
+public class PrepairGameEndEvent extends Event {
 
     private static final HandlerList handlerList = new HandlerList();
-    private final String[] names;
+    private final String[] playerNames;
     private final Player[] players = new Player[4];
-    private int id;
+    private final int id;
+    private final boolean broadcast;
 
-    public GameStartEvent(String[] names) {
+    public PrepairGameEndEvent(String[] names, int id, boolean broadcast) {
         if (names == null || names.length != 4) {
             throw new IllegalArgumentException();
         }
-        this.names = names;
-        for (int i = 0; i < 4; i++) {
-            Player p = Bukkit.getPlayer(names[i]);
-            if (p == null) {
-                throw new IllegalArgumentException();
-            }
-            players[i] = p;
-        }
-    }
-
-    public void setId(int id) {
+        this.playerNames = names;
         this.id = id;
+        this.broadcast = broadcast;
+        for (int i = 0; i < 4; i++) {
+            if (names[i] != null) {
+                Player p = Bukkit.getPlayer(names[i]);
+                if (p == null) {
+                    throw new IllegalArgumentException();
+                }
+                players[i] = p;
+            }
+        }
     }
 
     public int getId() {
         return id;
     }
 
+    public String[] getPlayerNames() {
+        return playerNames;
+    }
+
     public Player[] getPlayers() {
         return players;
     }
 
-    public String[] getNames() {
-        return names;
+    public boolean shouldBroadcast() {
+        return broadcast;
     }
 
     @Override

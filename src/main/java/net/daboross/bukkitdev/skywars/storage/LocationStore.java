@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
-import net.daboross.bukkitdev.skywars.events.UnloadListener;
+import net.daboross.bukkitdev.skywars.internalevents.UnloadListener;
 import net.daboross.bukkitdev.skywars.world.Statics;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;

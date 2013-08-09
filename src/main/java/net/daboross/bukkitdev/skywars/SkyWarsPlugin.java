@@ -20,13 +20,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import net.daboross.bukkitdev.skywars.events.UnloadListener;
+import net.daboross.bukkitdev.skywars.internalevents.UnloadListener;
 import net.daboross.bukkitdev.skywars.game.CurrentGames;
 import net.daboross.bukkitdev.skywars.game.GameHandler;
 import net.daboross.bukkitdev.skywars.game.GameIdHandler;
 import net.daboross.bukkitdev.skywars.game.GameQueue;
 import net.daboross.bukkitdev.skywars.listeners.CommandListener;
 import net.daboross.bukkitdev.skywars.listeners.DeathListener;
+import net.daboross.bukkitdev.skywars.listeners.EventForwardListener;
 import net.daboross.bukkitdev.skywars.listeners.GameBroadcastListener;
 import net.daboross.bukkitdev.skywars.listeners.PortalListener;
 import net.daboross.bukkitdev.skywars.listeners.QuitListener;
@@ -42,8 +43,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.event.Listener;
 import org.bukkit.generator.ChunkGenerator;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -98,13 +97,14 @@ public class SkyWarsPlugin extends JavaPlugin {
                 worldCreator.create();
             }
         }.runTask(this);
-        setupPermissions();
+        new PermissionHandler("skywars").setupPermissions();
         setupCommands();
         PluginManager pm = getServer().getPluginManager();
         registerEvents(pm, new SpawnListener(), new DeathListener(this),
                 new QuitListener(this), new PortalListener(this),
                 new CommandListener(this), idHandler, currentGames, worldCreator,
-                new ResetHealthListener(), new GameBroadcastListener(this), locationStore);
+                new ResetHealthListener(), new GameBroadcastListener(this), 
+                locationStore, new EventForwardListener(this));
         enabledCorrectly = true;
     }
 
@@ -146,60 +146,6 @@ public class SkyWarsPlugin extends JavaPlugin {
             return;
         }
         metrics.start();
-    }
-
-    private void setupPermissions() {
-        PluginManager pm = getServer().getPluginManager();
-        Permission star = getPermission("skywars.*", pm);
-        Permission join = getPermission("skywars.join", pm);
-        Permission leave = getPermission("skywars.leave", pm);
-        Permission setLobby = getPermission("skywars.setlobby", pm);
-        Permission setPortal = getPermission("skywars.setportal", pm);
-        Permission cancel = getPermission("skywars.cancel", pm);
-        Permission status = getPermission("skywars.status", pm);
-        Permission version = getPermission("skywars.version", pm);
-        Permission lobby = getPermission("skywars.lobby", pm);
-        star.setDefault(PermissionDefault.FALSE);
-        join.setDefault(PermissionDefault.TRUE);
-        leave.setDefault(PermissionDefault.TRUE);
-        setLobby.setDefault(PermissionDefault.OP);
-        setPortal.setDefault(PermissionDefault.OP);
-        cancel.setDefault(PermissionDefault.OP);
-        status.setDefault(PermissionDefault.TRUE);
-        version.setDefault(PermissionDefault.TRUE);
-        lobby.setDefault(PermissionDefault.TRUE);
-        join.addParent(star, true);
-        leave.addParent(star, true);
-        setLobby.addParent(star, true);
-        setPortal.addParent(star, true);
-        cancel.addParent(star, true);
-        status.addParent(star, true);
-        version.addParent(star, true);
-        lobby.addParent(star, true);
-        updateAndAddAll(pm, star, join, leave, setLobby, setPortal, cancel, status, version, lobby);
-
-    }
-
-    private Permission getPermission(String name, PluginManager pm) {
-        Permission permission = pm.getPermission(name);
-        if (permission == null) {
-            permission = new Permission(name);
-        }
-        return permission;
-    }
-
-    private void updateAndAddAll(PluginManager pm, Permission... permissions) {
-        for (Permission permission : permissions) {
-            updateAndAdd(pm, permission);
-        }
-    }
-
-    private void updateAndAdd(PluginManager pm, Permission permission) {
-        Permission oldPerm = pm.getPermission(permission.getName());
-        if (oldPerm == null) {
-            pm.addPermission(permission);
-        }
-        permission.recalculatePermissibles();
     }
 
     private void setupCommands() {

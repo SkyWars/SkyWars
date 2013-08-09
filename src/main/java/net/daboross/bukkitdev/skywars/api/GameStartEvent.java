@@ -14,24 +14,39 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.daboross.bukkitdev.skywars.events;
+package net.daboross.bukkitdev.skywars.api;
 
+import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.PlayerEvent;
 
 /**
  *
  * @author daboross
  */
-public class PlayerLeaveGameEvent extends PlayerEvent {
+public class GameStartEvent extends Event {
 
     private static final HandlerList handlerList = new HandlerList();
+    private final SkyWarsPlugin plugin;
+    private final Player[] players;
     private final int id;
 
-    public PlayerLeaveGameEvent(int id, Player who) {
-        super(who);
+    public GameStartEvent(SkyWarsPlugin plugin, Player[] players, int id) {
+        if (players == null || players.length != 4) {
+            throw new IllegalArgumentException();
+        }
+        this.plugin = plugin;
+        this.players = players;
         this.id = id;
+    }
+
+    public SkyWarsPlugin getPlugin() {
+        return plugin;
+    }
+
+    public Player[] getPlayers() {
+        return players;
     }
 
     public int getId() {
