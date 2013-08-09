@@ -11,7 +11,7 @@
             <url>http://repo.bukkit.org/content/groups/public</url>
         </repository>
         <repository>
-            <id>Plugin Metrics</id>
+            <id>mcstats-repo</id>
             <url>http://repo.mcstats.org/content/repositories/public</url>
         </repository>
     </repositories>
