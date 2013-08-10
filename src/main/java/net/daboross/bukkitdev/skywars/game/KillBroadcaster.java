@@ -18,7 +18,6 @@ package net.daboross.bukkitdev.skywars.game;
 
 import net.daboross.bukkitdev.skywars.Messages;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.LivingEntity;
 
 /**
  *
