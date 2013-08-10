@@ -60,6 +60,7 @@ public class SkyWarsPlugin extends JavaPlugin {
     private GameHandler gameHandler;
     private GameIdHandler idHandler;
     private SkyWorldHandler worldCreator;
+    private DeathListener deathListener;
     private boolean enabledCorrectly = false;
     private final List<UnloadListener> unloadListeners = new ArrayList<>();
 
@@ -91,6 +92,7 @@ public class SkyWarsPlugin extends JavaPlugin {
         gameHandler = new GameHandler(this);
         idHandler = new GameIdHandler();
         worldCreator = new SkyWorldHandler();
+        deathListener = new DeathListener(this);
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -100,10 +102,10 @@ public class SkyWarsPlugin extends JavaPlugin {
         new PermissionHandler("skywars").setupPermissions();
         setupCommands();
         PluginManager pm = getServer().getPluginManager();
-        registerEvents(pm, new SpawnListener(), new DeathListener(this),
+        registerEvents(pm, new SpawnListener(), deathListener,
                 new QuitListener(this), new PortalListener(this),
                 new CommandListener(this), idHandler, currentGames, worldCreator,
-                new ResetHealthListener(), new GameBroadcastListener(this), 
+                new ResetHealthListener(), new GameBroadcastListener(this),
                 locationStore, new EventForwardListener(this));
         enabledCorrectly = true;
     }
@@ -112,7 +114,8 @@ public class SkyWarsPlugin extends JavaPlugin {
         for (Object l : listeners) {
             if (l instanceof Listener) {
                 pm.registerEvents((Listener) l, this);
-            } else if (l instanceof UnloadListener) {
+            }
+            if (l instanceof UnloadListener) {
                 unloadListeners.add((UnloadListener) l);
             }
         }
@@ -177,6 +180,10 @@ public class SkyWarsPlugin extends JavaPlugin {
 
     public SkyWorldHandler getWorldHandler() {
         return worldCreator;
+    }
+
+    public DeathListener getDeathListener() {
+        return deathListener;
     }
 
     @Override

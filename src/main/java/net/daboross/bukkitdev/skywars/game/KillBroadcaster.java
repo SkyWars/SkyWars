@@ -17,6 +17,8 @@
 package net.daboross.bukkitdev.skywars.game;
 
 import net.daboross.bukkitdev.skywars.Messages;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.LivingEntity;
 
 /**
  *
@@ -24,19 +26,31 @@ import net.daboross.bukkitdev.skywars.Messages;
  */
 public class KillBroadcaster {
 
-    public static String getMessage(String player, String damager, boolean causedVoid) {
+    public static String getMessage(String player, String damager, KillReason reason) {
         if (damager == null) {
-            if (causedVoid) {
-                return String.format(Messages.SUICIDE_VOID, player);
-            } else {
-                return String.format(Messages.SUICIDE, player);
+            switch (reason) {
+                case VOID:
+                    return String.format(Messages.SUICIDE_VOID, player);
+                case LEFT:
+                    Bukkit.broadcastMessage(String.format(Messages.FORFEITED, player));
+                case OTHER:
+                    return String.format(Messages.SUICIDE, player);
             }
         } else {
-            if (causedVoid) {
-                return String.format(Messages.KILLED_VOID, damager, player);
-            } else {
-                return String.format(Messages.KILLED, damager, player);
+            switch (reason) {
+                case VOID:
+                    return String.format(Messages.KILLED_VOID, damager, player);
+                case LEFT:
+                    return String.format(Messages.FORFEITED_BY, damager, player);
+                case OTHER:
+                    return String.format(Messages.KILLED, damager, player);
             }
         }
+        throw new IllegalArgumentException();
+    }
+
+    public enum KillReason {
+
+        VOID, LEFT, OTHER
     }
 }

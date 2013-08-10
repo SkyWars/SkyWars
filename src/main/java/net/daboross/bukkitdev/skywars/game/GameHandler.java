@@ -16,18 +16,13 @@
  */
 package net.daboross.bukkitdev.skywars.game;
 
-import net.daboross.bukkitdev.skywars.Messages;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.internalevents.PrepairGameEndEvent;
 import net.daboross.bukkitdev.skywars.internalevents.PrepairGameStartEvent;
 import net.daboross.bukkitdev.skywars.internalevents.PrepairPlayerLeaveGameEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 
 /**
  *
@@ -86,24 +81,12 @@ public class GameHandler {
         }
         Player player = Bukkit.getPlayerExact(playerName);
         plugin.getServer().getPluginManager().callEvent(new PrepairPlayerLeaveGameEvent(id, player));
-        if (teleport || broadcast) {
-            if (teleport) {
-                Location lobby = plugin.getLocationStore().getLobbyPosition().toLocation();
-                player.teleport(lobby);
-            }
-            if (broadcast) {
-                EntityDamageEvent ede = player.getLastDamageCause();
-                Entity damager = null;
-                if (ede instanceof EntityDamageByEntityEvent) {
-                    damager = ((EntityDamageByEntityEvent) ede).getDamager();
-                }
-                if (damager == null) {
-                    Bukkit.broadcastMessage(String.format(Messages.FORFEITED, player.getName()));
-                } else {
-                    String damagerName = (damager instanceof LivingEntity) ? ((LivingEntity) damager).getCustomName() : damager.getType().getName();
-                    Bukkit.broadcastMessage(String.format(Messages.FORFEITED_BY, damagerName, playerName));
-                }
-            }
+        if (teleport) {
+            Location lobby = plugin.getLocationStore().getLobbyPosition().toLocation();
+            player.teleport(lobby);
+        }
+        if (broadcast) {
+            Bukkit.broadcastMessage(KillBroadcaster.getMessage(player.getName(), plugin.getDeathListener().getKiller(playerName), KillBroadcaster.KillReason.LEFT));
         }
         if (playersLeft < 2) {
             endGame(id, true);

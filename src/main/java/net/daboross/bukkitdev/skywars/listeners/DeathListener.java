@@ -99,17 +99,23 @@ public class DeathListener implements Listener {
 
     @EventHandler
     public void onDeath(PlayerDeathEvent evt) {
-        String name = evt.getEntity().getName().toLowerCase();
-        Integer id = plugin.getCurrentGames().getGameID(name);
-        if (id != null) {
+        String name = evt.getEntity().getName();
+        if (plugin.getCurrentGames().getGameID(name) != null) {
             plugin.getGameHandler().removePlayerFromGame(name, false, false);
-            evt.setDeathMessage(KillBroadcaster.getMessage(evt.getEntity().getName(), lastHit.get(name), causedVoid.contains(name)));
+            evt.setDeathMessage(getBroadcastMessage(name.toLowerCase()));
         }
     }
 
-    @EventHandler
+    public String getKiller(String name) {
+        return lastHit.get(name.toLowerCase());
+    }
+
+    public String getBroadcastMessage(String name) {
+        return KillBroadcaster.getMessage(name, lastHit.get(name.toLowerCase()), causedVoid.contains(name.toLowerCase()) ? KillBroadcaster.KillReason.VOID : KillBroadcaster.KillReason.OTHER);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onRespawn(PlayerRespawnEvent evt) {
         evt.setRespawnLocation(plugin.getLocationStore().getLobbyPosition().toLocation());
-
     }
 }
