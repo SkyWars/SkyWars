@@ -14,6 +14,10 @@
             <id>mcstats-repo</id>
             <url>http://repo.mcstats.org/content/repositories/public</url>
         </repository>
+        <repository>
+            <id>daboross-repo</id>
+            <url>http://repo.daboross.net/content/repositories/public</url>
+        </repository>
     </repositories>
     <build>
         <finalName>${project.name}</finalName>
@@ -97,7 +101,7 @@
         <dependency>
             <groupId>net.daboross.bukkitdev</groupId>
             <artifactId>CommandExecutorBase</artifactId>
-            <version>1.2.0</version>
+            <version>1.5.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -107,4 +111,18 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
+    <distributionManagement>
+        <repository>
+            <id>nexus-release</id>
+            <name>Nexus</name>
+            <uniqueVersion>true</uniqueVersion>
+            <url>http://repo.daboross.net/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-snapshot</id>
+            <name>Nexus Snapshot</name>
+            <uniqueVersion>true</uniqueVersion>
+            <url>http://repo.daboross.net/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
