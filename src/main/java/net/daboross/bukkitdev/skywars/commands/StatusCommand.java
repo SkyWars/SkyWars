@@ -20,7 +20,7 @@ import net.daboross.bukkitdev.commandexecutorbase.ArrayHelpers;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
-import net.daboross.bukkitdev.skywars.game.GameIdHandler;
+import net.daboross.bukkitdev.skywars.game.GameIDHandler;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -44,11 +44,11 @@ public class StatusCommand extends SubCommand {
             sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
             return;
         }
-        GameIdHandler idh = plugin.getIdHandler();
+        GameIDHandler idh = plugin.getIDHandler();
         sender.sendMessage(String.format(ColorList.TOP_FORMAT, "SkyWars Status"));
         sender.sendMessage(ColorList.REG + "In Queue: " + ColorList.DATA + ArrayHelpers.combinedWithSeperator(plugin.getGameQueue().getCopy(), ColorList.REG + ", " + ColorList.DATA));
         sender.sendMessage(String.format(ColorList.TOP_FORMAT, "Current Arenas"));
-        for (Integer id : idh.getCurrentIds()) {
+        for (Integer id : idh.getCurrentIDs()) {
             sender.sendMessage(ColorList.DATA + id + ColorList.REG + ": " + ColorList.DATA + ArrayHelpers.combinedWithSeperator(idh.getPlayers(id), ColorList.REG + ", " + ColorList.DATA));
         }
     }

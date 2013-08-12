@@ -17,7 +17,7 @@
 package net.daboross.bukkitdev.skywars.world;
 
 import java.util.Arrays;
-import net.daboross.bukkitdev.skywars.storage.SkyLocation;
+import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -32,23 +32,23 @@ import org.bukkit.inventory.ItemStack;
  */
 public class WorldCopier {
 
-    public static void copyArena(SkyLocation toCenter) {
+    public static void copyArena(SkyBlockLocation toCenter) {
         copy(Statics.ARENA_MIN, Statics.ARENA_MAX, toCenter);
     }
 
-    public static void destroyArena(SkyLocation center) {
+    public static void destroyArena(SkyBlockLocation center) {
         World world = Bukkit.getWorld(center.world);
         if (world == null) {
             throw new IllegalArgumentException("No world applicable.");
         }
         int xLength = Statics.ARENA_MAX.x - Statics.ARENA_MIN.x;
         int zLength = Statics.ARENA_MAX.z - Statics.ARENA_MIN.z;
-        SkyLocation min = new SkyLocation(center.x - xLength / 2, 0, center.z - zLength / 2, center.world);
-        SkyLocation length = new SkyLocation(xLength, world.getMaxHeight(), zLength, center.world);
+        SkyBlockLocation min = new SkyBlockLocation(center.x - xLength / 2, 0, center.z - zLength / 2, center.world);
+        SkyBlockLocation length = new SkyBlockLocation(xLength, world.getMaxHeight(), zLength, center.world);
         destroyArena(min, length, world);
     }
 
-    public static void destroyArena(SkyLocation min, SkyLocation length, World world) {
+    public static void destroyArena(SkyBlockLocation min, SkyBlockLocation length, World world) {
         for (int x = 0; x < length.x; x++) {
             for (int y = 0; y < length.y; y++) {
                 for (int z = 0; z < length.z; z++) {
@@ -58,7 +58,7 @@ public class WorldCopier {
         }
     }
 
-    public static void copy(SkyLocation fromMin, SkyLocation fromMax, SkyLocation toCenter) {
+    public static void copy(SkyBlockLocation fromMin, SkyBlockLocation fromMax, SkyBlockLocation toCenter) {
         if (!fromMin.world.equals(fromMax.world)) {
             throw new IllegalArgumentException("From min and from max are not in same world");
         }
@@ -73,7 +73,7 @@ public class WorldCopier {
         int xLength = fromMax.x - fromMin.x;
         int yLength = fromMax.y - fromMin.y;
         int zLength = fromMax.z - fromMin.z;
-        SkyLocation toMin = new SkyLocation(toCenter.x - xLength / 2, toCenter.y - yLength / 2, toCenter.z - zLength / 2, toCenter.world);
+        SkyBlockLocation toMin = new SkyBlockLocation(toCenter.x - xLength / 2, toCenter.y - yLength / 2, toCenter.z - zLength / 2, toCenter.world);
         System.out.println("toMin: " + toMin);
         System.out.println("toMax: " + toMin.add(xLength, yLength, zLength));
         for (int x = 0; x <= xLength; x++) {

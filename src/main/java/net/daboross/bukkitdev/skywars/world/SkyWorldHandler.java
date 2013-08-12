@@ -16,9 +16,9 @@
  */
 package net.daboross.bukkitdev.skywars.world;
 
-import net.daboross.bukkitdev.skywars.internalevents.PrepairGameEndEvent;
-import net.daboross.bukkitdev.skywars.internalevents.PrepairGameStartEvent;
-import net.daboross.bukkitdev.skywars.storage.SkyLocation;
+import net.daboross.bukkitdev.skywars.events.PrepairGameEndEvent;
+import net.daboross.bukkitdev.skywars.events.PrepairGameStartEvent;
+import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
@@ -49,7 +49,7 @@ public class SkyWorldHandler implements Listener {
 
     @EventHandler
     public void onGameStart(PrepairGameStartEvent evt) {
-        SkyLocation center = getCenterLocation(evt.getId());
+        SkyBlockLocation center = getCenterLocation(evt.getId());
         WorldCopier.copyArena(center);
         Player[] players = evt.getPlayers();
         for (int i = 0; i < 4; i++) {
@@ -59,14 +59,14 @@ public class SkyWorldHandler implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onGameEnd(PrepairGameEndEvent evt) {
-        SkyLocation center = getCenterLocation(evt.getId());
+        SkyBlockLocation center = getCenterLocation(evt.getId());
         WorldCopier.destroyArena(center);
     }
 
-    private SkyLocation getCenterLocation(int id) {
+    private SkyBlockLocation getCenterLocation(int id) {
         int modX = (id % 2) * 200;
         int modZ = (id / 2) * 200;
         int modY = 100;
-        return new SkyLocation(modX, modY, modZ, Statics.ARENA_WORLD_NAME);
+        return new SkyBlockLocation(modX, modY, modZ, Statics.ARENA_WORLD_NAME);
     }
 }

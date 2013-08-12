@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.daboross.bukkitdev.skywars.api;
+package net.daboross.bukkitdev.skywars.events;
 
-import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -25,32 +25,41 @@ import org.bukkit.event.HandlerList;
  *
  * @author daboross
  */
-public class GameStartEvent extends Event {
+public class PrepairGameStartEvent extends Event {
 
     private static final HandlerList handlerList = new HandlerList();
-    private final SkyWarsPlugin plugin;
-    private final Player[] players;
-    private final int id;
+    private final String[] names;
+    private final Player[] players = new Player[4];
+    private int id;
 
-    public GameStartEvent(SkyWarsPlugin plugin, Player[] players, int id) {
-        if (players == null || players.length != 4) {
+    public PrepairGameStartEvent(String[] names) {
+        if (names == null || names.length != 4) {
             throw new IllegalArgumentException();
         }
-        this.plugin = plugin;
-        this.players = players;
+        this.names = names;
+        for (int i = 0; i < 4; i++) {
+            Player p = Bukkit.getPlayer(names[i]);
+            if (p == null) {
+                throw new IllegalArgumentException();
+            }
+            players[i] = p;
+        }
+    }
+
+    public void setId(int id) {
         this.id = id;
     }
 
-    public SkyWarsPlugin getPlugin() {
-        return plugin;
+    public int getId() {
+        return id;
     }
 
     public Player[] getPlayers() {
         return players;
     }
 
-    public int getId() {
-        return id;
+    public String[] getNames() {
+        return names;
     }
 
     @Override

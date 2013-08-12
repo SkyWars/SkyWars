@@ -17,9 +17,12 @@
 package net.daboross.bukkitdev.skywars.game;
 
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
-import net.daboross.bukkitdev.skywars.internalevents.PrepairGameEndEvent;
-import net.daboross.bukkitdev.skywars.internalevents.PrepairGameStartEvent;
-import net.daboross.bukkitdev.skywars.internalevents.PrepairPlayerLeaveGameEvent;
+import net.daboross.bukkitdev.skywars.api.game.SkyCurrentGameTracker;
+import net.daboross.bukkitdev.skywars.api.game.SkyGameHandler;
+import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
+import net.daboross.bukkitdev.skywars.events.PrepairGameEndEvent;
+import net.daboross.bukkitdev.skywars.events.PrepairGameStartEvent;
+import net.daboross.bukkitdev.skywars.events.PrepairPlayerLeaveGameEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -28,7 +31,7 @@ import org.bukkit.entity.Player;
  *
  * @author daboross
  */
-public class GameHandler {
+public class GameHandler implements SkyGameHandler {
 
     private final SkyWarsPlugin plugin;
 
@@ -45,29 +48,32 @@ public class GameHandler {
         plugin.getServer().getPluginManager().callEvent(evt);
     }
 
+    @Override
     public void endGame(int id, boolean broadcast) {
-        GameIdHandler idh = plugin.getIdHandler();
-        String[] names = idh.getPlayers(id);
-        PrepairGameEndEvent evt = new PrepairGameEndEvent(names, id, broadcast);
-        plugin.getServer().getPluginManager().callEvent(evt);
-        Player[] players = evt.getPlayers();
+        SkyIDHandler idHandler = plugin.getIDHandler();
+        if (!idHandler.gameRunning(id)) {
+            throw new IllegalArgumentException("Invalid id " + id);
+        }
+        PrepairGameEndEvent evt = new PrepairGameEndEvent(plugin.getIDHandler().getPlayers(id), id, broadcast);
         Location lobby = plugin.getLocationStore().getLobbyPosition().toLocation();
-        for (Player player : players) {
+        for (Player player : evt.getPlayers()) {
             if (player != null) {
                 plugin.getServer().getPluginManager().callEvent(new PrepairPlayerLeaveGameEvent(id, player));
                 player.teleport(lobby);
             }
         }
+        plugin.getServer().getPluginManager().callEvent(evt);
     }
 
+    @Override
     public void removePlayerFromGame(String playerName, boolean teleport, boolean broadcast) {
         playerName = playerName.toLowerCase();
-        CurrentGames cg = plugin.getCurrentGames();
-        Integer id = cg.getGameID(playerName);
-        if (id == null) {
-            return;
+        SkyCurrentGameTracker cg = plugin.getCurrentGameTracker();
+        int id = cg.getGameID(playerName);
+        if (id == -1) {
+            throw new IllegalArgumentException("Player not in game");
         }
-        GameIdHandler idh = plugin.getIdHandler();
+        GameIDHandler idh = plugin.getIDHandler();
         String[] players = idh.getPlayers(id);
         int playersLeft = 0;
         for (int i = 0; i < 4; i++) {
@@ -82,11 +88,10 @@ public class GameHandler {
         Player player = Bukkit.getPlayerExact(playerName);
         plugin.getServer().getPluginManager().callEvent(new PrepairPlayerLeaveGameEvent(id, player));
         if (teleport) {
-            Location lobby = plugin.getLocationStore().getLobbyPosition().toLocation();
-            player.teleport(lobby);
+            player.teleport(plugin.getLocationStore().getLobbyPosition().toLocation());
         }
         if (broadcast) {
-            Bukkit.broadcastMessage(KillBroadcaster.getMessage(player.getName(), plugin.getDeathListener().getKiller(playerName), KillBroadcaster.KillReason.LEFT));
+            Bukkit.broadcastMessage(KillBroadcaster.getMessage(player.getName(), plugin.getAttackerStorage().getKiller(playerName), KillBroadcaster.KillReason.LEFT));
         }
         if (playersLeft < 2) {
             endGame(id, true);

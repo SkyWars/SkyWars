@@ -14,39 +14,57 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.daboross.bukkitdev.skywars.api;
+package net.daboross.bukkitdev.skywars.events;
 
-import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.PlayerEvent;
 
 /**
- * Event called when a player leaves a game. No player will ever leave a game
- * without this event being called.
- * <br>When a game ends whether canceled or the server is quit, this event is
- * called once for all remaining players.
  *
  * @author daboross
  */
-public class LeaveGameEvent extends PlayerEvent {
+public class PrepairGameEndEvent extends Event {
 
     private static final HandlerList handlerList = new HandlerList();
-    private final SkyWarsPlugin plugin;
+    private final String[] playerNames;
+    private final Player[] players = new Player[4];
     private final int id;
+    private final boolean broadcast;
 
-    public LeaveGameEvent(SkyWarsPlugin plugin, int id, Player who) {
-        super(who);
-        this.plugin = plugin;
+    public PrepairGameEndEvent(String[] names, int id, boolean broadcast) {
+        if (names == null || names.length != 4) {
+            throw new IllegalArgumentException();
+        }
+        this.playerNames = names;
         this.id = id;
+        this.broadcast = broadcast;
+        for (int i = 0; i < 4; i++) {
+            if (names[i] != null) {
+                Player p = Bukkit.getPlayer(names[i]);
+                if (p == null) {
+                    throw new IllegalArgumentException();
+                }
+                players[i] = p;
+            }
+        }
     }
 
     public int getId() {
         return id;
     }
 
-    public SkyWarsPlugin getPlugin() {
-        return plugin;
+    public String[] getPlayerNames() {
+        return playerNames;
+    }
+
+    public Player[] getPlayers() {
+        return players;
+    }
+
+    public boolean shouldBroadcast() {
+        return broadcast;
     }
 
     @Override

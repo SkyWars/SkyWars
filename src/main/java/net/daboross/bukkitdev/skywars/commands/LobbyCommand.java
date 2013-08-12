@@ -45,7 +45,7 @@ public class LobbyCommand extends SubCommand {
             return;
         }
         Player player = (Player) sender;
-        if (plugin.getCurrentGames().getGameID(player.getName()) != null) {
+        if (plugin.getCurrentGameTracker().isInGame(player.getName())) {
             sender.sendMessage(Messages.Lobby.IN_GAME);
         } else {
             player.teleport(plugin.getLocationStore().getLobbyPosition().toLocation());

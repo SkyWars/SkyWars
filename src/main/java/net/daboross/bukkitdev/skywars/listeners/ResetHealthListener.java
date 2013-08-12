@@ -16,8 +16,8 @@
  */
 package net.daboross.bukkitdev.skywars.listeners;
 
-import net.daboross.bukkitdev.skywars.internalevents.PrepairGameStartEvent;
-import net.daboross.bukkitdev.skywars.internalevents.PrepairPlayerLeaveGameEvent;
+import net.daboross.bukkitdev.skywars.events.PrepairGameStartEvent;
+import net.daboross.bukkitdev.skywars.events.PrepairPlayerLeaveGameEvent;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

@@ -17,12 +17,12 @@
 package net.daboross.bukkitdev.skywars.listeners;
 
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
-import net.daboross.bukkitdev.skywars.api.GameEndEvent;
-import net.daboross.bukkitdev.skywars.api.GameStartEvent;
-import net.daboross.bukkitdev.skywars.api.LeaveGameEvent;
-import net.daboross.bukkitdev.skywars.internalevents.PrepairGameEndEvent;
-import net.daboross.bukkitdev.skywars.internalevents.PrepairGameStartEvent;
-import net.daboross.bukkitdev.skywars.internalevents.PrepairPlayerLeaveGameEvent;
+import net.daboross.bukkitdev.skywars.api.events.GameEndEvent;
+import net.daboross.bukkitdev.skywars.api.events.GameStartEvent;
+import net.daboross.bukkitdev.skywars.api.events.LeaveGameEvent;
+import net.daboross.bukkitdev.skywars.events.PrepairGameEndEvent;
+import net.daboross.bukkitdev.skywars.events.PrepairGameStartEvent;
+import net.daboross.bukkitdev.skywars.events.PrepairPlayerLeaveGameEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;

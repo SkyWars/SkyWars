@@ -19,7 +19,7 @@ package net.daboross.bukkitdev.skywars.commands;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
-import net.daboross.bukkitdev.skywars.game.GameIdHandler;
+import net.daboross.bukkitdev.skywars.game.GameIDHandler;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -55,7 +55,7 @@ public class CancelCommand extends SubCommand {
             sender.sendMessage(ColorList.ERR_ARGS + subCommandArgs[0] + ColorList.ERR + " isn't an integer!");
             return;
         }
-        GameIdHandler idh = plugin.getIdHandler();
+        GameIDHandler idh = plugin.getIDHandler();
         if (idh.getPlayers(id) == null) {
             sender.sendMessage(ColorList.ERR + "There aren't any games with the id " + ColorList.ERR_ARGS + id);
             return;

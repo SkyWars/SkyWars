@@ -18,7 +18,7 @@ package net.daboross.bukkitdev.skywars.listeners;
 
 import net.daboross.bukkitdev.skywars.Messages;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
-import net.daboross.bukkitdev.skywars.storage.SkyLocation;
+import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -40,11 +40,11 @@ public class PortalListener implements Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent evt) {
         Location location = evt.getTo();
-        for (SkyLocation loc : plugin.getLocationStore().getPortals()) {
+        for (SkyBlockLocation loc : plugin.getLocationStore().getPortals()) {
             if (loc.isNear(location)) {
                 Player p = evt.getPlayer();
                 String name = p.getName().toLowerCase();
-                if (plugin.getCurrentGames().getGameID(name) == null && !plugin.getGameQueue().inQueue(name)) {
+                if (!plugin.getCurrentGameTracker().isInGame(name) && !plugin.getGameQueue().inQueue(name)) {
                     p.sendMessage(Messages.Join.CONFIRMATION);
                     plugin.getGameQueue().queuePlayer(name);
                 }

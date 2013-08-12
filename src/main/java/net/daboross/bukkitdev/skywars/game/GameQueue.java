@@ -20,12 +20,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import net.daboross.bukkitdev.skywars.api.game.SkyGameQueue;
 
 /**
  *
  * @author daboross
  */
-public class GameQueue {
+public class GameQueue implements SkyGameQueue {
 
     private final SkyWarsPlugin plugin;
     private final List<String> currentlyQueued;
@@ -35,10 +36,12 @@ public class GameQueue {
         this.currentlyQueued = new ArrayList<String>(4);
     }
 
+    @Override
     public boolean inQueue(String player) {
         return currentlyQueued.contains(player.toLowerCase());
     }
 
+    @Override
     public void queuePlayer(String player) {
         player = player.toLowerCase();
         if (!currentlyQueued.contains(player)) {
@@ -50,6 +53,7 @@ public class GameQueue {
         }
     }
 
+    @Override
     public void removePlayer(String player) {
         currentlyQueued.remove(player.toLowerCase());
     }
@@ -67,6 +71,7 @@ public class GameQueue {
         return queueCopy;
     }
 
+    @Override
     public String[] getCopy() {
         return currentlyQueued.toArray(new String[currentlyQueued.size()]);
     }

@@ -20,10 +20,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import net.daboross.bukkitdev.skywars.internalevents.UnloadListener;
+import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.game.SkyAttackerStorage;
+import net.daboross.bukkitdev.skywars.api.game.SkyCurrentGameTracker;
+import net.daboross.bukkitdev.skywars.events.UnloadListener;
 import net.daboross.bukkitdev.skywars.game.CurrentGames;
 import net.daboross.bukkitdev.skywars.game.GameHandler;
-import net.daboross.bukkitdev.skywars.game.GameIdHandler;
+import net.daboross.bukkitdev.skywars.game.GameIDHandler;
 import net.daboross.bukkitdev.skywars.game.GameQueue;
 import net.daboross.bukkitdev.skywars.listeners.CommandListener;
 import net.daboross.bukkitdev.skywars.listeners.DeathListener;
@@ -36,13 +39,11 @@ import net.daboross.bukkitdev.skywars.listeners.SpawnListener;
 import net.daboross.bukkitdev.skywars.storage.LocationStore;
 import net.daboross.bukkitdev.skywars.world.SkyWorldHandler;
 import net.daboross.bukkitdev.skywars.world.Statics;
-import net.daboross.bukkitdev.skywars.world.VoidGenerator;
 import net.daboross.bukkitdev.skywars.world.WorldUnzipper;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.event.Listener;
-import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -52,13 +53,13 @@ import org.mcstats.MetricsLite;
  *
  * @author daboross
  */
-public class SkyWarsPlugin extends JavaPlugin {
+public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
 
     private LocationStore locationStore;
     private GameQueue gameQueue;
     private CurrentGames currentGames;
     private GameHandler gameHandler;
-    private GameIdHandler idHandler;
+    private GameIDHandler idHandler;
     private SkyWorldHandler worldCreator;
     private DeathListener deathListener;
     private boolean enabledCorrectly = false;
@@ -90,7 +91,7 @@ public class SkyWarsPlugin extends JavaPlugin {
         gameQueue = new GameQueue(this);
         currentGames = new CurrentGames();
         gameHandler = new GameHandler(this);
-        idHandler = new GameIdHandler();
+        idHandler = new GameIDHandler();
         worldCreator = new SkyWorldHandler();
         deathListener = new DeathListener(this);
         new BukkitRunnable() {
@@ -158,36 +159,33 @@ public class SkyWarsPlugin extends JavaPlugin {
         }
     }
 
+    @Override
     public LocationStore getLocationStore() {
         return locationStore;
     }
 
+    @Override
     public GameQueue getGameQueue() {
         return gameQueue;
     }
 
-    public CurrentGames getCurrentGames() {
+    @Override
+    public SkyCurrentGameTracker getCurrentGameTracker() {
         return currentGames;
     }
 
+    @Override
     public GameHandler getGameHandler() {
         return gameHandler;
     }
 
-    public GameIdHandler getIdHandler() {
+    @Override
+    public GameIDHandler getIDHandler() {
         return idHandler;
     }
 
-    public SkyWorldHandler getWorldHandler() {
-        return worldCreator;
-    }
-
-    public DeathListener getDeathListener() {
-        return deathListener;
-    }
-
     @Override
-    public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
-        return new VoidGenerator();
+    public SkyAttackerStorage getAttackerStorage() {
+        return deathListener;
     }
 }

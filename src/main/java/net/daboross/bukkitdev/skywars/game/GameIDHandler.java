@@ -22,9 +22,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
-import net.daboross.bukkitdev.skywars.internalevents.PrepairGameEndEvent;
-import net.daboross.bukkitdev.skywars.internalevents.PrepairGameStartEvent;
-import net.daboross.bukkitdev.skywars.internalevents.UnloadListener;
+import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
+import net.daboross.bukkitdev.skywars.events.PrepairGameEndEvent;
+import net.daboross.bukkitdev.skywars.events.PrepairGameStartEvent;
+import net.daboross.bukkitdev.skywars.events.UnloadListener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -33,11 +34,17 @@ import org.bukkit.event.Listener;
  *
  * @author daboross
  */
-public class GameIdHandler implements Listener, UnloadListener {
+public class GameIDHandler implements Listener, UnloadListener, SkyIDHandler {
 
     private final Map<Integer, String[]> currentGames = new HashMap<Integer, String[]>();
-    private final List<Integer> currentIds = new ArrayList<Integer>();
+    private final List<Integer> currentIDs = new ArrayList<Integer>();
 
+    @Override
+    public boolean gameRunning(int id) {
+        return currentGames.containsKey(id);
+    }
+
+    @Override
     public String[] getPlayers(int id) {
         return currentGames.get(id);
     }
@@ -49,28 +56,29 @@ public class GameIdHandler implements Listener, UnloadListener {
             id++;
         }
         currentGames.put(id, evt.getNames());
-        currentIds.add(id);
+        currentIDs.add(id);
         evt.setId(id);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onGameEnd(PrepairGameEndEvent evt) {
         currentGames.remove(evt.getId());
-        currentIds.remove(evt.getId());
+        currentIDs.remove(evt.getId());
     }
 
     @Override
     public void saveAndUnload(SkyWarsPlugin plugin) {
         GameHandler handler = plugin.getGameHandler();
-        while (!currentIds.isEmpty()) {
-            int id = currentIds.get(0);
+        while (!currentIDs.isEmpty()) {
+            int id = currentIDs.get(0);
             if (getPlayers(id) != null) {
                 handler.endGame(id, false);
             }
         }
     }
 
-    public List<Integer> getCurrentIds() {
-        return Collections.unmodifiableList(currentIds);
+    @Override
+    public List<Integer> getCurrentIDs() {
+        return Collections.unmodifiableList(currentIDs);
     }
 }

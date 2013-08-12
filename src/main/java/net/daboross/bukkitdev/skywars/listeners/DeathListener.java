@@ -21,6 +21,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import net.daboross.bukkitdev.skywars.api.game.SkyAttackerStorage;
+import net.daboross.bukkitdev.skywars.events.PrepairPlayerLeaveGameEvent;
 import net.daboross.bukkitdev.skywars.game.KillBroadcaster;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
@@ -40,7 +42,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
  *
  * @author daboross
  */
-public class DeathListener implements Listener {
+public class DeathListener implements Listener, SkyAttackerStorage {
 
     private final SkyWarsPlugin plugin;
     private Map<String, String> lastHit = new HashMap<String, String>();
@@ -79,7 +81,7 @@ public class DeathListener implements Listener {
             } else {
                 lastHit.put(name, evt.getDamager().getType().getName());
             }
-            if (plugin.getCurrentGames().getGameID(name) != null) {
+            if (plugin.getCurrentGameTracker().isInGame(name)) {
                 evt.setCancelled(false);
             }
         }
@@ -100,17 +102,23 @@ public class DeathListener implements Listener {
     @EventHandler
     public void onDeath(PlayerDeathEvent evt) {
         String name = evt.getEntity().getName();
-        if (plugin.getCurrentGames().getGameID(name) != null) {
+        if (plugin.getCurrentGameTracker().isInGame(name)) {
             plugin.getGameHandler().removePlayerFromGame(name, false, false);
             evt.setDeathMessage(getBroadcastMessage(name.toLowerCase()));
         }
     }
 
+    @EventHandler
+    public void onLeave(PrepairPlayerLeaveGameEvent evt) {
+        lastHit.remove(evt.getPlayer().getName().toLowerCase());
+    }
+
+    @Override
     public String getKiller(String name) {
         return lastHit.get(name.toLowerCase());
     }
 
-    public String getBroadcastMessage(String name) {
+    private String getBroadcastMessage(String name) {
         return KillBroadcaster.getMessage(name, lastHit.get(name.toLowerCase()), causedVoid.contains(name.toLowerCase()) ? KillBroadcaster.KillReason.VOID : KillBroadcaster.KillReason.OTHER);
     }
 

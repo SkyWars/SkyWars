@@ -46,7 +46,7 @@ public class JoinCommand extends SubCommand {
             return;
         }
         String name = player.getName().toLowerCase();
-        if (plugin.getCurrentGames().getGameID(name) != null) {
+        if (plugin.getCurrentGameTracker().isInGame(name)) {
             sender.sendMessage(Messages.Join.IN_GAME);
         } else if (plugin.getGameQueue().inQueue(name)) {
             sender.sendMessage(Messages.Join.ALREADY_QUEUED);

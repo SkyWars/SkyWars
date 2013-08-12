@@ -16,13 +16,15 @@
  */
 package net.daboross.bukkitdev.skywars.storage;
 
+import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
-import net.daboross.bukkitdev.skywars.internalevents.UnloadListener;
+import net.daboross.bukkitdev.skywars.api.location.SkyLocationStore;
+import net.daboross.bukkitdev.skywars.events.UnloadListener;
 import net.daboross.bukkitdev.skywars.world.Statics;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -34,17 +36,17 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * @author daboross
  */
-public class LocationStore implements Listener, UnloadListener {
+public class LocationStore implements Listener, UnloadListener, SkyLocationStore {
 
     private final JavaPlugin plugin;
-    private final List<SkyLocation> portals = new ArrayList<SkyLocation>();
-    private SkyLocation lobbyPosition;
+    private final List<SkyBlockLocation> portals = new ArrayList<SkyBlockLocation>();
+    private SkyBlockLocation lobbyPosition;
     private FileConfiguration storage;
     private File configFile;
 
     public LocationStore(JavaPlugin plugin) {
         this.plugin = plugin;
-        ConfigurationSerialization.registerClass(SkyLocation.class);
+        ConfigurationSerialization.registerClass(SkyBlockLocation.class);
         load();
     }
 
@@ -55,20 +57,20 @@ public class LocationStore implements Listener, UnloadListener {
         storage = YamlConfiguration.loadConfiguration(configFile);
         Object lobbyO = storage.get("lobby");
         if (lobbyO != null) {
-            if (lobbyO instanceof SkyLocation) {
-                lobbyPosition = (SkyLocation) lobbyO;
+            if (lobbyO instanceof SkyBlockLocation) {
+                lobbyPosition = (SkyBlockLocation) lobbyO;
             } else {
                 plugin.getLogger().warning("Lobby is not ArenaLocation");
             }
         } else {
-            lobbyPosition = new SkyLocation(0, 0, 0, Statics.ARENA_WORLD_NAME);
+            lobbyPosition = new SkyBlockLocation(0, 0, 0, Statics.ARENA_WORLD_NAME);
         }
         List<?> list = storage.getList("portals");
         if (list
                 != null) {
             for (Object obj : list) {
-                if (obj instanceof SkyLocation) {
-                    portals.add((SkyLocation) obj);
+                if (obj instanceof SkyBlockLocation) {
+                    portals.add((SkyBlockLocation) obj);
                 } else {
                     plugin.getLogger().warning("Non-ArenaLocation found in portals list");
                 }
@@ -96,15 +98,18 @@ public class LocationStore implements Listener, UnloadListener {
         }
     }
 
-    public SkyLocation getLobbyPosition() {
+    @Override
+    public SkyBlockLocation getLobbyPosition() {
         return lobbyPosition;
     }
 
-    public void setLobbyPosition(SkyLocation lobbyPosition) {
+    @Override
+    public void setLobbyPosition(SkyBlockLocation lobbyPosition) {
         this.lobbyPosition = lobbyPosition;
     }
 
-    public List<SkyLocation> getPortals() {
+    @Override
+    public List<SkyBlockLocation> getPortals() {
         return portals;
     }
 }

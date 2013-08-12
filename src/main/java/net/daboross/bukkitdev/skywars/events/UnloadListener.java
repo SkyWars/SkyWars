@@ -14,36 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.daboross.bukkitdev.skywars.internalevents;
+package net.daboross.bukkitdev.skywars.events;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.PlayerEvent;
+import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 
 /**
  *
  * @author daboross
  */
-public class PrepairPlayerLeaveGameEvent extends PlayerEvent {
+public interface UnloadListener {
 
-    private static final HandlerList handlerList = new HandlerList();
-    private final int id;
-
-    public PrepairPlayerLeaveGameEvent(int id, Player who) {
-        super(who);
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    @Override
-    public HandlerList getHandlers() {
-        return handlerList;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlerList;
-    }
+    public void saveAndUnload(SkyWarsPlugin plugin);
 }

@@ -19,7 +19,7 @@ package net.daboross.bukkitdev.skywars.commands;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
-import net.daboross.bukkitdev.skywars.storage.SkyLocation;
+import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -46,7 +46,7 @@ public class SetLobbyCommand extends SubCommand {
             return;
         }
         Player player = (Player) sender;
-        plugin.getLocationStore().setLobbyPosition(new SkyLocation(player));
+        plugin.getLocationStore().setLobbyPosition(new SkyBlockLocation(player));
         sender.sendMessage(CONFIRMATION);
     }
 }

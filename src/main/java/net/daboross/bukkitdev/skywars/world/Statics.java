@@ -16,8 +16,8 @@
  */
 package net.daboross.bukkitdev.skywars.world;
 
-import net.daboross.bukkitdev.skywars.storage.SkyLocation;
-import net.daboross.bukkitdev.skywars.storage.SkyLocationAccurate;
+import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
+import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
 
 /**
  *
@@ -29,14 +29,14 @@ public class Statics {
     public static final String ARENA_WORLD_NAME = "SkyWarsArenaWorld";
 //    public static final String BASE_WORLD_NAME = "SkyblockWarriors";
 //    public static final String ARENA_WORLD_NAME = "SkyWarsBaseWorld";
-    public static final SkyLocationAccurate[] RELATIVE_SPAWNS = {
-        new SkyLocationAccurate(18.5, 6, -14.5, ARENA_WORLD_NAME),
-        new SkyLocationAccurate(-17.5, 6, -14.5, ARENA_WORLD_NAME),
-        new SkyLocationAccurate(-17.5, 6, 15.5, ARENA_WORLD_NAME),
-        new SkyLocationAccurate(18.5, 6, 15.5, ARENA_WORLD_NAME)
+    public static final SkyPlayerLocation[] RELATIVE_SPAWNS = {
+        new SkyPlayerLocation(18.5, 6, -14.5, ARENA_WORLD_NAME),
+        new SkyPlayerLocation(-17.5, 6, -14.5, ARENA_WORLD_NAME),
+        new SkyPlayerLocation(-17.5, 6, 15.5, ARENA_WORLD_NAME),
+        new SkyPlayerLocation(18.5, 6, 15.5, ARENA_WORLD_NAME)
     };
-//    public static final SkyLocation ARENA_MIN = new SkyLocation(-205, 183, 78, BASE_WORLD_NAME);
-//    public static final SkyLocation ARENA_MAX = new SkyLocation(-149, 190, 136, BASE_WORLD_NAME);
-    public static final SkyLocation ARENA_MIN = new SkyLocation(-28, 97, -29, BASE_WORLD_NAME);
-    public static final SkyLocation ARENA_MAX = new SkyLocation(28, 104, 29, BASE_WORLD_NAME);
+//    public static final SkyBlockLocation ARENA_MIN = new SkyBlockLocation(-205, 183, 78, BASE_WORLD_NAME);
+//    public static final SkyBlockLocation ARENA_MAX = new SkyBlockLocation(-149, 190, 136, BASE_WORLD_NAME);
+    public static final SkyBlockLocation ARENA_MIN = new SkyBlockLocation(-28, 97, -29, BASE_WORLD_NAME);
+    public static final SkyBlockLocation ARENA_MAX = new SkyBlockLocation(28, 104, 29, BASE_WORLD_NAME);
 }
