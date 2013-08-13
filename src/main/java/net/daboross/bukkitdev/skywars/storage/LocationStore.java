@@ -24,8 +24,12 @@ import java.util.List;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.location.SkyLocationStore;
+import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
 import net.daboross.bukkitdev.skywars.events.UnloadListener;
 import net.daboross.bukkitdev.skywars.world.Statics;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -40,7 +44,7 @@ public class LocationStore implements Listener, UnloadListener, SkyLocationStore
 
     private final JavaPlugin plugin;
     private final List<SkyBlockLocation> portals = new ArrayList<SkyBlockLocation>();
-    private SkyBlockLocation lobbyPosition;
+    private SkyPlayerLocation lobbyPosition;
     private FileConfiguration storage;
     private File configFile;
 
@@ -58,12 +62,20 @@ public class LocationStore implements Listener, UnloadListener, SkyLocationStore
         Object lobbyO = storage.get("lobby");
         if (lobbyO != null) {
             if (lobbyO instanceof SkyBlockLocation) {
-                lobbyPosition = (SkyBlockLocation) lobbyO;
+                lobbyPosition = new SkyPlayerLocation((SkyBlockLocation) lobbyO);
+            } else if (lobbyO instanceof SkyPlayerLocation) {
+                lobbyPosition = (SkyPlayerLocation) lobbyO;
             } else {
                 plugin.getLogger().warning("Lobby is not ArenaLocation");
             }
         } else {
-            lobbyPosition = new SkyBlockLocation(0, 0, 0, Statics.ARENA_WORLD_NAME);
+            List<World> worlds = Bukkit.getWorlds();
+            if (worlds.isEmpty()) {
+                lobbyPosition = new SkyPlayerLocation(0, 0, 0, Statics.ARENA_WORLD_NAME);
+            } else {
+                Location spawn = worlds.get(0).getSpawnLocation();
+                lobbyPosition = new SkyPlayerLocation(spawn);
+            }
         }
         List<?> list = storage.getList("portals");
         if (list
@@ -99,12 +111,12 @@ public class LocationStore implements Listener, UnloadListener, SkyLocationStore
     }
 
     @Override
-    public SkyBlockLocation getLobbyPosition() {
+    public SkyPlayerLocation getLobbyPosition() {
         return lobbyPosition;
     }
 
     @Override
-    public void setLobbyPosition(SkyBlockLocation lobbyPosition) {
+    public void setLobbyPosition(SkyPlayerLocation lobbyPosition) {
         this.lobbyPosition = lobbyPosition;
     }
 
