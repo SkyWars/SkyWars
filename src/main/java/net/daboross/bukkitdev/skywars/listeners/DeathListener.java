@@ -103,7 +103,7 @@ public class DeathListener implements Listener, SkyAttackerStorage {
     public void onDeath(PlayerDeathEvent evt) {
         String name = evt.getEntity().getName();
         if (plugin.getCurrentGameTracker().isInGame(name)) {
-            plugin.getGameHandler().removePlayerFromGame(name, false, false);
+            plugin.getGameHandler().removePlayerFromGame(name, true, false);
             evt.setDeathMessage(getBroadcastMessage(name.toLowerCase()));
         }
     }
