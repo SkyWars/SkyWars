@@ -89,7 +89,7 @@ public class StatusCommand extends SubCommand {
                         resultBuilder.append(ColorList.REG).append(", ").append(ChatColor.RED).append(dead.get(i));
                     }
                 } else {
-                    for (int i = 0; i < alive.size(); i++) {
+                    for (int i = 0; i < dead.size(); i++) {
                         resultBuilder.append(ColorList.REG).append(", ").append(ChatColor.RED).append(dead.get(i));
                     }
                 }
