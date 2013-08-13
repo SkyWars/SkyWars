@@ -41,8 +41,8 @@ public class PermissionHandler {
 
     private void addEveryonePermissions(PluginManager pm, String... permissions) {
         for (int i = 0; i < permissions.length; i++) {
-            String name = permissionBase + permissions[i];
-            Permission permission = getPermission(pm, permissionBase + permissions[i]);
+            String name = permissionBase + "." + permissions[i];
+            Permission permission = getPermission(pm, name);
             permission.setDefault(PermissionDefault.TRUE);
             basePermission.getChildren().put(name, Boolean.TRUE);
             updateAndAdd(pm, permission);
