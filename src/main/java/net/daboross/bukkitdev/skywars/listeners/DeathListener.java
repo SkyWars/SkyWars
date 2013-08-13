@@ -104,7 +104,7 @@ public class DeathListener implements Listener, SkyAttackerStorage {
         String name = evt.getEntity().getName();
         if (plugin.getCurrentGameTracker().isInGame(name)) {
             plugin.getGameHandler().removePlayerFromGame(name, true, false);
-            evt.setDeathMessage(getBroadcastMessage(name.toLowerCase()));
+            evt.setDeathMessage(KillBroadcaster.getMessage(name, lastHit.get(name.toLowerCase()), causedVoid.contains(name.toLowerCase()) ? KillBroadcaster.KillReason.VOID : KillBroadcaster.KillReason.OTHER));
         }
     }
 
@@ -116,10 +116,6 @@ public class DeathListener implements Listener, SkyAttackerStorage {
     @Override
     public String getKiller(String name) {
         return lastHit.get(name.toLowerCase());
-    }
-
-    private String getBroadcastMessage(String name) {
-        return KillBroadcaster.getMessage(name, lastHit.get(name.toLowerCase()), causedVoid.contains(name.toLowerCase()) ? KillBroadcaster.KillReason.VOID : KillBroadcaster.KillReason.OTHER);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
