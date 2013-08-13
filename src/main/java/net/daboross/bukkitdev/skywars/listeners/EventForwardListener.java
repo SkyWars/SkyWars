@@ -46,11 +46,11 @@ public class EventForwardListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPrepairGameStart(PrepairGameStartEvent evt) {
-        plugin.getServer().getPluginManager().callEvent(new GameStartEvent(plugin, evt.getPlayers(), evt.getId()));
+        plugin.getServer().getPluginManager().callEvent(new GameStartEvent(plugin, evt.getGame(), evt.getPlayers()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPrepairGameEnd(PrepairGameEndEvent evt) {
-        plugin.getServer().getPluginManager().callEvent(new GameEndEvent(plugin, evt.getPlayers(), evt.getId()));
+        plugin.getServer().getPluginManager().callEvent(new GameEndEvent(plugin, evt.getGame(), evt.getAlivePlayers()));
     }
 }

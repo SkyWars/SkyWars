@@ -98,7 +98,7 @@ public class KillScoreboardManager implements Listener, UnloadListener {
 
     @EventHandler
     public void onEnd(PrepairGameEndEvent evt) {
-        Scoreboard gameBoard = gameScoreboards.remove(evt.getId());
+        Scoreboard gameBoard = gameScoreboards.remove(evt.getGame().getID());
         gameBoard.getObjective("Kills this game").unregister();
     }
 

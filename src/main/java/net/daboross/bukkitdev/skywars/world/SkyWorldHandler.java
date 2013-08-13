@@ -59,7 +59,7 @@ public class SkyWorldHandler implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onGameEnd(PrepairGameEndEvent evt) {
-        SkyBlockLocation center = getCenterLocation(evt.getId());
+        SkyBlockLocation center = getCenterLocation(evt.getGame().getID());
         WorldCopier.destroyArena(center);
     }
 

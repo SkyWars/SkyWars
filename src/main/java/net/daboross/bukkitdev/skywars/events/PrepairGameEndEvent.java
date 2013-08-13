@@ -16,6 +16,10 @@
  */
 package net.daboross.bukkitdev.skywars.events;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import net.daboross.bukkitdev.skywars.game.ArenaGame;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -28,39 +32,33 @@ import org.bukkit.event.HandlerList;
 public class PrepairGameEndEvent extends Event {
 
     private static final HandlerList handlerList = new HandlerList();
-    private final String[] playerNames;
-    private final Player[] players = new Player[4];
-    private final int id;
+    private final ArenaGame game;
+    private final List<Player> alivePlayers;
     private final boolean broadcast;
 
-    public PrepairGameEndEvent(String[] names, int id, boolean broadcast) {
-        if (names == null || names.length != 4) {
+    public PrepairGameEndEvent(ArenaGame game, boolean broadcast) {
+        if (game == null) {
             throw new IllegalArgumentException();
         }
-        this.playerNames = names;
-        this.id = id;
+        this.game = game;
         this.broadcast = broadcast;
-        for (int i = 0; i < 4; i++) {
-            if (names[i] != null) {
-                Player p = Bukkit.getPlayer(names[i]);
-                if (p == null) {
-                    throw new IllegalArgumentException();
-                }
-                players[i] = p;
+        List<String> alive = game.getAlivePlayers();
+        alivePlayers = new ArrayList<>();
+        for (int i = 0; i < alive.size(); i++) {
+            Player p = Bukkit.getPlayer(alive.get(i));
+            if (p == null) {
+                throw new IllegalArgumentException();
             }
+            alivePlayers.add(p);
         }
     }
 
-    public int getId() {
-        return id;
+    public List<Player> getAlivePlayers() {
+        return Collections.unmodifiableList(alivePlayers);
     }
 
-    public String[] getPlayerNames() {
-        return playerNames;
-    }
-
-    public Player[] getPlayers() {
-        return players;
+    public ArenaGame getGame() {
+        return game;
     }
 
     public boolean shouldBroadcast() {

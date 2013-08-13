@@ -60,14 +60,12 @@ public class GameBroadcastListener implements Listener {
     public void onGameEnd(PrepairGameEndEvent evt) {
         if (evt.shouldBroadcast()) {
             String winner = null;
-            for (Player player : evt.getPlayers()) {
-                if (player != null) {
-                    Bukkit.getPluginManager().callEvent(new PrepairPlayerLeaveGameEvent(evt.getId(), player));
-                    if (winner == null) {
-                        winner = player.getName();
-                    } else {
-                        winner += ", " + player.getName();
-                    }
+            for (Player player : evt.getAlivePlayers()) {
+                Bukkit.getPluginManager().callEvent(new PrepairPlayerLeaveGameEvent(evt.getGame().getID(), player));
+                if (winner == null) {
+                    winner = player.getName();
+                } else {
+                    winner += ", " + player.getName();
                 }
             }
             final String message;

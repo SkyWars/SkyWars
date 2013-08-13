@@ -54,13 +54,11 @@ public class GameHandler implements SkyGameHandler {
         if (!idHandler.gameRunning(id)) {
             throw new IllegalArgumentException("Invalid id " + id);
         }
-        PrepairGameEndEvent evt = new PrepairGameEndEvent(plugin.getIDHandler().getPlayers(id), id, broadcast);
+        PrepairGameEndEvent evt = new PrepairGameEndEvent(plugin.getIDHandler().getGame(id), broadcast);
         Location lobby = plugin.getLocationStore().getLobbyPosition().toLocation();
-        for (Player player : evt.getPlayers()) {
-            if (player != null) {
-                plugin.getServer().getPluginManager().callEvent(new PrepairPlayerLeaveGameEvent(id, player));
-                player.teleport(lobby);
-            }
+        for (Player player : evt.getAlivePlayers()) {
+            plugin.getServer().getPluginManager().callEvent(new PrepairPlayerLeaveGameEvent(id, player));
+            player.teleport(lobby);
         }
         plugin.getServer().getPluginManager().callEvent(evt);
     }
@@ -74,17 +72,8 @@ public class GameHandler implements SkyGameHandler {
             throw new IllegalArgumentException("Player not in game");
         }
         GameIDHandler idh = plugin.getIDHandler();
-        String[] players = idh.getPlayers(id);
-        int playersLeft = 0;
-        for (int i = 0; i < 4; i++) {
-            if (players[i] != null) {
-                if (players[i].equalsIgnoreCase(playerName)) {
-                    players[i] = null;
-                } else {
-                    playersLeft++;
-                }
-            }
-        }
+        ArenaGame game = idh.getGame(id);
+        game.removePlayer(playerName);
         Player player = Bukkit.getPlayerExact(playerName);
         plugin.getServer().getPluginManager().callEvent(new PrepairPlayerLeaveGameEvent(id, player));
         if (teleport) {
@@ -93,7 +82,7 @@ public class GameHandler implements SkyGameHandler {
         if (broadcast) {
             Bukkit.broadcastMessage(KillBroadcaster.getMessage(player.getName(), plugin.getAttackerStorage().getKiller(playerName), KillBroadcaster.KillReason.LEFT));
         }
-        if (playersLeft < 2) {
+        if (game.getAlivePlayers().size() < 2) {
             endGame(id, true);
         }
     }

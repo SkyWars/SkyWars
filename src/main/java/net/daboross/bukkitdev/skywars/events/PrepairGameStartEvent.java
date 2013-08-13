@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.events;
 
+import net.daboross.bukkitdev.skywars.game.ArenaGame;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -30,6 +31,7 @@ public class PrepairGameStartEvent extends Event {
     private static final HandlerList handlerList = new HandlerList();
     private final String[] names;
     private final Player[] players = new Player[4];
+    private ArenaGame game;
     private int id;
 
     public PrepairGameStartEvent(String[] names) {
@@ -50,8 +52,16 @@ public class PrepairGameStartEvent extends Event {
         this.id = id;
     }
 
+    public void setGame(ArenaGame game) {
+        this.game = game;
+    }
+
     public int getId() {
         return id;
+    }
+
+    public ArenaGame getGame() {
+        return game;
     }
 
     public Player[] getPlayers() {

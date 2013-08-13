@@ -56,7 +56,7 @@ public class CancelCommand extends SubCommand {
             return;
         }
         GameIDHandler idh = plugin.getIDHandler();
-        if (idh.getPlayers(id) == null) {
+        if (idh.getGame(id) == null) {
             sender.sendMessage(ColorList.ERR + "There aren't any games with the id " + ColorList.ERR_ARGS + id);
             return;
         }

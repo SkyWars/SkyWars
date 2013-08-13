@@ -36,7 +36,7 @@ import org.bukkit.event.Listener;
  */
 public class GameIDHandler implements Listener, UnloadListener, SkyIDHandler {
 
-    private final Map<Integer, String[]> currentGames = new HashMap<Integer, String[]>();
+    private final Map<Integer, ArenaGame> currentGames = new HashMap<>();
     private final List<Integer> currentIDs = new ArrayList<Integer>();
 
     @Override
@@ -45,7 +45,7 @@ public class GameIDHandler implements Listener, UnloadListener, SkyIDHandler {
     }
 
     @Override
-    public String[] getPlayers(int id) {
+    public ArenaGame getGame(int id) {
         return currentGames.get(id);
     }
 
@@ -55,15 +55,18 @@ public class GameIDHandler implements Listener, UnloadListener, SkyIDHandler {
         while (currentGames.containsKey(id)) {
             id++;
         }
-        currentGames.put(id, evt.getNames());
+        ArenaGame game = new ArenaGame(id, evt.getNames());
+        currentGames.put(id, game);
         currentIDs.add(id);
         evt.setId(id);
+        evt.setGame(game);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onGameEnd(PrepairGameEndEvent evt) {
-        currentGames.remove(evt.getId());
-        currentIDs.remove(evt.getId());
+        int id = evt.getGame().getID();
+        currentGames.remove(id);
+        currentIDs.remove(id);
     }
 
     @Override
@@ -71,7 +74,7 @@ public class GameIDHandler implements Listener, UnloadListener, SkyIDHandler {
         GameHandler handler = plugin.getGameHandler();
         while (!currentIDs.isEmpty()) {
             int id = currentIDs.get(0);
-            if (getPlayers(id) != null) {
+            if (getGame(id) != null) {
                 handler.endGame(id, false);
             }
         }
