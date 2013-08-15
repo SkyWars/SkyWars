@@ -51,6 +51,7 @@ public class LocationStore implements Listener, UnloadListener, SkyLocationStore
     public LocationStore(JavaPlugin plugin) {
         this.plugin = plugin;
         ConfigurationSerialization.registerClass(SkyBlockLocation.class);
+        ConfigurationSerialization.registerClass(SkyPlayerLocation.class);
         load();
     }
 
