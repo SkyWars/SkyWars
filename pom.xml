@@ -50,7 +50,7 @@
         </dependency>
         <dependency>
             <groupId>net.daboross.bukkitdev</groupId>
-            <artifactId>CommandExecutorBase</artifactId>
+            <artifactId>command-executor-base</artifactId>
             <version>1.5.0</version>
             <scope>compile</scope>
         </dependency>
@@ -113,7 +113,7 @@
                             <artifactSet>
                                 <includes>
                                     <include>org.mcstats.bukkit:metrics-lite</include>
-                                    <include>net.daboross.bukkitdev:CommandExecutorBase</include>
+                                    <include>net.daboross.bukkitdev:command-executor-base</include>
                                     <include>net.daboross.bukkitdev:skywars-api</include>
                                 </includes>
                             </artifactSet>
