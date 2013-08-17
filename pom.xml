@@ -51,7 +51,7 @@
         <dependency>
             <groupId>net.daboross.bukkitdev</groupId>
             <artifactId>command-executor-base</artifactId>
-            <version>1.5.0</version>
+            <version>1.5.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -61,6 +61,7 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
+
     <repositories>
         <repository>
             <id>bukkit-repo</id>
@@ -71,7 +72,6 @@
             <url>http://repo.mcstats.org/content/repositories/public</url>
         </repository>
     </repositories>
-
     <build>
         <finalName>${project.name}</finalName>
         <resources>
