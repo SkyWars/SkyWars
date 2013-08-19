@@ -41,8 +41,8 @@ public class WorldCopier {
         if (world == null) {
             throw new IllegalArgumentException("No world applicable.");
         }
-        int xLength = Statics.ARENA_MAX.x - Statics.ARENA_MIN.x;
-        int zLength = Statics.ARENA_MAX.z - Statics.ARENA_MIN.z;
+        int xLength = Statics.ARENA_MAX.x - Statics.ARENA_MIN.x + 30;
+        int zLength = Statics.ARENA_MAX.z - Statics.ARENA_MIN.z + 30;
         SkyBlockLocation min = new SkyBlockLocation(center.x - xLength / 2, 0, center.z - zLength / 2, center.world);
         SkyBlockLocation length = new SkyBlockLocation(xLength, world.getMaxHeight(), zLength, center.world);
         destroyArena(min, length, world);
@@ -52,7 +52,7 @@ public class WorldCopier {
         for (int x = 0; x < length.x; x++) {
             for (int y = 0; y < length.y; y++) {
                 for (int z = 0; z < length.z; z++) {
-                    world.getBlockAt(x, y, z).setType(Material.AIR);
+                    world.getBlockAt(min.x + x, min.y + y, min.z + z).setType(Material.AIR);
                 }
             }
         }
