@@ -21,11 +21,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+//import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
 import net.daboross.bukkitdev.skywars.events.PrepairGameEndEvent;
 import net.daboross.bukkitdev.skywars.events.PrepairGameStartEvent;
-import net.daboross.bukkitdev.skywars.events.UnloadListener;
+//import net.daboross.bukkitdev.skywars.events.UnloadListener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -34,7 +34,9 @@ import org.bukkit.event.Listener;
  *
  * @author daboross
  */
-public class GameIDHandler implements Listener, UnloadListener, SkyIDHandler {
+public class GameIDHandler implements Listener,
+//        UnloadListener, 
+        SkyIDHandler {
 
     private final Map<Integer, ArenaGame> currentGames = new HashMap<>();
     private final List<Integer> currentIDs = new ArrayList<Integer>();
@@ -69,16 +71,16 @@ public class GameIDHandler implements Listener, UnloadListener, SkyIDHandler {
         currentIDs.remove(id);
     }
 
-    @Override
-    public void saveAndUnload(SkyWarsPlugin plugin) {
-        GameHandler handler = plugin.getGameHandler();
-        while (!currentIDs.isEmpty()) {
-            int id = currentIDs.get(0);
-            if (getGame(id) != null) {
-                handler.endGame(id, false);
-            }
-        }
-    }
+//    @Override
+//    public void saveAndUnload(SkyWarsPlugin plugin) {
+//        GameHandler handler = plugin.getGameHandler();
+//        while (!currentIDs.isEmpty()) {
+//            int id = currentIDs.get(0);
+//            if (getGame(id) != null) {
+//                handler.endGame(id, false);
+//            }
+//        }
+//    }
 
     @Override
     public List<Integer> getCurrentIDs() {
