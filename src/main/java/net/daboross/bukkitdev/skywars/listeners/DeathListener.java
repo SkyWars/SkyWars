@@ -66,14 +66,18 @@ public class DeathListener implements Listener, SkyAttackerStorage {
             String name = p.getName().toLowerCase();
             Entity damager = evt.getDamager();
             if (damager instanceof HumanEntity) {
-                lastHit.put(name, ((HumanEntity) damager).getName().toLowerCase());
+                lastHit.put(name, ((HumanEntity) damager).getName());
             } else if (damager instanceof Projectile) {
                 LivingEntity shooter = ((Projectile) damager).getShooter();
-                if (shooter instanceof Player) {
-                    lastHit.put(name, ((Player) shooter).getName());
+                if (shooter == null) {
+                    lastHit.put(name, "Unknown Bowman");
                 } else {
-                    String customName = shooter.getCustomName();
-                    lastHit.put(name, customName == null ? shooter.getType().getName() : customName);
+                    if (shooter instanceof HumanEntity) {
+                        lastHit.put(name, ((HumanEntity) shooter).getName());
+                    } else {
+                        String customName = shooter.getCustomName();
+                        lastHit.put(name, customName == null ? shooter.getType().getName() : customName);
+                    }
                 }
             } else if (damager instanceof LivingEntity) {
                 String customName = ((LivingEntity) damager).getCustomName();
