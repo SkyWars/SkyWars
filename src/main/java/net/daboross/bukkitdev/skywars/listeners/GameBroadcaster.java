@@ -52,7 +52,7 @@ public class GameBroadcaster {
             if (winners.isEmpty()) {
                 message = Messages.NONE_WON;
             } else if (winners.size() == 1) {
-                message = String.format(Messages.SINGLE_WON, winners.get(0));
+                message = String.format(Messages.SINGLE_WON, winners.get(0).getName());
             } else {
                 StringBuilder winnerBuilder = new StringBuilder(winners.get(0).getName());
                 for (int i = 0; i < winners.size(); i++) {
