@@ -22,21 +22,18 @@ import java.util.List;
 import net.daboross.bukkitdev.skywars.game.ArenaGame;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 
 /**
  *
  * @author daboross
  */
-public class PrepairGameEndEvent extends Event {
+public class GameEndInfo {
 
-    private static final HandlerList handlerList = new HandlerList();
     private final ArenaGame game;
     private final List<Player> alivePlayers;
     private final boolean broadcast;
 
-    public PrepairGameEndEvent(ArenaGame game, boolean broadcast) {
+    public GameEndInfo(ArenaGame game, boolean broadcast) {
         if (game == null) {
             throw new IllegalArgumentException();
         }
@@ -63,14 +60,5 @@ public class PrepairGameEndEvent extends Event {
 
     public boolean shouldBroadcast() {
         return broadcast;
-    }
-
-    @Override
-    public HandlerList getHandlers() {
-        return handlerList;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlerList;
     }
 }

@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.game.SkyAttackerStorage;
-import net.daboross.bukkitdev.skywars.events.PrepairPlayerLeaveGameEvent;
+import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameInfo;
 import net.daboross.bukkitdev.skywars.game.KillBroadcaster;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
@@ -42,13 +42,13 @@ import org.bukkit.event.player.PlayerRespawnEvent;
  *
  * @author daboross
  */
-public class DeathListener implements Listener, SkyAttackerStorage {
+public class DeathStorage implements Listener, SkyAttackerStorage {
 
     private final SkyWarsPlugin plugin;
-    private Map<String, String> lastHit = new HashMap<String, String>();
-    private Set<String> causedVoid = new HashSet<String>();
+    private final Map<String, String> lastHit = new HashMap<String, String>();
+    private final Set<String> causedVoid = new HashSet<String>();
 
-    public DeathListener(SkyWarsPlugin plugin) {
+    public DeathStorage(SkyWarsPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -112,9 +112,8 @@ public class DeathListener implements Listener, SkyAttackerStorage {
         }
     }
 
-    @EventHandler
-    public void onLeave(PrepairPlayerLeaveGameEvent evt) {
-        lastHit.remove(evt.getPlayer().getName().toLowerCase());
+    public void onPlayerLeaveGame(PlayerLeaveGameInfo info) {
+        lastHit.remove(info.getPlayer().getName().toLowerCase());
     }
 
     @Override

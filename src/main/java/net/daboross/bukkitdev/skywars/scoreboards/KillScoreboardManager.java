@@ -22,9 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
-import net.daboross.bukkitdev.skywars.events.PrepairGameEndEvent;
-import net.daboross.bukkitdev.skywars.events.PrepairGameStartEvent;
-import net.daboross.bukkitdev.skywars.events.UnloadListener;
+import net.daboross.bukkitdev.skywars.events.GameEndInfo;
+import net.daboross.bukkitdev.skywars.events.GameStartInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -41,7 +40,7 @@ import org.bukkit.scoreboard.ScoreboardManager;
  *
  * @author daboross
  */
-public class KillScoreboardManager implements Listener, UnloadListener {
+public class KillScoreboardManager implements Listener {
 
     private final ScoreboardManager manager;
     private final SkyWarsPlugin plugin;
@@ -87,18 +86,16 @@ public class KillScoreboardManager implements Listener, UnloadListener {
         return scoreboard;
     }
 
-    @EventHandler
-    public void onStart(PrepairGameStartEvent evt) {
-        Scoreboard gameBoard = createAndAddScoreboard(evt.getNames());
-        for (Player p : evt.getPlayers()) {
+    public void onStart(GameStartInfo info) {
+        Scoreboard gameBoard = createAndAddScoreboard(info.getNames());
+        for (Player p : info.getPlayers()) {
             p.setScoreboard(gameBoard);
         }
-        gameScoreboards.put(evt.getId(), gameBoard);
+        gameScoreboards.put(info.getId(), gameBoard);
     }
 
-    @EventHandler
-    public void onEnd(PrepairGameEndEvent evt) {
-        Scoreboard gameBoard = gameScoreboards.remove(evt.getGame().getID());
+    public void onEnd(GameEndInfo info) {
+        Scoreboard gameBoard = gameScoreboards.remove(info.getGame().getID());
         gameBoard.getObjective("Kills this game").unregister();
     }
 
@@ -108,11 +105,6 @@ public class KillScoreboardManager implements Listener, UnloadListener {
         if (killer != null) {
             upKills(killer.getName().toLowerCase());
         }
-    }
-
-    @Override
-    public void saveAndUnload(SkyWarsPlugin plugin) {
-        save();
     }
 
     private void upKills(String lowerCaseName) {

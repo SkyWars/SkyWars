@@ -16,13 +16,27 @@
  */
 package net.daboross.bukkitdev.skywars.events;
 
-import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import org.bukkit.entity.Player;
 
 /**
  *
  * @author daboross
  */
-public interface UnloadListener {
+public class PlayerLeaveGameInfo {
 
-    public void saveAndUnload(SkyWarsPlugin plugin);
+    private final int id;
+    private final Player who;
+
+    public PlayerLeaveGameInfo(int id, Player who) {
+        this.who = who;
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public Player getPlayer() {
+        return who;
+    }
 }

@@ -25,7 +25,6 @@ import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.location.SkyLocationStore;
 import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
-import net.daboross.bukkitdev.skywars.events.UnloadListener;
 import net.daboross.bukkitdev.skywars.world.Statics;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -40,7 +39,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * @author daboross
  */
-public class LocationStore implements Listener, UnloadListener, SkyLocationStore {
+public class LocationStore implements Listener, SkyLocationStore {
 
     private final JavaPlugin plugin;
     private final List<SkyBlockLocation> portals = new ArrayList<SkyBlockLocation>();
@@ -89,11 +88,6 @@ public class LocationStore implements Listener, UnloadListener, SkyLocationStore
                 }
             }
         }
-    }
-
-    @Override
-    public void saveAndUnload(SkyWarsPlugin plugin) {
-        save();
     }
 
     public void save() {

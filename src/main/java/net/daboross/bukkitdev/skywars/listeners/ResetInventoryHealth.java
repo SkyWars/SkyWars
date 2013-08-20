@@ -16,23 +16,20 @@
  */
 package net.daboross.bukkitdev.skywars.listeners;
 
-import net.daboross.bukkitdev.skywars.events.PrepairGameStartEvent;
-import net.daboross.bukkitdev.skywars.events.PrepairPlayerLeaveGameEvent;
+import net.daboross.bukkitdev.skywars.events.GameStartInfo;
+import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameInfo;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
 /**
  *
  * @author daboross
  */
-public class ResetHealthListener implements Listener {
+public class ResetInventoryHealth {
 
-    @EventHandler
-    public void onGameStart(PrepairGameStartEvent evt) {
-        for (Player p : evt.getPlayers()) {
+    public void onGameStart(GameStartInfo info) {
+        for (Player p : info.getPlayers()) {
             p.setGameMode(GameMode.SURVIVAL);
             p.setHealth(p.getMaxHealth());
             p.getInventory().clear();
@@ -41,9 +38,8 @@ public class ResetHealthListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerLeave(PrepairPlayerLeaveGameEvent evt) {
-        Player p = evt.getPlayer();
+    public void onPlayerLeave(PlayerLeaveGameInfo info) {
+        Player p = info.getPlayer();
         p.setGameMode(GameMode.SURVIVAL);
         p.setHealth(p.getMaxHealth());
         p.getInventory().clear();

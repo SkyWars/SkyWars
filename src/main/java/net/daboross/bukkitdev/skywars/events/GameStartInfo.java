@@ -19,22 +19,19 @@ package net.daboross.bukkitdev.skywars.events;
 import net.daboross.bukkitdev.skywars.game.ArenaGame;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 
 /**
  *
  * @author daboross
  */
-public class PrepairGameStartEvent extends Event {
+public class GameStartInfo {
 
-    private static final HandlerList handlerList = new HandlerList();
     private final String[] names;
     private final Player[] players = new Player[4];
     private ArenaGame game;
     private int id;
 
-    public PrepairGameStartEvent(String[] names) {
+    public GameStartInfo(String[] names) {
         if (names == null || names.length != 4) {
             throw new IllegalArgumentException();
         }
@@ -70,14 +67,5 @@ public class PrepairGameStartEvent extends Event {
 
     public String[] getNames() {
         return names;
-    }
-
-    @Override
-    public HandlerList getHandlers() {
-        return handlerList;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlerList;
     }
 }

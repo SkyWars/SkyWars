@@ -20,9 +20,9 @@ import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.game.SkyCurrentGameTracker;
 import net.daboross.bukkitdev.skywars.api.game.SkyGameHandler;
 import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
-import net.daboross.bukkitdev.skywars.events.PrepairGameEndEvent;
-import net.daboross.bukkitdev.skywars.events.PrepairGameStartEvent;
-import net.daboross.bukkitdev.skywars.events.PrepairPlayerLeaveGameEvent;
+import net.daboross.bukkitdev.skywars.events.GameEndInfo;
+import net.daboross.bukkitdev.skywars.events.GameStartInfo;
+import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -44,8 +44,8 @@ public class GameHandler implements SkyGameHandler {
         if (queued.length != 4) {
             throw new IllegalStateException("Queue size is not 4");
         }
-        PrepairGameStartEvent evt = new PrepairGameStartEvent(queued);
-        plugin.getServer().getPluginManager().callEvent(evt);
+        GameStartInfo info = new GameStartInfo(queued);
+        plugin.getDistributor().distribute(info);
     }
 
     @Override
@@ -54,13 +54,13 @@ public class GameHandler implements SkyGameHandler {
         if (!idHandler.gameRunning(id)) {
             throw new IllegalArgumentException("Invalid id " + id);
         }
-        PrepairGameEndEvent evt = new PrepairGameEndEvent(plugin.getIDHandler().getGame(id), broadcast);
+        GameEndInfo info = new GameEndInfo(plugin.getIDHandler().getGame(id), broadcast);
         Location lobby = plugin.getLocationStore().getLobbyPosition().toLocation();
-        for (Player player : evt.getAlivePlayers()) {
-            plugin.getServer().getPluginManager().callEvent(new PrepairPlayerLeaveGameEvent(id, player));
+        for (Player player : info.getAlivePlayers()) {
+            plugin.getDistributor().distribute(new PlayerLeaveGameInfo(id, player));
             player.teleport(lobby);
         }
-        plugin.getServer().getPluginManager().callEvent(evt);
+        plugin.getDistributor().distribute(info);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class GameHandler implements SkyGameHandler {
         ArenaGame game = idh.getGame(id);
         game.removePlayer(playerName);
         Player player = Bukkit.getPlayerExact(playerName);
-        plugin.getServer().getPluginManager().callEvent(new PrepairPlayerLeaveGameEvent(id, player));
+        plugin.getDistributor().distribute(new PlayerLeaveGameInfo(id, player));
         if (teleport) {
             player.teleport(plugin.getLocationStore().getLobbyPosition().toLocation());
         }

@@ -19,16 +19,14 @@ package net.daboross.bukkitdev.skywars.game;
 import java.util.HashMap;
 import java.util.Map;
 import net.daboross.bukkitdev.skywars.api.game.SkyCurrentGameTracker;
-import net.daboross.bukkitdev.skywars.events.PrepairGameStartEvent;
-import net.daboross.bukkitdev.skywars.events.PrepairPlayerLeaveGameEvent;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import net.daboross.bukkitdev.skywars.events.GameStartInfo;
+import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameInfo;
 
 /**
  *
  * @author daboross
  */
-public class CurrentGames implements Listener, SkyCurrentGameTracker {
+public class CurrentGames implements SkyCurrentGameTracker {
 
     private final Map<String, Integer> currentlyInGame = new HashMap<String, Integer>();
 
@@ -47,15 +45,13 @@ public class CurrentGames implements Listener, SkyCurrentGameTracker {
         return val == null ? -1 : val.intValue();
     }
 
-    @EventHandler
-    public void onPlayerLeaveGame(PrepairPlayerLeaveGameEvent evt) {
-        currentlyInGame.remove(evt.getPlayer().getName().toLowerCase());
+    public void onPlayerLeaveGame(PlayerLeaveGameInfo info) {
+        currentlyInGame.remove(info.getPlayer().getName().toLowerCase());
     }
 
-    @EventHandler
-    public void onGameStart(PrepairGameStartEvent evt) {
-        int id = evt.getId();
-        for (String name : evt.getNames()) {
+    public void onGameStart(GameStartInfo info) {
+        int id = info.getId();
+        for (String name : info.getNames()) {
             setGameID(name, id);
         }
     }

@@ -17,24 +17,19 @@
 package net.daboross.bukkitdev.skywars;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
-import net.daboross.bukkitdev.skywars.api.game.SkyAttackerStorage;
-import net.daboross.bukkitdev.skywars.api.game.SkyCurrentGameTracker;
-import net.daboross.bukkitdev.skywars.events.UnloadListener;
+import net.daboross.bukkitdev.skywars.events.GameEventDistributor;
 import net.daboross.bukkitdev.skywars.game.CurrentGames;
 import net.daboross.bukkitdev.skywars.game.GameHandler;
 import net.daboross.bukkitdev.skywars.game.GameIDHandler;
 import net.daboross.bukkitdev.skywars.game.GameQueue;
 import net.daboross.bukkitdev.skywars.listeners.CommandListener;
-import net.daboross.bukkitdev.skywars.listeners.DeathListener;
-import net.daboross.bukkitdev.skywars.listeners.EventForwardListener;
-import net.daboross.bukkitdev.skywars.listeners.GameBroadcastListener;
+import net.daboross.bukkitdev.skywars.listeners.DeathStorage;
+import net.daboross.bukkitdev.skywars.listeners.GameBroadcaster;
 import net.daboross.bukkitdev.skywars.listeners.PortalListener;
 import net.daboross.bukkitdev.skywars.listeners.QuitListener;
-import net.daboross.bukkitdev.skywars.listeners.ResetHealthListener;
+import net.daboross.bukkitdev.skywars.listeners.ResetInventoryHealth;
 import net.daboross.bukkitdev.skywars.listeners.SpawnListener;
 import net.daboross.bukkitdev.skywars.storage.LocationStore;
 import net.daboross.bukkitdev.skywars.world.SkyWorldHandler;
@@ -60,10 +55,12 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     private CurrentGames currentGames;
     private GameHandler gameHandler;
     private GameIDHandler idHandler;
-    private SkyWorldHandler worldCreator;
-    private DeathListener deathListener;
+    private SkyWorldHandler worldHandler;
+    private DeathStorage deathStorage;
+    private GameBroadcaster broadcaster;
+    private ResetInventoryHealth resetInventoryHealth;
+    private GameEventDistributor distributor;
     private boolean enabledCorrectly = false;
-    private final List<UnloadListener> unloadListeners = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -87,37 +84,35 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     }
 
     private void startPlugin() {
+        currentGames = new CurrentGames();
+        idHandler = new GameIDHandler();
+        worldHandler = new SkyWorldHandler();
+        broadcaster = new GameBroadcaster();
+        resetInventoryHealth = new ResetInventoryHealth();
         locationStore = new LocationStore(this);
         gameQueue = new GameQueue(this);
-        currentGames = new CurrentGames();
         gameHandler = new GameHandler(this);
-        idHandler = new GameIDHandler();
-        worldCreator = new SkyWorldHandler();
-        deathListener = new DeathListener(this);
+        deathStorage = new DeathStorage(this);
+        distributor = new GameEventDistributor(this);
         new BukkitRunnable() {
             @Override
             public void run() {
-                worldCreator.create();
+                worldHandler.create();
             }
         }.runTask(this);
         new PermissionHandler("skywars").setupPermissions();
         setupCommands();
         PluginManager pm = getServer().getPluginManager();
-        registerEvents(pm, new SpawnListener(), deathListener,
+        registerListeners(pm, new SpawnListener(), deathStorage,
                 new QuitListener(this), new PortalListener(this),
-                new CommandListener(this), idHandler, currentGames, worldCreator,
-                new ResetHealthListener(), new GameBroadcastListener(this),
-                locationStore, new EventForwardListener(this));
+                new CommandListener(this));
         enabledCorrectly = true;
     }
 
-    private void registerEvents(PluginManager pm, Object... listeners) {
+    private void registerListeners(PluginManager pm, Listener... listeners) {
         for (Object l : listeners) {
             if (l instanceof Listener) {
                 pm.registerEvents((Listener) l, this);
-            }
-            if (l instanceof UnloadListener) {
-                unloadListeners.add((UnloadListener) l);
             }
         }
     }
@@ -125,10 +120,8 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     @Override
     public void onDisable() {
         if (enabledCorrectly) {
-            // I can't use an event because all listeners are already unregistered
-            for (UnloadListener l : unloadListeners) {
-                l.saveAndUnload(this);
-            }
+            locationStore.save();
+            idHandler.saveAndUnload(this);
             getLogger().log(Level.INFO, "SkyWars disabled successfully");
         } else {
             getLogger().log(Level.INFO, "SkyWars not disabling due to not being enabled successfully.");
@@ -170,7 +163,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     }
 
     @Override
-    public SkyCurrentGameTracker getCurrentGameTracker() {
+    public CurrentGames getCurrentGameTracker() {
         return currentGames;
     }
 
@@ -185,7 +178,23 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     }
 
     @Override
-    public SkyAttackerStorage getAttackerStorage() {
-        return deathListener;
+    public DeathStorage getAttackerStorage() {
+        return deathStorage;
+    }
+
+    public SkyWorldHandler getWorldHandler() {
+        return worldHandler;
+    }
+
+    public GameBroadcaster getBroadcaster() {
+        return broadcaster;
+    }
+
+    public ResetInventoryHealth getResetInventoryHealth() {
+        return resetInventoryHealth;
+    }
+
+    public GameEventDistributor getDistributor() {
+        return distributor;
     }
 }
