@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.daboross.bukkitdev.skywars.listeners;
+package net.daboross.bukkitdev.skywars.game.reactors;
 
 import java.util.List;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
