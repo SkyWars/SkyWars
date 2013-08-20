@@ -130,7 +130,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        sender.sendMessage("SkyWars not started correctly. Check console for errors.");
+        sender.sendMessage("SkyWars did not start correctly. Check console for errors.");
         return true;
     }
 
@@ -139,7 +139,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         try {
             metrics = new MetricsLite(this);
         } catch (IOException ex) {
-            getLogger().log(Level.WARNING, "Unable to create metrics.", ex);
+            getLogger().log(Level.WARNING, "Unable to create metrics: {0}", ex.toString());
             return;
         }
         metrics.start();
