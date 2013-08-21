@@ -18,6 +18,7 @@ package net.daboross.bukkitdev.skywars.commands;
 
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
+import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import org.bukkit.command.Command;
@@ -34,18 +35,14 @@ public class SetPortalCommand extends SubCommand {
     private final SkyWarsPlugin plugin;
 
     public SetPortalCommand(SkyWarsPlugin plugin) {
-        super("setportal", false, "skywars.setportal", "Sets a portal for automatically joining the game at your current location");
+        super("setportal", false, "skywars.setportal", "Sets a portal at your current location");
+        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
         this.plugin = plugin;
     }
 
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         Player player = (Player) sender;
-        if (subCommandArgs.length != 0) {
-            sender.sendMessage(ColorList.ERR + "Too many arguments!");
-            sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
-            return;
-        }
         plugin.getLocationStore().getPortals().add(new SkyBlockLocation(player.getLocation()));
         sender.sendMessage(CONFIRMATION);
     }

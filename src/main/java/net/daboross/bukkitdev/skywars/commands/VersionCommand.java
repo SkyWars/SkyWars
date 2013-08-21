@@ -18,6 +18,8 @@ package net.daboross.bukkitdev.skywars.commands;
 
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
+import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
+import net.daboross.bukkitdev.skywars.Messages;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -28,23 +30,16 @@ import org.bukkit.command.CommandSender;
  */
 public class VersionCommand extends SubCommand {
 
-    private static final String CREDITS = ColorList.REG + "Skyblock Warriors map created by " + ColorList.NAME + "SwipeShot";
-    private static final String VERSION = ColorList.REG + "SkyWars plugin v" + ColorList.DATA + "%s" + ColorList.REG + " created by " + ColorList.NAME + "Dabo Ross";
     private final SkyWarsPlugin plugin;
 
     public VersionCommand(SkyWarsPlugin plugin) {
         super("version", true, "skywars.version", "Gives version");
+        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
         this.plugin = plugin;
     }
 
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        if (subCommandArgs.length != 0) {
-            sender.sendMessage(ColorList.ERR + "Too many arguments!");
-            sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
-            return;
-        }
-        sender.sendMessage(CREDITS);
-        sender.sendMessage(String.format(VERSION, plugin.getDescription().getVersion()));
+        sender.sendMessage(String.format(Messages.Version.CREDITS_AND_VERSION, plugin.getDescription().getVersion()));
     }
 }

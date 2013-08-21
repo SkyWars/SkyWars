@@ -123,4 +123,33 @@ public class Messages {
          */
         public static final String CONFIRMATION = ColorList.REG + "Teleporting to lobby";
     }
+
+    public static class Version {
+
+        /**
+         * Message displayed when someone uses the version command.
+         * <br>
+         * First %s is the plugin's version.
+         */
+        public static final String CREDITS_AND_VERSION =
+                ColorList.REG + "Skyblock Warriors map created by " + ColorList.NAME + "SwipeShot\n"
+                + ColorList.REG + "SkyWars plugin v" + ColorList.DATA + "%s" + ColorList.REG + " created by " + ColorList.NAME + "Dabo Ross";
+    }
+
+    public static class Leave {
+
+        /**
+         * Message displayed when someone is removed from the queue.
+         */
+        public static final String REMOVED_FROM_QUEUE = ColorList.REG + "You are no longer in the queue.";
+        /**
+         * Message displayed when someone is removed from the game.
+         */
+        public static final String REMOVED_FROM_GAME = ColorList.REG + "You have fled the game.";
+        /**
+         * Message displayed when someone tries to leave when they are not in
+         * the queue or game.
+         */
+        public static final String NOT_IN = ColorList.ERR + "You were not in the queue.";
+    }
 }

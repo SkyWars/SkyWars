@@ -20,6 +20,7 @@ import java.util.List;
 import net.daboross.bukkitdev.commandexecutorbase.ArrayHelpers;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
+import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.game.GameIDHandler;
@@ -37,16 +38,12 @@ public class StatusCommand extends SubCommand {
 
     public StatusCommand(SkyWarsPlugin plugin) {
         super("status", true, "skywars.status", "Gives game status");
+        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
         this.plugin = plugin;
     }
 
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        if (subCommandArgs.length != 0) {
-            sender.sendMessage(ColorList.ERR + "Too many arguments!");
-            sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
-            return;
-        }
         GameIDHandler idh = plugin.getIDHandler();
         sender.sendMessage(String.format(ColorList.TOP_FORMAT, "SkyWars Status"));
         sender.sendMessage(ColorList.REG + "In Queue: " + ColorList.DATA + ArrayHelpers.combinedWithSeperator(plugin.getGameQueue().getCopy(), ColorList.REG + ", " + ColorList.DATA));

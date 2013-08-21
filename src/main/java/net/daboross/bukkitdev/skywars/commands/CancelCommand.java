@@ -18,6 +18,7 @@ package net.daboross.bukkitdev.skywars.commands;
 
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
+import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.game.GameIDHandler;
 import org.bukkit.command.Command;
@@ -34,20 +35,13 @@ public class CancelCommand extends SubCommand {
     public CancelCommand(SkyWarsPlugin plugin) {
         super("cancel", true, "skywars.cancel", "Cancels a current game with the given id");
         addArgumentNames("ID");
+        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.LESS_THAN, 2, ColorList.ERR + "Too many arguments!"));
+        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.GREATER_THAN, 0, ColorList.ERR + "Not enough arguments!"));
         this.plugin = plugin;
     }
 
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        if (subCommandArgs.length == 0) {
-            sender.sendMessage(ColorList.ERR + "Not enough arguments!");
-            sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
-            return;
-        } else if (subCommandArgs.length > 1) {
-            sender.sendMessage(ColorList.ERR + "Too many arguments!");
-            sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
-            return;
-        }
         int id;
         try {
             id = Integer.parseInt(subCommandArgs[0]);

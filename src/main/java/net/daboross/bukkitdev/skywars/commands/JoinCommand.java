@@ -18,11 +18,11 @@ package net.daboross.bukkitdev.skywars.commands;
 
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
+import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.Messages;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 /**
  *
@@ -34,18 +34,13 @@ public class JoinCommand extends SubCommand {
 
     public JoinCommand(SkyWarsPlugin plugin) {
         super("join", false, "skywars.join", "Joins the queue for the next game");
+        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
         this.plugin = plugin;
     }
 
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        Player player = (Player) sender;
-        if (subCommandArgs.length != 0) {
-            sender.sendMessage(ColorList.ERR + "Too many arguments!");
-            sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
-            return;
-        }
-        String name = player.getName().toLowerCase();
+        String name = sender.getName().toLowerCase();
         if (plugin.getCurrentGameTracker().isInGame(name)) {
             sender.sendMessage(Messages.Join.IN_GAME);
         } else if (plugin.getGameQueue().inQueue(name)) {

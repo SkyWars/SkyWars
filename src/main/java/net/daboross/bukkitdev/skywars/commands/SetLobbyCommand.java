@@ -18,6 +18,7 @@ package net.daboross.bukkitdev.skywars.commands;
 
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
+import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
 import org.bukkit.command.Command;
@@ -35,16 +36,12 @@ public class SetLobbyCommand extends SubCommand {
 
     public SetLobbyCommand(SkyWarsPlugin plugin) {
         super("setlobby", false, "skywars.setlobby", "Sets the lobby position");
+        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
         this.plugin = plugin;
     }
 
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        if (subCommandArgs.length != 0) {
-            sender.sendMessage(ColorList.ERR + "Too many arguments!");
-            sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
-            return;
-        }
         Player player = (Player) sender;
         plugin.getLocationStore().setLobbyPosition(new SkyPlayerLocation(player));
         sender.sendMessage(CONFIRMATION);
