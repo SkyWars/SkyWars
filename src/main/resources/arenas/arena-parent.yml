@@ -1,0 +1,50 @@
+# --- arena-parent.yml ---
+# Any settings that an individual arena config leaves out will be inherited
+#  from this arena config.
+# All of the options must be defined here in order for configuration to work
+# correctly when the messages are left out of a child config.
+# ---
+spawns: []
+num-players: 0
+boundaries:
+  origin:
+    min:
+      x: 0
+      y: 0
+      z: 0
+    max:
+      x: 0
+      y: 0
+      z: 0
+    world: SkyWarsBaseWorld
+  building:
+    min:
+      x: 0
+      y: 0
+      z: 0
+    max:
+      x: 0
+      y: 0
+      z: 0
+  clearing:
+    min:
+      x: 0
+      y: 0
+      z: 0
+    max:
+      x: 0
+      y: 0
+      z: 0
+messages:
+  death:
+    killed-void: '|NAME|%s|BROADCAST| pushed |NAME|%s|BROADCAST| into the void of doom'
+    suicide-void: '|NAME|%s|BROADCAST| jumped into the void of doom'
+    killed-damaged: '|NAME|%s|BROADCAST| killed |NAME|%s'
+    killed-other: '|NAME|%s|BROADCAST| was killed!'
+    forfeited-damaged: '|NAME|%s|BROADCAST| was forced for forfeit by |NAME|%s'
+    forfeited: '|NAME|%s|BROADCAST| forfeited!'
+  winning:
+    single-won: '|NAME|%s|BROADCAST| has won the SkyWars'
+    multi-won: '|NAME|%s|BROADCAST| have won the SkyWars'
+    none-won: '|NAME|Game ended with no victors'
+  game-starting: 'Game starting with |NAME|%s|BROADCAST|'

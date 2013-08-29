@@ -1,0 +1,50 @@
+# --- skyblock-warriors.yml ---
+# This is the Skyblock Warriors arena config.
+# As you can see 'messages:' isn't listed.
+# You can add arena-specific messages by adding a messages:
+# section. Otherwise all messages are inherited from arena-parent.yml
+# ---
+parent: arena-parent
+spawns:
+- x: 18.5
+  y: 6
+  z: -14.5
+- x: -17.5
+  y: 6
+  z: 15.5
+- x: -17.5
+  y: 6
+  z: 15.5
+- x: 18.5
+  y: 6
+  z: 15.5
+num-players: 4
+boundaries:
+  origin:
+    min:
+      x: -28
+      y: 97
+      z: -29
+    max:
+      x: 28
+      y: 104
+      z: 29
+    world: SkyWarsBaseWorld
+  building:
+    min:
+      x: -32
+      y: 0
+      z: -25
+    max:
+      x: 32
+      y: 120
+      z: 33
+  clearing:
+    min:
+      x: -33
+      y: 0
+      z: -26
+    max:
+      x: 33
+      y: 121
+      z: 34
