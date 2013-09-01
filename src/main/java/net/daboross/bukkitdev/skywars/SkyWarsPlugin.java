@@ -18,7 +18,10 @@ package net.daboross.bukkitdev.skywars;
 
 import java.io.IOException;
 import java.util.logging.Level;
+import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
+import net.daboross.bukkitdev.skywars.config.SkyConfigurationImplementation;
 import net.daboross.bukkitdev.skywars.events.GameEventDistributor;
 import net.daboross.bukkitdev.skywars.game.CurrentGames;
 import net.daboross.bukkitdev.skywars.game.GameHandler;
@@ -35,6 +38,9 @@ import net.daboross.bukkitdev.skywars.storage.LocationStore;
 import net.daboross.bukkitdev.skywars.world.SkyWorldHandler;
 import net.daboross.bukkitdev.skywars.world.Statics;
 import net.daboross.bukkitdev.skywars.world.WorldUnzipper;
+import static net.daboross.bukkitdev.skywars.world.WorldUnzipper.WorldUnzipResult.ALREADY_THERE;
+import static net.daboross.bukkitdev.skywars.world.WorldUnzipper.WorldUnzipResult.CREATED;
+import static net.daboross.bukkitdev.skywars.world.WorldUnzipper.WorldUnzipResult.ERROR;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
@@ -50,6 +56,7 @@ import org.mcstats.MetricsLite;
  */
 public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
 
+    private SkyConfiguration configuration;
     private LocationStore locationStore;
     private GameQueue gameQueue;
     private CurrentGames currentGames;
@@ -60,30 +67,47 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     private GameBroadcaster broadcaster;
     private ResetInventoryHealth resetInventoryHealth;
     private GameEventDistributor distributor;
-    private boolean enabledCorrectly = false;
+    private boolean enabledCorrectly = false, enablingDone = false;
 
     @Override
     public void onEnable() {
         setupMetrics();
+        try {
+            startPlugin();
+            enablingDone = true;
+        } catch (StartupFailedException ex) {
+            getLogger().log(Level.SEVERE, "Startup failed", ex);
+            enabledCorrectly = false;
+            enablingDone = true;
+            getServer().getPluginManager().disablePlugin(this);
+        } catch (Throwable ex) {
+            getLogger().log(Level.SEVERE, "Unknown throwable thrown during plugin startup.", ex);
+            enabledCorrectly = false;
+            enablingDone = true;
+            getServer().getPluginManager().disablePlugin(this);
+        }
+    }
+
+    private void copyWorld() {
         WorldUnzipper.WorldUnzipResult unzipResult = new WorldUnzipper(this).doWorldUnzip();
         switch (unzipResult) {
             case ALREADY_THERE:
                 getLogger().log(Level.INFO, "World already created. Assuming valid.");
-                startPlugin();
                 break;
             case ERROR:
-                getLogger().log(Level.INFO, "Error creating world. Please delete " + Statics.BASE_WORLD_NAME + " and restart server.");
-                break;
+                throw new StartupFailedException("Error creating world. Please delete " + Statics.BASE_WORLD_NAME + " and restart server.");
             case CREATED:
                 getLogger().log(Level.INFO, "Created world, resuming plugin start.");
-                startPlugin();
                 break;
             default:
-                getLogger().log(Level.INFO, "Invalid return for unzipResult.");
+                throw new StartupFailedException("Invalid return for doWorldUnzip().");
         }
     }
 
     private void startPlugin() {
+        copyWorld();
+        configuration = new SkyConfigurationImplementation(this);
+        configuration.load();
         currentGames = new CurrentGames();
         idHandler = new GameIDHandler();
         worldHandler = new SkyWorldHandler();
@@ -130,7 +154,15 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        sender.sendMessage("SkyWars did not start correctly. Check console for errors.");
+        if (!enabledCorrectly) {
+            if (!enablingDone) {
+                sender.sendMessage(ColorList.ERR + "Some evil error happened enabling SkyWars. Enabling isn't done.");
+            } else {
+                sender.sendMessage(ColorList.ERR + "SkyWars not enabled correctly. Check console for errors.");
+            }
+        } else {
+            sender.sendMessage(ColorList.ERR + "SkyWars has no clue what " + cmd.getName() + " is.");
+        }
         return true;
     }
 
@@ -152,49 +184,71 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         }
     }
 
+    private void checkEnabledCorrectly() {
+        if (enablingDone && !enabledCorrectly) {
+            throw new IllegalStateException("Not enabled correctly");
+        }
+    }
+
+    @Override
+    public SkyConfiguration getConfiguration() {
+        checkEnabledCorrectly();
+        return configuration;
+    }
+
     @Override
     public LocationStore getLocationStore() {
+        checkEnabledCorrectly();
         return locationStore;
     }
 
     @Override
     public GameQueue getGameQueue() {
+        checkEnabledCorrectly();
         return gameQueue;
     }
 
     @Override
     public CurrentGames getCurrentGameTracker() {
+        checkEnabledCorrectly();
         return currentGames;
     }
 
     @Override
     public GameHandler getGameHandler() {
+        checkEnabledCorrectly();
         return gameHandler;
     }
 
     @Override
     public GameIDHandler getIDHandler() {
+        checkEnabledCorrectly();
         return idHandler;
     }
 
     @Override
     public DeathStorage getAttackerStorage() {
+        checkEnabledCorrectly();
         return deathStorage;
     }
 
     public SkyWorldHandler getWorldHandler() {
+        checkEnabledCorrectly();
         return worldHandler;
     }
 
     public GameBroadcaster getBroadcaster() {
+        checkEnabledCorrectly();
         return broadcaster;
     }
 
     public ResetInventoryHealth getResetInventoryHealth() {
+        checkEnabledCorrectly();
         return resetInventoryHealth;
     }
 
     public GameEventDistributor getDistributor() {
+        checkEnabledCorrectly();
         return distributor;
     }
 }

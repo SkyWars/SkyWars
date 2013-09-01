@@ -10,6 +10,8 @@
 # All arena configs should have the config-version as 0. This will allow them to
 # be updated whenever any of the values change.
 #
+# All comments that are not in this header will be removed.
+#
 # Extensive documentation COMING SOON
 # ---
 config-version: 0

@@ -5,6 +5,8 @@
 #  correctly when the messages are left out of a child config.
 # Messages section can use both & color codes and # color codes.
 #
+# All comments that are not in this header will be removed.
+#
 # Extensive documentation COMING SOON
 # ---
 spawns: []

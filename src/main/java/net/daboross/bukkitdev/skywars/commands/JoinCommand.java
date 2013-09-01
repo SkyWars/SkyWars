@@ -20,7 +20,7 @@ import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.Messages;
-import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import net.daboross.bukkitdev.skywars.api.SkyWars;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -30,9 +30,9 @@ import org.bukkit.command.CommandSender;
  */
 public class JoinCommand extends SubCommand {
 
-    private final SkyWarsPlugin plugin;
+    private final SkyWars plugin;
 
-    public JoinCommand(SkyWarsPlugin plugin) {
+    public JoinCommand(SkyWars plugin) {
         super("join", false, "skywars.join", "Joins the queue for the next game");
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
         this.plugin = plugin;

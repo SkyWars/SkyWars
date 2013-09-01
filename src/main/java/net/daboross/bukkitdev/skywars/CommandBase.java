@@ -17,6 +17,7 @@
 package net.daboross.bukkitdev.skywars;
 
 import net.daboross.bukkitdev.commandexecutorbase.CommandExecutorBase;
+import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.commands.CancelAllCommand;
 import net.daboross.bukkitdev.skywars.commands.CancelCommand;
 import net.daboross.bukkitdev.skywars.commands.JoinCommand;
@@ -34,10 +35,10 @@ import org.bukkit.command.CommandExecutor;
  */
 public class CommandBase {
 
-    private final SkyWarsPlugin plugin;
+    private final SkyWars plugin;
     private final CommandExecutorBase base;
 
-    public CommandBase(SkyWarsPlugin plugin) {
+    public CommandBase(SkyWars plugin) {
         this.plugin = plugin;
         this.base = new CommandExecutorBase(null);
         this.initCommands();

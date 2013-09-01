@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
-import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
-import net.daboross.bukkitdev.skywars.game.GameIDHandler;
+import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -31,9 +31,9 @@ import org.bukkit.command.CommandSender;
  */
 public class CancelAllCommand extends SubCommand {
 
-    private final SkyWarsPlugin plugin;
+    private final SkyWars plugin;
 
-    public CancelAllCommand(SkyWarsPlugin plugin) {
+    public CancelAllCommand(SkyWars plugin) {
         super("cancelall", true, "skywars.cancelall", "Cancels all current games.");
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
         this.plugin = plugin;
@@ -41,7 +41,7 @@ public class CancelAllCommand extends SubCommand {
 
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        GameIDHandler idh = plugin.getIDHandler();
+        SkyIDHandler idh = plugin.getIDHandler();
         for (int id : new ArrayList<Integer>(idh.getCurrentIDs())) {
             sender.sendMessage(ColorList.REG + "Canceling game " + ColorList.DATA + id);
             plugin.getGameHandler().endGame(id, true);

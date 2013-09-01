@@ -19,7 +19,7 @@ package net.daboross.bukkitdev.skywars.commands;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
-import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -32,9 +32,9 @@ import org.bukkit.entity.Player;
 public class SetPortalCommand extends SubCommand {
 
     private static final String CONFIRMATION = ColorList.REG + "You have set a portal at your current location.";
-    private final SkyWarsPlugin plugin;
+    private final SkyWars plugin;
 
-    public SetPortalCommand(SkyWarsPlugin plugin) {
+    public SetPortalCommand(SkyWars plugin) {
         super("setportal", false, "skywars.setportal", "Sets a portal at your current location");
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
         this.plugin = plugin;

@@ -21,9 +21,9 @@ import net.daboross.bukkitdev.commandexecutorbase.ArrayHelpers;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
-import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
-import net.daboross.bukkitdev.skywars.game.GameIDHandler;
+import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -34,9 +34,9 @@ import org.bukkit.command.CommandSender;
  */
 public class StatusCommand extends SubCommand {
 
-    private final SkyWarsPlugin plugin;
+    private final SkyWars plugin;
 
-    public StatusCommand(SkyWarsPlugin plugin) {
+    public StatusCommand(SkyWars plugin) {
         super("status", true, "skywars.status", "Gives game status");
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
         this.plugin = plugin;
@@ -44,7 +44,7 @@ public class StatusCommand extends SubCommand {
 
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        GameIDHandler idh = plugin.getIDHandler();
+        SkyIDHandler idh = plugin.getIDHandler();
         sender.sendMessage(String.format(ColorList.TOP_FORMAT, "SkyWars Status"));
         sender.sendMessage(ColorList.REG + "In Queue: " + ColorList.DATA + ArrayHelpers.combinedWithSeperator(plugin.getGameQueue().getCopy(), ColorList.REG + ", " + ColorList.DATA));
         sender.sendMessage(String.format(ColorList.TOP_FORMAT, "Current Arenas"));

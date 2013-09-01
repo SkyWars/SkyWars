@@ -20,7 +20,8 @@ import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
-import net.daboross.bukkitdev.skywars.game.GameIDHandler;
+import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -30,9 +31,9 @@ import org.bukkit.command.CommandSender;
  */
 public class CancelCommand extends SubCommand {
 
-    private final SkyWarsPlugin plugin;
+    private final SkyWars plugin;
 
-    public CancelCommand(SkyWarsPlugin plugin) {
+    public CancelCommand(SkyWars plugin) {
         super("cancel", true, "skywars.cancel", "Cancels a current game with the given id");
         addArgumentNames("ID");
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.LESS_THAN, 2, ColorList.ERR + "Too many arguments!"));
@@ -49,7 +50,7 @@ public class CancelCommand extends SubCommand {
             sender.sendMessage(ColorList.ERR_ARGS + subCommandArgs[0] + ColorList.ERR + " isn't an integer!");
             return;
         }
-        GameIDHandler idh = plugin.getIDHandler();
+        SkyIDHandler idh = plugin.getIDHandler();
         if (idh.getGame(id) == null) {
             sender.sendMessage(ColorList.ERR + "There aren't any games with the id " + ColorList.ERR_ARGS + id);
             return;
