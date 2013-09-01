@@ -2,7 +2,8 @@
 # Any settings that an individual arena config leaves out will be inherited
 #  from this arena config.
 # All of the options must be defined here in order for configuration to work
-# correctly when the messages are left out of a child config.
+#  correctly when the messages are left out of a child config.
+# Messages section can use both & color codes and # color codes.
 #
 # Extensive documentation COMING SOON
 # ---
@@ -39,14 +40,14 @@ boundaries:
       z: 0
 messages:
   death:
-    killed-void: '|NAME|%s|BROADCAST| pushed |NAME|%s|BROADCAST| into the void of doom'
-    suicide-void: '|NAME|%s|BROADCAST| jumped into the void of doom'
-    killed-damaged: '|NAME|%s|BROADCAST| killed |NAME|%s'
-    killed-other: '|NAME|%s|BROADCAST| was killed!'
-    forfeited-damaged: '|NAME|%s|BROADCAST| was forced for forfeit by |NAME|%s'
-    forfeited: '|NAME|%s|BROADCAST| forfeited!'
+    killed-void: '#N%s#B pushed #N%s#B into the void of doom!'
+    suicide-void: '#N%s#B jumped into the void of doom!'
+    killed-damaged: '#N%s#B killed #N%s#B!'
+    killed-other: '#N%s#B was killed!'
+    forfeited-damaged: '#N%s#B was forced for forfeit by #N%s#B!'
+    forfeited: '#N%s#B forfeited!'
   winning:
-    single-won: '|NAME|%s|BROADCAST| has won the SkyWars'
-    multi-won: '|NAME|%s|BROADCAST| have won the SkyWars'
-    none-won: '|NAME|Game ended with no victors'
-  game-starting: 'Game starting with |NAME|%s|BROADCAST|'
+    single-won: '#N%s#B has won the SkyWars!'
+    multi-won: '#N%s#B have won the SkyWars!'
+    none-won: '#BGame ended with no victors'
+  game-starting: '#BGame starting with #N%s#B!'

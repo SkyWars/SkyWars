@@ -9,3 +9,4 @@ config-version: 0
 enabled-arenas:
 - skyblock-warriors
 arena-order: RANDOM
+message-prefix: '&8[&cSkyWars&8]#B'
