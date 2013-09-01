@@ -1,0 +1,11 @@
+# --- config.yml ---
+# config-version should NOT be touched.
+# There _must_ be a <name>.yml file in arenas/ for every enabled arena.
+# arena-order can be RANDOM or ORDERED.
+#
+# Extensive documentation COMING SOON
+# ---
+config-version: 0
+enabled-arenas:
+- skyblock-warriors
+arena-order: RANDOM

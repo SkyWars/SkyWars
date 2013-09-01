@@ -3,6 +3,8 @@
 #  from this arena config.
 # All of the options must be defined here in order for configuration to work
 # correctly when the messages are left out of a child config.
+#
+# Extensive documentation COMING SOON
 # ---
 spawns: []
 num-players: 0
