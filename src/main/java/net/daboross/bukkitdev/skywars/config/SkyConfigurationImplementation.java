@@ -202,11 +202,11 @@ public class SkyConfigurationImplementation implements SkyConfiguration {
         try {
             config.load(file);
         } catch (FileNotFoundException ex) {
-            throw new StartupFailedException("Why the heck can't we find the parent arena yaml", ex);
+            throw new StartupFailedException("Can't find the parent arena yaml", ex);
         } catch (IOException ex) {
-            throw new StartupFailedException("IOException load arena-parent " + file.getAbsolutePath(), ex);
+            throw new StartupFailedException("IOException loading arena-parent " + file.getAbsolutePath(), ex);
         } catch (InvalidConfigurationException ex) {
-            throw new StartupFailedException("Failed to load arena-parent " + file.getAbsolutePath(), ex);
+            throw new StartupFailedException("Failed to load arena-parent.yml " + file.getAbsolutePath(), ex);
         }
         SkyArenaConfig arenaConfig = SkyArenaConfig.deserialize(config);
         arenaConfig.setFile(file);
@@ -225,6 +225,7 @@ public class SkyConfigurationImplementation implements SkyConfiguration {
             }
             for (SkyArenaConfig config : enabledArenas) {
                 File file = config.getFile();
+                plugin.getLogger().log(Level.INFO, "Arena configuration for file {0}\n{1}", new Object[]{file.getAbsolutePath(), config.toNiceString(0)});
                 FileConfiguration fileConfig = new YamlConfiguration();
                 fileConfig.options().header(headers.get(file));
                 config.serialize(fileConfig);
