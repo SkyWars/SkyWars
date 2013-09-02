@@ -146,6 +146,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         if (enabledCorrectly) {
             locationStore.save();
             idHandler.saveAndUnload(this);
+            configuration.save();
             getLogger().log(Level.INFO, "SkyWars disabled successfully");
         } else {
             getLogger().log(Level.INFO, "SkyWars not disabling due to not being enabled successfully.");
