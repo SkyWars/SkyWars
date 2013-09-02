@@ -75,7 +75,7 @@ public class GameHandler implements SkyGameHandler {
             player.teleport(plugin.getLocationStore().getLobbyPosition().toLocation());
         }
         if (broadcast) {
-            Bukkit.broadcastMessage(KillBroadcaster.getMessage(player.getName(), plugin.getAttackerStorage().getKiller(playerName), KillBroadcaster.KillReason.LEFT));
+            Bukkit.broadcastMessage(KillBroadcaster.getMessage(player.getName(), plugin.getAttackerStorage().getKiller(playerName), KillBroadcaster.KillReason.LEFT, game.getArena()));
         }
         if (game.getAlivePlayers().size() < 2) {
             endGame(id, true);

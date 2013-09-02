@@ -1,19 +1,20 @@
-# --- skyblock-warriors.yml ---
+#   ### skyblock-warriors.yml ###
 # This is the Skyblock Warriors arena config.
 # As you can see 'messages:' isn't listed.
 # You can add arena-specific messages by adding a 'messages:'
 # section mirroring the one in arena-parent.yml.
 # Otherwise all messages are inherited from arena-parent.yml
-#
-# All values that are not in this configuration will be inherited from arena-parent.yml
-#
+##
+# All values that are not in this configuration will be inherited from
+#  arena-parent.yml
+##
 # All arena configs should have the config-version as 0. This will allow them to
 # be updated whenever any of the values change.
-#
+##
 # All comments that are not in this header will be removed.
-#
+##
 # Extensive documentation COMING SOON
-# ---
+#   ###
 config-version: 0
 spawns:
 - x: 18.5

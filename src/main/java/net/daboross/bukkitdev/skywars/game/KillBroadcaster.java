@@ -17,6 +17,8 @@
 package net.daboross.bukkitdev.skywars.game;
 
 import net.daboross.bukkitdev.skywars.Messages;
+import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
+import net.daboross.bukkitdev.skywars.api.config.SkyMessages;
 import org.bukkit.Bukkit;
 
 /**
@@ -25,24 +27,24 @@ import org.bukkit.Bukkit;
  */
 public class KillBroadcaster {
 
-    public static String getMessage(String player, String damager, KillReason reason) {
+    public static String getMessage(String player, String damager, KillReason reason, SkyArena arena) {
         if (damager == null) {
             switch (reason) {
                 case VOID:
-                    return String.format(Messages.SUICIDE_VOID, player);
+                    return String.format(arena.getMessages().getMessage(SkyMessages.SUICIDE_VOID), player);
                 case LEFT:
-                    Bukkit.broadcastMessage(String.format(Messages.FORFEITED, player));
+                    Bukkit.broadcastMessage(String.format(arena.getMessages().getMessage(SkyMessages.FORFEITED), player));
                 case OTHER:
-                    return String.format(Messages.SUICIDE, player);
+                    return String.format(arena.getMessages().getMessage(SkyMessages.KILLED_OTHER), player);
             }
         } else {
             switch (reason) {
                 case VOID:
-                    return String.format(Messages.KILLED_VOID, damager, player);
+                    return String.format(arena.getMessages().getMessage(SkyMessages.KILLED_VOID), damager, player);
                 case LEFT:
-                    return String.format(Messages.FORFEITED_BY, damager, player);
+                    return String.format(arena.getMessages().getMessage(SkyMessages.FORFEITED_DAMAGED), damager, player);
                 case OTHER:
-                    return String.format(Messages.KILLED, damager, player);
+                    return String.format(arena.getMessages().getMessage(SkyMessages.KILLED_OTHER), damager, player);
             }
         }
         throw new IllegalArgumentException();

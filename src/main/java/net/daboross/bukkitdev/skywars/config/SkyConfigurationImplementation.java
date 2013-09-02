@@ -43,6 +43,7 @@ public class SkyConfigurationImplementation implements SkyConfiguration {
     private File mainConfigFile;
     private File arenaFolder;
     private FileConfiguration mainConfig;
+    private SkyArenaConfig parentArena;
     private List<SkyArenaConfig> enabledArenas;
     private Map<File, String> headers;
     private ArenaOrder order;
@@ -98,6 +99,7 @@ public class SkyConfigurationImplementation implements SkyConfiguration {
         } catch (InvalidConfigurationException ex) {
             throw new StartupFailedException("Invalid configuration for " + mainConfigFile.getAbsolutePath(), ex);
         }
+
         if (mainConfig.isInt(Keys.VERSION)) {
             int version = mainConfig.getInt(Keys.VERSION);
             if (version != 0) {
@@ -108,6 +110,7 @@ public class SkyConfigurationImplementation implements SkyConfiguration {
         } else {
             throw new StartupFailedException(Keys.VERSION + " does not exist in file " + mainConfigFile.getAbsolutePath());
         }
+
         if (mainConfig.isString(Keys.ARENA_ORDER)) {
             order = ArenaOrder.getOrder(mainConfig.getString(Keys.ARENA_ORDER));
             if (order == null) {
@@ -120,6 +123,7 @@ public class SkyConfigurationImplementation implements SkyConfiguration {
             mainConfig.set(Keys.ARENA_ORDER, ArenaOrder.RANDOM.name());
             order = ArenaOrder.RANDOM;
         }
+
         if (mainConfig.isString(Keys.MESSAGE_PREFIX)) {
             messagePrefix = mainConfig.getString(Keys.MESSAGE_PREFIX);
         } else if (mainConfig.contains(Keys.MESSAGE_PREFIX)) {
@@ -129,13 +133,16 @@ public class SkyConfigurationImplementation implements SkyConfiguration {
             mainConfig.set(Keys.MESSAGE_PREFIX, Defaults.MESSAGE_PREFIX);
             messagePrefix = Defaults.MESSAGE_PREFIX;
         }
+
+
         if (mainConfig.isList(Keys.ENABLED_ARENAS)) { // This needs to come after MESSAGE_PREFIX
             List<?> enabledArenasList = mainConfig.getList(Keys.ENABLED_ARENAS);
             if (enabledArenasList.isEmpty()) {
                 throw new StartupFailedException("No enabled arenas found");
             }
             enabledArenas = new ArrayList<>(enabledArenasList.size());
-            headers = new HashMap<>(enabledArenasList.size());
+            headers = new HashMap<>(enabledArenasList.size() + 1);
+            loadParent();
             for (Object o : enabledArenasList) {
                 if (o instanceof String) {
                     loadArena((String) o);
@@ -176,8 +183,36 @@ public class SkyConfigurationImplementation implements SkyConfiguration {
         SkyArenaConfig arenaConfig = SkyArenaConfig.deserialize(config);
         arenaConfig.setFile(file);
         arenaConfig.getMessages().setPrefix(messagePrefix);
+        arenaConfig.setParent(parentArena);
         headers.put(file, config.options().header());
         enabledArenas.add(arenaConfig);
+    }
+
+    private void loadParent() {
+        File file = new File(plugin.getDataFolder(), "arena-parent.yml");
+        if (!file.exists()) {
+            String fileName = "arena-parent.yml";
+            try {
+                plugin.saveResource(fileName, false);
+            } catch (IllegalArgumentException ex) {
+                throw new StartupFailedException("arena-parent.yml could not be found in plugin jar.", ex);
+            }
+        }
+        FileConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (FileNotFoundException ex) {
+            throw new StartupFailedException("Why the heck can't we find the parent arena yaml", ex);
+        } catch (IOException ex) {
+            throw new StartupFailedException("IOException load arena-parent " + file.getAbsolutePath(), ex);
+        } catch (InvalidConfigurationException ex) {
+            throw new StartupFailedException("Failed to load arena-parent " + file.getAbsolutePath(), ex);
+        }
+        SkyArenaConfig arenaConfig = SkyArenaConfig.deserialize(config);
+        arenaConfig.setFile(file);
+        arenaConfig.getMessages().setPrefix(messagePrefix);
+        headers.put(file, config.options().header());
+        parentArena = arenaConfig;
     }
 
     @Override

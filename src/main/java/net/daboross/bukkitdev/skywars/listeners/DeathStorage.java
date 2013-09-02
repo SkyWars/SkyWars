@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.game.SkyAttackerStorage;
+import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameInfo;
 import net.daboross.bukkitdev.skywars.game.KillBroadcaster;
 import org.bukkit.entity.Entity;
@@ -45,8 +46,9 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 public class DeathStorage implements Listener, SkyAttackerStorage {
 
     private final SkyWarsPlugin plugin;
-    private final Map<String, String> lastHit = new HashMap<String, String>();
-    private final Set<String> causedVoid = new HashSet<String>();
+    private final Map<String, String> lastHit = new HashMap<>();
+    private final Set<String> causedVoid = new HashSet<>();
+    private final Set<String> playersWhoDied = new HashSet<>();
 
     public DeathStorage(SkyWarsPlugin plugin) {
         this.plugin = plugin;
@@ -106,9 +108,11 @@ public class DeathStorage implements Listener, SkyAttackerStorage {
     @EventHandler
     public void onDeath(PlayerDeathEvent evt) {
         String name = evt.getEntity().getName();
-        if (plugin.getCurrentGameTracker().isInGame(name)) {
+        SkyGame game = plugin.getIDHandler().getGame(plugin.getCurrentGameTracker().getGameID(name));
+        if (game != null) {
             plugin.getGameHandler().removePlayerFromGame(name, true, false);
-            evt.setDeathMessage(KillBroadcaster.getMessage(name, lastHit.get(name.toLowerCase()), causedVoid.contains(name.toLowerCase()) ? KillBroadcaster.KillReason.VOID : KillBroadcaster.KillReason.OTHER));
+            evt.setDeathMessage(KillBroadcaster.getMessage(name, lastHit.get(name.toLowerCase()), causedVoid.contains(name.toLowerCase()) ? KillBroadcaster.KillReason.VOID : KillBroadcaster.KillReason.OTHER, game.getArena()));
+            playersWhoDied.add(name.toLowerCase());
         }
     }
 
@@ -123,6 +127,8 @@ public class DeathStorage implements Listener, SkyAttackerStorage {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onRespawn(PlayerRespawnEvent evt) {
-        evt.setRespawnLocation(plugin.getLocationStore().getLobbyPosition().toLocation());
+        if (playersWhoDied.remove(evt.getPlayer().getName().toLowerCase())) {
+            evt.setRespawnLocation(plugin.getLocationStore().getLobbyPosition().toLocation());
+        }
     }
 }
