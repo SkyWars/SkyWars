@@ -9,8 +9,11 @@
 #
 # Extensive documentation COMING SOON
 # ---
-spawns: []
-num-players: 0
+spawns:
+- x: 0
+  y: 0
+  z: 0
+num-players: 2
 boundaries:
   origin:
     min:

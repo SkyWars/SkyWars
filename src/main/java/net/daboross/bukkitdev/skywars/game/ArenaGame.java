@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 
 /**
@@ -31,8 +32,10 @@ public class ArenaGame implements SkyGame {
     private final int id;
     private final List<String> alivePlayers;
     private final List<String> deadPlayers;
+    private final SkyArena arena;
 
-    public ArenaGame(int id, String[] originalPlayers) {
+    public ArenaGame(SkyArena arena, int id, String[] originalPlayers) {
+        this.arena = arena;
         this.id = id;
         this.alivePlayers = new ArrayList<>(Arrays.asList(originalPlayers));
         this.deadPlayers = new ArrayList<>(originalPlayers.length);
@@ -59,5 +62,10 @@ public class ArenaGame implements SkyGame {
     @Override
     public List<String> getDeadPlayers() {
         return Collections.unmodifiableList(deadPlayers);
+    }
+
+    @Override
+    public SkyArena getArena() {
+        return arena;
     }
 }

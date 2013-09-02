@@ -18,6 +18,7 @@ package net.daboross.bukkitdev.skywars.world;
 
 import java.util.Arrays;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
+import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -32,19 +33,19 @@ import org.bukkit.inventory.ItemStack;
  */
 public class WorldCopier {
 
-    public static void copyArena(SkyBlockLocation toCenter) {
-        copy(Statics.ARENA_MIN, Statics.ARENA_MAX, toCenter);
+    public static void copyArena(SkyBlockLocation toCenter, SkyBlockLocationRange from) {
+        copy(from.min, from.max, toCenter);
     }
 
-    public static void destroyArena(SkyBlockLocation center) {
+    public static void destroyArena(SkyBlockLocation center, SkyBlockLocationRange area) {
         World world = Bukkit.getWorld(center.world);
         if (world == null) {
             throw new IllegalArgumentException("No world applicable.");
         }
-        int xLength = Statics.ARENA_MAX.x - Statics.ARENA_MIN.x + 30;
-        int zLength = Statics.ARENA_MAX.z - Statics.ARENA_MIN.z + 30;
-        SkyBlockLocation min = new SkyBlockLocation(center.x - xLength / 2, 0, center.z - zLength / 2, center.world);
-        SkyBlockLocation length = new SkyBlockLocation(xLength, world.getMaxHeight(), zLength, center.world);
+        int xLength = area.max.x - area.min.x + 30;
+        int zLength = area.max.z - area.min.z + 30;
+        SkyBlockLocation min = new SkyBlockLocation(center.x - xLength / 2, area.min.y, center.z - zLength / 2, center.world);
+        SkyBlockLocation length = new SkyBlockLocation(xLength, area.max.y - area.min.y, zLength, center.world);
         destroyArena(min, length, world);
     }
 

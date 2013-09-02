@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.events.GameEndInfo;
 import net.daboross.bukkitdev.skywars.events.GameStartInfo;
 import org.bukkit.Bukkit;
@@ -74,7 +75,7 @@ public class KillScoreboardManager implements Listener {
         }
     }
 
-    private Scoreboard createAndAddScoreboard(String[] playersToTrack) {
+    private Scoreboard createAndAddScoreboard(Iterable<String> playersToTrack) {
         Scoreboard scoreboard = this.manager.getNewScoreboard();
         Objective objective = scoreboard.registerNewObjective("Kills this game", "dummy");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
@@ -87,11 +88,12 @@ public class KillScoreboardManager implements Listener {
     }
 
     public void onStart(GameStartInfo info) {
-        Scoreboard gameBoard = createAndAddScoreboard(info.getNames());
+        SkyGame game = info.getGame();
+        Scoreboard gameBoard = createAndAddScoreboard(game.getAlivePlayers());
         for (Player p : info.getPlayers()) {
             p.setScoreboard(gameBoard);
         }
-        gameScoreboards.put(info.getId(), gameBoard);
+        gameScoreboards.put(game.getID(), gameBoard);
     }
 
     public void onEnd(GameEndInfo info) {

@@ -34,8 +34,6 @@ public class GameEventDistributor {
     }
 
     public void distribute(GameStartInfo info) {
-        // -- Initial --
-        plugin.getIDHandler().onGameStart(info);
         // -- Normal --
         plugin.getCurrentGameTracker().onGameStart(info);
         plugin.getWorldHandler().onGameStart(info);

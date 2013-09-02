@@ -131,6 +131,9 @@ public class SkyConfigurationImplementation implements SkyConfiguration {
         }
         if (mainConfig.isList(Keys.ENABLED_ARENAS)) { // This needs to come after MESSAGE_PREFIX
             List<?> enabledArenasList = mainConfig.getList(Keys.ENABLED_ARENAS);
+            if (enabledArenasList.isEmpty()) {
+                throw new StartupFailedException("No enabled arenas found");
+            }
             enabledArenas = new ArrayList<>(enabledArenasList.size());
             headers = new HashMap<>(enabledArenasList.size());
             for (Object o : enabledArenasList) {
@@ -143,9 +146,10 @@ public class SkyConfigurationImplementation implements SkyConfiguration {
         } else if (mainConfig.contains(Keys.ENABLED_ARENAS)) {
             throw new StartupFailedException(Keys.ENABLED_ARENAS + " is not a list in file " + mainConfigFile.getAbsolutePath());
         } else {
-            plugin.getLogger().log(Level.WARNING, "Setting {0} to an empty list in file {1}", new String[]{Keys.ENABLED_ARENAS, mainConfigFile.getAbsolutePath()});
+            plugin.getLogger().log(Level.WARNING, "Setting {0} to an empty list in file {1}. Please add at least one arena to this list now.", new String[]{Keys.ENABLED_ARENAS, mainConfigFile.getAbsolutePath()});
             mainConfig.set(Keys.ENABLED_ARENAS, Collections.EMPTY_LIST);
             enabledArenas = new ArrayList<>(0);
+            throw new StartupFailedException("No enabled arenas found");
         }
     }
 

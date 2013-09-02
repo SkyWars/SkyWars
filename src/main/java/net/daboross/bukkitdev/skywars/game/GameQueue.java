@@ -19,8 +19,13 @@ package net.daboross.bukkitdev.skywars.game;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import net.daboross.bukkitdev.skywars.api.Randomation;
+import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
+import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.game.SkyGameQueue;
+import net.daboross.bukkitdev.skywars.events.GameStartInfo;
 
 /**
  *
@@ -29,11 +34,13 @@ import net.daboross.bukkitdev.skywars.api.game.SkyGameQueue;
 public class GameQueue implements SkyGameQueue {
 
     private final SkyWarsPlugin plugin;
-    private final List<String> currentlyQueued;
+    private List<String> currentlyQueued;
+    private SkyArena nextArena;
+    private int nextArenaOrderedNumber = 0;
 
     public GameQueue(SkyWarsPlugin plugin) {
         this.plugin = plugin;
-        this.currentlyQueued = new ArrayList<String>(4);
+        prepareNextArena();
     }
 
     @Override
@@ -47,9 +54,8 @@ public class GameQueue implements SkyGameQueue {
         if (!currentlyQueued.contains(player)) {
             currentlyQueued.add(player);
         }
-        if (currentlyQueued.size() == 4) {
-            plugin.getGameHandler().startNewGame();
-            currentlyQueued.clear();
+        if (currentlyQueued.size() >= nextArena.getNumPlayers()) {
+            plugin.getDistributor().distribute(new GameStartInfo(getNextGame()));
         }
     }
 
@@ -58,17 +64,37 @@ public class GameQueue implements SkyGameQueue {
         currentlyQueued.remove(player.toLowerCase());
     }
 
-    /**
-     * @throws IllegalStateException if queue size is not 4.
-     */
-    public String[] clearAndGetQueue() {
-        if (currentlyQueued.size() != 4) {
-            throw new IllegalStateException("Queue size not 4.");
+    public ArenaGame getNextGame() {
+        if (currentlyQueued.size() < 2) {
+            throw new IllegalStateException("Queue size smaller than 2");
         }
         Collections.shuffle(currentlyQueued);
         String[] queueCopy = currentlyQueued.toArray(new String[currentlyQueued.size()]);
-        currentlyQueued.clear();
-        return queueCopy;
+        int id = plugin.getIDHandler().getNextId();
+        ArenaGame game = new ArenaGame(nextArena, id, queueCopy);
+        prepareNextArena();
+        return game;
+    }
+
+    private void prepareNextArena() {
+        SkyConfiguration config = plugin.getConfiguration();
+        List<? extends SkyArena> enabledArenas = config.getEnabledArenas();
+        switch (config.getArenaOrder()) {
+            case ORDERED:
+                if (nextArenaOrderedNumber >= enabledArenas.size()) {
+                    nextArenaOrderedNumber = 0;
+                }
+                nextArena = enabledArenas.get(nextArenaOrderedNumber);
+                break;
+            case RANDOM:
+                nextArena = Randomation.getRandom(enabledArenas);
+                break;
+            default:
+                plugin.getLogger().log(Level.WARNING, "[GameQueue] Invalid ArenaOrder found in config!");
+                nextArena = null;
+                throw new IllegalStateException("Invalid ArenaOrder found in config");
+        }
+        currentlyQueued = new ArrayList<>(nextArena.getNumPlayers());
     }
 
     @Override

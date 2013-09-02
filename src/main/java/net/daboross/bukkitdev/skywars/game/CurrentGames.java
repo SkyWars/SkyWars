@@ -19,6 +19,7 @@ package net.daboross.bukkitdev.skywars.game;
 import java.util.HashMap;
 import java.util.Map;
 import net.daboross.bukkitdev.skywars.api.game.SkyCurrentGameTracker;
+import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameInfo;
 
@@ -50,8 +51,9 @@ public class CurrentGames implements SkyCurrentGameTracker {
     }
 
     public void onGameStart(GameStartInfo info) {
-        int id = info.getId();
-        for (String name : info.getNames()) {
+        SkyGame game = info.getGame();
+        int id = game.getID();
+        for (String name : game.getAlivePlayers()) {
             setGameID(name, id);
         }
     }

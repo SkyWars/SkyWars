@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.events;
 
+import java.util.List;
 import net.daboross.bukkitdev.skywars.game.ArenaGame;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -26,46 +27,30 @@ import org.bukkit.entity.Player;
  */
 public class GameStartInfo {
 
-    private final String[] names;
-    private final Player[] players = new Player[4];
-    private ArenaGame game;
-    private int id;
+    private final Player[] players;
+    private final ArenaGame game;
 
-    public GameStartInfo(String[] names) {
-        if (names == null || names.length != 4) {
+    public GameStartInfo(ArenaGame game) {
+        if (game == null) {
             throw new IllegalArgumentException();
         }
-        this.names = names;
-        for (int i = 0; i < 4; i++) {
-            Player p = Bukkit.getPlayer(names[i]);
+        this.game = game;
+        List<String> playersList = game.getAlivePlayers();
+        this.players = new Player[playersList.size()];
+        for (int i = 0; i < playersList.size(); i++) {
+            Player p = Bukkit.getPlayer(playersList.get(i));
             if (p == null) {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("Player " + playersList.get(i) + " not online");
             }
             players[i] = p;
         }
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setGame(ArenaGame game) {
-        this.game = game;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public ArenaGame getGame() {
-        return game;
     }
 
     public Player[] getPlayers() {
         return players;
     }
 
-    public String[] getNames() {
-        return names;
+    public ArenaGame getGame() {
+        return game;
     }
 }

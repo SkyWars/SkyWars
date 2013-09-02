@@ -40,12 +40,7 @@ public class GameHandler implements SkyGameHandler {
     }
 
     public void startNewGame() {
-        String[] queued = plugin.getGameQueue().clearAndGetQueue();
-        if (queued.length != 4) {
-            throw new IllegalStateException("Queue size is not 4");
-        }
-        GameStartInfo info = new GameStartInfo(queued);
-        plugin.getDistributor().distribute(info);
+        plugin.getDistributor().distribute(new GameStartInfo(plugin.getGameQueue().getNextGame()));
     }
 
     @Override

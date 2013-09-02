@@ -16,7 +16,11 @@
  */
 package net.daboross.bukkitdev.skywars.world;
 
+import java.util.Collections;
+import java.util.List;
+import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
+import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
 import net.daboross.bukkitdev.skywars.events.GameEndInfo;
 import net.daboross.bukkitdev.skywars.events.GameStartInfo;
 import org.bukkit.WorldCreator;
@@ -45,17 +49,23 @@ public class SkyWorldHandler {
     }
 
     public void onGameStart(GameStartInfo info) {
-        SkyBlockLocation center = getCenterLocation(info.getId());
-        WorldCopier.copyArena(center);
+        SkyGame game = info.getGame();
+        SkyBlockLocation center = getCenterLocation(game.getID());
+        WorldCopier.copyArena(center, game.getArena().getBoundaries().getOrigin());
         Player[] players = info.getPlayers();
-        for (int i = 0; i < 4; i++) {
-            players[i].teleport(Statics.RELATIVE_SPAWNS[i].add(center).toLocation());
+        List<SkyPlayerLocation> spawns = game.getArena().getSpawns();
+        Collections.shuffle(spawns);
+        for (int i = 0, currentSpawn = 0; i < players.length; i++) {
+            players[i].teleport(center.add(spawns.get(currentSpawn++)).toLocation());
+            if (currentSpawn > spawns.size()) {
+                currentSpawn = 0;
+            }
         }
     }
 
     public void onGameEnd(GameEndInfo info) {
         SkyBlockLocation center = getCenterLocation(info.getGame().getID());
-        WorldCopier.destroyArena(center);
+        WorldCopier.destroyArena(center, info.getGame().getArena().getBoundaries().getClearing());
     }
 
     private SkyBlockLocation getCenterLocation(int id) {
