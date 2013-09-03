@@ -92,7 +92,6 @@ public class Messages {
 //     * First %s is a list of people in the game.
 //     */
 //    public static final String GAME_STARTING = PREFIX + "Game starting with " + ColorList.NAME + "%s" + ColorList.BROADCAST + "!";
-
     public static class Join {
 
         /**
@@ -151,5 +150,10 @@ public class Messages {
          * the queue or game.
          */
         public static final String NOT_IN = ColorList.ERR + "You were not in the queue.";
+    }
+
+    public static class Death {
+
+        public static final String REMOVED_BECAUSE_DEATH = ColorList.REG + "You were removed from the queue because you died.";
     }
 }
