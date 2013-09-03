@@ -225,7 +225,6 @@ public class SkyConfigurationImplementation implements SkyConfiguration {
             }
             for (SkyArenaConfig config : enabledArenas) {
                 File file = config.getFile();
-                plugin.getLogger().log(Level.INFO, "Arena configuration for file {0}\n{1}", new Object[]{file.getAbsolutePath(), config.toNiceString(0)});
                 FileConfiguration fileConfig = new YamlConfiguration();
                 fileConfig.options().header(headers.get(file));
                 config.serialize(fileConfig);
