@@ -21,7 +21,7 @@ import java.util.logging.Level;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
-import net.daboross.bukkitdev.skywars.config.SkyConfigurationImplementation;
+import net.daboross.bukkitdev.skywars.config.SkyWarsConfiguration;
 import net.daboross.bukkitdev.skywars.events.GameEventDistributor;
 import net.daboross.bukkitdev.skywars.game.CurrentGames;
 import net.daboross.bukkitdev.skywars.game.GameHandler;
@@ -106,7 +106,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
 
     private void startPlugin() {
         copyWorld();
-        configuration = new SkyConfigurationImplementation(this);
+        configuration = new SkyWarsConfiguration(this);
         configuration.load();
         currentGames = new CurrentGames();
         idHandler = new GameIDHandler();

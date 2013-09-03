@@ -37,7 +37,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  *
  * @author daboross
  */
-public class SkyConfigurationImplementation implements SkyConfiguration {
+public class SkyWarsConfiguration implements SkyConfiguration {
 
     private final SkyWars plugin;
     private File mainConfigFile;
@@ -49,7 +49,7 @@ public class SkyConfigurationImplementation implements SkyConfiguration {
     private ArenaOrder order;
     private String messagePrefix;
 
-    public SkyConfigurationImplementation(SkyWars plugin) {
+    public SkyWarsConfiguration(SkyWars plugin) {
         this.plugin = plugin;
     }
 
@@ -106,9 +106,19 @@ public class SkyConfigurationImplementation implements SkyConfiguration {
                 throw new StartupFailedException("Version '" + version + "' as listed under " + Keys.VERSION + " in file " + mainConfigFile.getAbsolutePath() + " is unknown.");
             }
         } else if (mainConfig.contains(Keys.VERSION)) {
-            throw new StartupFailedException(Keys.VERSION + " is not an integer in file " + mainConfigFile.getAbsolutePath());
+            throw new StartupFailedException(getInvalid(Keys.VERSION, mainConfig.get(Keys.VERSION), mainConfigFile, "Integer"));
         } else {
             throw new StartupFailedException(Keys.VERSION + " does not exist in file " + mainConfigFile.getAbsolutePath());
+        }
+
+        if (mainConfig.isBoolean(Keys.DEBUG)) {
+            SkyStatic.setDebug(mainConfig.getBoolean(Keys.DEBUG));
+        } else if (mainConfig.contains(Keys.DEBUG)) {
+            throw new StartupFailedException(getInvalid(Keys.DEBUG, mainConfig.get(Keys.DEBUG), mainConfigFile, "Boolean"));
+        } else {
+            logChange(Keys.DEBUG, Defaults.DEBUG, mainConfigFile);
+            mainConfig.set(Keys.DEBUG, Defaults.DEBUG);
+            SkyStatic.setDebug(Defaults.DEBUG);
         }
 
         if (mainConfig.isString(Keys.ARENA_ORDER)) {
@@ -117,19 +127,20 @@ public class SkyConfigurationImplementation implements SkyConfiguration {
                 throw new StartupFailedException("Invalid ArenaOrder '" + order + "' found under " + Keys.ARENA_ORDER + " in file " + mainConfigFile.getAbsolutePath() + ". Valid values: " + ArenaOrder.values());
             }
         } else if (mainConfig.contains(Keys.ARENA_ORDER)) {
-            throw new StartupFailedException("Value '" + mainConfig.get(Keys.ARENA_ORDER) + "' that is not a string found under " + Keys.ARENA_ORDER + " in file " + mainConfigFile.getAbsolutePath());
+            throw new StartupFailedException(getInvalid(Keys.ARENA_ORDER, mainConfig.get(Keys.ARENA_ORDER), mainConfigFile, "String"));
         } else {
-            plugin.getLogger().log(Level.WARNING, "Setting {0} to {1} in file {2}", new Object[]{Keys.ARENA_ORDER, ArenaOrder.RANDOM, mainConfigFile.getAbsolutePath()});
-            mainConfig.set(Keys.ARENA_ORDER, ArenaOrder.RANDOM.name());
-            order = ArenaOrder.RANDOM;
+            logChange(Keys.ARENA_ORDER, Defaults.ARENA_ORDER, mainConfigFile);
+            mainConfig.set(Keys.ARENA_ORDER, Defaults.ARENA_ORDER);
+            order = Defaults.ARENA_ORDER;
         }
+
 
         if (mainConfig.isString(Keys.MESSAGE_PREFIX)) {
             messagePrefix = mainConfig.getString(Keys.MESSAGE_PREFIX);
         } else if (mainConfig.contains(Keys.MESSAGE_PREFIX)) {
             throw new StartupFailedException("Value '" + mainConfig.get(Keys.MESSAGE_PREFIX) + "' that is not a string found under " + Keys.MESSAGE_PREFIX + " in file " + mainConfigFile.getAbsolutePath());
         } else {
-            plugin.getLogger().log(Level.WARNING, "Setting {0} to {1} in file {2}", new Object[]{Keys.MESSAGE_PREFIX, Defaults.MESSAGE_PREFIX, mainConfigFile.getAbsolutePath()});
+            logChange(Keys.MESSAGE_PREFIX, Defaults.MESSAGE_PREFIX, mainConfigFile);
             mainConfig.set(Keys.MESSAGE_PREFIX, Defaults.MESSAGE_PREFIX);
             messagePrefix = Defaults.MESSAGE_PREFIX;
         }
@@ -147,14 +158,14 @@ public class SkyConfigurationImplementation implements SkyConfiguration {
                 if (o instanceof String) {
                     loadArena((String) o);
                 } else {
-                    throw new StartupFailedException("Object '" + o + "' that isn't a string found in list " + Keys.ENABLED_ARENAS + " in file " + mainConfigFile.getAbsolutePath());
+                    throw new StartupFailedException(getInvalid(Keys.ENABLED_ARENAS, o, mainConfigFile, "String"));
                 }
             }
         } else if (mainConfig.contains(Keys.ENABLED_ARENAS)) {
-            throw new StartupFailedException(Keys.ENABLED_ARENAS + " is not a list in file " + mainConfigFile.getAbsolutePath());
+            throw new StartupFailedException(getInvalid(Keys.ENABLED_ARENAS, mainConfig.get(Keys.ENABLED_ARENAS), mainConfigFile, "list"));
         } else {
-            plugin.getLogger().log(Level.WARNING, "Setting {0} to an empty list in file {1}. Please add at least one arena to this list now.", new String[]{Keys.ENABLED_ARENAS, mainConfigFile.getAbsolutePath()});
-            mainConfig.set(Keys.ENABLED_ARENAS, Collections.EMPTY_LIST);
+            logChange(Keys.ENABLED_ARENAS, Defaults.ENABLED_ARENAS, mainConfigFile);
+            mainConfig.set(Keys.ENABLED_ARENAS, Defaults.ENABLED_ARENAS);
             enabledArenas = new ArrayList<>(0);
             throw new StartupFailedException("No enabled arenas found");
         }
@@ -254,12 +265,21 @@ public class SkyConfigurationImplementation implements SkyConfiguration {
         return messagePrefix;
     }
 
+    private void logChange(String key, Object value, File config) {
+        plugin.getLogger().log(Level.WARNING, "Setting {0} to {1} in {2}", new Object[]{key, value, config.getAbsolutePath()});
+    }
+
+    private String getInvalid(String key, Object value, File file, String shouldBe) {
+        return "Object '" + value + "' that isn't a " + shouldBe + " found under " + key + " in file " + file.getAbsolutePath();
+    }
+
     private static class Keys {
 
         private static final String VERSION = "config-version";
         private static final String ENABLED_ARENAS = "enabled-arenas";
         private static final String ARENA_ORDER = "arena-order";
         private static final String MESSAGE_PREFIX = "message-prefix";
+        private static final String DEBUG = "debug";
     }
 
     private static class Names {
@@ -270,6 +290,9 @@ public class SkyConfigurationImplementation implements SkyConfiguration {
 
     private static class Defaults {
 
-        private static final String MESSAGE_PREFIX = "&8[&cSkyWars&8]#B";
+        private static final String MESSAGE_PREFIX = "&8[&cSkyWars&8]#B ";
+        private static final Boolean DEBUG = Boolean.FALSE;
+        private static final ArenaOrder ARENA_ORDER = ArenaOrder.RANDOM;
+        private static final List<?> ENABLED_ARENAS = Collections.EMPTY_LIST;
     }
 }
