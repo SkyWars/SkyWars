@@ -35,6 +35,7 @@ public class GameEventDistributor {
 
     public void distribute(GameStartInfo info) {
         // -- Normal --
+        plugin.getIDHandler().onGameStart(info);
         plugin.getCurrentGameTracker().onGameStart(info);
         plugin.getWorldHandler().onGameStart(info);
         plugin.getResetInventoryHealth().onGameStart(info); // Should be after WorldHandler

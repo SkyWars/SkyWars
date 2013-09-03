@@ -53,6 +53,12 @@ public class GameIDHandler implements SkyIDHandler {
         return id;
     }
 
+    public void onGameStart(GameStartInfo info) {
+        ArenaGame game = info.getGame();
+        currentGames.put(game.getID(), game);
+        currentIDs.add(game.getID());
+    }
+
     public void onGameEnd(GameEndInfo info) {
         int id = info.getGame().getID();
         currentGames.remove(id);
