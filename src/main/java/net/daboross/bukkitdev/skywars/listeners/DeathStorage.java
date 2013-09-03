@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import net.daboross.bukkitdev.skywars.Messages;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.game.SkyAttackerStorage;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
@@ -113,6 +114,9 @@ public class DeathStorage implements Listener, SkyAttackerStorage {
             plugin.getGameHandler().removePlayerFromGame(name, true, false);
             evt.setDeathMessage(KillBroadcaster.getMessage(name, lastHit.get(name.toLowerCase()), causedVoid.contains(name.toLowerCase()) ? KillBroadcaster.KillReason.VOID : KillBroadcaster.KillReason.OTHER, game.getArena()));
             playersWhoDied.add(name.toLowerCase());
+        } else if (plugin.getGameQueue().inQueue(name)) {
+            plugin.getGameQueue().removePlayer(name);
+            evt.getEntity().sendMessage(Messages.Death.REMOVED_BECAUSE_DEATH);
         }
     }
 
