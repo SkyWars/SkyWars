@@ -55,7 +55,7 @@ public class GameBroadcaster {
                 message = String.format(info.getGame().getArena().getMessages().getMessage(SkyMessages.SINGLE_WON), winners.get(0).getName());
             } else {
                 StringBuilder winnerBuilder = new StringBuilder(winners.get(0).getName());
-                for (int i = 0; i < winners.size(); i++) {
+                for (int i = 1; i < winners.size(); i++) {
                     if (i == winners.size() - 1) {
                         winnerBuilder.append(" and ");
                     } else {
