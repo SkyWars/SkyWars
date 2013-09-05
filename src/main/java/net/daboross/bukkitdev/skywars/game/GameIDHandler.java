@@ -61,8 +61,9 @@ public class GameIDHandler implements SkyIDHandler {
 
     public void onGameEnd(GameEndInfo info) {
         int id = info.getGame().getID();
-        currentGames.remove(id);
-        currentIDs.remove(id);
+        Integer idInteger = Integer.valueOf(id);
+        currentGames.remove(idInteger);
+        currentIDs.remove(idInteger);
     }
 
     public void saveAndUnload(SkyWarsPlugin plugin) {
