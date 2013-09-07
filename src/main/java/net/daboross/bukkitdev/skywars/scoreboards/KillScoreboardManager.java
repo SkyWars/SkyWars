@@ -39,7 +39,7 @@ import org.bukkit.scoreboard.ScoreboardManager;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class KillScoreboardManager implements Listener {
 
@@ -93,11 +93,11 @@ public class KillScoreboardManager implements Listener {
         for (Player p : info.getPlayers()) {
             p.setScoreboard(gameBoard);
         }
-        gameScoreboards.put(game.getID(), gameBoard);
+        gameScoreboards.put(game.getId(), gameBoard);
     }
 
     public void onEnd(GameEndInfo info) {
-        Scoreboard gameBoard = gameScoreboards.remove(info.getGame().getID());
+        Scoreboard gameBoard = gameScoreboards.remove(info.getGame().getId());
         gameBoard.getObjective("Kills this game").unregister();
     }
 

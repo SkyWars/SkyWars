@@ -23,7 +23,7 @@ import org.bukkit.generator.ChunkGenerator;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class VoidGenerator extends ChunkGenerator {
 

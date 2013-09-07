@@ -25,7 +25,7 @@ import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class ArenaGame implements SkyGame {
 
@@ -50,7 +50,7 @@ public class ArenaGame implements SkyGame {
     }
 
     @Override
-    public int getID() {
+    public int getId() {
         return id;
     }
 

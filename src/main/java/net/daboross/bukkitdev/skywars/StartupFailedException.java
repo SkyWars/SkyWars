@@ -18,7 +18,7 @@ package net.daboross.bukkitdev.skywars;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class StartupFailedException extends RuntimeException {
 

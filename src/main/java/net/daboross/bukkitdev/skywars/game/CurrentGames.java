@@ -25,7 +25,7 @@ import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameInfo;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class CurrentGames implements SkyCurrentGameTracker {
 
@@ -52,7 +52,7 @@ public class CurrentGames implements SkyCurrentGameTracker {
 
     public void onGameStart(GameStartInfo info) {
         SkyGame game = info.getGame();
-        int id = game.getID();
+        int id = game.getId();
         for (String name : game.getAlivePlayers()) {
             setGameID(name, id);
         }

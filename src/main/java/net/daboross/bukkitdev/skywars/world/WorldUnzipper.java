@@ -23,18 +23,18 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import lombok.NonNull;
+import org.bukkit.plugin.Plugin;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class WorldUnzipper {
 
-    private static final String ZIP_FILE_PATH = "/SkyWarsBaseWorld.zip";
-    private final SkyWarsPlugin plugin;
+    private final Plugin plugin;
 
-    public WorldUnzipper(SkyWarsPlugin plugin) {
+    public WorldUnzipper(@NonNull Plugin plugin) {
         this.plugin = plugin;
     }
 
@@ -44,7 +44,7 @@ public class WorldUnzipper {
             return WorldUnzipResult.ALREADY_THERE;
         }
         output.mkdir();
-        InputStream fis = this.getClass().getResourceAsStream(ZIP_FILE_PATH);
+        InputStream fis = this.getClass().getResourceAsStream(Statics.ZIP_FILE_PATH);
         if (fis == null) {
             return WorldUnzipResult.ERROR;
         }

@@ -36,7 +36,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class LocationStore implements Listener, SkyLocationStore {
 
@@ -89,6 +89,7 @@ public class LocationStore implements Listener, SkyLocationStore {
         }
     }
 
+    @Override
     public void save() {
         if (storage != null) {
             plugin.getLogger().log(Level.INFO, "Saving configuration");

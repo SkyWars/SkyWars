@@ -18,6 +18,7 @@ package net.daboross.bukkitdev.skywars.world;
 
 import java.util.Collections;
 import java.util.List;
+import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
@@ -26,12 +27,21 @@ import net.daboross.bukkitdev.skywars.events.GameStartInfo;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class SkyWorldHandler {
+
+    private final Plugin plugin;
+    private final WorldCopier copier;
+
+    public SkyWorldHandler(@NonNull Plugin plugin) {
+        this.plugin = plugin;
+        this.copier = new WorldCopier(plugin);
+    }
 
     public void create() {
         WorldCreator baseWorldCreator = new WorldCreator(Statics.BASE_WORLD_NAME);
@@ -50,8 +60,8 @@ public class SkyWorldHandler {
 
     public void onGameStart(GameStartInfo info) {
         SkyGame game = info.getGame();
-        SkyBlockLocation center = getCenterLocation(game.getID());
-        WorldCopier.copyArena(center, game.getArena().getBoundaries().getOrigin());
+        SkyBlockLocation center = getCenterLocation(game.getId());
+        copier.copyArena(center, game.getArena().getBoundaries().getOrigin());
         Player[] players = info.getPlayers();
         List<SkyPlayerLocation> spawns = game.getArena().getSpawns();
         Collections.shuffle(spawns);
@@ -64,8 +74,8 @@ public class SkyWorldHandler {
     }
 
     public void onGameEnd(GameEndInfo info) {
-        SkyBlockLocation center = getCenterLocation(info.getGame().getID());
-        WorldCopier.destroyArena(center, info.getGame().getArena().getBoundaries().getClearing());
+        SkyBlockLocation center = getCenterLocation(info.getGame().getId());
+        copier.destroyArena(center, info.getGame().getArena().getBoundaries().getClearing());
     }
 
     private SkyBlockLocation getCenterLocation(int id) {

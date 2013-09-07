@@ -42,7 +42,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class DeathStorage implements Listener, SkyAttackerStorage {
 

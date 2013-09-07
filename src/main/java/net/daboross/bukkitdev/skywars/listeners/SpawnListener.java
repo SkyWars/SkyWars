@@ -23,7 +23,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class SpawnListener implements Listener {
 

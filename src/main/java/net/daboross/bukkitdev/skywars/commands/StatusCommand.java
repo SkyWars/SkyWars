@@ -30,7 +30,7 @@ import org.bukkit.command.CommandSender;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class StatusCommand extends SubCommand {
 

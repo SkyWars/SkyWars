@@ -23,7 +23,7 @@ import org.bukkit.plugin.PluginManager;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class PermissionHandler {
 

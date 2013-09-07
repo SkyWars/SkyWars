@@ -21,6 +21,8 @@ import java.util.logging.Level;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
+import net.daboross.bukkitdev.skywars.api.game.SkyGameHandler;
+import net.daboross.bukkitdev.skywars.api.location.SkyLocationStore;
 import net.daboross.bukkitdev.skywars.config.SkyWarsConfiguration;
 import net.daboross.bukkitdev.skywars.events.GameEventDistributor;
 import net.daboross.bukkitdev.skywars.game.CurrentGames;
@@ -52,15 +54,15 @@ import org.mcstats.MetricsLite;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
 
     private SkyConfiguration configuration;
-    private LocationStore locationStore;
+    private SkyLocationStore locationStore;
     private GameQueue gameQueue;
     private CurrentGames currentGames;
-    private GameHandler gameHandler;
+    private SkyGameHandler gameHandler;
     private GameIDHandler idHandler;
     private SkyWorldHandler worldHandler;
     private DeathStorage deathStorage;
@@ -110,7 +112,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         configuration.load();
         currentGames = new CurrentGames();
         idHandler = new GameIDHandler();
-        worldHandler = new SkyWorldHandler();
+        worldHandler = new SkyWorldHandler(this);
         broadcaster = new GameBroadcaster();
         resetInventoryHealth = new ResetInventoryHealth();
         locationStore = new LocationStore(this);
@@ -198,7 +200,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     }
 
     @Override
-    public LocationStore getLocationStore() {
+    public SkyLocationStore getLocationStore() {
         checkEnabledCorrectly();
         return locationStore;
     }
@@ -216,7 +218,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     }
 
     @Override
-    public GameHandler getGameHandler() {
+    public SkyGameHandler getGameHandler() {
         checkEnabledCorrectly();
         return gameHandler;
     }

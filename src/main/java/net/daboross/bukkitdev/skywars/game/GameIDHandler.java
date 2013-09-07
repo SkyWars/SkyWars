@@ -22,13 +22,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import net.daboross.bukkitdev.skywars.api.game.SkyGameHandler;
 import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
 import net.daboross.bukkitdev.skywars.events.GameEndInfo;
 import net.daboross.bukkitdev.skywars.events.GameStartInfo;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class GameIDHandler implements SkyIDHandler {
 
@@ -55,19 +56,19 @@ public class GameIDHandler implements SkyIDHandler {
 
     public void onGameStart(GameStartInfo info) {
         ArenaGame game = info.getGame();
-        currentGames.put(game.getID(), game);
-        currentIDs.add(game.getID());
+        currentGames.put(game.getId(), game);
+        currentIDs.add(game.getId());
     }
 
     public void onGameEnd(GameEndInfo info) {
-        int id = info.getGame().getID();
+        int id = info.getGame().getId();
         Integer idInteger = Integer.valueOf(id);
         currentGames.remove(idInteger);
         currentIDs.remove(idInteger);
     }
 
     public void saveAndUnload(SkyWarsPlugin plugin) {
-        GameHandler handler = plugin.getGameHandler();
+        SkyGameHandler handler = plugin.getGameHandler();
         while (!currentIDs.isEmpty()) {
             int id = currentIDs.get(0);
             if (getGame(id) != null) {

@@ -29,7 +29,7 @@ import net.daboross.bukkitdev.skywars.events.GameStartInfo;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class GameQueue implements SkyGameQueue {
 

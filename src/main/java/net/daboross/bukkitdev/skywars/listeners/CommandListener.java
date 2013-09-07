@@ -23,7 +23,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class CommandListener implements Listener {
 

@@ -24,7 +24,7 @@ import org.bukkit.inventory.ItemStack;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class ResetInventoryHealth {
 

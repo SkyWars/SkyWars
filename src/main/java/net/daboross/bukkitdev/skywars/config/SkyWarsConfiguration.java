@@ -35,7 +35,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class SkyWarsConfiguration implements SkyConfiguration {
 

@@ -20,78 +20,10 @@ import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class Messages {
 
-//    public static final String PREFIX = String.format(ColorList.BROADCAST_NAME_FORMAT, "SkyWars");
-//    /**
-//     * Message broadcasted when someone is killed in the void, and there has
-//     * been someone who hit them since the game started.
-//     * <br>
-//     * First %s is the name of the last person who attacked, second %s is the
-//     * person who died.
-//     */
-//    public static final String KILLED_VOID = PREFIX + ColorList.NAME + "%s" + ColorList.BROADCAST + " has pushed " + ColorList.NAME + "%s" + ColorList.BROADCAST + " into the void of doom!";
-//    /**
-//     * Message broadcasted when someone is killed in the void, and there hasn't
-//     * been anyone who hit them since the game started.
-//     * <br>
-//     * First %s is the name of the person who died.
-//     */
-//    public static final String SUICIDE_VOID = PREFIX + ColorList.NAME + "%s" + ColorList.BROADCAST + " jumped into the void of doom!";
-//    /**
-//     * Message broadcasted when someone is killed by someone else hitting them.
-//     * <br>
-//     * First %s is the name of the attacker, second %s is the name of the person
-//     * who died.
-//     */
-//    public static final String KILLED = PREFIX + ColorList.NAME + "%s" + ColorList.BROADCAST + " has killed " + ColorList.NAME + "%s" + ColorList.BROADCAST + "!";
-//    /**
-//     * Message broadcasted when someone is killed, and no one has hit them since
-//     * the game started.
-//     * <br>
-//     * First %s is the name of the person who died.
-//     */
-//    public static final String SUICIDE = PREFIX + ColorList.NAME + "%s" + ColorList.BROADCAST + " was killed!";
-//    /**
-//     * Message broadcasted when someone leaves the game or server, and someone
-//     * has attacked them since the game started.
-//     * <br>
-//     * First %s is the name of the person who left, second %s is the name of the
-//     * last person who hit the given person.
-//     */
-//    public static final String FORFEITED_BY = PREFIX + ColorList.NAME + "%s" + ColorList.BROADCAST + " was forced for forfeit by " + ColorList.NAME + "%s";
-//    /**
-//     * Message broadcasted when someone leaves the game or server, and no one
-//     * has attacked them since the game began.
-//     * <br>
-//     * First %s is the name of the person who left.
-//     */
-//    public static final String FORFEITED = PREFIX + ColorList.NAME + "%s" + ColorList.BROADCAST + " forfeited!";
-//    /**
-//     * Message broadcasted when one person wins the game.
-//     * <br>
-//     * First %s is the name of the person who has won.
-//     */
-//    public static final String SINGLE_WON = PREFIX + ColorList.NAME + "%s" + ColorList.BROADCAST + " has won the SkyWars!";
-//    /**
-//     * Message broadcasted when two or more people win the game.
-//     * <br>
-//     * First %s is a list of people who won.
-//     */
-//    public static final String MULTI_WON = PREFIX + ColorList.NAME + "%s" + ColorList.BROADCAST + " have won the SkyWars!";
-//    /**
-//     * Message broadcasted when a game ends with no people left in it. This
-//     * message is normally _never_ used.
-//     */
-//    public static final String NONE_WON = PREFIX + ColorList.NAME + "No one won the SkyWars!";
-//    /**
-//     * Message broadcasted when a game starts.
-//     * <br>
-//     * First %s is a list of people in the game.
-//     */
-//    public static final String GAME_STARTING = PREFIX + "Game starting with " + ColorList.NAME + "%s" + ColorList.BROADCAST + "!";
     public static class Join {
 
         /**

@@ -23,7 +23,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class QuitListener implements Listener {
 

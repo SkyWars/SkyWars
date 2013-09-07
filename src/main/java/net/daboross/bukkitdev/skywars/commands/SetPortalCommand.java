@@ -27,7 +27,7 @@ import org.bukkit.entity.Player;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class SetPortalCommand extends SubCommand {
 

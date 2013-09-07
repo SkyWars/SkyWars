@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars;
 
+import lombok.NonNull;
 import net.daboross.bukkitdev.commandexecutorbase.CommandExecutorBase;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.commands.CancelAllCommand;
@@ -31,14 +32,14 @@ import org.bukkit.command.CommandExecutor;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class CommandBase {
 
     private final SkyWars plugin;
     private final CommandExecutorBase base;
 
-    public CommandBase(SkyWars plugin) {
+    public CommandBase(@NonNull SkyWars plugin) {
         this.plugin = plugin;
         this.base = new CommandExecutorBase(null);
         this.initCommands();

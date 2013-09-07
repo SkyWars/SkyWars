@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.events;
 
+import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.events.GameEndEvent;
 import net.daboross.bukkitdev.skywars.api.events.GameStartEvent;
@@ -23,17 +24,17 @@ import net.daboross.bukkitdev.skywars.api.events.LeaveGameEvent;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class GameEventDistributor {
 
     private final SkyWarsPlugin plugin;
 
-    public GameEventDistributor(SkyWarsPlugin plugin) {
+    public GameEventDistributor(@NonNull SkyWarsPlugin plugin) {
         this.plugin = plugin;
     }
 
-    public void distribute(GameStartInfo info) {
+    public void distribute(@NonNull GameStartInfo info) {
         // -- Normal --
         plugin.getIDHandler().onGameStart(info);
         plugin.getCurrentGameTracker().onGameStart(info);
@@ -44,7 +45,7 @@ public class GameEventDistributor {
         plugin.getServer().getPluginManager().callEvent(new GameStartEvent(plugin, info.getGame(), info.getPlayers()));
     }
 
-    public void distribute(GameEndInfo info) {
+    public void distribute(@NonNull GameEndInfo info) {
         // -- Initial --
         plugin.getIDHandler().onGameEnd(info);
         // -- Normal --
@@ -55,7 +56,7 @@ public class GameEventDistributor {
         plugin.getServer().getPluginManager().callEvent(new GameEndEvent(plugin, info.getGame(), info.getAlivePlayers()));
     }
 
-    public void distribute(PlayerLeaveGameInfo info) {
+    public void distribute(@NonNull PlayerLeaveGameInfo info) {
         // -- Normal --
         plugin.getCurrentGameTracker().onPlayerLeaveGame(info);
         plugin.getAttackerStorage().onPlayerLeaveGame(info);

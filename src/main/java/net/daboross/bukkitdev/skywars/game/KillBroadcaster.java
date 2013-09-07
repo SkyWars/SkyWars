@@ -22,7 +22,7 @@ import org.bukkit.Bukkit;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class KillBroadcaster {
 

@@ -18,10 +18,11 @@ package net.daboross.bukkitdev.skywars.world;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class Statics {
 
     public static final String BASE_WORLD_NAME = "SkyWarsBaseWorld";
     public static final String ARENA_WORLD_NAME = "SkyWarsArenaWorld";
+    public static final String ZIP_FILE_PATH = "/SkyWarsBaseWorld.zip";
 }

@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.game;
 
+import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.game.SkyCurrentGameTracker;
 import net.daboross.bukkitdev.skywars.api.game.SkyGameHandler;
@@ -29,7 +30,7 @@ import org.bukkit.entity.Player;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class GameHandler implements SkyGameHandler {
 
@@ -39,6 +40,7 @@ public class GameHandler implements SkyGameHandler {
         this.plugin = plugin;
     }
 
+    @Override
     public void startNewGame() {
         plugin.getDistributor().distribute(new GameStartInfo(plugin.getGameQueue().getNextGame()));
     }
@@ -59,7 +61,7 @@ public class GameHandler implements SkyGameHandler {
     }
 
     @Override
-    public void removePlayerFromGame(String playerName, boolean teleport, boolean broadcast) {
+    public void removePlayerFromGame(@NonNull String playerName, boolean teleport, boolean broadcast) {
         playerName = playerName.toLowerCase();
         SkyCurrentGameTracker cg = plugin.getCurrentGameTracker();
         int id = cg.getGameID(playerName);

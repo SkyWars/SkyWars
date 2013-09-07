@@ -27,7 +27,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 /**
  *
- * @author daboross
+ * @author Dabo Ross <http://www.daboross.net/>
  */
 public class PortalListener implements Listener {
 
