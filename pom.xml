@@ -86,6 +86,7 @@
     </repositories>
     <build>
         <finalName>${project.name}</finalName>
+        <defaultGoal>clean install</defaultGoal>
         <resources>
             <resource>
                 <directory>${project.basedir}/src/main/resources</directory>
