@@ -19,6 +19,10 @@ package net.daboross.bukkitdev.skywars.world;
 import java.util.Collections;
 import java.util.List;
 import lombok.NonNull;
+import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
+import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
@@ -27,7 +31,6 @@ import net.daboross.bukkitdev.skywars.events.GameStartInfo;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 /**
  *
@@ -35,21 +38,32 @@ import org.bukkit.plugin.Plugin;
  */
 public class SkyWorldHandler {
 
-    private final Plugin plugin;
+    private final SkyWars plugin;
     private final WorldCopier copier;
 
-    public SkyWorldHandler(@NonNull Plugin plugin) {
+    public SkyWorldHandler(@NonNull SkyWars plugin) {
         this.plugin = plugin;
         this.copier = new WorldCopier(plugin);
     }
 
+    private boolean findIsBaseWorldRequired() {
+        for (SkyArena arena : plugin.getConfiguration().getEnabledArenas()) {
+            if (Statics.BASE_WORLD_NAME.equals(arena.getBoundaries().getOrigin().world)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void create() {
-        WorldCreator baseWorldCreator = new WorldCreator(Statics.BASE_WORLD_NAME);
-        baseWorldCreator.generateStructures(false);
-        baseWorldCreator.generator(new VoidGenerator());
-        baseWorldCreator.type(WorldType.FLAT);
-        baseWorldCreator.seed(0);
-        baseWorldCreator.createWorld();
+        if (findIsBaseWorldRequired()) {
+            WorldCreator baseWorldCreator = new WorldCreator(Statics.BASE_WORLD_NAME);
+            baseWorldCreator.generateStructures(false);
+            baseWorldCreator.generator(new VoidGenerator());
+            baseWorldCreator.type(WorldType.FLAT);
+            baseWorldCreator.seed(0);
+            baseWorldCreator.createWorld();
+        }
         WorldCreator arenaWorldCreator = new WorldCreator(Statics.ARENA_WORLD_NAME);
         arenaWorldCreator.generateStructures(false);
         arenaWorldCreator.generator(new VoidGenerator());
@@ -60,13 +74,13 @@ public class SkyWorldHandler {
 
     public void onGameStart(GameStartInfo info) {
         SkyGame game = info.getGame();
-        SkyBlockLocation center = getCenterLocation(game.getId());
-        copier.copyArena(center, game.getArena().getBoundaries().getOrigin());
+        SkyBlockLocation min = getMinLocation(game);
+        copier.copyArena(min, game.getArena().getBoundaries().getOrigin());
         Player[] players = info.getPlayers();
         List<SkyPlayerLocation> spawns = game.getArena().getSpawns();
         Collections.shuffle(spawns);
         for (int i = 0, currentSpawn = 0; i < players.length; i++) {
-            players[i].teleport(center.add(spawns.get(currentSpawn++)).toLocation());
+            players[i].teleport(min.add(spawns.get(currentSpawn++)).toLocation());
             if (currentSpawn > spawns.size()) {
                 currentSpawn = 0;
             }
@@ -74,14 +88,18 @@ public class SkyWorldHandler {
     }
 
     public void onGameEnd(GameEndInfo info) {
-        SkyBlockLocation center = getCenterLocation(info.getGame().getId());
+        SkyBlockLocation center = getMinLocation(info.getGame());
         copier.destroyArena(center, info.getGame().getArena().getBoundaries().getClearing());
     }
 
-    private SkyBlockLocation getCenterLocation(int id) {
+    private SkyBlockLocation getMinLocation(SkyGame game) {
+        return getMinLocation(game.getId(), game.getArena());
+    }
+
+    private SkyBlockLocation getMinLocation(int id, SkyArena arena) {
         int modX = (id % 2) * 200;
         int modZ = (id / 2) * 200;
-        int modY = 100;
+        int modY = arena.getBoundaries().getPlacementY();
         return new SkyBlockLocation(modX, modY, modZ, Statics.ARENA_WORLD_NAME);
     }
 }

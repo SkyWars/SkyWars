@@ -18,18 +18,18 @@
 #########
 config-version: 0
 spawns:
-- x: 18.5
-  y: 6
-  z: -14.5
-- x: -17.5
-  y: 6
-  z: 15.5
-- x: -17.5
-  y: 6
-  z: 15.5
-- x: 18.5
-  y: 6
-  z: 15.5
+- x: 46.5
+  y: 9
+  z: 14.5
+- x: 10.5
+  y: 9
+  z: 44.5
+- x: 10.5
+  y: 9
+  z: 44.5
+- x: 46.5
+  y: 9
+  z: 14.5
 num-players: 4
 boundaries:
   origin:
@@ -42,21 +42,23 @@ boundaries:
       y: 104
       z: 29
     world: SkyWarsBaseWorld
+  placement:
+    y: 20
   building:
     min:
-      x: -32
-      y: 0
-      z: -25
+      x: -4
+      y: -20
+      z: -4
     max:
-      x: 32
-      y: 120
-      z: 33
+      x: 60
+      y: 40
+      z: 62
   clearing:
     min:
-      x: -33
-      y: 0
-      z: -26
+      x: -5
+      y: -20
+      z: -5
     max:
-      x: 33
-      y: 121
-      z: 34
+      x: 61
+      y: 41
+      z: 63

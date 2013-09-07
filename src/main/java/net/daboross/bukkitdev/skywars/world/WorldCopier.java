@@ -41,8 +41,8 @@ public class WorldCopier {
         this.plugin = plugin;
     }
 
-    public void copyArena(@NonNull SkyBlockLocation toCenter, @NonNull SkyBlockLocationRange from) {
-        copy(from.min, from.max, toCenter);
+    public void copyArena(@NonNull SkyBlockLocation toMin, @NonNull SkyBlockLocationRange from) {
+        copy(from.min, from.max, toMin);
     }
 
     public void destroyArena(@NonNull SkyBlockLocation center, @NonNull SkyBlockLocationRange area) {
@@ -67,7 +67,7 @@ public class WorldCopier {
         }
     }
 
-    public void copy(@NonNull SkyBlockLocation fromMin, @NonNull SkyBlockLocation fromMax, @NonNull SkyBlockLocation toCenter) {
+    public void copy(@NonNull SkyBlockLocation fromMin, @NonNull SkyBlockLocation fromMax, @NonNull SkyBlockLocation toMin) {
         if (!fromMin.world.equals(fromMax.world)) {
             throw new IllegalArgumentException("From min and from max are not in same world");
         }
@@ -75,14 +75,13 @@ public class WorldCopier {
         if (fromWorld == null) {
             throw new IllegalArgumentException("From world doesn't exist");
         }
-        World toWorld = Bukkit.getWorld(toCenter.world);
+        World toWorld = Bukkit.getWorld(toMin.world);
         if (toWorld == null) {
             throw new IllegalArgumentException("To world doesn't exist");
         }
         int xLength = fromMax.x - fromMin.x;
         int yLength = fromMax.y - fromMin.y;
         int zLength = fromMax.z - fromMin.z;
-        SkyBlockLocation toMin = new SkyBlockLocation(toCenter.x - xLength / 2, toCenter.y - yLength / 2, toCenter.z - zLength / 2, toCenter.world);
         for (int x = 0; x <= xLength; x++) {
             for (int y = 0; y <= yLength; y++) {
                 for (int z = 0; z <= zLength; z++) {

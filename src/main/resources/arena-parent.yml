@@ -26,6 +26,8 @@ boundaries:
       y: 0
       z: 0
     world: SkyWarsBaseWorld
+  placement:
+    y: 0
   building:
     min:
       x: 0
