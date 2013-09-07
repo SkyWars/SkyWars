@@ -97,9 +97,10 @@ public class SkyWorldHandler {
     }
 
     private SkyBlockLocation getMinLocation(int id, SkyArena arena) {
-        int modX = (id % 2) * 200;
-        int modZ = (id / 2) * 200;
-        int modY = arena.getBoundaries().getPlacementY();
+        int distanceApart = arena.getPlacement().getDistanceApart();
+        int modX = (id % 2) * distanceApart;
+        int modZ = (id / 2) * distanceApart;
+        int modY = arena.getPlacement().getPlacementY();
         return new SkyBlockLocation(modX, modY, modZ, Statics.ARENA_WORLD_NAME);
     }
 }

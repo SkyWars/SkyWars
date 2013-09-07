@@ -46,6 +46,9 @@ boundaries:
       x: 0
       y: 0
       z: 0
+placement:
+  placement-y: 20
+  distance-apart: 200
 messages:
   death:
     killed-void: '#N%s#B pushed #N%s#B into the void of doom!'

@@ -42,8 +42,6 @@ boundaries:
       y: 104
       z: 29
     world: SkyWarsBaseWorld
-  placement:
-    y: 20
   building:
     min:
       x: -4
@@ -62,3 +60,6 @@ boundaries:
       x: 61
       y: 41
       z: 63
+placement:
+  placement-y: 20
+  distance-apart: 200
