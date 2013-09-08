@@ -21,15 +21,15 @@ spawns:
 - x: 46.5
   y: 9
   z: 14.5
-- x: 10.5
-  y: 9
-  z: 44.5
-- x: 10.5
-  y: 9
-  z: 44.5
 - x: 46.5
   y: 9
+  z: 44.5
+- x: 10.5
+  y: 9
   z: 14.5
+- x: 10.5
+  y: 9
+  z: 44.5
 num-players: 4
 boundaries:
   origin:
