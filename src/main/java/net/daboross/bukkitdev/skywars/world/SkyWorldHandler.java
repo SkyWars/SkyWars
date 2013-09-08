@@ -19,15 +19,14 @@ package net.daboross.bukkitdev.skywars.world;
 import java.util.Collections;
 import java.util.List;
 import lombok.NonNull;
-import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
-import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
 import net.daboross.bukkitdev.skywars.events.GameEndInfo;
 import net.daboross.bukkitdev.skywars.events.GameStartInfo;
+import net.daboross.bukkitdev.skywars.game.ArenaGame;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
@@ -73,8 +72,9 @@ public class SkyWorldHandler {
     }
 
     public void onGameStart(GameStartInfo info) {
-        SkyGame game = info.getGame();
+        ArenaGame game = info.getGame();
         SkyBlockLocation min = getMinLocation(game);
+        game.setMin(min);
         copier.copyArena(min, game.getArena().getBoundaries().getOrigin());
         Player[] players = info.getPlayers();
         List<SkyPlayerLocation> spawns = game.getArena().getSpawns();

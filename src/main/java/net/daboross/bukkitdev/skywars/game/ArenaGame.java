@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
+import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 
 /**
  *
@@ -33,6 +34,7 @@ public class ArenaGame implements SkyGame {
     private final List<String> alivePlayers;
     private final List<String> deadPlayers;
     private final SkyArena arena;
+    private SkyBlockLocation min;
 
     public ArenaGame(SkyArena arena, int id, String[] originalPlayers) {
         this.arena = arena;
@@ -47,6 +49,15 @@ public class ArenaGame implements SkyGame {
             throw new IllegalArgumentException("Player not in game.");
         }
         deadPlayers.add(playerName);
+    }
+
+    public void setMin(SkyBlockLocation min) {
+        this.min = min;
+    }
+
+    @Override
+    public SkyBlockLocation getMin() {
+        return min;
     }
 
     @Override
