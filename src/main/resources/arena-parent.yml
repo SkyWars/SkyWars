@@ -25,7 +25,7 @@ boundaries:
       x: 0
       y: 0
       z: 0
-    world: SkyWarsBaseWorld
+    world: SkyWarsArenaWorld
   placement:
     y: 0
   building:
