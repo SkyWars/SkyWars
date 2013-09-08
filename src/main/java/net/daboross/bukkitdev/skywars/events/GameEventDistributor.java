@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.events;
 
+import java.util.logging.Level;
 import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.events.GameEndEvent;
@@ -34,34 +35,49 @@ public class GameEventDistributor {
         this.plugin = plugin;
     }
 
+    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
     public void distribute(@NonNull GameStartInfo info) {
-        // -- Normal --
-        plugin.getIDHandler().onGameStart(info);
-        plugin.getCurrentGameTracker().onGameStart(info);
-        plugin.getWorldHandler().onGameStart(info);
-        plugin.getResetInventoryHealth().onGameStart(info); // Should be after WorldHandler
-        plugin.getBroadcaster().broadcastStart(info);
-        // -- After --
-        plugin.getServer().getPluginManager().callEvent(new GameStartEvent(plugin, info.getGame(), info.getPlayers()));
+        try {
+            // -- Normal --
+            plugin.getIDHandler().onGameStart(info);
+            plugin.getCurrentGameTracker().onGameStart(info);
+            plugin.getWorldHandler().onGameStart(info);
+            plugin.getResetInventoryHealth().onGameStart(info); // Should be after WorldHandler
+            plugin.getBroadcaster().broadcastStart(info);
+            // -- After --
+            plugin.getServer().getPluginManager().callEvent(new GameStartEvent(plugin, info.getGame(), info.getPlayers()));
+        } catch (Throwable t) {
+            plugin.getLogger().log(Level.SEVERE, "Couldn't broadcast GameStart", t);
+        }
     }
 
+    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
     public void distribute(@NonNull GameEndInfo info) {
-        // -- Initial --
-        plugin.getIDHandler().onGameEnd(info);
-        // -- Normal --
-        plugin.getBroadcaster().broadcastEnd(info);
-        // -- High --
-        plugin.getWorldHandler().onGameEnd(info);
-        // -- After --
-        plugin.getServer().getPluginManager().callEvent(new GameEndEvent(plugin, info.getGame(), info.getAlivePlayers()));
+        try {
+            // -- Initial --
+            plugin.getIDHandler().onGameEnd(info);
+            // -- Normal --
+            plugin.getBroadcaster().broadcastEnd(info);
+            // -- High --
+            plugin.getWorldHandler().onGameEnd(info);
+            // -- After --
+            plugin.getServer().getPluginManager().callEvent(new GameEndEvent(plugin, info.getGame(), info.getAlivePlayers()));
+        } catch (Throwable t) {
+            plugin.getLogger().log(Level.SEVERE, "Couldn't broadcast GameEnd", t);
+        }
     }
 
+    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
     public void distribute(@NonNull PlayerLeaveGameInfo info) {
-        // -- Normal --
-        plugin.getCurrentGameTracker().onPlayerLeaveGame(info);
-        plugin.getAttackerStorage().onPlayerLeaveGame(info);
-        plugin.getResetInventoryHealth().onPlayerLeave(info);
-        // -- After --
-        plugin.getServer().getPluginManager().callEvent(new LeaveGameEvent(plugin, info.getId(), info.getPlayer()));
+        try {
+            // -- Normal --
+            plugin.getCurrentGameTracker().onPlayerLeaveGame(info);
+            plugin.getAttackerStorage().onPlayerLeaveGame(info);
+            plugin.getResetInventoryHealth().onPlayerLeave(info);
+            // -- After --
+            plugin.getServer().getPluginManager().callEvent(new LeaveGameEvent(plugin, info.getId(), info.getPlayer()));
+        } catch (Throwable t) {
+            plugin.getLogger().log(Level.SEVERE, "Couldn't broadcast PlayerLeaveGame", t);
+        }
     }
 }
