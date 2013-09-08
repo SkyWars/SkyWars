@@ -10,6 +10,7 @@
 ## Extensive documentation COMING SOON. Will be available at
 ##  https://github.com/daboross/SkyWars/wiki when created.
 #########
+config-version: 0
 spawns:
 - x: 0
   y: 0
@@ -26,8 +27,6 @@ boundaries:
       y: 0
       z: 0
     world: SkyWarsArenaWorld
-  placement:
-    y: 0
   building:
     min:
       x: 0
