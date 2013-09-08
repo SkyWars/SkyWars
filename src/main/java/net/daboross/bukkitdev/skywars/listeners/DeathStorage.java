@@ -133,6 +133,7 @@ public class DeathStorage implements Listener, SkyAttackerStorage {
     public void onRespawn(PlayerRespawnEvent evt) {
         if (playersWhoDied.remove(evt.getPlayer().getName().toLowerCase())) {
             evt.setRespawnLocation(plugin.getLocationStore().getLobbyPosition().toLocation());
+            evt.getPlayer().setFallDistance(-2);
         }
     }
 }
