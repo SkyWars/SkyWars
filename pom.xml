@@ -32,7 +32,7 @@
         <developerConnection>scm:git:git@github.com:daboross/SkyWars.git</developerConnection>
     </scm>
     <properties>
-        <netbeans.hint.license>gpl3</netbeans.hint.license>
+        <netbeans.hint.license>gpl30</netbeans.hint.license>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
