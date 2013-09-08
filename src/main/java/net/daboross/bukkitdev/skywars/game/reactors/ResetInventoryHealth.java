@@ -16,11 +16,13 @@
  */
 package net.daboross.bukkitdev.skywars.game.reactors;
 
+import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameInfo;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 
 /**
  *
@@ -28,10 +30,20 @@ import org.bukkit.inventory.ItemStack;
  */
 public class ResetInventoryHealth {
 
+    private final Plugin plugin;
+
+    public ResetInventoryHealth(Plugin plugin) {
+        this.plugin = plugin;
+    }
+
     public void onGameStart(GameStartInfo info) {
         for (Player p : info.getPlayers()) {
             p.setGameMode(GameMode.SURVIVAL);
-            p.setHealth(p.getMaxHealth());
+            try {
+                p.setHealth(p.getMaxHealth());
+            } catch (NoSuchMethodError unused) {
+                plugin.getLogger().log(Level.INFO, "Couldn't reset health. Probably due to server version being below 1.6.2");
+            }
             p.getInventory().clear();
             p.getInventory().setArmorContents(new ItemStack[4]);
             p.setFoodLevel(20);
@@ -41,7 +53,11 @@ public class ResetInventoryHealth {
     public void onPlayerLeave(PlayerLeaveGameInfo info) {
         Player p = info.getPlayer();
         p.setGameMode(GameMode.SURVIVAL);
-        p.setHealth(p.getMaxHealth());
+        try {
+            p.setHealth(p.getMaxHealth());
+        } catch (NoSuchMethodError unused) {
+            plugin.getLogger().log(Level.INFO, "Couldn't reset health. Probably due to server version being below 1.6.2");
+        }
         p.getInventory().clear();
         p.getInventory().setArmorContents(new ItemStack[4]);
         p.setFoodLevel(20);
