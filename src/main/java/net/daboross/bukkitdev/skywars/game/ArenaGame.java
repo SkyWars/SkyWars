@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
+import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
 
 /**
  *
@@ -35,8 +37,9 @@ public class ArenaGame implements SkyGame {
     private final List<String> deadPlayers;
     private final SkyArena arena;
     private SkyBlockLocation min;
+    private SkyBlockLocationRange boundaries;
 
-    public ArenaGame(SkyArena arena, int id, String[] originalPlayers) {
+    public ArenaGame(@NonNull SkyArena arena, int id, @NonNull String[] originalPlayers) {
         this.arena = arena;
         this.id = id;
         this.alivePlayers = new ArrayList<>(Arrays.asList(originalPlayers));
@@ -53,6 +56,7 @@ public class ArenaGame implements SkyGame {
 
     public void setMin(SkyBlockLocation min) {
         this.min = min;
+        this.boundaries = arena.getBoundaries().getBuilding().add(min);
     }
 
     @Override
@@ -78,5 +82,10 @@ public class ArenaGame implements SkyGame {
     @Override
     public SkyArena getArena() {
         return arena;
+    }
+
+    @Override
+    public SkyBlockLocationRange getBuildingBoundaries() {
+        return boundaries;
     }
 }
