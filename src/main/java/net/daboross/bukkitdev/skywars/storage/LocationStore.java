@@ -22,6 +22,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import lombok.NonNull;
+import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
+import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyBoundariesConfig;
+import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyMessagesConfig;
+import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
 import net.daboross.bukkitdev.skywars.api.location.SkyLocationStore;
 import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
 import net.daboross.bukkitdev.skywars.world.Statics;
@@ -41,7 +46,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class LocationStore implements Listener, SkyLocationStore {
 
     private final JavaPlugin plugin;
-    private final List<SkyBlockLocation> portals = new ArrayList<SkyBlockLocation>();
+    private final List<SkyBlockLocation> portals = new ArrayList<>();
     private SkyPlayerLocation lobbyPosition;
     private FileConfiguration storage;
     private File configFile;
@@ -50,6 +55,10 @@ public class LocationStore implements Listener, SkyLocationStore {
         this.plugin = plugin;
         ConfigurationSerialization.registerClass(SkyBlockLocation.class);
         ConfigurationSerialization.registerClass(SkyPlayerLocation.class);
+        ConfigurationSerialization.registerClass(SkyBlockLocationRange.class);
+        ConfigurationSerialization.registerClass(SkyBoundariesConfig.class);
+        ConfigurationSerialization.registerClass(SkyMessagesConfig.class);
+        ConfigurationSerialization.registerClass(SkyArenaConfig.class);
         load();
     }
 
@@ -111,7 +120,7 @@ public class LocationStore implements Listener, SkyLocationStore {
     }
 
     @Override
-    public void setLobbyPosition(SkyPlayerLocation lobbyPosition) {
+    public void setLobbyPosition(@NonNull SkyPlayerLocation lobbyPosition) {
         this.lobbyPosition = lobbyPosition;
     }
 
