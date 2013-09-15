@@ -39,7 +39,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.6.2-R0.1</version>
+            <version>1.6.2-R1.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -83,6 +83,10 @@
             <id>mcstats-repo</id>
             <url>http://repo.mcstats.org/content/repositories/public</url>
         </repository>
+        <repository>
+            <id>dabo-repo</id>
+            <url>http://repo.dabo.us/</url>
+        </repository>
     </repositories>
     <build>
         <finalName>${project.name}</finalName>
@@ -106,7 +110,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.0.2</version>
+                <version>3.1</version>
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
@@ -145,9 +149,24 @@
                 </executions>
             </plugin>
         </plugins>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>2.4</version>
+            </extension>
+        </extensions>
     </build>
     <issueManagement>
         <url>https://github.com/daboross/SkyWars/issues</url>
         <system>Github Issues</system>
     </issueManagement>
+    <distributionManagement>
+        <repository>
+            <id>repo-dabo-us</id>
+            <name>repo.dabo.us</name>
+            <uniqueVersion>false</uniqueVersion>
+            <url>scp://repo.dabo.us/repo/</url>
+        </repository>
+    </distributionManagement>
 </project>
