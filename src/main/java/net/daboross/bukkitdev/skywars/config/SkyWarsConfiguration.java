@@ -192,6 +192,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             throw new StartupFailedException("Failed to load configuration file " + file.getAbsolutePath(), ex);
         }
         SkyArenaConfig arenaConfig = SkyArenaConfig.deserialize(config);
+        arenaConfig.setArenaName(name);
         arenaConfig.setFile(file);
         arenaConfig.getMessages().setPrefix(messagePrefix);
         arenaConfig.setParent(parentArena);
@@ -220,6 +221,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             throw new StartupFailedException("Failed to load arena-parent.yml " + file.getAbsolutePath(), ex);
         }
         SkyArenaConfig arenaConfig = SkyArenaConfig.deserialize(config);
+        arenaConfig.setArenaName("parent-arena");
         arenaConfig.setFile(file);
         arenaConfig.getMessages().setPrefix(messagePrefix);
         headers.put(file, config.options().header());

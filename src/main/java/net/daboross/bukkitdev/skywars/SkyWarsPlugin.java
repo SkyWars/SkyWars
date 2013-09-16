@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.game.SkyGameHandler;
 import net.daboross.bukkitdev.skywars.api.location.SkyLocationStore;
@@ -111,6 +112,12 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         copyWorld();
         configuration = new SkyWarsConfiguration(this);
         configuration.load();
+        for (SkyArena arena : configuration.getEnabledArenas()) {
+            if (arena.getBoundaries().getOrigin().world.equalsIgnoreCase(Statics.BASE_WORLD_NAME)) {
+                copyWorld();
+                break;
+            }
+        }
         currentGames = new CurrentGames();
         idHandler = new GameIDHandler();
         worldHandler = new SkyWorldHandler(this);
@@ -125,6 +132,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
             @Override
             public void run() {
                 worldHandler.create();
+                worldHandler.findAndLoadRequiredWorlds();
             }
         }.runTask(this);
         new PermissionHandler("skywars").setupPermissions();

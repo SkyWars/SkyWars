@@ -18,6 +18,7 @@ package net.daboross.bukkitdev.skywars.world;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
@@ -45,30 +46,40 @@ public class SkyWorldHandler {
         this.copier = new WorldCopier(plugin);
     }
 
-    private boolean findIsBaseWorldRequired() {
+    public void findAndLoadRequiredWorlds() {
         for (SkyArena arena : plugin.getConfiguration().getEnabledArenas()) {
-            if (Statics.BASE_WORLD_NAME.equals(arena.getBoundaries().getOrigin().world)) {
-                return true;
-            }
+            loadWorld(arena.getBoundaries().getOrigin().world, arena.getArenaName());
         }
-        return false;
     }
 
     public void create() {
-        if (findIsBaseWorldRequired()) {
-            WorldCreator baseWorldCreator = new WorldCreator(Statics.BASE_WORLD_NAME);
+        if (plugin.getServer().getWorld(Statics.ARENA_WORLD_NAME) == null) {
+            plugin.getLogger().info("Loading world '" + Statics.ARENA_WORLD_NAME + "'.");
+            WorldCreator arenaWorldCreator = new WorldCreator(Statics.ARENA_WORLD_NAME);
+            arenaWorldCreator.generateStructures(false);
+            arenaWorldCreator.generator(new VoidGenerator());
+            arenaWorldCreator.type(WorldType.FLAT);
+            arenaWorldCreator.seed(0);
+            arenaWorldCreator.createWorld();
+            plugin.getLogger().info("Done loading world '" + Statics.ARENA_WORLD_NAME + "'.");
+        } else {
+            plugin.getLogger().info("The world '" + Statics.ARENA_WORLD_NAME + "' was already loaded.");
+        }
+    }
+
+    public void loadWorld(String worldName, String arenaNameRequiring) {
+        if (plugin.getServer().getWorld(worldName) == null) {
+            plugin.getLogger().log(Level.INFO, "The arena ''{1}'' requires the world ''{0}'' to be loaded. Loading it now.", new Object[]{worldName, arenaNameRequiring});
+            WorldCreator baseWorldCreator = new WorldCreator(worldName);
             baseWorldCreator.generateStructures(false);
             baseWorldCreator.generator(new VoidGenerator());
             baseWorldCreator.type(WorldType.FLAT);
             baseWorldCreator.seed(0);
             baseWorldCreator.createWorld();
+            plugin.getLogger().log(Level.INFO, "Done loading world ''{0}''.", worldName);
+        } else {
+            plugin.getLogger().log(Level.INFO, "The arena ''{1}'' requires the world ''{0}'' to be loaded. It is already loaded.", new Object[]{worldName, arenaNameRequiring});
         }
-        WorldCreator arenaWorldCreator = new WorldCreator(Statics.ARENA_WORLD_NAME);
-        arenaWorldCreator.generateStructures(false);
-        arenaWorldCreator.generator(new VoidGenerator());
-        arenaWorldCreator.type(WorldType.FLAT);
-        arenaWorldCreator.seed(0);
-        arenaWorldCreator.createWorld();
     }
 
     public void onGameStart(GameStartInfo info) {
