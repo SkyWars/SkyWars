@@ -79,14 +79,14 @@ public class DeathStorage implements Listener, SkyAttackerStorage {
                         lastHit.put(name, ((HumanEntity) shooter).getName());
                     } else {
                         String customName = shooter.getCustomName();
-                        lastHit.put(name, customName == null ? shooter.getType().getName() : customName);
+                        lastHit.put(name, customName == null ? shooter.getType().toString() : customName);
                     }
                 }
             } else if (damager instanceof LivingEntity) {
                 String customName = ((LivingEntity) damager).getCustomName();
-                lastHit.put(name, customName == null ? damager.getType().getName() : customName);
+                lastHit.put(name, customName == null ? damager.getType().toString() : customName);
             } else {
-                lastHit.put(name, evt.getDamager().getType().getName());
+                lastHit.put(name, evt.getDamager().getType().toString());
             }
             if (plugin.getCurrentGameTracker().isInGame(name)) {
                 evt.setCancelled(false);
