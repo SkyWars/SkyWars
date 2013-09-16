@@ -76,15 +76,16 @@ public class GistReport {
                     .key("files").object()
                     .key("report.md").object()
                     .key("content").value(text)
-                    .endObject().endObject();
+                    .endObject().endObject().endObject();
         } catch (JSONException ex) {
             logger.log(Level.FINE, "Non severe error while writing report", ex);
             return null;
         }
-
+        String jsonOuptutString = outputJson.toString();
+        System.out.println(jsonOuptutString);
         try (OutputStream outputStream = connection.getOutputStream()) {
             try (OutputStreamWriter requestWriter = new OutputStreamWriter(outputStream)) {
-                requestWriter.append(outputJson.toString());
+                requestWriter.append(jsonOuptutString);
                 requestWriter.close();
             }
         } catch (IOException ex) {
@@ -99,7 +100,7 @@ public class GistReport {
             logger.log(Level.FINE, "Non severe error while reading response for report.", unused);
             return null;
         }
-        String resultUrl = inputJson.optString("url", null);
+        String resultUrl = inputJson.optString("html_url", null);
         return resultUrl == null ? null : shortenURL(logger, resultUrl);
     }
 
