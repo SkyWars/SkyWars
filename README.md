@@ -1,6 +1,3 @@
-SkyWars
-=======
-
 ### Features
 * Automatically create new arenas every time enough people join the queue.
 * Have *as many arenas* going at the same time as you want!
@@ -23,14 +20,11 @@ Those are the steps for basic configuration.
 ### Useful links
 * [Commands and Permissions](https://github.com/daboross/SkyWars/wiki/Commands-and-Permissions)
 * [Worlds](https://github.com/daboross/SkyWars/wiki/Worlds)
-* [Common issues](https://github.com/daboross/SkyWars/wiki/Common-Issues)
-* [Dev builds - CI Server](http://ci.aemservers.net/job/SkyWars)
-* [Source code](https://github.com/daboross/SkyWars)
+* [Common Issues](https://github.com/daboross/SkyWars/wiki/Common-Issues)
+* [Development Builds - CI Server](http://ci.aemservers.net/job/SkyWars)
+* [Source Code](https://github.com/daboross/SkyWars)
 * [Portuguese Tutorial - Ligação para tutorial AbsintoJ feito](http://www.youtube.com/watch?v=hYTq39Iomz0)
 * [MCStats Statistics](http://mcstats.org/plugin/SkyWars)
-
-### Plugin Metrics / Statistics
-<center>![- plugin metrics image would be here -](http://api.mcstats.org/signature/SkyWars.png)</center>
 
 ### Drawbacks
 Players will loose all items in their inventories when the game starts.
@@ -41,4 +35,5 @@ Requires Java version 7. Will __not__ work with java 6.
 We use the github issue tracker for all bugs, features, and questions.
 See [submitting a ticket](https://github.com/daboross/SkyWars/wiki/Submitting-a-ticket)
 
-### Full credit for the default map, Skyblock Warriors, goes to [SwipeShot](http://www.youtube.com/user/SwipeShot).
+### Map credit
+* Full credit for the default map, Skyblock Warriors, goes to [SwipeShot](http://www.youtube.com/user/SwipeShot).

@@ -168,7 +168,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!enabledCorrectly) {
             if (!enablingDone) {
-                sender.sendMessage(ColorList.ERR + "Some evil error happened enabling SkyWars. Enabling isn't done.");
+                sender.sendMessage(ColorList.ERR + "Some absoultely evil error happened enabling SkyWars. Enabling isn't done.");
             } else {
                 sender.sendMessage(ColorList.ERR + "SkyWars not enabled correctly. Check console for errors.");
             }
