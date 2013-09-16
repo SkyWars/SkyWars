@@ -82,7 +82,6 @@ public class GistReport {
             return null;
         }
         String jsonOuptutString = outputJson.toString();
-        System.out.println(jsonOuptutString);
         try (OutputStream outputStream = connection.getOutputStream()) {
             try (OutputStreamWriter requestWriter = new OutputStreamWriter(outputStream)) {
                 requestWriter.append(jsonOuptutString);

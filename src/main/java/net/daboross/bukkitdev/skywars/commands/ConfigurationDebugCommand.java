@@ -18,14 +18,19 @@ package net.daboross.bukkitdev.skywars.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.gist.GistReport;
+import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 /**
  *
@@ -49,13 +54,13 @@ public class ConfigurationDebugCommand extends SubCommand {
             } else {
                 sender.sendMessage("Invalid argument '" + subCommandArgs[0] + "'.");
                 sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
+                return;
             }
         }
-        sender.sendMessage("Gathering data.");
+        sender.sendMessage("Gathering data");
         List<String> data = getData();
         if (paste) {
-            String url = GistReport.gistText(plugin.getLogger(), GistReport.joinText(data));
-            sender.sendMessage("url: " + url);
+            new GistReportRunnable(plugin, sender.getName(), GistReport.joinText(data)).runMe();
         } else {
             sender.sendMessage(data.toArray(new String[data.size()]));
         }
@@ -76,5 +81,47 @@ public class ConfigurationDebugCommand extends SubCommand {
             list.add("```");
         }
         return list;
+    }
+
+    private static class GistReportRunnable implements Runnable {
+
+        private final Plugin plugin;
+        private final String playerName;
+        private final String text;
+
+        public GistReportRunnable(Plugin plugin, String playerName, String text) {
+            this.plugin = plugin;
+            this.playerName = playerName;
+            this.text = text;
+        }
+
+        public void runMe() {
+            plugin.getServer().getScheduler().runTaskAsynchronously(plugin, this);
+        }
+
+        @Override
+        public void run() {
+            String url = GistReport.gistText(plugin.getLogger(), text);
+            plugin.getServer().getScheduler().runTask(plugin, new SendResult(playerName, "debug-url: " + url));
+        }
+
+        private static class SendResult implements Runnable {
+
+            private final String playerName;
+            private final String result;
+
+            public SendResult(String playerName, String result) {
+                this.playerName = playerName;
+                this.result = result;
+            }
+
+            @Override
+            public void run() {
+                CommandSender sender = playerName.equalsIgnoreCase("CONSOLE") ? Bukkit.getConsoleSender() : Bukkit.getPlayer(playerName);
+                if (sender != null) {
+                    sender.sendMessage(result);
+                }
+            }
+        }
     }
 }
