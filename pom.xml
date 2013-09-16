@@ -62,6 +62,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>net.daboross.json</groupId>
+            <artifactId>json</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
@@ -129,6 +135,7 @@
                                     <include>org.mcstats.bukkit:metrics-lite</include>
                                     <include>net.daboross.bukkitdev:command-executor-base</include>
                                     <include>net.daboross.bukkitdev:skywars-api</include>
+                                    <include>net.daboross.json:json</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
@@ -139,6 +146,10 @@
                                 <relocation>
                                     <pattern>net.daboross.bukkitdev.commandexecutorbase</pattern>
                                     <shadedPattern>net.daboross.bukkitdev.skywars.libraries.commandexecutorbase</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.json</pattern>
+                                    <shadedPattern>net.daboross.bukkitdev.skywars.libraries.json</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
