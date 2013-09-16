@@ -35,6 +35,7 @@
         <netbeans.hint.license>gpl30</netbeans.hint.license>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
@@ -73,21 +74,17 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-
     <repositories>
         <repository>
             <id>bukkit-repo</id>
             <url>http://repo.bukkit.org/content/groups/public</url>
         </repository>
         <repository>
-            <id>mcstats-repo</id>
-            <url>http://repo.mcstats.org/content/repositories/public</url>
-        </repository>
-        <repository>
             <id>dabo-repo</id>
             <url>http://repo.dabo.us/</url>
         </repository>
     </repositories>
+
     <build>
         <finalName>${project.name}</finalName>
         <defaultGoal>clean install</defaultGoal>
@@ -157,6 +154,7 @@
             </extension>
         </extensions>
     </build>
+
     <issueManagement>
         <url>https://github.com/daboross/SkyWars/issues</url>
         <system>Github Issues</system>
