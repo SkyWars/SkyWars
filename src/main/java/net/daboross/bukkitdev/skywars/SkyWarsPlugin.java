@@ -37,6 +37,7 @@ import net.daboross.bukkitdev.skywars.listeners.PortalListener;
 import net.daboross.bukkitdev.skywars.listeners.QuitListener;
 import net.daboross.bukkitdev.skywars.game.reactors.ResetInventoryHealth;
 import net.daboross.bukkitdev.skywars.listeners.BuildingLimiter;
+import net.daboross.bukkitdev.skywars.listeners.MobSpawnDisable;
 import net.daboross.bukkitdev.skywars.listeners.SpawnListener;
 import net.daboross.bukkitdev.skywars.storage.LocationStore;
 import net.daboross.bukkitdev.skywars.world.SkyWorldHandler;
@@ -140,7 +141,8 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         PluginManager pm = getServer().getPluginManager();
         registerListeners(pm, new SpawnListener(), deathStorage,
                 new QuitListener(this), new PortalListener(this),
-                new CommandListener(this), new BuildingLimiter(this));
+                new CommandListener(this), new BuildingLimiter(this),
+                new MobSpawnDisable());
         enabledCorrectly = true;
     }
 
