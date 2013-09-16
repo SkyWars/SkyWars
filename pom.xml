@@ -80,8 +80,8 @@
             <url>http://repo.bukkit.org/content/groups/public</url>
         </repository>
         <repository>
-            <id>dabo-repo</id>
-            <url>http://repo.dabo.us/</url>
+            <id>repo-daboross-net</id>
+            <url>http://repo.daboross.net/</url>
         </repository>
     </repositories>
 
@@ -161,10 +161,10 @@
     </issueManagement>
     <distributionManagement>
         <repository>
-            <id>repo-dabo-us</id>
-            <name>repo.dabo.us</name>
+            <id>repo-daboross-net</id>
+            <name>repo.daboross.net</name>
             <uniqueVersion>false</uniqueVersion>
-            <url>scp://repo.dabo.us/repo/</url>
+            <url>scp://repo.daboross.net/repo/</url>
         </repository>
     </distributionManagement>
 </project>
