@@ -122,7 +122,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         if ( mainConfig.isString( Keys.ARENA_ORDER ) ) {
             order = ArenaOrder.getOrder( mainConfig.getString( Keys.ARENA_ORDER ) );
             if ( order == null ) {
-                throw new StartupFailedException( "Invalid ArenaOrder '" + order + "' found under " + Keys.ARENA_ORDER + " in file " + mainConfigFile.getAbsolutePath() + ". Valid values: " + Arrays.toString(ArenaOrder.values()) );
+                throw new StartupFailedException( "Invalid ArenaOrder '" + order + "' found under " + Keys.ARENA_ORDER + " in file " + mainConfigFile.getAbsolutePath() + ". Valid values: " + Arrays.toString( ArenaOrder.values() ) );
             }
         } else if ( mainConfig.contains( Keys.ARENA_ORDER ) ) {
             throw new StartupFailedException( getInvalid( Keys.ARENA_ORDER, mainConfig.get( Keys.ARENA_ORDER ), mainConfigFile, "String" ) );
@@ -169,6 +169,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
 
         try {
+            mainConfig.options().header( Headers.CONFIG );
             mainConfig.save( mainConfigFile );
         } catch ( IOException ex ) {
             plugin.getLogger().log( Level.SEVERE, "Couldn't save main-config.yml", ex );
