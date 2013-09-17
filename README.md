@@ -36,4 +36,4 @@ We use the github issue tracker for all bugs, features, and questions.
 See [submitting a ticket](https://github.com/daboross/SkyWars/wiki/Submitting-a-ticket)
 
 ### Map credit
-* Full credit for the default map, Skyblock Warriors, goes to [SwipeShot](http://www.youtube.com/user/SwipeShot).
+Full credit for the default map, Skyblock Warriors, goes to [SwipeShot](http://www.youtube.com/user/SwipeShot).
