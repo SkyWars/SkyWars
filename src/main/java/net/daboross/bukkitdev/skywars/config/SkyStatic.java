@@ -16,6 +16,8 @@
  */
 package net.daboross.bukkitdev.skywars.config;
 
+import java.util.logging.Logger;
+
 /**
  *
  * @author Dabo Ross <http://www.daboross.net/>
@@ -23,6 +25,8 @@ package net.daboross.bukkitdev.skywars.config;
 public class SkyStatic {
 
     private static boolean debug;
+    private static Logger logger;
+    private static String pluginName;
 
     public static void setDebug( boolean debug ) {
         SkyStatic.debug = debug;
@@ -30,5 +34,21 @@ public class SkyStatic {
 
     public static boolean isDebug() {
         return debug;
+    }
+
+    public static void setLogger( Logger logger ) {
+        SkyStatic.logger = logger;
+    }
+
+    public static Logger getLogger() {
+        return logger;
+    }
+
+    public static void setPluginName( String pluginName ) {
+        SkyStatic.pluginName = pluginName;
+    }
+
+    public static String getPluginName() {
+        return pluginName;
     }
 }

@@ -1,13 +1,3 @@
-######### config.yml #######
-## config-version should NOT be touched.
-## There _must_ be a <name>.yml file in arenas/ for every enabled arena.
-## arena-order can be RANDOM or ORDERED.
-##
-## All comments that are not in this header will be removed.
-##
-## Extensive documentation COMING SOON. Will be available at
-##  https://github.com/daboross/SkyWars/wiki when created.
-#########
 config-version: 0
 debug: false
 enabled-arenas:

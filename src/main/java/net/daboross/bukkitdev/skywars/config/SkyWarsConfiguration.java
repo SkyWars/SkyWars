@@ -17,21 +17,12 @@
 package net.daboross.bukkitdev.skywars.config;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
-import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.StartupFailedException;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
@@ -52,7 +43,6 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private FileConfiguration mainConfig;
     private SkyArenaConfig parentArena;
     private List<SkyArenaConfig> enabledArenas;
-    private Map<File, Map<FileMetadataKey, String>> fileMetadata;
     private ArenaOrder order;
     private String messagePrefix;
 
@@ -97,10 +87,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         if ( mainConfig == null ) {
             mainConfig = new YamlConfiguration();
         }
-        fileMetadata = new HashMap<>( 5 );
-        String mainConfigMd5;
         try {
-            mainConfigMd5 = loadAndGetMd5( mainConfigFile, mainConfig );
+            mainConfig.load( mainConfigFile );
         } catch ( FileNotFoundException ex ) {
             throw new StartupFailedException( mainConfigFile.getAbsolutePath() + " not found even after it is proven to exist", ex );
         } catch ( IOException ex ) {
@@ -108,8 +96,6 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         } catch ( InvalidConfigurationException ex ) {
             throw new StartupFailedException( "Invalid configuration for " + mainConfigFile.getAbsolutePath(), ex );
         }
-        Map<FileMetadataKey, String> mainMetadata = getMetadata( mainConfigFile );
-        mainMetadata.put( FileMetadataKey.MD_5, mainConfigMd5 );
 
         if ( mainConfig.isInt( Keys.VERSION ) ) {
             int version = mainConfig.getInt( Keys.VERSION );
@@ -179,6 +165,13 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             enabledArenas = new ArrayList<>( 0 );
             throw new StartupFailedException( "No enabled arenas found" );
         }
+
+
+        try {
+            mainConfig.save( mainConfigFile );
+        } catch ( IOException ex ) {
+            plugin.getLogger().log( Level.SEVERE, "Couldn't save main-config.yml", ex );
+        }
     }
 
     private void loadArena( String name ) {
@@ -192,9 +185,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             }
         }
         FileConfiguration config = new YamlConfiguration();
-        String md5;
         try {
-            md5 = loadAndGetMd5( file, config );
+            config.load( file );
         } catch ( FileNotFoundException ex ) {
             throw new StartupFailedException( name + " is in " + Keys.ENABLED_ARENAS + " but file " + file.getAbsolutePath() + " could not be found", ex );
         } catch ( IOException ex ) {
@@ -207,10 +199,9 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         arenaConfig.setFile( file );
         arenaConfig.getMessages().setPrefix( messagePrefix );
         arenaConfig.setParent( parentArena );
-        Map<FileMetadataKey, String> metadata = getMetadata( file );
-        metadata.put( FileMetadataKey.HEADER, config.options().header() );
-        metadata.put( FileMetadataKey.MD_5, md5 );
         enabledArenas.add( arenaConfig );
+
+        saveArena( file, arenaConfig, String.format( Headers.ARENA, name ) );
     }
 
     private void loadParent() {
@@ -224,9 +215,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             }
         }
         FileConfiguration config = new YamlConfiguration();
-        String md5;
         try {
-            md5 = loadAndGetMd5( file, config );
+            config.load( file );
         } catch ( FileNotFoundException ex ) {
             throw new StartupFailedException( "Can't find the parent arena yaml", ex );
         } catch ( IOException ex ) {
@@ -238,32 +228,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         arenaConfig.setArenaName( "parent-arena" );
         arenaConfig.setFile( file );
         arenaConfig.getMessages().setPrefix( messagePrefix );
-        Map<FileMetadataKey, String> metadata = getMetadata( file );
-        metadata.put( FileMetadataKey.HEADER, config.options().header() );
-        metadata.put( FileMetadataKey.MD_5, md5 );
         parentArena = arenaConfig;
-    }
-
-    @Override
-    public void save() {
-        if ( mainConfig != null ) {
-            try {
-                mainConfig.save( mainConfigFile );
-            } catch ( IOException ex ) {
-                plugin.getLogger().log( Level.SEVERE, "Couldn't save main-config.yml", ex );
-            }
-            for ( SkyArenaConfig config : enabledArenas ) {
-                File file = config.getFile();
-                FileConfiguration fileConfig = new YamlConfiguration();
-                fileConfig.options().header( getMetadata( file ).get( FileMetadataKey.HEADER ) );
-                config.serialize( fileConfig );
-                try {
-                    fileConfig.save( file );
-                } catch ( IOException ex ) {
-                    plugin.getLogger().log( Level.SEVERE, "Failed to save arena config to file " + file.getAbsolutePath(), ex );
-                }
-            }
-        }
+        saveArena( file, arenaConfig, Headers.PARENT );
     }
 
     @Override
@@ -291,54 +257,21 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         return "Object '" + value + "' that isn't a " + shouldBe + " found under " + key + " in file " + file.getAbsolutePath();
     }
 
-    private Map<FileMetadataKey, String> getMetadata( @NonNull File file ) {
-        Map<FileMetadataKey, String> metadata = fileMetadata.get( file );
-        if ( metadata == null ) {
-            metadata = new EnumMap<>( FileMetadataKey.class );
-            fileMetadata.put( file, metadata );
-        }
-        return metadata;
-    }
-
-    private String loadAndGetMd5( @NonNull File file, @NonNull FileConfiguration toLoadTo ) throws InvalidConfigurationException, FileNotFoundException, IOException {
-        String md5;
-        MessageDigest algorithm;
+    private void saveArena( File file, SkyArenaConfig arenaConfig, String header ) {
+        // Saving arena
+        YamlConfiguration newConfig = new YamlConfiguration();
+        newConfig.options().header( header ).indent( 2 );
+        arenaConfig.serialize( newConfig );
         try {
-            algorithm = MessageDigest.getInstance( "MD5" );
-        } catch ( NoSuchAlgorithmException ex ) {
-            plugin.getLogger().log( Level.SEVERE, "Couldn't find the MD5 algorithm.", ex );
-            toLoadTo.load( file );
-            return null;
-        }
-        try ( InputStream inputStream = new FileInputStream( file ) ) {
-            try ( DigestInputStream digestInputStream = new DigestInputStream( inputStream, algorithm ) ) {
-                toLoadTo.load( digestInputStream );
-                md5 = new String( algorithm.digest() );
-            }
-        }
-        return md5;
-    }
-
-    private String getMd5( @NonNull File file ) {
-        String md5 = null;
-        MessageDigest algorithm;
-        try {
-            algorithm = MessageDigest.getInstance( "MD5" );
-        } catch ( NoSuchAlgorithmException ex ) {
-            plugin.getLogger().log( Level.SEVERE, "Couldn't find the MD5 algorithm.", ex );
-            return null;
-        }
-        try ( InputStream inputStream = new FileInputStream( file ) ) {
-            byte[] buffer = new byte[ 1024 ];
-            int length;
-            while ( ( length = inputStream.read( buffer ) ) > 0 ) {
-                algorithm.update( buffer, 0, length );
-            }
-            md5 = new String( algorithm.digest() );
+            newConfig.save( file );
         } catch ( IOException ex ) {
-            plugin.getLogger().log( Level.SEVERE, "Couldn't md5 file " + file.getAbsolutePath(), ex );
+            plugin.getLogger().log( Level.SEVERE, "Failed to save arena config to file " + file.getAbsolutePath(), ex );
         }
-        return md5;
+    }
+
+    @Override
+    public void addAndSaveArena( SkyArenaConfig config ) {
+        throw new UnsupportedOperationException( "SkyWarsConfiguration: Not Created Yet!: addAndSaveArena" );
     }
 
     private static class Keys {
@@ -364,8 +297,50 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         private static final List<?> ENABLED_ARENAS = Collections.EMPTY_LIST;
     }
 
-    private static enum FileMetadataKey {
+    private static class Headers {
 
-        HEADER, MD_5;
+        private static final String CONFIG =
+                "######### config.yml #######\n"
+                + "## config-version should NOT be touched.\n"
+                + "## There _must_ be a <name>.yml file in arenas/ for every enabled arena.\n"
+                + "## arena-order can be RANDOM or ORDERED.\n"
+                + "##\n"
+                + "## All comment changes will be removed.\n"
+                + "##\n"
+                + "## Extensive documentation COMING SOON. Will be available at\n"
+                + "##  https://github.com/daboross/SkyWars/wiki when created.\n"
+                + "#########";
+        private static final String ARENA =
+                "######### %s.yml ###\n"
+                + "## This is the Skyblock Warriors arena config.\n"
+                + "## As you can see 'messages:' isn't listed.\n"
+                + "## You can add arena-specific messages by adding a 'messages:'\n"
+                + "## section mirroring the one in arena-parent.yml.\n"
+                + "## Otherwise all messages are inherited from arena-parent.yml\n"
+                + "##\n"
+                + "## All values that are not in this configuration will be inherited from\n"
+                + "##  arena-parent.yml\n"
+                + "##\n"
+                + "## All arena configs should have the config-version as 0. This will allow them to\n"
+                + "## be updated whenever any of the values change.\n"
+                + "##\n"
+                + "## All comment changes will be removed.\n"
+                + "##\n"
+                + "## Extensive documentation COMING SOON. Will be available at\n"
+                + "##  https://github.com/daboross/SkyWars/wiki when created.\n"
+                + "#########";
+        private static final String PARENT =
+                "######### arena-parent.yml ###\n"
+                + "## Any settings that an individual arena config leaves out will be inherited\n"
+                + "##  from this arena config.\n"
+                + "## All of the options must be defined here in order for configuration to work\n"
+                + "##  correctly when the messages are left out of a child config.\n"
+                + "## Messages section can use both & color codes and # color codes.\n"
+                + "##\n"
+                + "## All comment changes will be removed.\n"
+                + "##\n"
+                + "## Extensive documentation COMING SOON. Will be available at\n"
+                + "##  https://github.com/daboross/SkyWars/wiki when created.\n"
+                + "#########";
     }
 }

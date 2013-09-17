@@ -48,7 +48,6 @@ import static net.daboross.bukkitdev.skywars.world.WorldUnzipper.WorldUnzipResul
 import static net.daboross.bukkitdev.skywars.world.WorldUnzipper.WorldUnzipResult.ERROR;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -137,7 +136,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
             }
         }.runTask( this );
         new PermissionHandler( "skywars" ).setupPermissions();
-        setupCommands();
+        setupCommand();
         PluginManager pm = getServer().getPluginManager();
         registerListeners( pm, new SpawnListener(), deathStorage,
                 new QuitListener( this ), new PortalListener( this ),
@@ -159,7 +158,6 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         if ( enabledCorrectly ) {
             locationStore.save();
             idHandler.saveAndUnload( this );
-            configuration.save();
             getLogger().log( Level.INFO, "SkyWars disabled successfully" );
         } else {
             getLogger().log( Level.INFO, "SkyWars not disabling due to not being enabled successfully." );
@@ -191,10 +189,10 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         metrics.start();
     }
 
-    private void setupCommands() {
-        PluginCommand main = getCommand( "skywars" );
-        if ( main != null ) {
-            main.setExecutor( new CommandBase( this ).getExecutor() );
+    private void setupCommand() {
+        CommandBase base = new CommandBase( this );
+        for ( String commandName : getDescription().getCommands().keySet() ) {
+            base.latchOnto( getCommand( commandName ) );
         }
     }
 

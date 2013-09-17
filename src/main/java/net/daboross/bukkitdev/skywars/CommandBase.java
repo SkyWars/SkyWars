@@ -30,6 +30,7 @@ import net.daboross.bukkitdev.skywars.commands.SetPortalCommand;
 import net.daboross.bukkitdev.skywars.commands.StatusCommand;
 import net.daboross.bukkitdev.skywars.commands.VersionCommand;
 import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
 
 /**
  *
@@ -59,7 +60,12 @@ public class CommandBase {
         base.addSubCommand( new ConfigurationDebugCommand( plugin ) );
     }
 
-    public CommandExecutor getExecutor() {
-        return base;
+    public void latchOnto( PluginCommand command ) {
+        if ( command != null ) {
+            command.setDescription( "Main command for SkyWars" );
+            command.setExecutor( base );
+            command.setUsage( "/<command>" );
+            command.setPermission( null );
+        }
     }
 }

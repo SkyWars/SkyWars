@@ -1,15 +1,3 @@
-######### arena-parent.yml ###
-## Any settings that an individual arena config leaves out will be inherited
-##  from this arena config.
-## All of the options must be defined here in order for configuration to work
-##  correctly when the messages are left out of a child config.
-## Messages section can use both & color codes and # color codes.
-##
-## All comments that are not in this header will be removed.
-##
-## Extensive documentation COMING SOON. Will be available at
-##  https://github.com/daboross/SkyWars/wiki when created.
-#########
 config-version: 0
 spawns:
 - x: 0
