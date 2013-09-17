@@ -31,53 +31,62 @@ public class GameEventDistributor {
 
     private final SkyWarsPlugin plugin;
 
-    public GameEventDistributor(@NonNull SkyWarsPlugin plugin) {
+    public GameEventDistributor( @NonNull SkyWarsPlugin plugin ) {
         this.plugin = plugin;
     }
 
-    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
-    public void distribute(@NonNull GameStartInfo info) {
+    @SuppressWarnings(
+            {
+        "BroadCatchBlock", "TooBroadCatch"
+    })
+    public void distribute( @NonNull GameStartInfo info ) {
         try {
             // -- Normal --
-            plugin.getIDHandler().onGameStart(info);
-            plugin.getCurrentGameTracker().onGameStart(info);
-            plugin.getWorldHandler().onGameStart(info);
-            plugin.getResetInventoryHealth().onGameStart(info); // Should be after WorldHandler
-            plugin.getBroadcaster().broadcastStart(info);
+            plugin.getIDHandler().onGameStart( info );
+            plugin.getCurrentGameTracker().onGameStart( info );
+            plugin.getWorldHandler().onGameStart( info );
+            plugin.getResetInventoryHealth().onGameStart( info ); // Should be after WorldHandler
+            plugin.getBroadcaster().broadcastStart( info );
             // -- After --
-            plugin.getServer().getPluginManager().callEvent(new GameStartEvent(plugin, info.getGame(), info.getPlayers()));
-        } catch (Throwable t) {
-            plugin.getLogger().log(Level.SEVERE, "Couldn't broadcast GameStart", t);
+            plugin.getServer().getPluginManager().callEvent( new GameStartEvent( plugin, info.getGame(), info.getPlayers() ) );
+        } catch ( Throwable t ) {
+            plugin.getLogger().log( Level.SEVERE, "Couldn't broadcast GameStart", t );
         }
     }
 
-    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
-    public void distribute(@NonNull GameEndInfo info) {
+    @SuppressWarnings(
+            {
+        "BroadCatchBlock", "TooBroadCatch"
+    })
+    public void distribute( @NonNull GameEndInfo info ) {
         try {
             // -- Initial --
-            plugin.getIDHandler().onGameEnd(info);
+            plugin.getIDHandler().onGameEnd( info );
             // -- Normal --
-            plugin.getBroadcaster().broadcastEnd(info);
+            plugin.getBroadcaster().broadcastEnd( info );
             // -- High --
-            plugin.getWorldHandler().onGameEnd(info);
+            plugin.getWorldHandler().onGameEnd( info );
             // -- After --
-            plugin.getServer().getPluginManager().callEvent(new GameEndEvent(plugin, info.getGame(), info.getAlivePlayers()));
-        } catch (Throwable t) {
-            plugin.getLogger().log(Level.SEVERE, "Couldn't broadcast GameEnd", t);
+            plugin.getServer().getPluginManager().callEvent( new GameEndEvent( plugin, info.getGame(), info.getAlivePlayers() ) );
+        } catch ( Throwable t ) {
+            plugin.getLogger().log( Level.SEVERE, "Couldn't broadcast GameEnd", t );
         }
     }
 
-    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
-    public void distribute(@NonNull PlayerLeaveGameInfo info) {
+    @SuppressWarnings(
+            {
+        "BroadCatchBlock", "TooBroadCatch"
+    })
+    public void distribute( @NonNull PlayerLeaveGameInfo info ) {
         try {
             // -- Normal --
-            plugin.getCurrentGameTracker().onPlayerLeaveGame(info);
-            plugin.getAttackerStorage().onPlayerLeaveGame(info);
-            plugin.getResetInventoryHealth().onPlayerLeave(info);
+            plugin.getCurrentGameTracker().onPlayerLeaveGame( info );
+            plugin.getAttackerStorage().onPlayerLeaveGame( info );
+            plugin.getResetInventoryHealth().onPlayerLeave( info );
             // -- After --
-            plugin.getServer().getPluginManager().callEvent(new LeaveGameEvent(plugin, info.getId(), info.getPlayer()));
-        } catch (Throwable t) {
-            plugin.getLogger().log(Level.SEVERE, "Couldn't broadcast PlayerLeaveGame", t);
+            plugin.getServer().getPluginManager().callEvent( new LeaveGameEvent( plugin, info.getId(), info.getPlayer() ) );
+        } catch ( Throwable t ) {
+            plugin.getLogger().log( Level.SEVERE, "Couldn't broadcast PlayerLeaveGame", t );
         }
     }
 }

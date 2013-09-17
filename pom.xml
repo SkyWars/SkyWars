@@ -30,8 +30,8 @@
         <url>https://github.com/daboross/SkyWars.git</url>
         <connection>scm:git:https://github.com/daboross/SkyWars.git</connection>
         <developerConnection>scm:git:git@github.com:daboross/SkyWars.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
     <properties>
         <netbeans.hint.license>gpl30</netbeans.hint.license>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

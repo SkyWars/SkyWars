@@ -29,15 +29,15 @@ public class CommandListener implements Listener {
 
     private final SkyWarsPlugin plugin;
 
-    public CommandListener(SkyWarsPlugin plugin) {
+    public CommandListener( SkyWarsPlugin plugin ) {
         this.plugin = plugin;
     }
 
     @EventHandler
-    public void onCommand(PlayerCommandPreprocessEvent evt) {
-        if (evt.getMessage().length() < 3 || !evt.getMessage().substring(1, 3).equalsIgnoreCase("sw")) {
-            if (plugin.getCurrentGameTracker().isInGame(evt.getPlayer().getName())) {
-                evt.setCancelled(true);
+    public void onCommand( PlayerCommandPreprocessEvent evt ) {
+        if ( evt.getMessage().length() < 3 || !evt.getMessage().substring( 1, 3 ).equalsIgnoreCase( "sw" ) ) {
+            if ( plugin.getCurrentGameTracker().isInGame( evt.getPlayer().getName() ) ) {
+                evt.setCancelled( true );
             }
         }
     }

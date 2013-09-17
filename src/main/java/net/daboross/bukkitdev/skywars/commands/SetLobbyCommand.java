@@ -34,16 +34,16 @@ public class SetLobbyCommand extends SubCommand {
     private static final String CONFIRMATION = ColorList.REG + "The lobby is now at your current location.";
     private final SkyWars plugin;
 
-    public SetLobbyCommand(SkyWars plugin) {
-        super("setlobby", false, "skywars.setlobby", "Sets the lobby position");
-        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
+    public SetLobbyCommand( SkyWars plugin ) {
+        super( "setlobby", false, "skywars.setlobby", "Sets the lobby position" );
+        this.addCommandFilter( new ArgumentFilter( ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!" ) );
         this.plugin = plugin;
     }
 
     @Override
-    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
+    public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
         Player player = (Player) sender;
-        plugin.getLocationStore().setLobbyPosition(new SkyPlayerLocation(player));
-        sender.sendMessage(CONFIRMATION);
+        plugin.getLocationStore().setLobbyPosition( new SkyPlayerLocation( player ) );
+        sender.sendMessage( CONFIRMATION );
     }
 }

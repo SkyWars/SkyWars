@@ -32,22 +32,22 @@ public class JoinCommand extends SubCommand {
 
     private final SkyWars plugin;
 
-    public JoinCommand(SkyWars plugin) {
-        super("join", false, "skywars.join", "Joins the queue for the next game");
-        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
+    public JoinCommand( SkyWars plugin ) {
+        super( "join", false, "skywars.join", "Joins the queue for the next game" );
+        this.addCommandFilter( new ArgumentFilter( ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!" ) );
         this.plugin = plugin;
     }
 
     @Override
-    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
+    public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
         String name = sender.getName().toLowerCase();
-        if (plugin.getCurrentGameTracker().isInGame(name)) {
-            sender.sendMessage(Messages.Join.IN_GAME);
-        } else if (plugin.getGameQueue().inQueue(name)) {
-            sender.sendMessage(Messages.Join.ALREADY_QUEUED);
+        if ( plugin.getCurrentGameTracker().isInGame( name ) ) {
+            sender.sendMessage( Messages.Join.IN_GAME );
+        } else if ( plugin.getGameQueue().inQueue( name ) ) {
+            sender.sendMessage( Messages.Join.ALREADY_QUEUED );
         } else {
-            sender.sendMessage(Messages.Join.CONFIRMATION);
-            plugin.getGameQueue().queuePlayer(name);
+            sender.sendMessage( Messages.Join.CONFIRMATION );
+            plugin.getGameQueue().queuePlayer( name );
         }
     }
 }

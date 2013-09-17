@@ -33,20 +33,20 @@ public class LobbyCommand extends SubCommand {
 
     private final SkyWars plugin;
 
-    public LobbyCommand(SkyWars plugin) {
-        super("lobby", false, "skywars.lobby", "Teleports you to the lobby");
-        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
+    public LobbyCommand( SkyWars plugin ) {
+        super( "lobby", false, "skywars.lobby", "Teleports you to the lobby" );
+        this.addCommandFilter( new ArgumentFilter( ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!" ) );
         this.plugin = plugin;
     }
 
     @Override
-    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
+    public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
         Player player = (Player) sender;
-        if (plugin.getCurrentGameTracker().isInGame(player.getName())) {
-            sender.sendMessage(Messages.Lobby.IN_GAME);
+        if ( plugin.getCurrentGameTracker().isInGame( player.getName() ) ) {
+            sender.sendMessage( Messages.Lobby.IN_GAME );
         } else {
-            player.teleport(plugin.getLocationStore().getLobbyPosition().toLocation());
-            sender.sendMessage(Messages.Lobby.CONFIRMATION);
+            player.teleport( plugin.getLocationStore().getLobbyPosition().toLocation() );
+            sender.sendMessage( Messages.Lobby.CONFIRMATION );
         }
     }
 }

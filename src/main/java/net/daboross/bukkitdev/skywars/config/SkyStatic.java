@@ -24,7 +24,7 @@ public class SkyStatic {
 
     private static boolean debug;
 
-    public static void setDebug(boolean debug) {
+    public static void setDebug( boolean debug ) {
         SkyStatic.debug = debug;
     }
 

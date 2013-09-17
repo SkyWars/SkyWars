@@ -17,14 +17,21 @@
 package net.daboross.bukkitdev.skywars.config;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.StartupFailedException;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
@@ -45,206 +52,215 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private FileConfiguration mainConfig;
     private SkyArenaConfig parentArena;
     private List<SkyArenaConfig> enabledArenas;
-    private Map<File, String> headers;
+    private Map<File, Map<FileMetadataKey, String>> fileMetadata;
     private ArenaOrder order;
     private String messagePrefix;
 
-    public SkyWarsConfiguration(SkyWars plugin) {
+    public SkyWarsConfiguration( SkyWars plugin ) {
         this.plugin = plugin;
     }
 
     @Override
     public void load() {
-        if (mainConfig == null) {
+        if ( mainConfig == null ) {
             reload();
         }
     }
 
     @Override
     public void reload() {
-        if (mainConfigFile == null) {
-            mainConfigFile = new File(plugin.getDataFolder(), Names.MAIN);
+        if ( mainConfigFile == null ) {
+            mainConfigFile = new File( plugin.getDataFolder(), Names.MAIN );
         }
-        if (!mainConfigFile.exists()) {
+        if ( !mainConfigFile.exists() ) {
             try {
-                plugin.saveResource(Names.MAIN, false);
-            } catch (IllegalArgumentException ex) {
-                throw new StartupFailedException("Couldn't save resource " + Names.MAIN, ex);
+                plugin.saveResource( Names.MAIN, false );
+            } catch ( IllegalArgumentException ex ) {
+                throw new StartupFailedException( "Couldn't save resource " + Names.MAIN, ex );
             }
         }
-        if (!mainConfigFile.exists()) {
-            throw new StartupFailedException(mainConfigFile.getAbsolutePath() + " doesn't exist even after copying from jar.");
+        if ( !mainConfigFile.exists() ) {
+            throw new StartupFailedException( mainConfigFile.getAbsolutePath() + " doesn't exist even after copying from jar." );
         }
 
-        if (arenaFolder == null) {
-            arenaFolder = new File(plugin.getDataFolder(), Names.ARENAS);
+        if ( arenaFolder == null ) {
+            arenaFolder = new File( plugin.getDataFolder(), Names.ARENAS );
         }
-        if (!arenaFolder.exists()) {
+        if ( !arenaFolder.exists() ) {
             boolean mkdirs = arenaFolder.mkdirs();
-            if (!mkdirs) {
-                throw new StartupFailedException("Making directory " + arenaFolder.getAbsolutePath() + " failed");
+            if ( !mkdirs ) {
+                throw new StartupFailedException( "Making directory " + arenaFolder.getAbsolutePath() + " failed" );
             }
-        } else if (!arenaFolder.isDirectory()) {
-            throw new StartupFailedException("File " + arenaFolder.getAbsolutePath() + " exists but is not a directory");
+        } else if ( !arenaFolder.isDirectory() ) {
+            throw new StartupFailedException( "File " + arenaFolder.getAbsolutePath() + " exists but is not a directory" );
         }
-        if (mainConfig == null) {
+        if ( mainConfig == null ) {
             mainConfig = new YamlConfiguration();
         }
+        fileMetadata = new HashMap<>( 5 );
+        String mainConfigMd5;
         try {
-            mainConfig.load(mainConfigFile);
-        } catch (FileNotFoundException ex) {
-            throw new StartupFailedException(mainConfigFile.getAbsolutePath() + " not found even after it is proven to exist", ex);
-        } catch (IOException ex) {
-            throw new StartupFailedException("IOException while loading " + mainConfigFile.getAbsolutePath(), ex);
-        } catch (InvalidConfigurationException ex) {
-            throw new StartupFailedException("Invalid configuration for " + mainConfigFile.getAbsolutePath(), ex);
+            mainConfigMd5 = loadAndGetMd5( mainConfigFile, mainConfig );
+        } catch ( FileNotFoundException ex ) {
+            throw new StartupFailedException( mainConfigFile.getAbsolutePath() + " not found even after it is proven to exist", ex );
+        } catch ( IOException ex ) {
+            throw new StartupFailedException( "IOException while loading " + mainConfigFile.getAbsolutePath(), ex );
+        } catch ( InvalidConfigurationException ex ) {
+            throw new StartupFailedException( "Invalid configuration for " + mainConfigFile.getAbsolutePath(), ex );
         }
+        Map<FileMetadataKey, String> mainMetadata = getMetadata( mainConfigFile );
+        mainMetadata.put( FileMetadataKey.MD_5, mainConfigMd5 );
 
-        if (mainConfig.isInt(Keys.VERSION)) {
-            int version = mainConfig.getInt(Keys.VERSION);
-            if (version != 0) {
-                throw new StartupFailedException("Version '" + version + "' as listed under " + Keys.VERSION + " in file " + mainConfigFile.getAbsolutePath() + " is unknown.");
+        if ( mainConfig.isInt( Keys.VERSION ) ) {
+            int version = mainConfig.getInt( Keys.VERSION );
+            if ( version != 0 ) {
+                throw new StartupFailedException( "Version '" + version + "' as listed under " + Keys.VERSION + " in file " + mainConfigFile.getAbsolutePath() + " is unknown." );
             }
-        } else if (mainConfig.contains(Keys.VERSION)) {
-            throw new StartupFailedException(getInvalid(Keys.VERSION, mainConfig.get(Keys.VERSION), mainConfigFile, "Integer"));
+        } else if ( mainConfig.contains( Keys.VERSION ) ) {
+            throw new StartupFailedException( getInvalid( Keys.VERSION, mainConfig.get( Keys.VERSION ), mainConfigFile, "Integer" ) );
         } else {
-            throw new StartupFailedException(Keys.VERSION + " does not exist in file " + mainConfigFile.getAbsolutePath());
+            throw new StartupFailedException( Keys.VERSION + " does not exist in file " + mainConfigFile.getAbsolutePath() );
         }
 
-        if (mainConfig.isBoolean(Keys.DEBUG)) {
-            SkyStatic.setDebug(mainConfig.getBoolean(Keys.DEBUG));
-        } else if (mainConfig.contains(Keys.DEBUG)) {
-            throw new StartupFailedException(getInvalid(Keys.DEBUG, mainConfig.get(Keys.DEBUG), mainConfigFile, "Boolean"));
+        if ( mainConfig.isBoolean( Keys.DEBUG ) ) {
+            SkyStatic.setDebug( mainConfig.getBoolean( Keys.DEBUG ) );
+        } else if ( mainConfig.contains( Keys.DEBUG ) ) {
+            throw new StartupFailedException( getInvalid( Keys.DEBUG, mainConfig.get( Keys.DEBUG ), mainConfigFile, "Boolean" ) );
         } else {
-            logChange(Keys.DEBUG, Defaults.DEBUG, mainConfigFile);
-            mainConfig.set(Keys.DEBUG, Defaults.DEBUG);
-            SkyStatic.setDebug(Defaults.DEBUG);
+            logChange( Keys.DEBUG, Defaults.DEBUG, mainConfigFile );
+            mainConfig.set( Keys.DEBUG, Defaults.DEBUG );
+            SkyStatic.setDebug( Defaults.DEBUG );
         }
 
-        if (mainConfig.isString(Keys.ARENA_ORDER)) {
-            order = ArenaOrder.getOrder(mainConfig.getString(Keys.ARENA_ORDER));
-            if (order == null) {
-                throw new StartupFailedException("Invalid ArenaOrder '" + order + "' found under " + Keys.ARENA_ORDER + " in file " + mainConfigFile.getAbsolutePath() + ". Valid values: " + ArenaOrder.values());
+        if ( mainConfig.isString( Keys.ARENA_ORDER ) ) {
+            order = ArenaOrder.getOrder( mainConfig.getString( Keys.ARENA_ORDER ) );
+            if ( order == null ) {
+                throw new StartupFailedException( "Invalid ArenaOrder '" + order + "' found under " + Keys.ARENA_ORDER + " in file " + mainConfigFile.getAbsolutePath() + ". Valid values: " + ArenaOrder.values() );
             }
-        } else if (mainConfig.contains(Keys.ARENA_ORDER)) {
-            throw new StartupFailedException(getInvalid(Keys.ARENA_ORDER, mainConfig.get(Keys.ARENA_ORDER), mainConfigFile, "String"));
+        } else if ( mainConfig.contains( Keys.ARENA_ORDER ) ) {
+            throw new StartupFailedException( getInvalid( Keys.ARENA_ORDER, mainConfig.get( Keys.ARENA_ORDER ), mainConfigFile, "String" ) );
         } else {
-            logChange(Keys.ARENA_ORDER, Defaults.ARENA_ORDER, mainConfigFile);
-            mainConfig.set(Keys.ARENA_ORDER, Defaults.ARENA_ORDER);
+            logChange( Keys.ARENA_ORDER, Defaults.ARENA_ORDER, mainConfigFile );
+            mainConfig.set( Keys.ARENA_ORDER, Defaults.ARENA_ORDER );
             order = Defaults.ARENA_ORDER;
         }
 
 
-        if (mainConfig.isString(Keys.MESSAGE_PREFIX)) {
-            messagePrefix = mainConfig.getString(Keys.MESSAGE_PREFIX);
-        } else if (mainConfig.contains(Keys.MESSAGE_PREFIX)) {
-            throw new StartupFailedException("Value '" + mainConfig.get(Keys.MESSAGE_PREFIX) + "' that is not a string found under " + Keys.MESSAGE_PREFIX + " in file " + mainConfigFile.getAbsolutePath());
+        if ( mainConfig.isString( Keys.MESSAGE_PREFIX ) ) {
+            messagePrefix = mainConfig.getString( Keys.MESSAGE_PREFIX );
+        } else if ( mainConfig.contains( Keys.MESSAGE_PREFIX ) ) {
+            throw new StartupFailedException( "Value '" + mainConfig.get( Keys.MESSAGE_PREFIX ) + "' that is not a string found under " + Keys.MESSAGE_PREFIX + " in file " + mainConfigFile.getAbsolutePath() );
         } else {
-            logChange(Keys.MESSAGE_PREFIX, Defaults.MESSAGE_PREFIX, mainConfigFile);
-            mainConfig.set(Keys.MESSAGE_PREFIX, Defaults.MESSAGE_PREFIX);
+            logChange( Keys.MESSAGE_PREFIX, Defaults.MESSAGE_PREFIX, mainConfigFile );
+            mainConfig.set( Keys.MESSAGE_PREFIX, Defaults.MESSAGE_PREFIX );
             messagePrefix = Defaults.MESSAGE_PREFIX;
         }
 
 
-        if (mainConfig.isList(Keys.ENABLED_ARENAS)) { // This needs to come after MESSAGE_PREFIX
-            List<?> enabledArenasList = mainConfig.getList(Keys.ENABLED_ARENAS);
-            if (enabledArenasList.isEmpty()) {
-                throw new StartupFailedException("No enabled arenas found");
+        if ( mainConfig.isList( Keys.ENABLED_ARENAS ) ) { // This needs to come after MESSAGE_PREFIX
+            List<?> enabledArenasList = mainConfig.getList( Keys.ENABLED_ARENAS );
+            if ( enabledArenasList.isEmpty() ) {
+                throw new StartupFailedException( "No enabled arenas found" );
             }
-            enabledArenas = new ArrayList<>(enabledArenasList.size());
-            headers = new HashMap<>(enabledArenasList.size() + 1);
+            enabledArenas = new ArrayList<>( enabledArenasList.size() );
             loadParent();
-            for (Object o : enabledArenasList) {
-                if (o instanceof String) {
-                    loadArena((String) o);
+            for ( Object o : enabledArenasList ) {
+                if ( o instanceof String ) {
+                    loadArena( (String) o );
                 } else {
-                    throw new StartupFailedException(getInvalid(Keys.ENABLED_ARENAS, o, mainConfigFile, "String"));
+                    throw new StartupFailedException( getInvalid( Keys.ENABLED_ARENAS, o, mainConfigFile, "String" ) );
                 }
             }
-        } else if (mainConfig.contains(Keys.ENABLED_ARENAS)) {
-            throw new StartupFailedException(getInvalid(Keys.ENABLED_ARENAS, mainConfig.get(Keys.ENABLED_ARENAS), mainConfigFile, "list"));
+        } else if ( mainConfig.contains( Keys.ENABLED_ARENAS ) ) {
+            throw new StartupFailedException( getInvalid( Keys.ENABLED_ARENAS, mainConfig.get( Keys.ENABLED_ARENAS ), mainConfigFile, "list" ) );
         } else {
-            logChange(Keys.ENABLED_ARENAS, Defaults.ENABLED_ARENAS, mainConfigFile);
-            mainConfig.set(Keys.ENABLED_ARENAS, Defaults.ENABLED_ARENAS);
-            enabledArenas = new ArrayList<>(0);
-            throw new StartupFailedException("No enabled arenas found");
+            logChange( Keys.ENABLED_ARENAS, Defaults.ENABLED_ARENAS, mainConfigFile );
+            mainConfig.set( Keys.ENABLED_ARENAS, Defaults.ENABLED_ARENAS );
+            enabledArenas = new ArrayList<>( 0 );
+            throw new StartupFailedException( "No enabled arenas found" );
         }
     }
 
-    private void loadArena(String name) {
-        File file = new File(arenaFolder, name + ".yml");
-        if (!file.exists()) {
+    private void loadArena( String name ) {
+        File file = new File( arenaFolder, name + ".yml" );
+        if ( !file.exists() ) {
             String fileName = Names.ARENAS + File.separatorChar + name + ".yml";
             try {
-                plugin.saveResource(fileName, false);
-            } catch (IllegalArgumentException ex) {
-                throw new StartupFailedException(name + " is in " + Keys.ENABLED_ARENAS + " but file " + file.getAbsolutePath() + " could not be found and file " + fileName + " could not be found in plugin jar.");
+                plugin.saveResource( fileName, false );
+            } catch ( IllegalArgumentException ex ) {
+                throw new StartupFailedException( name + " is in " + Keys.ENABLED_ARENAS + " but file " + file.getAbsolutePath() + " could not be found and file " + fileName + " could not be found in plugin jar." );
             }
         }
         FileConfiguration config = new YamlConfiguration();
+        String md5;
         try {
-            config.load(file);
-        } catch (FileNotFoundException ex) {
-            throw new StartupFailedException(name + " is in " + Keys.ENABLED_ARENAS + " but file " + file.getAbsolutePath() + " could not be found", ex);
-        } catch (IOException ex) {
-            throw new StartupFailedException("IOException load file " + file.getAbsolutePath(), ex);
-        } catch (InvalidConfigurationException ex) {
-            throw new StartupFailedException("Failed to load configuration file " + file.getAbsolutePath(), ex);
+            md5 = loadAndGetMd5( file, config );
+        } catch ( FileNotFoundException ex ) {
+            throw new StartupFailedException( name + " is in " + Keys.ENABLED_ARENAS + " but file " + file.getAbsolutePath() + " could not be found", ex );
+        } catch ( IOException ex ) {
+            throw new StartupFailedException( "IOException load file " + file.getAbsolutePath(), ex );
+        } catch ( InvalidConfigurationException ex ) {
+            throw new StartupFailedException( "Failed to load configuration file " + file.getAbsolutePath(), ex );
         }
-        SkyArenaConfig arenaConfig = SkyArenaConfig.deserialize(config);
-        arenaConfig.setArenaName(name);
-        arenaConfig.setFile(file);
-        arenaConfig.getMessages().setPrefix(messagePrefix);
-        arenaConfig.setParent(parentArena);
-        headers.put(file, config.options().header());
-        enabledArenas.add(arenaConfig);
+        SkyArenaConfig arenaConfig = SkyArenaConfig.deserialize( config );
+        arenaConfig.setArenaName( name );
+        arenaConfig.setFile( file );
+        arenaConfig.getMessages().setPrefix( messagePrefix );
+        arenaConfig.setParent( parentArena );
+        Map<FileMetadataKey, String> metadata = getMetadata( file );
+        metadata.put( FileMetadataKey.HEADER, config.options().header() );
+        metadata.put( FileMetadataKey.MD_5, md5 );
+        enabledArenas.add( arenaConfig );
     }
 
     private void loadParent() {
-        File file = new File(plugin.getDataFolder(), "arena-parent.yml");
-        if (!file.exists()) {
+        File file = new File( plugin.getDataFolder(), "arena-parent.yml" );
+        if ( !file.exists() ) {
             String fileName = "arena-parent.yml";
             try {
-                plugin.saveResource(fileName, false);
-            } catch (IllegalArgumentException ex) {
-                throw new StartupFailedException("arena-parent.yml could not be found in plugin jar.", ex);
+                plugin.saveResource( fileName, false );
+            } catch ( IllegalArgumentException ex ) {
+                throw new StartupFailedException( "arena-parent.yml could not be found in plugin jar.", ex );
             }
         }
         FileConfiguration config = new YamlConfiguration();
+        String md5;
         try {
-            config.load(file);
-        } catch (FileNotFoundException ex) {
-            throw new StartupFailedException("Can't find the parent arena yaml", ex);
-        } catch (IOException ex) {
-            throw new StartupFailedException("IOException loading arena-parent " + file.getAbsolutePath(), ex);
-        } catch (InvalidConfigurationException ex) {
-            throw new StartupFailedException("Failed to load arena-parent.yml " + file.getAbsolutePath(), ex);
+            md5 = loadAndGetMd5( file, config );
+        } catch ( FileNotFoundException ex ) {
+            throw new StartupFailedException( "Can't find the parent arena yaml", ex );
+        } catch ( IOException ex ) {
+            throw new StartupFailedException( "IOException loading arena-parent " + file.getAbsolutePath(), ex );
+        } catch ( InvalidConfigurationException ex ) {
+            throw new StartupFailedException( "Failed to load arena-parent.yml " + file.getAbsolutePath(), ex );
         }
-        SkyArenaConfig arenaConfig = SkyArenaConfig.deserialize(config);
-        arenaConfig.setArenaName("parent-arena");
-        arenaConfig.setFile(file);
-        arenaConfig.getMessages().setPrefix(messagePrefix);
-        headers.put(file, config.options().header());
+        SkyArenaConfig arenaConfig = SkyArenaConfig.deserialize( config );
+        arenaConfig.setArenaName( "parent-arena" );
+        arenaConfig.setFile( file );
+        arenaConfig.getMessages().setPrefix( messagePrefix );
+        Map<FileMetadataKey, String> metadata = getMetadata( file );
+        metadata.put( FileMetadataKey.HEADER, config.options().header() );
+        metadata.put( FileMetadataKey.MD_5, md5 );
         parentArena = arenaConfig;
     }
 
     @Override
     public void save() {
-        if (mainConfig != null) {
+        if ( mainConfig != null ) {
             try {
-                mainConfig.save(mainConfigFile);
-            } catch (IOException ex) {
-                plugin.getLogger().log(Level.SEVERE, "Couldn't save main-config.yml", ex);
+                mainConfig.save( mainConfigFile );
+            } catch ( IOException ex ) {
+                plugin.getLogger().log( Level.SEVERE, "Couldn't save main-config.yml", ex );
             }
-            for (SkyArenaConfig config : enabledArenas) {
+            for ( SkyArenaConfig config : enabledArenas ) {
                 File file = config.getFile();
                 FileConfiguration fileConfig = new YamlConfiguration();
-                fileConfig.options().header(headers.get(file));
-                config.serialize(fileConfig);
+                fileConfig.options().header( getMetadata( file ).get( FileMetadataKey.HEADER ) );
+                config.serialize( fileConfig );
                 try {
-                    fileConfig.save(file);
-                } catch (IOException ex) {
-                    plugin.getLogger().log(Level.SEVERE, "Failed to save arena config to file " + file.getAbsolutePath(), ex);
+                    fileConfig.save( file );
+                } catch ( IOException ex ) {
+                    plugin.getLogger().log( Level.SEVERE, "Failed to save arena config to file " + file.getAbsolutePath(), ex );
                 }
             }
         }
@@ -253,7 +269,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     @Override
     public List<SkyArenaConfig> getEnabledArenas() {
         load();
-        return Collections.unmodifiableList(enabledArenas);
+        return Collections.unmodifiableList( enabledArenas );
     }
 
     @Override
@@ -267,12 +283,62 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         return messagePrefix;
     }
 
-    private void logChange(String key, Object value, File config) {
-        plugin.getLogger().log(Level.WARNING, "Setting {0} to {1} in {2}", new Object[]{key, value, config.getAbsolutePath()});
+    private void logChange( String key, Object value, File config ) {
+        plugin.getLogger().log( Level.WARNING, "Setting {0} to {1} in {2}", new Object[]{key, value, config.getAbsolutePath()} );
     }
 
-    private String getInvalid(String key, Object value, File file, String shouldBe) {
+    private String getInvalid( String key, Object value, File file, String shouldBe ) {
         return "Object '" + value + "' that isn't a " + shouldBe + " found under " + key + " in file " + file.getAbsolutePath();
+    }
+
+    private Map<FileMetadataKey, String> getMetadata( @NonNull File file ) {
+        Map<FileMetadataKey, String> metadata = fileMetadata.get( file );
+        if ( metadata == null ) {
+            metadata = new EnumMap<>( FileMetadataKey.class );
+            fileMetadata.put( file, metadata );
+        }
+        return metadata;
+    }
+
+    private String loadAndGetMd5( @NonNull File file, @NonNull FileConfiguration toLoadTo ) throws InvalidConfigurationException, FileNotFoundException, IOException {
+        String md5;
+        MessageDigest algorithm;
+        try {
+            algorithm = MessageDigest.getInstance( "MD5" );
+        } catch ( NoSuchAlgorithmException ex ) {
+            plugin.getLogger().log( Level.SEVERE, "Couldn't find the MD5 algorithm.", ex );
+            toLoadTo.load( file );
+            return null;
+        }
+        try ( InputStream inputStream = new FileInputStream( file ) ) {
+            try ( DigestInputStream digestInputStream = new DigestInputStream( inputStream, algorithm ) ) {
+                toLoadTo.load( digestInputStream );
+                md5 = new String( algorithm.digest() );
+            }
+        }
+        return md5;
+    }
+
+    private String getMd5( @NonNull File file ) {
+        String md5 = null;
+        MessageDigest algorithm;
+        try {
+            algorithm = MessageDigest.getInstance( "MD5" );
+        } catch ( NoSuchAlgorithmException ex ) {
+            plugin.getLogger().log( Level.SEVERE, "Couldn't find the MD5 algorithm.", ex );
+            return null;
+        }
+        try ( InputStream inputStream = new FileInputStream( file ) ) {
+            byte[] buffer = new byte[ 1024 ];
+            int length;
+            while ( ( length = inputStream.read( buffer ) ) > 0 ) {
+                algorithm.update( buffer, 0, length );
+            }
+            md5 = new String( algorithm.digest() );
+        } catch ( IOException ex ) {
+            plugin.getLogger().log( Level.SEVERE, "Couldn't md5 file " + file.getAbsolutePath(), ex );
+        }
+        return md5;
     }
 
     private static class Keys {
@@ -296,5 +362,10 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         private static final Boolean DEBUG = Boolean.FALSE;
         private static final ArenaOrder ARENA_ORDER = ArenaOrder.RANDOM;
         private static final List<?> ENABLED_ARENAS = Collections.EMPTY_LIST;
+    }
+
+    private static enum FileMetadataKey {
+
+        HEADER, MD_5;
     }
 }

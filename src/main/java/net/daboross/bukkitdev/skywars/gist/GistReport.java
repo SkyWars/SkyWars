@@ -39,96 +39,96 @@ import org.json.JSONStringer;
  */
 public class GistReport {
 
-    public static String joinText(Iterable<String> iterable) {
+    public static String joinText( Iterable<String> iterable ) {
         Iterator<String> iterator = iterable.iterator();
-        if (!iterator.hasNext()) {
+        if ( !iterator.hasNext() ) {
             return "";
         }
-        StringBuilder builder = new StringBuilder(iterator.next());
-        while (iterator.hasNext()) {
-            builder.append("\n").append(iterator.next());
+        StringBuilder builder = new StringBuilder( iterator.next() );
+        while ( iterator.hasNext() ) {
+            builder.append( "\n" ).append( iterator.next() );
         }
         return builder.toString();
     }
 
-    public static String gistText(Logger logger, String text) {
+    public static String gistText( Logger logger, String text ) {
         URL postUrl;
         try {
-            postUrl = new URL("https://api.github.com/gists");
-        } catch (MalformedURLException ex) {
-            logger.log(Level.FINE, "Non severe error encoding api.github.com URL", ex);
+            postUrl = new URL( "https://api.github.com/gists" );
+        } catch ( MalformedURLException ex ) {
+            logger.log( Level.FINE, "Non severe error encoding api.github.com URL", ex );
             return null;
         }
         URLConnection connection;
         try {
             connection = postUrl.openConnection();
-        } catch (IOException ex) {
-            logger.log(Level.FINE, "Non severe error opening api.github.com connection", ex);
+        } catch ( IOException ex ) {
+            logger.log( Level.FINE, "Non severe error opening api.github.com connection", ex );
             return null;
         }
-        connection.setDoOutput(true);
-        connection.setDoInput(true);
+        connection.setDoOutput( true );
+        connection.setDoInput( true );
         JSONStringer outputJson = new JSONStringer();
         try {
             outputJson.object()
-                    .key("description").value("SkyWars debug")
-                    .key("public").value("false")
-                    .key("files").object()
-                    .key("report.md").object()
-                    .key("content").value(text)
+                    .key( "description" ).value( "SkyWars debug" )
+                    .key( "public" ).value( "false" )
+                    .key( "files" ).object()
+                    .key( "report.md" ).object()
+                    .key( "content" ).value( text )
                     .endObject().endObject().endObject();
-        } catch (JSONException ex) {
-            logger.log(Level.FINE, "Non severe error while writing report", ex);
+        } catch ( JSONException ex ) {
+            logger.log( Level.FINE, "Non severe error while writing report", ex );
             return null;
         }
         String jsonOuptutString = outputJson.toString();
-        try (OutputStream outputStream = connection.getOutputStream()) {
-            try (OutputStreamWriter requestWriter = new OutputStreamWriter(outputStream)) {
-                requestWriter.append(jsonOuptutString);
+        try ( OutputStream outputStream = connection.getOutputStream() ) {
+            try ( OutputStreamWriter requestWriter = new OutputStreamWriter( outputStream ) ) {
+                requestWriter.append( jsonOuptutString );
                 requestWriter.close();
             }
-        } catch (IOException ex) {
-            logger.log(Level.FINE, "Non severe error writing report", ex);
+        } catch ( IOException ex ) {
+            logger.log( Level.FINE, "Non severe error writing report", ex );
             return null;
         }
 
         JSONObject inputJson;
         try {
-            inputJson = new JSONObject(readConnection(connection));
-        } catch (JSONException | IOException unused) {
-            logger.log(Level.FINE, "Non severe error while reading response for report.", unused);
+            inputJson = new JSONObject( readConnection( connection ) );
+        } catch ( JSONException | IOException unused ) {
+            logger.log( Level.FINE, "Non severe error while reading response for report.", unused );
             return null;
         }
-        String resultUrl = inputJson.optString("html_url", null);
-        return resultUrl == null ? null : shortenURL(logger, resultUrl);
+        String resultUrl = inputJson.optString( "html_url", null );
+        return resultUrl == null ? null : shortenURL( logger, resultUrl );
     }
 
-    public static String shortenURL(Logger logger, String url) {
+    public static String shortenURL( Logger logger, String url ) {
         URL requestUrl;
         try {
-            requestUrl = new URL("http://is.gd/create.php?format=simple&url=" + URLEncoder.encode(url, "UTF-8"));
-        } catch (MalformedURLException | UnsupportedEncodingException ex) {
-            logger.log(Level.FINE, "Non severe error encoding is.gd URL", ex);
+            requestUrl = new URL( "http://is.gd/create.php?format=simple&url=" + URLEncoder.encode( url, "UTF-8" ) );
+        } catch ( MalformedURLException | UnsupportedEncodingException ex ) {
+            logger.log( Level.FINE, "Non severe error encoding is.gd URL", ex );
             return url;
         }
         URLConnection connection;
         try {
             connection = requestUrl.openConnection();
-            return readConnection(connection);
-        } catch (IOException ex) {
-            logger.log(Level.FINE, "Non severe error getting is.gd response", ex);
+            return readConnection( connection );
+        } catch ( IOException ex ) {
+            logger.log( Level.FINE, "Non severe error getting is.gd response", ex );
             return url;
         }
     }
 
-    public static String readConnection(URLConnection connection) throws IOException {
-        try (InputStream inputStream = connection.getInputStream()) {
-            try (Reader reader = new InputStreamReader(inputStream, "UTF-8")) {
+    public static String readConnection( URLConnection connection ) throws IOException {
+        try ( InputStream inputStream = connection.getInputStream() ) {
+            try ( Reader reader = new InputStreamReader( inputStream, "UTF-8" ) ) {
                 StringBuilder result = new StringBuilder();
-                char[] buffer = new char[128];
+                char[] buffer = new char[ 128 ];
                 int length;
-                while ((length = reader.read(buffer)) > 0) {
-                    result.append(buffer, 0, length);
+                while ( ( length = reader.read( buffer ) ) > 0 ) {
+                    result.append( buffer, 0, length );
                 }
                 return result.toString();
             }

@@ -37,65 +37,65 @@ public class WorldCopier {
 
     private final Plugin plugin;
 
-    public WorldCopier(Plugin plugin) {
+    public WorldCopier( Plugin plugin ) {
         this.plugin = plugin;
     }
 
-    public void copyArena(@NonNull SkyBlockLocation toMin, @NonNull SkyBlockLocationRange from) {
-        copy(from.min, from.max, toMin);
+    public void copyArena( @NonNull SkyBlockLocation toMin, @NonNull SkyBlockLocationRange from ) {
+        copy( from.min, from.max, toMin );
     }
 
-    public void destroyArena(@NonNull SkyBlockLocation center, @NonNull SkyBlockLocationRange area) {
-        World world = Bukkit.getWorld(center.world);
-        if (world == null) {
-            throw new IllegalArgumentException("No world applicable.");
+    public void destroyArena( @NonNull SkyBlockLocation center, @NonNull SkyBlockLocationRange area ) {
+        World world = Bukkit.getWorld( center.world );
+        if ( world == null ) {
+            throw new IllegalArgumentException( "No world applicable." );
         }
         int xLength = area.max.x - area.min.x + 30;
         int zLength = area.max.z - area.min.z + 30;
-        SkyBlockLocation min = new SkyBlockLocation(center.x - xLength / 2, area.min.y, center.z - zLength / 2, center.world);
-        SkyBlockLocation length = new SkyBlockLocation(xLength, area.max.y - area.min.y, zLength, center.world);
-        destroyArena(min, length, world);
+        SkyBlockLocation min = new SkyBlockLocation( center.x - xLength / 2, area.min.y, center.z - zLength / 2, center.world );
+        SkyBlockLocation length = new SkyBlockLocation( xLength, area.max.y - area.min.y, zLength, center.world );
+        destroyArena( min, length, world );
     }
 
-    public void destroyArena(@NonNull SkyBlockLocation min, @NonNull SkyBlockLocation length, @NonNull World world) {
-        for (int x = 0; x < length.x; x++) {
-            for (int y = 0; y < length.y; y++) {
-                for (int z = 0; z < length.z; z++) {
-                    world.getBlockAt(min.x + x, min.y + y, min.z + z).setType(Material.AIR);
+    public void destroyArena( @NonNull SkyBlockLocation min, @NonNull SkyBlockLocation length, @NonNull World world ) {
+        for ( int x = 0 ; x < length.x ; x++ ) {
+            for ( int y = 0 ; y < length.y ; y++ ) {
+                for ( int z = 0 ; z < length.z ; z++ ) {
+                    world.getBlockAt( min.x + x, min.y + y, min.z + z ).setType( Material.AIR );
                 }
             }
         }
     }
 
-    public void copy(@NonNull SkyBlockLocation fromMin, @NonNull SkyBlockLocation fromMax, @NonNull SkyBlockLocation toMin) {
-        if (!fromMin.world.equals(fromMax.world)) {
-            throw new IllegalArgumentException("From min and from max are not in same world");
+    public void copy( @NonNull SkyBlockLocation fromMin, @NonNull SkyBlockLocation fromMax, @NonNull SkyBlockLocation toMin ) {
+        if ( !fromMin.world.equals( fromMax.world ) ) {
+            throw new IllegalArgumentException( "From min and from max are not in same world" );
         }
-        World fromWorld = Bukkit.getWorld(fromMin.world);
-        if (fromWorld == null) {
-            throw new IllegalArgumentException("From world doesn't exist");
+        World fromWorld = Bukkit.getWorld( fromMin.world );
+        if ( fromWorld == null ) {
+            throw new IllegalArgumentException( "From world doesn't exist" );
         }
-        World toWorld = Bukkit.getWorld(toMin.world);
-        if (toWorld == null) {
-            throw new IllegalArgumentException("To world doesn't exist");
+        World toWorld = Bukkit.getWorld( toMin.world );
+        if ( toWorld == null ) {
+            throw new IllegalArgumentException( "To world doesn't exist" );
         }
         int xLength = fromMax.x - fromMin.x;
         int yLength = fromMax.y - fromMin.y;
         int zLength = fromMax.z - fromMin.z;
-        for (int x = 0; x <= xLength; x++) {
-            for (int y = 0; y <= yLength; y++) {
-                for (int z = 0; z <= zLength; z++) {
-                    Block from = fromWorld.getBlockAt(fromMin.x + x, fromMin.y + y, fromMin.z + z);
-                    Block to = toWorld.getBlockAt(toMin.x + x, toMin.y + y, toMin.z + z);
-                    to.setType(from.getType());
-                    to.setData(from.getData());
+        for ( int x = 0 ; x <= xLength ; x++ ) {
+            for ( int y = 0 ; y <= yLength ; y++ ) {
+                for ( int z = 0 ; z <= zLength ; z++ ) {
+                    Block from = fromWorld.getBlockAt( fromMin.x + x, fromMin.y + y, fromMin.z + z );
+                    Block to = toWorld.getBlockAt( toMin.x + x, toMin.y + y, toMin.z + z );
+                    to.setType( from.getType() );
+                    to.setData( from.getData() );
                     BlockState fromState = from.getState();
-                    if (fromState instanceof Chest) {
+                    if ( fromState instanceof Chest ) {
                         Chest toChest = (Chest) to.getState();
                         Chest fromChest = (Chest) fromState;
                         ItemStack[] contents = fromChest.getBlockInventory().getContents();
-                        toChest.getBlockInventory().setContents(Arrays.copyOf(contents, contents.length));
-                        toChest.update(true);
+                        toChest.getBlockInventory().setContents( Arrays.copyOf( contents, contents.length ) );
+                        toChest.update( true );
                     }
                 }
             }

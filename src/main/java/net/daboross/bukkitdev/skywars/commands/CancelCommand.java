@@ -32,29 +32,29 @@ public class CancelCommand extends SubCommand {
 
     private final SkyWars plugin;
 
-    public CancelCommand(SkyWars plugin) {
-        super("cancel", true, "skywars.cancel", "Cancels a current game with the given id");
-        addArgumentNames("ID");
-        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.LESS_THAN, 2, ColorList.ERR + "Too many arguments!"));
-        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.GREATER_THAN, 0, ColorList.ERR + "Not enough arguments!"));
+    public CancelCommand( SkyWars plugin ) {
+        super( "cancel", true, "skywars.cancel", "Cancels a current game with the given id" );
+        addArgumentNames( "ID" );
+        this.addCommandFilter( new ArgumentFilter( ArgumentFilter.ArgumentCondition.LESS_THAN, 2, ColorList.ERR + "Too many arguments!" ) );
+        this.addCommandFilter( new ArgumentFilter( ArgumentFilter.ArgumentCondition.GREATER_THAN, 0, ColorList.ERR + "Not enough arguments!" ) );
         this.plugin = plugin;
     }
 
     @Override
-    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
+    public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
         int id;
         try {
-            id = Integer.parseInt(subCommandArgs[0]);
-        } catch (NumberFormatException ex) {
-            sender.sendMessage(ColorList.ERR_ARGS + subCommandArgs[0] + ColorList.ERR + " isn't an integer!");
+            id = Integer.parseInt( subCommandArgs[0] );
+        } catch ( NumberFormatException ex ) {
+            sender.sendMessage( ColorList.ERR_ARGS + subCommandArgs[0] + ColorList.ERR + " isn't an integer!" );
             return;
         }
         SkyIDHandler idh = plugin.getIDHandler();
-        if (idh.getGame(id) == null) {
-            sender.sendMessage(ColorList.ERR + "There aren't any games with the id " + ColorList.ERR_ARGS + id);
+        if ( idh.getGame( id ) == null ) {
+            sender.sendMessage( ColorList.ERR + "There aren't any games with the id " + ColorList.ERR_ARGS + id );
             return;
         }
-        sender.sendMessage(ColorList.REG + "Canceling game " + ColorList.DATA + id);
-        plugin.getGameHandler().endGame(id, true);
+        sender.sendMessage( ColorList.REG + "Canceling game " + ColorList.DATA + id );
+        plugin.getGameHandler().endGame( id, true );
     }
 }

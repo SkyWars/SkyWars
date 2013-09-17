@@ -36,51 +36,51 @@ public class GameHandler implements SkyGameHandler {
 
     private final SkyWarsPlugin plugin;
 
-    public GameHandler(SkyWarsPlugin plugin) {
+    public GameHandler( SkyWarsPlugin plugin ) {
         this.plugin = plugin;
     }
 
     @Override
     public void startNewGame() {
-        plugin.getDistributor().distribute(new GameStartInfo(plugin.getGameQueue().getNextGame()));
+        plugin.getDistributor().distribute( new GameStartInfo( plugin.getGameQueue().getNextGame() ) );
     }
 
     @Override
-    public void endGame(int id, boolean broadcast) {
+    public void endGame( int id, boolean broadcast ) {
         SkyIDHandler idHandler = plugin.getIDHandler();
-        if (!idHandler.gameRunning(id)) {
-            throw new IllegalArgumentException("Invalid id " + id);
+        if ( !idHandler.gameRunning( id ) ) {
+            throw new IllegalArgumentException( "Invalid id " + id );
         }
-        GameEndInfo info = new GameEndInfo(plugin.getIDHandler().getGame(id), broadcast);
+        GameEndInfo info = new GameEndInfo( plugin.getIDHandler().getGame( id ), broadcast );
         Location lobby = plugin.getLocationStore().getLobbyPosition().toLocation();
-        for (Player player : info.getAlivePlayers()) {
-            plugin.getDistributor().distribute(new PlayerLeaveGameInfo(id, player));
-            player.teleport(lobby);
+        for ( Player player : info.getAlivePlayers() ) {
+            plugin.getDistributor().distribute( new PlayerLeaveGameInfo( id, player ) );
+            player.teleport( lobby );
         }
-        plugin.getDistributor().distribute(info);
+        plugin.getDistributor().distribute( info );
     }
 
     @Override
-    public void removePlayerFromGame(@NonNull String playerName, boolean teleport, boolean broadcast) {
+    public void removePlayerFromGame( @NonNull String playerName, boolean teleport, boolean broadcast ) {
         playerName = playerName.toLowerCase();
         SkyCurrentGameTracker cg = plugin.getCurrentGameTracker();
-        int id = cg.getGameID(playerName);
-        if (id == -1) {
-            throw new IllegalArgumentException("Player not in game");
+        int id = cg.getGameID( playerName );
+        if ( id == -1 ) {
+            throw new IllegalArgumentException( "Player not in game" );
         }
         GameIDHandler idh = plugin.getIDHandler();
-        ArenaGame game = idh.getGame(id);
-        game.removePlayer(playerName);
-        Player player = Bukkit.getPlayerExact(playerName);
-        plugin.getDistributor().distribute(new PlayerLeaveGameInfo(id, player));
-        if (teleport) {
-            player.teleport(plugin.getLocationStore().getLobbyPosition().toLocation());
+        ArenaGame game = idh.getGame( id );
+        game.removePlayer( playerName );
+        Player player = Bukkit.getPlayerExact( playerName );
+        plugin.getDistributor().distribute( new PlayerLeaveGameInfo( id, player ) );
+        if ( teleport ) {
+            player.teleport( plugin.getLocationStore().getLobbyPosition().toLocation() );
         }
-        if (broadcast) {
-            Bukkit.broadcastMessage(KillBroadcaster.getMessage(player.getName(), plugin.getAttackerStorage().getKiller(playerName), KillBroadcaster.KillReason.LEFT, game.getArena()));
+        if ( broadcast ) {
+            Bukkit.broadcastMessage( KillBroadcaster.getMessage( player.getName(), plugin.getAttackerStorage().getKiller( playerName ), KillBroadcaster.KillReason.LEFT, game.getArena() ) );
         }
-        if (game.getAlivePlayers().size() < 2) {
-            endGame(id, true);
+        if ( game.getAlivePlayers().size() < 2 ) {
+            endGame( id, true );
         }
     }
 }

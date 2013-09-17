@@ -27,7 +27,7 @@ public class PlayerLeaveGameInfo {
     private final int id;
     private final Player who;
 
-    public PlayerLeaveGameInfo(int id, Player who) {
+    public PlayerLeaveGameInfo( int id, Player who ) {
         this.who = who;
         this.id = id;
     }

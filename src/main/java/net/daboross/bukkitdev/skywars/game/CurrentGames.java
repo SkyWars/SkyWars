@@ -31,30 +31,30 @@ public class CurrentGames implements SkyCurrentGameTracker {
 
     private final Map<String, Integer> currentlyInGame = new HashMap<String, Integer>();
 
-    private void setGameID(String player, int gameID) {
-        currentlyInGame.put(player.toLowerCase(), Integer.valueOf(gameID));
+    private void setGameID( String player, int gameID ) {
+        currentlyInGame.put( player.toLowerCase(), Integer.valueOf( gameID ) );
     }
 
     @Override
-    public boolean isInGame(String player) {
-        return currentlyInGame.containsKey(player.toLowerCase());
+    public boolean isInGame( String player ) {
+        return currentlyInGame.containsKey( player.toLowerCase() );
     }
 
     @Override
-    public int getGameID(String player) {
-        Integer val = currentlyInGame.get(player.toLowerCase());
+    public int getGameID( String player ) {
+        Integer val = currentlyInGame.get( player.toLowerCase() );
         return val == null ? -1 : val.intValue();
     }
 
-    public void onPlayerLeaveGame(PlayerLeaveGameInfo info) {
-        currentlyInGame.remove(info.getPlayer().getName().toLowerCase());
+    public void onPlayerLeaveGame( PlayerLeaveGameInfo info ) {
+        currentlyInGame.remove( info.getPlayer().getName().toLowerCase() );
     }
 
-    public void onGameStart(GameStartInfo info) {
+    public void onGameStart( GameStartInfo info ) {
         SkyGame game = info.getGame();
         int id = game.getId();
-        for (String name : game.getAlivePlayers()) {
-            setGameID(name, id);
+        for ( String name : game.getAlivePlayers() ) {
+            setGameID( name, id );
         }
     }
 }

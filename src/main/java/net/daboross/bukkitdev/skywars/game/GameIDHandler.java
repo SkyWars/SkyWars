@@ -37,48 +37,48 @@ public class GameIDHandler implements SkyIDHandler {
     private final List<Integer> currentIDs = new ArrayList<Integer>();
 
     @Override
-    public boolean gameRunning(int id) {
-        return currentGames.containsKey(id);
+    public boolean gameRunning( int id ) {
+        return currentGames.containsKey( id );
     }
 
     @Override
-    public ArenaGame getGame(int id) {
-        return currentGames.get(id);
+    public ArenaGame getGame( int id ) {
+        return currentGames.get( id );
     }
 
     int getNextId() {
         int id = 0;
-        while (currentGames.containsKey(id)) {
+        while ( currentGames.containsKey( id ) ) {
             id++;
         }
         return id;
     }
 
-    public void onGameStart(GameStartInfo info) {
+    public void onGameStart( GameStartInfo info ) {
         ArenaGame game = info.getGame();
-        currentGames.put(game.getId(), game);
-        currentIDs.add(game.getId());
+        currentGames.put( game.getId(), game );
+        currentIDs.add( game.getId() );
     }
 
-    public void onGameEnd(GameEndInfo info) {
+    public void onGameEnd( GameEndInfo info ) {
         int id = info.getGame().getId();
-        Integer idInteger = Integer.valueOf(id);
-        currentGames.remove(idInteger);
-        currentIDs.remove(idInteger);
+        Integer idInteger = Integer.valueOf( id );
+        currentGames.remove( idInteger );
+        currentIDs.remove( idInteger );
     }
 
-    public void saveAndUnload(SkyWarsPlugin plugin) {
+    public void saveAndUnload( SkyWarsPlugin plugin ) {
         SkyGameHandler handler = plugin.getGameHandler();
-        while (!currentIDs.isEmpty()) {
-            int id = currentIDs.get(0);
-            if (getGame(id) != null) {
-                handler.endGame(id, false);
+        while ( !currentIDs.isEmpty() ) {
+            int id = currentIDs.get( 0 );
+            if ( getGame( id ) != null ) {
+                handler.endGame( id, false );
             }
         }
     }
 
     @Override
     public List<Integer> getCurrentIDs() {
-        return Collections.unmodifiableList(currentIDs);
+        return Collections.unmodifiableList( currentIDs );
     }
 }

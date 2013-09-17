@@ -33,18 +33,18 @@ public class CancelAllCommand extends SubCommand {
 
     private final SkyWars plugin;
 
-    public CancelAllCommand(SkyWars plugin) {
-        super("cancelall", true, "skywars.cancelall", "Cancels all current games.");
-        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
+    public CancelAllCommand( SkyWars plugin ) {
+        super( "cancelall", true, "skywars.cancelall", "Cancels all current games." );
+        this.addCommandFilter( new ArgumentFilter( ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!" ) );
         this.plugin = plugin;
     }
 
     @Override
-    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
+    public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
         SkyIDHandler idh = plugin.getIDHandler();
-        for (int id : new ArrayList<Integer>(idh.getCurrentIDs())) {
-            sender.sendMessage(ColorList.REG + "Canceling game " + ColorList.DATA + id);
-            plugin.getGameHandler().endGame(id, true);
+        for ( int id : new ArrayList<Integer>( idh.getCurrentIDs() ) ) {
+            sender.sendMessage( ColorList.REG + "Canceling game " + ColorList.DATA + id );
+            plugin.getGameHandler().endGame( id, true );
         }
     }
 }

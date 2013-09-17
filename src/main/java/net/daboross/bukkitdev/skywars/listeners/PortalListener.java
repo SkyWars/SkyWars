@@ -33,20 +33,20 @@ public class PortalListener implements Listener {
 
     private final SkyWarsPlugin plugin;
 
-    public PortalListener(SkyWarsPlugin plugin) {
+    public PortalListener( SkyWarsPlugin plugin ) {
         this.plugin = plugin;
     }
 
     @EventHandler
-    public void onMove(PlayerMoveEvent evt) {
+    public void onMove( PlayerMoveEvent evt ) {
         Location location = evt.getTo();
-        for (SkyBlockLocation loc : plugin.getLocationStore().getPortals()) {
-            if (loc.isNear(location)) {
+        for ( SkyBlockLocation loc : plugin.getLocationStore().getPortals() ) {
+            if ( loc.isNear( location ) ) {
                 Player p = evt.getPlayer();
                 String name = p.getName().toLowerCase();
-                if (!plugin.getCurrentGameTracker().isInGame(name) && !plugin.getGameQueue().inQueue(name)) {
-                    p.sendMessage(Messages.Join.CONFIRMATION);
-                    plugin.getGameQueue().queuePlayer(name);
+                if ( !plugin.getCurrentGameTracker().isInGame( name ) && !plugin.getGameQueue().inQueue( name ) ) {
+                    p.sendMessage( Messages.Join.CONFIRMATION );
+                    plugin.getGameQueue().queuePlayer( name );
                 }
             }
         }

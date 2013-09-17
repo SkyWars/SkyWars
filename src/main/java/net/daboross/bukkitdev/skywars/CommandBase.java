@@ -40,23 +40,23 @@ public class CommandBase {
     private final SkyWars plugin;
     private final CommandExecutorBase base;
 
-    public CommandBase(@NonNull SkyWars plugin) {
+    public CommandBase( @NonNull SkyWars plugin ) {
         this.plugin = plugin;
-        this.base = new CommandExecutorBase(null);
+        this.base = new CommandExecutorBase( null );
         this.initCommands();
     }
 
     private void initCommands() {
-        base.addSubCommand(new JoinCommand(plugin));
-        base.addSubCommand(new LeaveCommand(plugin));
-        base.addSubCommand(new SetLobbyCommand(plugin));
-        base.addSubCommand(new SetPortalCommand(plugin));
-        base.addSubCommand(new CancelCommand(plugin));
-        base.addSubCommand(new StatusCommand(plugin));
-        base.addSubCommand(new VersionCommand(plugin));
-        base.addSubCommand(new LobbyCommand(plugin));
-        base.addSubCommand(new CancelAllCommand(plugin));
-        base.addSubCommand(new ConfigurationDebugCommand(plugin));
+        base.addSubCommand( new JoinCommand( plugin ) );
+        base.addSubCommand( new LeaveCommand( plugin ) );
+        base.addSubCommand( new SetLobbyCommand( plugin ) );
+        base.addSubCommand( new SetPortalCommand( plugin ) );
+        base.addSubCommand( new CancelCommand( plugin ) );
+        base.addSubCommand( new StatusCommand( plugin ) );
+        base.addSubCommand( new VersionCommand( plugin ) );
+        base.addSubCommand( new LobbyCommand( plugin ) );
+        base.addSubCommand( new CancelAllCommand( plugin ) );
+        base.addSubCommand( new ConfigurationDebugCommand( plugin ) );
     }
 
     public CommandExecutor getExecutor() {

@@ -26,24 +26,24 @@ import org.bukkit.Bukkit;
  */
 public class KillBroadcaster {
 
-    public static String getMessage(String player, String damager, KillReason reason, SkyArena arena) {
-        if (damager == null) {
-            switch (reason) {
+    public static String getMessage( String player, String damager, KillReason reason, SkyArena arena ) {
+        if ( damager == null ) {
+            switch ( reason ) {
                 case VOID:
-                    return String.format(arena.getMessages().getMessage(SkyMessages.SUICIDE_VOID), player);
+                    return String.format( arena.getMessages().getMessage( SkyMessages.SUICIDE_VOID ), player );
                 case LEFT:
-                    Bukkit.broadcastMessage(String.format(arena.getMessages().getMessage(SkyMessages.FORFEITED), player));
+                    Bukkit.broadcastMessage( String.format( arena.getMessages().getMessage( SkyMessages.FORFEITED ), player ) );
                 case OTHER:
-                    return String.format(arena.getMessages().getMessage(SkyMessages.KILLED_OTHER), player);
+                    return String.format( arena.getMessages().getMessage( SkyMessages.KILLED_OTHER ), player );
             }
         } else {
-            switch (reason) {
+            switch ( reason ) {
                 case VOID:
-                    return String.format(arena.getMessages().getMessage(SkyMessages.KILLED_VOID), damager, player);
+                    return String.format( arena.getMessages().getMessage( SkyMessages.KILLED_VOID ), damager, player );
                 case LEFT:
-                    return String.format(arena.getMessages().getMessage(SkyMessages.FORFEITED_DAMAGED), damager, player);
+                    return String.format( arena.getMessages().getMessage( SkyMessages.FORFEITED_DAMAGED ), damager, player );
                 case OTHER:
-                    return String.format(arena.getMessages().getMessage(SkyMessages.KILLED_OTHER), damager, player);
+                    return String.format( arena.getMessages().getMessage( SkyMessages.KILLED_OTHER ), damager, player );
             }
         }
         throw new IllegalArgumentException();

@@ -80,102 +80,102 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         try {
             startPlugin();
             enablingDone = true;
-        } catch (StartupFailedException ex) {
-            getLogger().log(Level.SEVERE, "Startup failed", ex);
+        } catch ( StartupFailedException ex ) {
+            getLogger().log( Level.SEVERE, "Startup failed", ex );
             enabledCorrectly = false;
             enablingDone = true;
-            getServer().getPluginManager().disablePlugin(this);
-        } catch (Throwable ex) {
-            getLogger().log(Level.SEVERE, "Unknown throwable thrown during plugin startup.", ex);
+            getServer().getPluginManager().disablePlugin( this );
+        } catch ( Throwable ex ) {
+            getLogger().log( Level.SEVERE, "Unknown throwable thrown during plugin startup.", ex );
             enabledCorrectly = false;
             enablingDone = true;
-            getServer().getPluginManager().disablePlugin(this);
+            getServer().getPluginManager().disablePlugin( this );
         }
     }
 
     private void copyWorld() {
-        WorldUnzipper.WorldUnzipResult unzipResult = new WorldUnzipper(this).doWorldUnzip();
-        switch (unzipResult) {
+        WorldUnzipper.WorldUnzipResult unzipResult = new WorldUnzipper( this ).doWorldUnzip();
+        switch ( unzipResult ) {
             case ALREADY_THERE:
-                getLogger().log(Level.INFO, "World already created. Assuming valid.");
+                getLogger().log( Level.INFO, "World already created. Assuming valid." );
                 break;
             case ERROR:
-                throw new StartupFailedException("Error creating world. Please delete " + Statics.BASE_WORLD_NAME + " and restart server.");
+                throw new StartupFailedException( "Error creating world. Please delete " + Statics.BASE_WORLD_NAME + " and restart server." );
             case CREATED:
-                getLogger().log(Level.INFO, "Created world, resuming plugin start.");
+                getLogger().log( Level.INFO, "Created world, resuming plugin start." );
                 break;
             default:
-                throw new StartupFailedException("Invalid return for doWorldUnzip().");
+                throw new StartupFailedException( "Invalid return for doWorldUnzip()." );
         }
     }
 
     private void startPlugin() {
         copyWorld();
-        configuration = new SkyWarsConfiguration(this);
+        configuration = new SkyWarsConfiguration( this );
         configuration.load();
-        for (SkyArena arena : configuration.getEnabledArenas()) {
-            if (arena.getBoundaries().getOrigin().world.equalsIgnoreCase(Statics.BASE_WORLD_NAME)) {
+        for ( SkyArena arena : configuration.getEnabledArenas() ) {
+            if ( arena.getBoundaries().getOrigin().world.equalsIgnoreCase( Statics.BASE_WORLD_NAME ) ) {
                 copyWorld();
                 break;
             }
         }
         currentGames = new CurrentGames();
         idHandler = new GameIDHandler();
-        worldHandler = new SkyWorldHandler(this);
+        worldHandler = new SkyWorldHandler( this );
         broadcaster = new GameBroadcaster();
-        resetInventoryHealth = new ResetInventoryHealth(this);
-        locationStore = new LocationStore(this);
-        gameQueue = new GameQueue(this);
-        gameHandler = new GameHandler(this);
-        deathStorage = new DeathStorage(this);
-        distributor = new GameEventDistributor(this);
+        resetInventoryHealth = new ResetInventoryHealth( this );
+        locationStore = new LocationStore( this );
+        gameQueue = new GameQueue( this );
+        gameHandler = new GameHandler( this );
+        deathStorage = new DeathStorage( this );
+        distributor = new GameEventDistributor( this );
         new BukkitRunnable() {
             @Override
             public void run() {
                 worldHandler.create();
                 worldHandler.findAndLoadRequiredWorlds();
             }
-        }.runTask(this);
-        new PermissionHandler("skywars").setupPermissions();
+        }.runTask( this );
+        new PermissionHandler( "skywars" ).setupPermissions();
         setupCommands();
         PluginManager pm = getServer().getPluginManager();
-        registerListeners(pm, new SpawnListener(), deathStorage,
-                new QuitListener(this), new PortalListener(this),
-                new CommandListener(this), new BuildingLimiter(this),
-                new MobSpawnDisable());
+        registerListeners( pm, new SpawnListener(), deathStorage,
+                new QuitListener( this ), new PortalListener( this ),
+                new CommandListener( this ), new BuildingLimiter( this ),
+                new MobSpawnDisable() );
         enabledCorrectly = true;
     }
 
-    private void registerListeners(PluginManager pm, Listener... listeners) {
-        for (Object l : listeners) {
-            if (l instanceof Listener) {
-                pm.registerEvents((Listener) l, this);
+    private void registerListeners( PluginManager pm, Listener... listeners ) {
+        for ( Object l : listeners ) {
+            if ( l instanceof Listener ) {
+                pm.registerEvents( (Listener) l, this );
             }
         }
     }
 
     @Override
     public void onDisable() {
-        if (enabledCorrectly) {
+        if ( enabledCorrectly ) {
             locationStore.save();
-            idHandler.saveAndUnload(this);
+            idHandler.saveAndUnload( this );
             configuration.save();
-            getLogger().log(Level.INFO, "SkyWars disabled successfully");
+            getLogger().log( Level.INFO, "SkyWars disabled successfully" );
         } else {
-            getLogger().log(Level.INFO, "SkyWars not disabling due to not being enabled successfully.");
+            getLogger().log( Level.INFO, "SkyWars not disabling due to not being enabled successfully." );
         }
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (!enabledCorrectly) {
-            if (!enablingDone) {
-                sender.sendMessage(ColorList.ERR + "Some absoultely evil error happened enabling SkyWars. Enabling isn't done.");
+    public boolean onCommand( CommandSender sender, Command cmd, String label, String[] args ) {
+        if ( !enabledCorrectly ) {
+            if ( !enablingDone ) {
+                sender.sendMessage( ColorList.ERR + "Some absoultely evil error happened enabling SkyWars. Enabling isn't done." );
             } else {
-                sender.sendMessage(ColorList.ERR + "SkyWars not enabled correctly. Check console for errors.");
+                sender.sendMessage( ColorList.ERR + "SkyWars not enabled correctly. Check console for errors." );
             }
         } else {
-            sender.sendMessage(ColorList.ERR + "SkyWars has no clue what " + cmd.getName() + " is.");
+            sender.sendMessage( ColorList.ERR + "SkyWars has no clue what " + cmd.getName() + " is." );
         }
         return true;
     }
@@ -183,24 +183,24 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     private void setupMetrics() {
         MetricsLite metrics;
         try {
-            metrics = new MetricsLite(this);
-        } catch (IOException ex) {
-            getLogger().log(Level.WARNING, "Unable to create metrics: {0}", ex.toString());
+            metrics = new MetricsLite( this );
+        } catch ( IOException ex ) {
+            getLogger().log( Level.WARNING, "Unable to create metrics: {0}", ex.toString() );
             return;
         }
         metrics.start();
     }
 
     private void setupCommands() {
-        PluginCommand main = getCommand("skywars");
-        if (main != null) {
-            main.setExecutor(new CommandBase(this).getExecutor());
+        PluginCommand main = getCommand( "skywars" );
+        if ( main != null ) {
+            main.setExecutor( new CommandBase( this ).getExecutor() );
         }
     }
 
     private void checkEnabledCorrectly() {
-        if (enablingDone && !enabledCorrectly) {
-            throw new IllegalStateException("Not enabled correctly");
+        if ( enablingDone && !enabledCorrectly ) {
+            throw new IllegalStateException( "Not enabled correctly" );
         }
     }
 
