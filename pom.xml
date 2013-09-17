@@ -7,7 +7,7 @@
     <packaging>jar</packaging>
 
     <name>SkyWars</name>
-    <description>Bukkit plugin to facilitate the arena minigames.</description>
+    <description>Bukkit plugin to facilitate arena minigames</description>
     <url>https://github.com/daboross/SkyWars/wiki</url>
     <inceptionYear>2013</inceptionYear>
     <licenses>
@@ -189,6 +189,7 @@
             <url>scp://repo.daboross.net/repo/</url>
         </repository>
     </distributionManagement>
+
     <profiles>
         <profile>
             <id>release</id>
