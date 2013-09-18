@@ -65,7 +65,7 @@ public class Messages {
          */
         public static final String CREDITS_AND_VERSION =
                 ColorList.REG + "%s v" + ColorList.DATA + "%s" + ColorList.REG + " created by " + ColorList.NAME + "Dabo Ross%n"
-                + ColorList.REG + "Implementation version %s implemententing API version %s";
+                + ColorList.REG + "Build number %s";
     }
 
     public static class Leave {

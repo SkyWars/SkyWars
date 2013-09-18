@@ -41,7 +41,6 @@ public class VersionCommand extends SubCommand {
 
     @Override
     public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
-        sender.sendMessage( String.format( Messages.Version.CREDITS_AND_VERSION,
-                SkyStatic.getPluginName(), SkyStatic.getVersion(), SkyStatic.getGitVersion(), SkyStatic.getApiVersion() ) );
+        sender.sendMessage( String.format( Messages.Version.CREDITS_AND_VERSION, SkyStatic.getPluginName(), SkyStatic.getVersion(), SkyStatic.getImplementationVersion() ) );
     }
 }

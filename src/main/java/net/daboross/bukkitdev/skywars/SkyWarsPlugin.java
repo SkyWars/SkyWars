@@ -81,7 +81,6 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     public void onLoad() {
         SkyStatic.setPluginName( this.getDescription().getName() );
         SkyStatic.setVersion( this.getDescription().getVersion() );
-        SkyStatic.setGitVersion( SkyWarsPlugin.class.getPackage().getImplementationVersion() );
         SkyStatic.setLogger( this.getLogger() );
     }
 
