@@ -52,17 +52,10 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
     public SkyWarsConfiguration( SkyWars plugin ) {
         this.plugin = plugin;
+        load();
     }
 
-    @Override
-    public void load() {
-        if ( mainConfig == null ) {
-            reload();
-        }
-    }
-
-    @Override
-    public void reload() {
+    private void load() {
         if ( mainConfigFile == null ) {
             mainConfigFile = new File( plugin.getDataFolder(), Names.MAIN );
         }
@@ -103,9 +96,10 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
         if ( mainConfig.isInt( Keys.VERSION ) ) {
             int version = mainConfig.getInt( Keys.VERSION );
-            if ( version != 0 ) {
+            if ( version > 1 ) {
                 throw new StartupFailedException( "Version '" + version + "' as listed under " + Keys.VERSION + " in file " + mainConfigFile.getAbsolutePath() + " is unknown." );
             }
+            mainConfig.set( Keys.VERSION, 1 );
         } else if ( mainConfig.contains( Keys.VERSION ) ) {
             throw new StartupFailedException( getInvalid( Keys.VERSION, mainConfig.get( Keys.VERSION ), mainConfigFile, "Integer" ) );
         } else {
@@ -146,6 +140,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             messagePrefix = Defaults.MESSAGE_PREFIX;
         }
 
+        loadParent();
 
         if ( mainConfig.isList( Keys.ENABLED_ARENAS ) ) { // This needs to come after MESSAGE_PREFIX
             List<?> enabledArenasList = mainConfig.getList( Keys.ENABLED_ARENAS );
@@ -153,7 +148,6 @@ public class SkyWarsConfiguration implements SkyConfiguration {
                 throw new StartupFailedException( "No enabled arenas found" );
             }
             enabledArenas = new ArrayList<>( enabledArenasList.size() );
-            loadParent();
             for ( Object o : enabledArenasList ) {
                 if ( o instanceof String ) {
                     loadArena( (String) o );
@@ -177,6 +171,11 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         } catch ( IOException ex ) {
             plugin.getLogger().log( Level.SEVERE, "Couldn't save main-config.yml", ex );
         }
+    }
+
+    @Override
+    public void reload() {
+        load();
     }
 
     private void loadArena( String name ) {
