@@ -24,7 +24,6 @@ import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupData;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
-import net.daboross.bukkitdev.skywars.commands.setupstuff.StartedArenaCondition;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -39,7 +38,7 @@ public class StartNewArena extends SubCommand {
     public StartNewArena( @NonNull SkyWars plugin, @NonNull SetupStates states ) {
         super( "start", false, null, "Start a new arena setup. If you already started setting up an arena, but didn't save it, this command will overwrite it!" );
         addArgumentNames( "Arena name" );
-        addCommandFilter( new ArgumentFilter( ArgumentFilter.ArgumentCondition.EQUALS, 1, "Please supply one and only one argument." ) );
+        addCommandFilter( new ArgumentFilter( ArgumentFilter.ArgumentCondition.EQUALS, 1, ColorList.ERR + "Please supply one and only one argument." ) );
         this.plugin = plugin;
         this.states = states;
     }

@@ -20,6 +20,7 @@ import lombok.NonNull;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
+import net.daboross.bukkitdev.skywars.commands.setupstuff.NoSpawnSetCondition;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupData;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.StartedArenaCondition;
@@ -40,6 +41,9 @@ public class SetPos2 extends SubCommand {
         StartedArenaCondition condition = new StartedArenaCondition( states, true );
         addCommandFilter( condition );
         addCommandPreCondition( condition );
+        NoSpawnSetCondition condition2 = new NoSpawnSetCondition( states );
+        addCommandFilter( condition2 );
+        addCommandPreCondition( condition2 );
         this.states = states;
     }
 
