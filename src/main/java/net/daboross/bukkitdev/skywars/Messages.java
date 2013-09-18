@@ -60,11 +60,12 @@ public class Messages {
         /**
          * Message displayed when someone uses the version command.
          * <br>
-         * First %s is the plugin's version.
+         * First %s is the plugin's name, second %s is plugin's short version,
+         * third %s is plugin's implementation version, fourth %s is API version.
          */
         public static final String CREDITS_AND_VERSION =
-                ColorList.REG + "Skyblock Warriors map created by " + ColorList.NAME + "SwipeShot\n"
-                + ColorList.REG + "SkyWars plugin v" + ColorList.DATA + "%s" + ColorList.REG + " created by " + ColorList.NAME + "Dabo Ross";
+                ColorList.REG + "%s v" + ColorList.DATA + "%s" + ColorList.REG + " created by " + ColorList.NAME + "Dabo Ross%n"
+                + ColorList.REG + "Implementation version %s implemententing API version %s";
     }
 
     public static class Leave {

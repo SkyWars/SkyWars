@@ -27,4 +27,7 @@
         <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.spaceBeforeSemi>true</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.spaceBeforeSemi>
         <org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.spaceWithinMethodDeclParens>true</org-netbeans-modules-editor-indent.text.x-java.CodeStyle.project.spaceWithinMethodDeclParens>
     </properties>
+    <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+        <word>plugin's</word>
+    </spellchecker-wordlist>
 </project-shared-configuration>

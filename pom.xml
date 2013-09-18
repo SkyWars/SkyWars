@@ -33,6 +33,7 @@
         <tag>HEAD</tag>
     </scm>
     <properties>
+        <build.number>unknown</build.number>
         <netbeans.hint.license>gpl30</netbeans.hint.license>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -121,6 +122,35 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>com.lukegb.mojo</groupId>
+                <artifactId>gitdescribe-maven-plugin</artifactId>
+                <version>1.3</version>
+                <configuration>
+                    <outputPrefix>${project.version}-</outputPrefix>
+                    <outputPostfix>-${build.number}</outputPostfix>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>gitdescribe</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Implementation-Version>${describe}</Implementation-Version>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>2.1</version>
@@ -188,13 +218,29 @@
             <uniqueVersion>false</uniqueVersion>
             <url>scp://repo.daboross.net/repo/</url>
         </repository>
-    </distributionManagement>
+    </distributionManagement>    
+    <ciManagement>
+        <system>jenkins</system>
+        <url>ci.aemservers.net/job/SkyWars</url>
+    </ciManagement>
 
     <profiles>
         <profile>
             <id>release</id>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <version>2.4</version>
+                        <configuration>
+                            <archive>
+                                <manifestEntries>
+                                    <Implementation-Version>${project.version}</Implementation-Version>
+                                </manifestEntries>
+                            </archive>
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>

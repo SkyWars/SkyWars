@@ -81,6 +81,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     public void onLoad() {
         SkyStatic.setPluginName( this.getDescription().getName() );
         SkyStatic.setVersion( this.getDescription().getVersion() );
+        SkyStatic.setGitVersion( SkyWarsPlugin.class.getPackage().getImplementationVersion() );
         SkyStatic.setLogger( this.getLogger() );
     }
 
@@ -157,7 +158,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
 
     private void registerListeners( PluginManager pm, Listener... listeners ) {
         for ( Listener l : listeners ) {
-            pm.registerEvents( (Listener) l, this );
+            pm.registerEvents( l, this );
         }
     }
 

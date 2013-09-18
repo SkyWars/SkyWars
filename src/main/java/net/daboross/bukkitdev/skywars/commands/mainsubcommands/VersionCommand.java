@@ -20,6 +20,7 @@ import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.Messages;
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -40,6 +41,7 @@ public class VersionCommand extends SubCommand {
 
     @Override
     public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
-        sender.sendMessage( String.format( Messages.Version.CREDITS_AND_VERSION, plugin.getDescription().getVersion() ) );
+        sender.sendMessage( String.format( Messages.Version.CREDITS_AND_VERSION,
+                SkyStatic.getPluginName(), SkyStatic.getVersion(), SkyStatic.getGitVersion(), SkyStatic.getApiVersion() ) );
     }
 }
