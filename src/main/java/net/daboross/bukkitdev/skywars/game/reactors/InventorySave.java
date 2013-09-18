@@ -14,19 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.daboross.bukkitdev.skywars.events;
 
-import lombok.Data;
-import org.bukkit.entity.Player;
+package net.daboross.bukkitdev.skywars.game.reactors;
 
 /**
  *
- * @author Dabo Ross <http://www.daboross.net/>
  */
-@Data
-public class PlayerLeaveGameInfo {
+public class InventorySave {
 
-    private final int id;
-    private final Player player;
-    private final boolean resetHealth;
 }

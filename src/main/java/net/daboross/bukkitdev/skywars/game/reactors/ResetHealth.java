@@ -21,7 +21,6 @@ import net.daboross.bukkitdev.skywars.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameInfo;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 /**
@@ -49,13 +48,15 @@ public class ResetHealth {
     }
 
     public void onPlayerLeave( PlayerLeaveGameInfo info ) {
-        Player p = info.getPlayer();
-        p.setGameMode( GameMode.SURVIVAL );
-        try {
-            p.setHealth( p.getMaxHealth() );
-        } catch ( NoSuchMethodError unused ) {
-            plugin.getLogger().log( Level.INFO, "Couldn't reset health. Probably due to server version being below 1.6.2. If your server is 1.5.2, please download the 1.5.2 version of the plugin." );
+        if ( info.isResetHealth() ) {
+            Player p = info.getPlayer();
+            p.setGameMode( GameMode.SURVIVAL );
+            try {
+                p.setHealth( p.getMaxHealth() );
+            } catch ( NoSuchMethodError unused ) {
+                plugin.getLogger().log( Level.INFO, "Couldn't reset health. Probably due to server version being below 1.6.2. If your server is 1.5.2, please download the 1.5.2 version of the plugin." );
+            }
+            p.setFoodLevel( 20 );
         }
-        p.setFoodLevel( 20 );
     }
 }

@@ -112,7 +112,7 @@ public class DeathStorage implements Listener, SkyAttackerStorage {
         String name = evt.getEntity().getName();
         SkyGame game = plugin.getIDHandler().getGame( plugin.getCurrentGameTracker().getGameID( name ) );
         if ( game != null ) {
-            plugin.getGameHandler().removePlayerFromGame( name, false, false );
+            plugin.getGameHandler().removePlayerFromGame( name, false, false, false );
             evt.setDeathMessage( KillBroadcaster.getMessage( name, lastHit.get( name.toLowerCase( Locale.ENGLISH ) ), causedVoid.contains( name.toLowerCase( Locale.ENGLISH ) ) ? KillBroadcaster.KillReason.VOID : KillBroadcaster.KillReason.OTHER, game.getArena() ) );
             playersWhoDied.add( name.toLowerCase( Locale.ENGLISH ) );
         } else if ( plugin.getGameQueue().inQueue( name ) ) {
@@ -135,6 +135,7 @@ public class DeathStorage implements Listener, SkyAttackerStorage {
         if ( playersWhoDied.remove( evt.getPlayer().getName().toLowerCase( Locale.ENGLISH ) ) ) {
             evt.setRespawnLocation( plugin.getLocationStore().getLobbyPosition().toLocation() );
             evt.getPlayer().setFallDistance( -2 );
+            evt.getPlayer().setHealth( evt.getPlayer().getMaxHealth() );
         }
     }
 }

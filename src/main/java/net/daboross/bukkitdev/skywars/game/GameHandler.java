@@ -55,14 +55,21 @@ public class GameHandler implements SkyGameHandler {
         GameEndInfo info = new GameEndInfo( plugin.getIDHandler().getGame( id ), broadcast );
         Location lobby = plugin.getLocationStore().getLobbyPosition().toLocation();
         for ( Player player : info.getAlivePlayers() ) {
-            plugin.getDistributor().distribute( new PlayerLeaveGameInfo( id, player ) );
+            plugin.getDistributor().distribute( new PlayerLeaveGameInfo( id, player, true ) );
             player.teleport( lobby );
         }
         plugin.getDistributor().distribute( info );
     }
 
     @Override
+    @Deprecated
     public void removePlayerFromGame( @NonNull String playerName, boolean teleport, boolean broadcast ) {
+        this.removePlayerFromGame( playerName, teleport, broadcast, true );
+
+    }
+
+    @Override
+    public void removePlayerFromGame( @NonNull String playerName, boolean teleport, boolean broadcast, boolean resetHealth ) {
         playerName = playerName.toLowerCase( Locale.ENGLISH );
         SkyCurrentGameTracker cg = plugin.getCurrentGameTracker();
         int id = cg.getGameID( playerName );
@@ -73,7 +80,7 @@ public class GameHandler implements SkyGameHandler {
         ArenaGame game = idh.getGame( id );
         game.removePlayer( playerName );
         Player player = Bukkit.getPlayerExact( playerName );
-        plugin.getDistributor().distribute( new PlayerLeaveGameInfo( id, player ) );
+        plugin.getDistributor().distribute( new PlayerLeaveGameInfo( id, player, true ) );
         if ( teleport ) {
             player.teleport( plugin.getLocationStore().getLobbyPosition().toLocation() );
         }

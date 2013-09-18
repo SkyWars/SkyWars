@@ -109,7 +109,6 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
 
     private void startPlugin() {
         configuration = new SkyWarsConfiguration( this );
-        configuration.load();
         for ( SkyArena arena : configuration.getEnabledArenas() ) {
             if ( arena.getBoundaries().getOrigin().world.equalsIgnoreCase( Statics.BASE_WORLD_NAME ) ) {
                 new WorldUnzipper().doWorldUnzip( getLogger() );

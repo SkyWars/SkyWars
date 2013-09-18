@@ -73,10 +73,7 @@ public class GameEventDistributor {
         }
     }
 
-    @SuppressWarnings(
-            {
-        "BroadCatchBlock", "TooBroadCatch"
-    })
+    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
     public void distribute( @NonNull PlayerLeaveGameInfo info ) {
         try {
             // -- Normal --
