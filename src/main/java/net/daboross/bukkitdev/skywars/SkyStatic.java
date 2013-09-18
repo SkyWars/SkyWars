@@ -14,9 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.daboross.bukkitdev.skywars.config;
+package net.daboross.bukkitdev.skywars;
 
 import java.util.logging.Logger;
+import org.bukkit.Bukkit;
 
 /**
  *
@@ -24,9 +25,10 @@ import java.util.logging.Logger;
  */
 public class SkyStatic {
 
-    private static boolean debug;
-    private static Logger logger;
-    private static String pluginName;
+    private static boolean debug = false;
+    private static Logger logger = Bukkit.getLogger();
+    private static String pluginName = "SkyWars";
+    private static String version = "Unset";
 
     public static void setDebug( boolean debug ) {
         SkyStatic.debug = debug;
@@ -36,7 +38,7 @@ public class SkyStatic {
         return debug;
     }
 
-    public static void setLogger( Logger logger ) {
+    static void setLogger( Logger logger ) {
         SkyStatic.logger = logger;
     }
 
@@ -44,11 +46,19 @@ public class SkyStatic {
         return logger;
     }
 
-    public static void setPluginName( String pluginName ) {
+    static void setPluginName( String pluginName ) {
         SkyStatic.pluginName = pluginName;
     }
 
     public static String getPluginName() {
         return pluginName;
+    }
+
+    static void setVersion( String version ) {
+        SkyStatic.version = version;
+    }
+
+    public static String getVersion() {
+        return version;
     }
 }

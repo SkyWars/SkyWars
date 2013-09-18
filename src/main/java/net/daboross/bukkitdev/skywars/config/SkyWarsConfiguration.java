@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
+import net.daboross.bukkitdev.skywars.SkyStatic;
 import net.daboross.bukkitdev.skywars.StartupFailedException;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;

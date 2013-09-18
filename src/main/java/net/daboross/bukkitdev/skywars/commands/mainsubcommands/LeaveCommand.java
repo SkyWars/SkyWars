@@ -14,14 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.daboross.bukkitdev.skywars.commands;
+package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
-import java.util.ArrayList;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
+import net.daboross.bukkitdev.skywars.Messages;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
-import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -29,22 +28,26 @@ import org.bukkit.command.CommandSender;
  *
  * @author Dabo Ross <http://www.daboross.net/>
  */
-public class CancelAllCommand extends SubCommand {
+public class LeaveCommand extends SubCommand {
 
     private final SkyWars plugin;
 
-    public CancelAllCommand( SkyWars plugin ) {
-        super( "cancelall", true, "skywars.cancelall", "Cancels all current games." );
+    public LeaveCommand( SkyWars plugin ) {
+        super( "leave", false, "skywars.leave", "Leaves the queue or the game you are in" );
         this.addCommandFilter( new ArgumentFilter( ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!" ) );
         this.plugin = plugin;
     }
 
     @Override
     public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
-        SkyIDHandler idh = plugin.getIDHandler();
-        for ( int id : new ArrayList<Integer>( idh.getCurrentIDs() ) ) {
-            sender.sendMessage( ColorList.REG + "Canceling game " + ColorList.DATA + id );
-            plugin.getGameHandler().endGame( id, true );
+        if ( plugin.getGameQueue().inQueue( sender.getName() ) ) {
+            plugin.getGameQueue().removePlayer( sender.getName() );
+            sender.sendMessage( Messages.Leave.REMOVED_FROM_QUEUE );
+        } else if ( plugin.getCurrentGameTracker().isInGame( sender.getName() ) ) {
+            plugin.getGameHandler().removePlayerFromGame( sender.getName(), true, true );
+            sender.sendMessage( Messages.Leave.REMOVED_FROM_GAME );
+        } else {
+            sender.sendMessage( Messages.Leave.NOT_IN );
         }
     }
 }

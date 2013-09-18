@@ -31,15 +31,16 @@ import org.bukkit.entity.Player;
 public class GameBroadcaster {
 
     public void broadcastStart( GameStartInfo info ) {
-        Player[] players = info.getPlayers();
+        List<Player> players = info.getPlayers();
         StringBuilder playerNames = new StringBuilder();
-        for ( int i = 0 ; i < players.length ; i++ ) {
-            if ( i == players.length - 1 ) {
-                playerNames.append( ColorList.BROADCAST ).append( " and " ).append( ColorList.NAME ).append( players[i].getName() );
-            } else if ( i > 0 ) {
-                playerNames.append( ColorList.BROADCAST ).append( ", " ).append( ColorList.NAME ).append( players[i].getName() );
+        for ( int i = 0 ; i < players.size() ; i++ ) {
+            String name = players.get( i ).getName();
+            if ( i == 0 ) {
+                playerNames.append( ColorList.NAME ).append( name );
+            } else if ( i == players.size() - 1 ) {
+                playerNames.append( ColorList.BROADCAST ).append( " and " ).append( ColorList.NAME ).append( name );
             } else {
-                playerNames.append( ColorList.NAME ).append( players[i].getName() );
+                playerNames.append( ColorList.BROADCAST ).append( ", " ).append( ColorList.NAME ).append( name );
             }
         }
         Bukkit.broadcastMessage( String.format( info.getGame().getArena().getMessages().getMessage( SkyMessages.GAME_STARTING ), playerNames.toString() ) );

@@ -91,11 +91,11 @@ public class SkyWorldHandler {
         SkyBlockLocation min = getMinLocation( game );
         game.setMin( min );
         copier.copyArena( min, game.getArena().getBoundaries().getOrigin() );
-        Player[] players = info.getPlayers();
+        List<Player> players = info.getPlayers();
         List<SkyPlayerLocation> spawns = game.getArena().getSpawns();
         Collections.shuffle( spawns );
-        for ( int i = 0, currentSpawn = 0 ; i < players.length ; i++ ) {
-            players[i].teleport( min.add( spawns.get( currentSpawn++ ) ).toLocation() );
+        for ( int i = 0, currentSpawn = 0 ; i < players.size() ; i++ ) {
+            players.get( i ).teleport( min.add( spawns.get( currentSpawn++ ) ).toLocation() );
             if ( currentSpawn > spawns.size() ) {
                 currentSpawn = 0;
             }

@@ -14,36 +14,47 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.daboross.bukkitdev.skywars.commands;
+package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
-import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
+import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 /**
  *
  * @author Dabo Ross <http://www.daboross.net/>
  */
-public class SetLobbyCommand extends SubCommand {
+public class CancelCommand extends SubCommand {
 
-    private static final String CONFIRMATION = ColorList.REG + "The lobby is now at your current location.";
     private final SkyWars plugin;
 
-    public SetLobbyCommand( SkyWars plugin ) {
-        super( "setlobby", false, "skywars.setlobby", "Sets the lobby position" );
-        this.addCommandFilter( new ArgumentFilter( ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!" ) );
+    public CancelCommand( SkyWars plugin ) {
+        super( "cancel", true, "skywars.cancel", "Cancels a current game with the given id" );
+        addArgumentNames( "ID" );
+        this.addCommandFilter( new ArgumentFilter( ArgumentFilter.ArgumentCondition.LESS_THAN, 2, ColorList.ERR + "Too many arguments!" ) );
+        this.addCommandFilter( new ArgumentFilter( ArgumentFilter.ArgumentCondition.GREATER_THAN, 0, ColorList.ERR + "Not enough arguments!" ) );
         this.plugin = plugin;
     }
 
     @Override
     public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
-        Player player = (Player) sender;
-        plugin.getLocationStore().setLobbyPosition( new SkyPlayerLocation( player ) );
-        sender.sendMessage( CONFIRMATION );
+        int id;
+        try {
+            id = Integer.parseInt( subCommandArgs[0] );
+        } catch ( NumberFormatException ex ) {
+            sender.sendMessage( ColorList.ERR_ARGS + subCommandArgs[0] + ColorList.ERR + " isn't an integer!" );
+            return;
+        }
+        SkyIDHandler idh = plugin.getIDHandler();
+        if ( idh.getGame( id ) == null ) {
+            sender.sendMessage( ColorList.ERR + "There aren't any games with the id " + ColorList.ERR_ARGS + id );
+            return;
+        }
+        sender.sendMessage( ColorList.REG + "Canceling game " + ColorList.DATA + id );
+        plugin.getGameHandler().endGame( id, true );
     }
 }

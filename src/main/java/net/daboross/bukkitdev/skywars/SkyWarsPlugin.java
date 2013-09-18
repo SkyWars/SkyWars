@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars;
 
+import net.daboross.bukkitdev.skywars.commands.MainCommand;
 import java.io.IOException;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
@@ -24,6 +25,7 @@ import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.game.SkyGameHandler;
 import net.daboross.bukkitdev.skywars.api.location.SkyLocationStore;
+import net.daboross.bukkitdev.skywars.commands.SetupCommand;
 import net.daboross.bukkitdev.skywars.config.SkyWarsConfiguration;
 import net.daboross.bukkitdev.skywars.events.GameEventDistributor;
 import net.daboross.bukkitdev.skywars.game.CurrentGames;
@@ -74,6 +76,13 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     private boolean enabledCorrectly = false, enablingDone = false;
 
     @Override
+    public void onLoad() {
+        SkyStatic.setPluginName( this.getDescription().getName() );
+        SkyStatic.setVersion( this.getDescription().getVersion() );
+        SkyStatic.setLogger( this.getLogger() );
+    }
+
+    @Override
     public void onEnable() {
         setupMetrics();
         try {
@@ -109,7 +118,6 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     }
 
     private void startPlugin() {
-        copyWorld();
         configuration = new SkyWarsConfiguration( this );
         configuration.load();
         for ( SkyArena arena : configuration.getEnabledArenas() ) {
@@ -190,9 +198,14 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     }
 
     private void setupCommand() {
-        CommandBase base = new CommandBase( this );
+        MainCommand main = new MainCommand( this );
+        SetupCommand setup = new SetupCommand( this );
         for ( String commandName : getDescription().getCommands().keySet() ) {
-            base.latchOnto( getCommand( commandName ) );
+            if ( commandName.toLowerCase().endsWith( "setup" ) ) {
+                setup.latchOnto( getCommand( commandName ) );
+            } else {
+                main.latchOnto( getCommand( commandName ) );
+            }
         }
     }
 

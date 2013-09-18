@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.daboross.bukkitdev.skywars.commands;
+package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
@@ -23,31 +23,30 @@ import net.daboross.bukkitdev.skywars.Messages;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  *
  * @author Dabo Ross <http://www.daboross.net/>
  */
-public class JoinCommand extends SubCommand {
+public class LobbyCommand extends SubCommand {
 
     private final SkyWars plugin;
 
-    public JoinCommand( SkyWars plugin ) {
-        super( "join", false, "skywars.join", "Joins the queue for the next game" );
+    public LobbyCommand( SkyWars plugin ) {
+        super( "lobby", false, "skywars.lobby", "Teleports you to the lobby" );
         this.addCommandFilter( new ArgumentFilter( ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!" ) );
         this.plugin = plugin;
     }
 
     @Override
     public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
-        String name = sender.getName().toLowerCase();
-        if ( plugin.getCurrentGameTracker().isInGame( name ) ) {
-            sender.sendMessage( Messages.Join.IN_GAME );
-        } else if ( plugin.getGameQueue().inQueue( name ) ) {
-            sender.sendMessage( Messages.Join.ALREADY_QUEUED );
+        Player player = (Player) sender;
+        if ( plugin.getCurrentGameTracker().isInGame( player.getName() ) ) {
+            sender.sendMessage( Messages.Lobby.IN_GAME );
         } else {
-            sender.sendMessage( Messages.Join.CONFIRMATION );
-            plugin.getGameQueue().queuePlayer( name );
+            player.teleport( plugin.getLocationStore().getLobbyPosition().toLocation() );
+            sender.sendMessage( Messages.Lobby.CONFIRMATION );
         }
     }
 }

@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.events;
 
+import java.util.ArrayList;
 import java.util.List;
 import net.daboross.bukkitdev.skywars.game.ArenaGame;
 import org.bukkit.Bukkit;
@@ -27,7 +28,7 @@ import org.bukkit.entity.Player;
  */
 public class GameStartInfo {
 
-    private final Player[] players;
+    private final List<Player> players;
     private final ArenaGame game;
 
     public GameStartInfo( ArenaGame game ) {
@@ -36,17 +37,17 @@ public class GameStartInfo {
         }
         this.game = game;
         List<String> playersList = game.getAlivePlayers();
-        this.players = new Player[ playersList.size() ];
+        this.players = new ArrayList<Player>( playersList.size() );
         for ( int i = 0 ; i < playersList.size() ; i++ ) {
             Player p = Bukkit.getPlayer( playersList.get( i ) );
             if ( p == null ) {
                 throw new IllegalArgumentException( "Player " + playersList.get( i ) + " not online" );
             }
-            players[i] = p;
+            players.add( p );
         }
     }
 
-    public Player[] getPlayers() {
+    public List<Player> getPlayers() {
         return players;
     }
 

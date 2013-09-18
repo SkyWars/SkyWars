@@ -14,40 +14,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.daboross.bukkitdev.skywars.commands;
+package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
-import net.daboross.bukkitdev.skywars.Messages;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  *
  * @author Dabo Ross <http://www.daboross.net/>
  */
-public class LeaveCommand extends SubCommand {
+public class SetLobbyCommand extends SubCommand {
 
+    private static final String CONFIRMATION = ColorList.REG + "The lobby is now at your current location.";
     private final SkyWars plugin;
 
-    public LeaveCommand( SkyWars plugin ) {
-        super( "leave", false, "skywars.leave", "Leaves the queue or the game you are in" );
+    public SetLobbyCommand( SkyWars plugin ) {
+        super( "setlobby", false, "skywars.setlobby", "Sets the lobby position" );
         this.addCommandFilter( new ArgumentFilter( ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!" ) );
         this.plugin = plugin;
     }
 
     @Override
     public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
-        if ( plugin.getGameQueue().inQueue( sender.getName() ) ) {
-            plugin.getGameQueue().removePlayer( sender.getName() );
-            sender.sendMessage( Messages.Leave.REMOVED_FROM_QUEUE );
-        } else if ( plugin.getCurrentGameTracker().isInGame( sender.getName() ) ) {
-            plugin.getGameHandler().removePlayerFromGame( sender.getName(), true, true );
-            sender.sendMessage( Messages.Leave.REMOVED_FROM_GAME );
-        } else {
-            sender.sendMessage( Messages.Leave.NOT_IN );
-        }
+        Player player = (Player) sender;
+        plugin.getLocationStore().setLobbyPosition( new SkyPlayerLocation( player ) );
+        sender.sendMessage( CONFIRMATION );
     }
 }

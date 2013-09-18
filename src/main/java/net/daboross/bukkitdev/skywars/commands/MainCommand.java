@@ -14,34 +14,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.daboross.bukkitdev.skywars;
+package net.daboross.bukkitdev.skywars.commands;
 
 import lombok.NonNull;
 import net.daboross.bukkitdev.commandexecutorbase.CommandExecutorBase;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
-import net.daboross.bukkitdev.skywars.commands.CancelAllCommand;
-import net.daboross.bukkitdev.skywars.commands.CancelCommand;
-import net.daboross.bukkitdev.skywars.commands.ConfigurationDebugCommand;
-import net.daboross.bukkitdev.skywars.commands.JoinCommand;
-import net.daboross.bukkitdev.skywars.commands.LeaveCommand;
-import net.daboross.bukkitdev.skywars.commands.LobbyCommand;
-import net.daboross.bukkitdev.skywars.commands.SetLobbyCommand;
-import net.daboross.bukkitdev.skywars.commands.SetPortalCommand;
-import net.daboross.bukkitdev.skywars.commands.StatusCommand;
-import net.daboross.bukkitdev.skywars.commands.VersionCommand;
-import org.bukkit.command.CommandExecutor;
+import net.daboross.bukkitdev.skywars.commands.mainsubcommands.CancelAllCommand;
+import net.daboross.bukkitdev.skywars.commands.mainsubcommands.CancelCommand;
+import net.daboross.bukkitdev.skywars.commands.mainsubcommands.ConfigurationDebugCommand;
+import net.daboross.bukkitdev.skywars.commands.mainsubcommands.JoinCommand;
+import net.daboross.bukkitdev.skywars.commands.mainsubcommands.LeaveCommand;
+import net.daboross.bukkitdev.skywars.commands.mainsubcommands.LobbyCommand;
+import net.daboross.bukkitdev.skywars.commands.mainsubcommands.SetLobbyCommand;
+import net.daboross.bukkitdev.skywars.commands.mainsubcommands.SetPortalCommand;
+import net.daboross.bukkitdev.skywars.commands.mainsubcommands.StatusCommand;
+import net.daboross.bukkitdev.skywars.commands.mainsubcommands.VersionCommand;
+import net.daboross.bukkitdev.skywars.SkyStatic;
 import org.bukkit.command.PluginCommand;
 
 /**
  *
  * @author Dabo Ross <http://www.daboross.net/>
  */
-public class CommandBase {
+public class MainCommand {
 
     private final SkyWars plugin;
     private final CommandExecutorBase base;
 
-    public CommandBase( @NonNull SkyWars plugin ) {
+    public MainCommand( @NonNull SkyWars plugin ) {
         this.plugin = plugin;
         this.base = new CommandExecutorBase( null );
         this.initCommands();
@@ -62,7 +62,7 @@ public class CommandBase {
 
     public void latchOnto( PluginCommand command ) {
         if ( command != null ) {
-            command.setDescription( "Main command for SkyWars" );
+            command.setDescription( "Main command for " + SkyStatic.getPluginName() );
             command.setExecutor( base );
             command.setUsage( "/<command>" );
             command.setPermission( null );
