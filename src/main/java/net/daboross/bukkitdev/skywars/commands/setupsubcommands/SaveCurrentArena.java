@@ -14,40 +14,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.daboross.bukkitdev.skywars.commands;
+package net.daboross.bukkitdev.skywars.commands.setupsubcommands;
 
 import lombok.NonNull;
-import net.daboross.bukkitdev.commandexecutorbase.CommandExecutorBase;
+import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
-import net.daboross.bukkitdev.skywars.SkyStatic;
+import net.daboross.bukkitdev.skywars.commands.setupstuff.FirstPositionSetCondition;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
-import org.bukkit.command.PluginCommand;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 
 /**
  *
  */
-public class SetupCommand {
+public class SaveCurrentArena extends SubCommand {
 
     private final SkyWars plugin;
-    private final CommandExecutorBase base;
     private final SetupStates states;
 
-    public SetupCommand( @NonNull SkyWars plugin ) {
+    public SaveCurrentArena( @NonNull SkyWars plugin, @NonNull SetupStates states ) {
+        super( "save", false, null, "Saves the current arena setup to file." );
+        FirstPositionSetCondition condition = new FirstPositionSetCondition( states );
+        addCommandFilter( condition );
+        addCommandPreCondition( condition );
         this.plugin = plugin;
-        this.base = new CommandExecutorBase( null );
-        this.states = new SetupStates();
-        this.initCommands();
+        this.states = states;
     }
 
-    private void initCommands() {
-    }
-
-    public void latchOnto( PluginCommand command ) {
-        if ( command != null ) {
-            command.setDescription( "Setup command for " + SkyStatic.getPluginName() );
-            command.setExecutor( base );
-            command.setUsage( "/<command>" );
-            command.setPermission( null );
-        }
+    @Override
+    public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
     }
 }
