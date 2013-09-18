@@ -18,6 +18,7 @@ package net.daboross.bukkitdev.skywars.listeners;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import net.daboross.bukkitdev.skywars.Messages;
@@ -57,7 +58,7 @@ public class DeathStorage implements Listener, SkyAttackerStorage {
 
     @EventHandler
     public void onQuit( PlayerQuitEvent evt ) {
-        String name = evt.getPlayer().getName().toLowerCase();
+        String name = evt.getPlayer().getName().toLowerCase( Locale.ENGLISH );
         lastHit.remove( name );
         causedVoid.remove( name );
     }
@@ -66,7 +67,7 @@ public class DeathStorage implements Listener, SkyAttackerStorage {
     public void onDamage( EntityDamageByEntityEvent evt ) {
         if ( evt.getEntity() instanceof Player ) {
             Player p = (Player) evt.getEntity();
-            String name = p.getName().toLowerCase();
+            String name = p.getName().toLowerCase( Locale.ENGLISH );
             Entity damager = evt.getDamager();
             if ( damager instanceof HumanEntity ) {
                 lastHit.put( name, ( (HumanEntity) damager ).getName() );
@@ -97,7 +98,7 @@ public class DeathStorage implements Listener, SkyAttackerStorage {
     @EventHandler
     public void onDamage( EntityDamageEvent evt ) {
         if ( evt.getEntity() instanceof Player ) {
-            String name = ( (Player) evt.getEntity() ).getName().toLowerCase();
+            String name = ( (Player) evt.getEntity() ).getName().toLowerCase( Locale.ENGLISH );
             if ( evt.getCause() == EntityDamageEvent.DamageCause.VOID ) {
                 causedVoid.add( name );
             } else {
@@ -112,8 +113,8 @@ public class DeathStorage implements Listener, SkyAttackerStorage {
         SkyGame game = plugin.getIDHandler().getGame( plugin.getCurrentGameTracker().getGameID( name ) );
         if ( game != null ) {
             plugin.getGameHandler().removePlayerFromGame( name, false, false );
-            evt.setDeathMessage( KillBroadcaster.getMessage( name, lastHit.get( name.toLowerCase() ), causedVoid.contains( name.toLowerCase() ) ? KillBroadcaster.KillReason.VOID : KillBroadcaster.KillReason.OTHER, game.getArena() ) );
-            playersWhoDied.add( name.toLowerCase() );
+            evt.setDeathMessage( KillBroadcaster.getMessage( name, lastHit.get( name.toLowerCase( Locale.ENGLISH ) ), causedVoid.contains( name.toLowerCase( Locale.ENGLISH ) ) ? KillBroadcaster.KillReason.VOID : KillBroadcaster.KillReason.OTHER, game.getArena() ) );
+            playersWhoDied.add( name.toLowerCase( Locale.ENGLISH ) );
         } else if ( plugin.getGameQueue().inQueue( name ) ) {
             plugin.getGameQueue().removePlayer( name );
             evt.getEntity().sendMessage( Messages.Death.REMOVED_BECAUSE_DEATH );
@@ -121,17 +122,17 @@ public class DeathStorage implements Listener, SkyAttackerStorage {
     }
 
     public void onPlayerLeaveGame( PlayerLeaveGameInfo info ) {
-        lastHit.remove( info.getPlayer().getName().toLowerCase() );
+        lastHit.remove( info.getPlayer().getName().toLowerCase( Locale.ENGLISH ) );
     }
 
     @Override
     public String getKiller( String name ) {
-        return lastHit.get( name.toLowerCase() );
+        return lastHit.get( name.toLowerCase( Locale.ENGLISH ) );
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onRespawn( PlayerRespawnEvent evt ) {
-        if ( playersWhoDied.remove( evt.getPlayer().getName().toLowerCase() ) ) {
+        if ( playersWhoDied.remove( evt.getPlayer().getName().toLowerCase( Locale.ENGLISH ) ) ) {
             evt.setRespawnLocation( plugin.getLocationStore().getLobbyPosition().toLocation() );
             evt.getPlayer().setFallDistance( -2 );
         }

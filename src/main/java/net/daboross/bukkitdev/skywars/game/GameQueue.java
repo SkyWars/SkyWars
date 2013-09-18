@@ -19,6 +19,7 @@ package net.daboross.bukkitdev.skywars.game;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.Randomation;
@@ -45,12 +46,12 @@ public class GameQueue implements SkyGameQueue {
 
     @Override
     public boolean inQueue( String player ) {
-        return currentlyQueued.contains( player.toLowerCase() );
+        return currentlyQueued.contains( player.toLowerCase( Locale.ENGLISH ) );
     }
 
     @Override
     public void queuePlayer( String player ) {
-        player = player.toLowerCase();
+        player = player.toLowerCase( Locale.ENGLISH );
         if ( !currentlyQueued.contains( player ) ) {
             currentlyQueued.add( player );
         }
@@ -61,7 +62,7 @@ public class GameQueue implements SkyGameQueue {
 
     @Override
     public void removePlayer( String player ) {
-        currentlyQueued.remove( player.toLowerCase() );
+        currentlyQueued.remove( player.toLowerCase( Locale.ENGLISH ) );
     }
 
     public ArenaGame getNextGame() {

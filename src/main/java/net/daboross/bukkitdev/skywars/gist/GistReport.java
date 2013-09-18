@@ -27,6 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -83,7 +84,7 @@ public class GistReport {
         }
         String jsonOuptutString = outputJson.toString();
         try ( OutputStream outputStream = connection.getOutputStream() ) {
-            try ( OutputStreamWriter requestWriter = new OutputStreamWriter( outputStream ) ) {
+            try ( OutputStreamWriter requestWriter = new OutputStreamWriter( outputStream, Charset.forName( "UTF-8" ) ) ) {
                 requestWriter.append( jsonOuptutString );
                 requestWriter.close();
             }
@@ -132,6 +133,8 @@ public class GistReport {
                 }
                 return result.toString();
             }
+        } catch ( IOException ex ) {
+            throw ex;
         }
     }
 }

@@ -19,9 +19,11 @@ package net.daboross.bukkitdev.skywars.scoreboards;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import net.daboross.bukkitdev.skywars.StartupFailedException;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.events.GameEndInfo;
 import net.daboross.bukkitdev.skywars.events.GameStartInfo;
@@ -55,11 +57,17 @@ public class KillScoreboardManager implements Listener {
         File dataFolder = plugin.getDataFolder();
         saveFile = new File( dataFolder, "kills.yml" );
         if ( !dataFolder.exists() ) {
-            dataFolder.mkdirs();
+            boolean made = dataFolder.mkdirs();
+            if ( !made ) {
+                throw new StartupFailedException( "Couldn't make directory " + dataFolder.getAbsolutePath() );
+            }
         }
         if ( !saveFile.exists() ) {
             try {
-                saveFile.createNewFile();
+                boolean made = saveFile.createNewFile();
+                if ( !made ) {
+                    throw new StartupFailedException( "Couldn't make file " + saveFile.getAbsolutePath() );
+                }
             } catch ( IOException ex ) {
                 plugin.getLogger().log( Level.SEVERE, "Error creating kills.yml", ex );
             }
@@ -80,7 +88,7 @@ public class KillScoreboardManager implements Listener {
         Objective objective = scoreboard.registerNewObjective( "Kills this game", "dummy" );
         objective.setDisplaySlot( DisplaySlot.SIDEBAR );
         for ( String player : playersToTrack ) {
-            int kills = save.getInt( player.toLowerCase() );
+            int kills = save.getInt( player.toLowerCase(Locale.ENGLISH) );
             Score score = objective.getScore( Bukkit.getOfflinePlayer( player ) );
             score.setScore( kills );
         }
@@ -105,7 +113,7 @@ public class KillScoreboardManager implements Listener {
     public void onDeath( PlayerDeathEvent evt ) {
         Player killer = evt.getEntity().getKiller();
         if ( killer != null ) {
-            upKills( killer.getName().toLowerCase() );
+            upKills( killer.getName().toLowerCase(Locale.ENGLISH) );
         }
     }
 

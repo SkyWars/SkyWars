@@ -34,6 +34,6 @@ public class VoidGenerator extends ChunkGenerator {
 
     @Override
     public Location getFixedSpawnLocation( World world, Random random ) {
-        return new Location( world, 0, world.getMaxHeight() / 2, 0 );
+        return new Location( world, 0, world.getMaxHeight() / 2.0, 0 );
     }
 }

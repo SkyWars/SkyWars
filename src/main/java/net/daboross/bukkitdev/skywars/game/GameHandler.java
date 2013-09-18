@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.game;
 
+import java.util.Locale;
 import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.game.SkyCurrentGameTracker;
@@ -62,7 +63,7 @@ public class GameHandler implements SkyGameHandler {
 
     @Override
     public void removePlayerFromGame( @NonNull String playerName, boolean teleport, boolean broadcast ) {
-        playerName = playerName.toLowerCase();
+        playerName = playerName.toLowerCase( Locale.ENGLISH );
         SkyCurrentGameTracker cg = plugin.getCurrentGameTracker();
         int id = cg.getGameID( playerName );
         if ( id == -1 ) {

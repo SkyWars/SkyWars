@@ -17,6 +17,7 @@
 package net.daboross.bukkitdev.skywars.game;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import net.daboross.bukkitdev.skywars.api.game.SkyCurrentGameTracker;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
@@ -32,22 +33,22 @@ public class CurrentGames implements SkyCurrentGameTracker {
     private final Map<String, Integer> currentlyInGame = new HashMap<String, Integer>();
 
     private void setGameID( String player, int gameID ) {
-        currentlyInGame.put( player.toLowerCase(), Integer.valueOf( gameID ) );
+        currentlyInGame.put( player.toLowerCase( Locale.ENGLISH ), Integer.valueOf( gameID ) );
     }
 
     @Override
     public boolean isInGame( String player ) {
-        return currentlyInGame.containsKey( player.toLowerCase() );
+        return currentlyInGame.containsKey( player.toLowerCase( Locale.ENGLISH ) );
     }
 
     @Override
     public int getGameID( String player ) {
-        Integer val = currentlyInGame.get( player.toLowerCase() );
+        Integer val = currentlyInGame.get( player.toLowerCase( Locale.ENGLISH ) );
         return val == null ? -1 : val.intValue();
     }
 
     public void onPlayerLeaveGame( PlayerLeaveGameInfo info ) {
-        currentlyInGame.remove( info.getPlayer().getName().toLowerCase() );
+        currentlyInGame.remove( info.getPlayer().getName().toLowerCase( Locale.ENGLISH ) );
     }
 
     public void onGameStart( GameStartInfo info ) {

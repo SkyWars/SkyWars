@@ -18,6 +18,7 @@ package net.daboross.bukkitdev.skywars;
 
 import net.daboross.bukkitdev.skywars.commands.MainCommand;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -154,10 +155,8 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     }
 
     private void registerListeners( PluginManager pm, Listener... listeners ) {
-        for ( Object l : listeners ) {
-            if ( l instanceof Listener ) {
-                pm.registerEvents( (Listener) l, this );
-            }
+        for ( Listener l : listeners ) {
+            pm.registerEvents( (Listener) l, this );
         }
     }
 
@@ -201,7 +200,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         MainCommand main = new MainCommand( this );
         SetupCommand setup = new SetupCommand( this );
         for ( String commandName : getDescription().getCommands().keySet() ) {
-            if ( commandName.toLowerCase().endsWith( "setup" ) ) {
+            if ( commandName.toLowerCase( Locale.ENGLISH ).endsWith( "setup" ) ) {
                 setup.latchOnto( getCommand( commandName ) );
             } else {
                 main.latchOnto( getCommand( commandName ) );

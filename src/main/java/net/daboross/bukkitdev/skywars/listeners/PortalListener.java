@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.listeners;
 
+import java.util.Locale;
 import net.daboross.bukkitdev.skywars.Messages;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
@@ -43,7 +44,7 @@ public class PortalListener implements Listener {
         for ( SkyBlockLocation loc : plugin.getLocationStore().getPortals() ) {
             if ( loc.isNear( location ) ) {
                 Player p = evt.getPlayer();
-                String name = p.getName().toLowerCase();
+                String name = p.getName().toLowerCase( Locale.ENGLISH );
                 if ( !plugin.getCurrentGameTracker().isInGame( name ) && !plugin.getGameQueue().inQueue( name ) ) {
                     p.sendMessage( Messages.Join.CONFIRMATION );
                     plugin.getGameQueue().queuePlayer( name );

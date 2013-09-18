@@ -32,7 +32,7 @@ public class KillBroadcaster {
                 case VOID:
                     return String.format( arena.getMessages().getMessage( SkyMessages.SUICIDE_VOID ), player );
                 case LEFT:
-                    Bukkit.broadcastMessage( String.format( arena.getMessages().getMessage( SkyMessages.FORFEITED ), player ) );
+                    return String.format( arena.getMessages().getMessage( SkyMessages.FORFEITED ), player );
                 case OTHER:
                     return String.format( arena.getMessages().getMessage( SkyMessages.KILLED_OTHER ), player );
             }

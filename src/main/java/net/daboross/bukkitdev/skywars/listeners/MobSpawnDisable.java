@@ -31,7 +31,7 @@ public class MobSpawnDisable implements Listener {
     public void onMobSpawn( CreatureSpawnEvent evt ) {
         if ( evt.getSpawnReason() == SpawnReason.DEFAULT ) {
             String world = evt.getLocation().getWorld().getName();
-            if ( Statics.ARENA_WORLD_NAME.equalsIgnoreCase( world ) | Statics.BASE_WORLD_NAME.equals( world ) ) {
+            if ( Statics.ARENA_WORLD_NAME.equalsIgnoreCase( world ) || Statics.BASE_WORLD_NAME.equals( world ) ) {
                 evt.setCancelled( true );
             }
         }

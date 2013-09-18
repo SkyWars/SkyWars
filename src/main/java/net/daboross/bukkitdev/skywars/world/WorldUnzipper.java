@@ -43,8 +43,12 @@ public class WorldUnzipper {
         if ( output.exists() ) {
             return WorldUnzipResult.ALREADY_THERE;
         }
-        output.mkdir();
-        InputStream fis = this.getClass().getResourceAsStream( Statics.ZIP_FILE_PATH );
+        boolean madeDir = output.mkdir();
+        if ( !madeDir ) {
+            plugin.getLogger().log( Level.WARNING, "Couldn''t make directory {0}", output.getAbsolutePath() );
+            return WorldUnzipResult.ERROR;
+        }
+        InputStream fis = WorldUnzipper.class.getResourceAsStream( Statics.ZIP_FILE_PATH );
         if ( fis == null ) {
             return WorldUnzipResult.ERROR;
         }
@@ -56,11 +60,17 @@ public class WorldUnzipper {
                     File newFile = new File( output, fileName );
                     File parent = newFile.getParentFile();
                     if ( parent != null ) {
-                        parent.mkdirs();
+                        boolean madeParent = parent.mkdirs();
+                        if ( !madeParent ) {
+                            plugin.getLogger().log( Level.WARNING, "Couldn''t make directory {0}", parent.getAbsolutePath() );
+                        }
                     }
                     if ( ze.isDirectory() ) {
                         plugin.getLogger().log( Level.FINER, "Making dir {0}", newFile );
-                        newFile.mkdir();
+                        boolean made = newFile.mkdir();
+                        if ( !made ) {
+                            plugin.getLogger().log( Level.WARNING, "Couldn''t make directory {0}", newFile.getAbsolutePath() );
+                        }
                     } else if ( newFile.exists() ) {
                         plugin.getLogger().log( Level.FINER, "Already exists {0}", newFile );
                     } else {
@@ -87,7 +97,7 @@ public class WorldUnzipper {
                     }
                 }
             }
-        } catch ( Exception ex ) {
+        } catch ( IOException | RuntimeException ex ) {
             plugin.getLogger().log( Level.WARNING, "Error unzipping base world", ex );
             return WorldUnzipResult.ERROR;
         }

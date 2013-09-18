@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars;
 
+import java.util.Locale;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 
@@ -29,6 +30,7 @@ public class SkyStatic {
     private static Logger logger = Bukkit.getLogger();
     private static String pluginName = "SkyWars";
     private static String version = "Unset";
+    private static Locale locale = Locale.ENGLISH;
 
     public static void setDebug( boolean debug ) {
         SkyStatic.debug = debug;
@@ -60,5 +62,9 @@ public class SkyStatic {
 
     public static String getVersion() {
         return version;
+    }
+
+    public static Locale getLocale() {
+        return locale;
     }
 }

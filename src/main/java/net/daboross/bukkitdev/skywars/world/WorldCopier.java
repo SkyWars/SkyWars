@@ -35,10 +35,7 @@ import org.bukkit.plugin.Plugin;
  */
 public class WorldCopier {
 
-    private final Plugin plugin;
-
-    public WorldCopier( Plugin plugin ) {
-        this.plugin = plugin;
+    public WorldCopier( Plugin unused ) {
     }
 
     public void copyArena( @NonNull SkyBlockLocation toMin, @NonNull SkyBlockLocationRange from ) {

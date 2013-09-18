@@ -79,6 +79,7 @@ public class StatusCommand extends SubCommand {
                 } else {
                     resultBuilder.append( ColorList.REG ).append( ", " ).append( ChatColor.RED ).append( dead.get( 0 ) );
                 }
+                break;
             default:
                 if ( resultBuilder.length() == 0 ) {
                     resultBuilder.append( ChatColor.RED ).append( dead.get( 0 ) );

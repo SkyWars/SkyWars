@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
+import java.util.Locale;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
@@ -40,7 +41,7 @@ public class JoinCommand extends SubCommand {
 
     @Override
     public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
-        String name = sender.getName().toLowerCase();
+        String name = sender.getName().toLowerCase( Locale.ENGLISH );
         if ( plugin.getCurrentGameTracker().isInGame( name ) ) {
             sender.sendMessage( Messages.Join.IN_GAME );
         } else if ( plugin.getGameQueue().inQueue( name ) ) {

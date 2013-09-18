@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
@@ -47,7 +48,7 @@ public class ArenaGame implements SkyGame {
     }
 
     public void removePlayer( String playerName ) {
-        playerName = playerName.toLowerCase();
+        playerName = playerName.toLowerCase( Locale.ENGLISH );
         if ( !alivePlayers.remove( playerName ) ) {
             throw new IllegalArgumentException( "Player not in game." );
         }
