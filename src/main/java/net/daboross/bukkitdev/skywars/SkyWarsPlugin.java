@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars;
 
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.commands.MainCommand;
 import java.io.IOException;
 import java.util.Locale;

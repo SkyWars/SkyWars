@@ -29,7 +29,7 @@ import net.daboross.bukkitdev.skywars.commands.mainsubcommands.SetLobbyCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.SetPortalCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.StatusCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.VersionCommand;
-import net.daboross.bukkitdev.skywars.SkyStatic;
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import org.bukkit.command.PluginCommand;
 
 /**

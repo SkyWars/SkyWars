@@ -19,7 +19,7 @@ package net.daboross.bukkitdev.skywars.commands;
 import lombok.NonNull;
 import net.daboross.bukkitdev.commandexecutorbase.CommandExecutorBase;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
-import net.daboross.bukkitdev.skywars.SkyStatic;
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
 import org.bukkit.command.PluginCommand;
 
