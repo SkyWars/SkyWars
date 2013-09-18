@@ -37,11 +37,8 @@ public class StartNewArena extends SubCommand {
     private final SetupStates states;
 
     public StartNewArena( @NonNull SkyWars plugin, @NonNull SetupStates states ) {
-        super( "start", false, null, "Start a new arena setup." );
+        super( "start", false, null, "Start a new arena setup. If you already started setting up an arena, but didn't save it, this command will overwrite it!" );
         addArgumentNames( "Arena name" );
-        StartedArenaCondition condition = new StartedArenaCondition( states, false );
-        addCommandFilter( condition );
-        addCommandPreCondition( condition );
         addCommandFilter( new ArgumentFilter( ArgumentFilter.ArgumentCondition.EQUALS, 1, "Please supply one and only one argument." ) );
         this.plugin = plugin;
         this.states = states;

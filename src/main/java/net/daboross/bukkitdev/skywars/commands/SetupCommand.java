@@ -21,6 +21,11 @@ import net.daboross.bukkitdev.commandexecutorbase.CommandExecutorBase;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
+import net.daboross.bukkitdev.skywars.commands.setupsubcommands.SaveCurrentArena;
+import net.daboross.bukkitdev.skywars.commands.setupsubcommands.SetPos1;
+import net.daboross.bukkitdev.skywars.commands.setupsubcommands.SetPos2;
+import net.daboross.bukkitdev.skywars.commands.setupsubcommands.SetSpawnLocation;
+import net.daboross.bukkitdev.skywars.commands.setupsubcommands.StartNewArena;
 import org.bukkit.command.PluginCommand;
 
 /**
@@ -40,6 +45,11 @@ public class SetupCommand {
     }
 
     private void initCommands() {
+        base.addSubCommand( new StartNewArena( plugin, states ) );
+        base.addSubCommand( new SetPos1( states ) );
+        base.addSubCommand( new SetPos2( states ) );
+        base.addSubCommand( new SetSpawnLocation( states ) );
+        base.addSubCommand( new SaveCurrentArena( plugin, states ) );
     }
 
     public void latchOnto( PluginCommand command ) {

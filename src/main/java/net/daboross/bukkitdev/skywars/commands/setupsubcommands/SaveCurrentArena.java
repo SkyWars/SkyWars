@@ -16,13 +16,20 @@
  */
 package net.daboross.bukkitdev.skywars.commands.setupsubcommands;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.NonNull;
+import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.BoundariesSetCondition;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
+import net.daboross.bukkitdev.skywars.gist.GistReport;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.Plugin;
 
 /**
  *
@@ -43,6 +50,66 @@ public class SaveCurrentArena extends SubCommand {
 
     @Override
     public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
-        sender.sendMessage( "Unimplemented :/" );
+        sender.sendMessage( ColorList.REG + "Adding and saving arena." );
+        SkyArenaConfig config = states.getSetupState( sender.getName() ).convertToArenaConfig();
+        plugin.getConfiguration().addAndSaveArena( config );
+        sender.sendMessage( ColorList.REG + "Now saving a configuration debug - this is for testing and will be disabled in the future." );
+        new GistReportRunnable( plugin, sender.getName(), GistReport.joinText( getData( config ) ) ).runMe();
+    }
+
+    private List<String> getData( SkyArenaConfig config ) {
+        List<String> list = new ArrayList<>();
+        list.add( "##" + config.getArenaName() );
+        list.add( "```" );
+        list.add( "file=" + config.getFile().getAbsolutePath() );
+        list.add( "spawns=" + config.getSpawns() );
+        list.add( "boundaries=" + config.getBoundaries().toIndentedString( 1 ) );
+        list.add( "messages=" + config.getMessages().toIndentedString( 1 ) );
+        list.add( "placement=" + config.getPlacement().toIndentedString( 1 ) );
+        list.add( "numPlayers=" + config.getNumPlayers() );
+        list.add( "```" );
+        return list;
+    }
+
+    private static class GistReportRunnable implements Runnable {
+
+        private final Plugin plugin;
+        private final String playerName;
+        private final String text;
+
+        public GistReportRunnable( Plugin plugin, String playerName, String text ) {
+            this.plugin = plugin;
+            this.playerName = playerName;
+            this.text = text;
+        }
+
+        public void runMe() {
+            plugin.getServer().getScheduler().runTaskAsynchronously( plugin, this );
+        }
+
+        @Override
+        public void run() {
+            String url = GistReport.gistText( plugin.getLogger(), text );
+            plugin.getServer().getScheduler().runTask( plugin, new SendResult( playerName, ColorList.REG + "Debug data url: " + url ) );
+        }
+
+        private static class SendResult implements Runnable {
+
+            private final String playerName;
+            private final String result;
+
+            public SendResult( String playerName, String result ) {
+                this.playerName = playerName;
+                this.result = result;
+            }
+
+            @Override
+            public void run() {
+                CommandSender sender = Bukkit.getPlayer( playerName );
+                if ( sender != null ) {
+                    sender.sendMessage( result );
+                }
+            }
+        }
     }
 }

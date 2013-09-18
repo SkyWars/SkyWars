@@ -265,8 +265,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         return "Object '" + value + "' that isn't a " + shouldBe + " found under " + key + " in file " + file.getAbsolutePath();
     }
 
-    private void saveArena( File file, SkyArenaConfig arenaConfig, String header ) {
-        // Saving arena
+    public void saveArena( File file, SkyArenaConfig arenaConfig, String header ) {
         YamlConfiguration newConfig = new YamlConfiguration();
         newConfig.options().header( header ).indent( 2 );
         arenaConfig.serialize( newConfig );
@@ -279,7 +278,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
     @Override
     public void addAndSaveArena( SkyArenaConfig config ) {
-        throw new UnsupportedOperationException( "SkyWarsConfiguration: Not Created Yet!: addAndSaveArena" );
+        enabledArenas.add( config );
+        saveArena( config.getFile(), config, String.format( Headers.ARENA, config.getArenaName() ) );
     }
 
     private static class Keys {
