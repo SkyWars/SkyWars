@@ -45,7 +45,7 @@ public class GameEventDistributor {
             plugin.getIDHandler().onGameStart( info );
             plugin.getCurrentGameTracker().onGameStart( info );
             plugin.getWorldHandler().onGameStart( info );
-            plugin.getResetInventoryHealth().onGameStart( info ); // Should be after WorldHandler
+            plugin.getResetHealth().onGameStart( info ); // Should be after WorldHandler
             plugin.getBroadcaster().broadcastStart( info );
             // -- After --
             plugin.getServer().getPluginManager().callEvent( new GameStartEvent( plugin, info.getGame(), info.getPlayers() ) );
@@ -82,7 +82,7 @@ public class GameEventDistributor {
             // -- Normal --
             plugin.getCurrentGameTracker().onPlayerLeaveGame( info );
             plugin.getAttackerStorage().onPlayerLeaveGame( info );
-            plugin.getResetInventoryHealth().onPlayerLeave( info );
+            plugin.getResetHealth().onPlayerLeave( info );
             // -- After --
             plugin.getServer().getPluginManager().callEvent( new LeaveGameEvent( plugin, info.getId(), info.getPlayer() ) );
         } catch ( Throwable t ) {

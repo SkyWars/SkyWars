@@ -21,6 +21,7 @@ import net.daboross.bukkitdev.skywars.commands.MainCommand;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.logging.Level;
+import lombok.Getter;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
@@ -39,7 +40,7 @@ import net.daboross.bukkitdev.skywars.listeners.DeathStorage;
 import net.daboross.bukkitdev.skywars.game.reactors.GameBroadcaster;
 import net.daboross.bukkitdev.skywars.listeners.PortalListener;
 import net.daboross.bukkitdev.skywars.listeners.QuitListener;
-import net.daboross.bukkitdev.skywars.game.reactors.ResetInventoryHealth;
+import net.daboross.bukkitdev.skywars.game.reactors.ResetHealth;
 import net.daboross.bukkitdev.skywars.listeners.BuildingLimiter;
 import net.daboross.bukkitdev.skywars.listeners.MobSpawnDisable;
 import net.daboross.bukkitdev.skywars.listeners.SpawnListener;
@@ -47,9 +48,6 @@ import net.daboross.bukkitdev.skywars.storage.LocationStore;
 import net.daboross.bukkitdev.skywars.world.SkyWorldHandler;
 import net.daboross.bukkitdev.skywars.world.Statics;
 import net.daboross.bukkitdev.skywars.world.WorldUnzipper;
-import static net.daboross.bukkitdev.skywars.world.WorldUnzipper.WorldUnzipResult.ALREADY_THERE;
-import static net.daboross.bukkitdev.skywars.world.WorldUnzipper.WorldUnzipResult.CREATED;
-import static net.daboross.bukkitdev.skywars.world.WorldUnzipper.WorldUnzipResult.ERROR;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.Listener;
@@ -64,16 +62,27 @@ import org.mcstats.MetricsLite;
  */
 public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
 
+    @Getter
     private SkyConfiguration configuration;
+    @Getter
     private SkyLocationStore locationStore;
+    @Getter
     private GameQueue gameQueue;
-    private CurrentGames currentGames;
+    @Getter
+    private CurrentGames currentGameTracker;
+    @Getter
     private SkyGameHandler gameHandler;
-    private GameIDHandler idHandler;
+    @Getter
+    private GameIDHandler iDHandler;
+    @Getter
     private SkyWorldHandler worldHandler;
-    private DeathStorage deathStorage;
+    @Getter
+    private DeathStorage attackerStorage;
+    @Getter
     private GameBroadcaster broadcaster;
-    private ResetInventoryHealth resetInventoryHealth;
+    @Getter
+    private ResetHealth resetHealth;
+    @Getter
     private GameEventDistributor distributor;
     private boolean enabledCorrectly = false, enablingDone = false;
 
@@ -90,32 +99,11 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         try {
             startPlugin();
             enablingDone = true;
-        } catch ( StartupFailedException ex ) {
+        } catch ( Throwable ex ) {
             getLogger().log( Level.SEVERE, "Startup failed", ex );
             enabledCorrectly = false;
             enablingDone = true;
             getServer().getPluginManager().disablePlugin( this );
-        } catch ( Throwable ex ) {
-            getLogger().log( Level.SEVERE, "Unknown throwable thrown during plugin startup.", ex );
-            enabledCorrectly = false;
-            enablingDone = true;
-            getServer().getPluginManager().disablePlugin( this );
-        }
-    }
-
-    private void copyWorld() {
-        WorldUnzipper.WorldUnzipResult unzipResult = new WorldUnzipper( this ).doWorldUnzip();
-        switch ( unzipResult ) {
-            case ALREADY_THERE:
-                getLogger().log( Level.INFO, "World already created. Assuming valid." );
-                break;
-            case ERROR:
-                throw new StartupFailedException( "Error creating world. Please delete " + Statics.BASE_WORLD_NAME + " and restart server." );
-            case CREATED:
-                getLogger().log( Level.INFO, "Created world, resuming plugin start." );
-                break;
-            default:
-                throw new StartupFailedException( "Invalid return for doWorldUnzip()." );
         }
     }
 
@@ -124,19 +112,19 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         configuration.load();
         for ( SkyArena arena : configuration.getEnabledArenas() ) {
             if ( arena.getBoundaries().getOrigin().world.equalsIgnoreCase( Statics.BASE_WORLD_NAME ) ) {
-                copyWorld();
+                new WorldUnzipper().doWorldUnzip( getLogger() );
                 break;
             }
         }
-        currentGames = new CurrentGames();
-        idHandler = new GameIDHandler();
+        currentGameTracker = new CurrentGames();
+        iDHandler = new GameIDHandler();
         worldHandler = new SkyWorldHandler( this );
         broadcaster = new GameBroadcaster();
-        resetInventoryHealth = new ResetInventoryHealth( this );
+        resetHealth = new ResetHealth( this );
         locationStore = new LocationStore( this );
         gameQueue = new GameQueue( this );
         gameHandler = new GameHandler( this );
-        deathStorage = new DeathStorage( this );
+        attackerStorage = new DeathStorage( this );
         distributor = new GameEventDistributor( this );
         new BukkitRunnable() {
             @Override
@@ -148,7 +136,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         new PermissionHandler( "skywars" ).setupPermissions();
         setupCommand();
         PluginManager pm = getServer().getPluginManager();
-        registerListeners( pm, new SpawnListener(), deathStorage,
+        registerListeners( pm, new SpawnListener(), attackerStorage,
                 new QuitListener( this ), new PortalListener( this ),
                 new CommandListener( this ), new BuildingLimiter( this ),
                 new MobSpawnDisable() );
@@ -165,7 +153,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     public void onDisable() {
         if ( enabledCorrectly ) {
             locationStore.save();
-            idHandler.saveAndUnload( this );
+            iDHandler.saveAndUnload( this );
             getLogger().log( Level.INFO, "SkyWars disabled successfully" );
         } else {
             getLogger().log( Level.INFO, "SkyWars not disabling due to not being enabled successfully." );
@@ -207,73 +195,5 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
                 main.latchOnto( getCommand( commandName ) );
             }
         }
-    }
-
-    private void checkEnabledCorrectly() {
-        if ( enablingDone && !enabledCorrectly ) {
-            throw new IllegalStateException( "Not enabled correctly" );
-        }
-    }
-
-    @Override
-    public SkyConfiguration getConfiguration() {
-        checkEnabledCorrectly();
-        return configuration;
-    }
-
-    @Override
-    public SkyLocationStore getLocationStore() {
-        checkEnabledCorrectly();
-        return locationStore;
-    }
-
-    @Override
-    public GameQueue getGameQueue() {
-        checkEnabledCorrectly();
-        return gameQueue;
-    }
-
-    @Override
-    public CurrentGames getCurrentGameTracker() {
-        checkEnabledCorrectly();
-        return currentGames;
-    }
-
-    @Override
-    public SkyGameHandler getGameHandler() {
-        checkEnabledCorrectly();
-        return gameHandler;
-    }
-
-    @Override
-    public GameIDHandler getIDHandler() {
-        checkEnabledCorrectly();
-        return idHandler;
-    }
-
-    @Override
-    public DeathStorage getAttackerStorage() {
-        checkEnabledCorrectly();
-        return deathStorage;
-    }
-
-    public SkyWorldHandler getWorldHandler() {
-        checkEnabledCorrectly();
-        return worldHandler;
-    }
-
-    public GameBroadcaster getBroadcaster() {
-        checkEnabledCorrectly();
-        return broadcaster;
-    }
-
-    public ResetInventoryHealth getResetInventoryHealth() {
-        checkEnabledCorrectly();
-        return resetInventoryHealth;
-    }
-
-    public GameEventDistributor getDistributor() {
-        checkEnabledCorrectly();
-        return distributor;
     }
 }

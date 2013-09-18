@@ -28,11 +28,11 @@ import org.bukkit.plugin.Plugin;
  *
  * @author Dabo Ross <http://www.daboross.net/>
  */
-public class ResetInventoryHealth {
+public class ResetHealth {
 
     private final Plugin plugin;
 
-    public ResetInventoryHealth( Plugin plugin ) {
+    public ResetHealth( Plugin plugin ) {
         this.plugin = plugin;
     }
 
@@ -42,10 +42,8 @@ public class ResetInventoryHealth {
             try {
                 p.setHealth( p.getMaxHealth() );
             } catch ( NoSuchMethodError unused ) {
-                plugin.getLogger().log( Level.INFO, "Couldn't reset health. Probably due to server version being below 1.6.2" );
+                plugin.getLogger().log( Level.INFO, "Couldn't reset health. Probably due to server version being below 1.6.2. If your server is 1.5.2, please download the 1.5.2 version of the plugin." );
             }
-            p.getInventory().clear();
-            p.getInventory().setArmorContents( new ItemStack[ 4 ] );
             p.setFoodLevel( 20 );
         }
     }
@@ -56,10 +54,8 @@ public class ResetInventoryHealth {
         try {
             p.setHealth( p.getMaxHealth() );
         } catch ( NoSuchMethodError unused ) {
-            plugin.getLogger().log( Level.INFO, "Couldn't reset health. Probably due to server version being below 1.6.2" );
+            plugin.getLogger().log( Level.INFO, "Couldn't reset health. Probably due to server version being below 1.6.2. If your server is 1.5.2, please download the 1.5.2 version of the plugin." );
         }
-        p.getInventory().clear();
-        p.getInventory().setArmorContents( new ItemStack[ 4 ] );
         p.setFoodLevel( 20 );
     }
 }
