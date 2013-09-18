@@ -80,6 +80,7 @@ public class SetupData {
         placement.setPlacementY( 20 );
         placement.setDistanceApart( 200 );
         config.setSpawns( spawns );
+        config.setNumPlayers( spawns.size() );
         return config;
     }
 

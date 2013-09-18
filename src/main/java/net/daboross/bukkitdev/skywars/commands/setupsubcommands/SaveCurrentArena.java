@@ -62,11 +62,11 @@ public class SaveCurrentArena extends SubCommand {
         list.add( "##" + config.getArenaName() );
         list.add( "```" );
         list.add( "file=" + config.getFile().getAbsolutePath() );
-        list.add( "spawns=" + config.getSpawns() );
+        list.add( "spawns=" + config.getRawSpawns() );
         list.add( "boundaries=" + config.getBoundaries().toIndentedString( 1 ) );
         list.add( "messages=" + config.getMessages().toIndentedString( 1 ) );
         list.add( "placement=" + config.getPlacement().toIndentedString( 1 ) );
-        list.add( "numPlayers=" + config.getNumPlayers() );
+        list.add( "numPlayers=" + config.getRawNumPlayers() );
         list.add( "```" );
         return list;
     }
