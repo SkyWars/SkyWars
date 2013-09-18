@@ -21,10 +21,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import lombok.NonNull;
-import org.bukkit.plugin.Plugin;
+import net.daboross.bukkitdev.skywars.StartupFailedException;
 
 /**
  *
@@ -32,25 +33,19 @@ import org.bukkit.plugin.Plugin;
  */
 public class WorldUnzipper {
 
-    private final Plugin plugin;
-
-    public WorldUnzipper( @NonNull Plugin plugin ) {
-        this.plugin = plugin;
-    }
-
-    public WorldUnzipResult doWorldUnzip() {
+    public void doWorldUnzip( @NonNull Logger logger ) {
         File output = new File( Statics.BASE_WORLD_NAME );
         if ( output.exists() ) {
-            return WorldUnzipResult.ALREADY_THERE;
+            return;
         }
         boolean madeDir = output.mkdir();
         if ( !madeDir ) {
-            plugin.getLogger().log( Level.WARNING, "Couldn''t make directory {0}", output.getAbsolutePath() );
-            return WorldUnzipResult.ERROR;
+            throw new StartupFailedException( "Couldn't make directory " + output.getAbsolutePath() + ". Please delete " + Statics.BASE_WORLD_NAME + " and restart server." );
+
         }
         InputStream fis = WorldUnzipper.class.getResourceAsStream( Statics.ZIP_FILE_PATH );
         if ( fis == null ) {
-            return WorldUnzipResult.ERROR;
+            throw new StartupFailedException( "Couldn't get resource.\nError creating world. Please delete " + Statics.BASE_WORLD_NAME + " and restart server." );
         }
         try {
             try ( ZipInputStream zis = new ZipInputStream( fis ) ) {
@@ -62,19 +57,19 @@ public class WorldUnzipper {
                     if ( parent != null ) {
                         boolean madeParent = parent.mkdirs();
                         if ( !madeParent ) {
-                            plugin.getLogger().log( Level.WARNING, "Couldn''t make directory {0}", parent.getAbsolutePath() );
+                            logger.log( Level.FINER, "Couldn''t make directory {0}", parent.getAbsolutePath() );
                         }
                     }
                     if ( ze.isDirectory() ) {
-                        plugin.getLogger().log( Level.FINER, "Making dir {0}", newFile );
-                        boolean made = newFile.mkdir();
+                        logger.log( Level.FINER, "Making dir {0}", newFile );
+                        boolean made = newFile.mkdirs();
                         if ( !made ) {
-                            plugin.getLogger().log( Level.WARNING, "Couldn''t make directory {0}", newFile.getAbsolutePath() );
+                            logger.log( Level.FINER, "Couldn''t make directory {0}", newFile.getAbsolutePath() );
                         }
                     } else if ( newFile.exists() ) {
-                        plugin.getLogger().log( Level.FINER, "Already exists {0}", newFile );
+                        logger.log( Level.FINER, "Already exists {0}", newFile );
                     } else {
-                        plugin.getLogger().log( Level.FINER, "Copying {0}", newFile );
+                        logger.log( Level.FINER, "Copying {0}", newFile );
                         try ( FileOutputStream fos = new FileOutputStream( newFile ) ) {
                             try {
                                 int next;
@@ -83,8 +78,8 @@ public class WorldUnzipper {
                                 }
                                 fos.flush();
                             } catch ( IOException ex ) {
-                                plugin.getLogger().log( Level.WARNING, "Error copying file from zip", ex );
-                                return WorldUnzipResult.ERROR;
+                                logger.log( Level.WARNING, "Error copying file from zip", ex );
+                                throw new StartupFailedException( "Error creating world. Please delete " + Statics.BASE_WORLD_NAME + " and restart server." );
                             }
                             fos.close();
                         }
@@ -92,16 +87,13 @@ public class WorldUnzipper {
                     try {
                         ze = zis.getNextEntry();
                     } catch ( IOException ex ) {
-                        plugin.getLogger().log( Level.WARNING, "Error getting next zip entry", ex );
-                        return WorldUnzipResult.ERROR;
+                        throw new StartupFailedException( "Error getting next zip entry\nError creating world. Please delete " + Statics.BASE_WORLD_NAME + " and restart server.", ex );
                     }
                 }
             }
         } catch ( IOException | RuntimeException ex ) {
-            plugin.getLogger().log( Level.WARNING, "Error unzipping base world", ex );
-            return WorldUnzipResult.ERROR;
+            throw new StartupFailedException( "\nError unzipping world. Please delete " + Statics.BASE_WORLD_NAME + " and restart server.", ex );
         }
-        return WorldUnzipResult.CREATED;
     }
 
     public static enum WorldUnzipResult {
