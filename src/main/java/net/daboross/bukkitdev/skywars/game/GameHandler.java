@@ -80,7 +80,7 @@ public class GameHandler implements SkyGameHandler {
         ArenaGame game = idh.getGame( id );
         game.removePlayer( playerName );
         Player player = Bukkit.getPlayerExact( playerName );
-        plugin.getDistributor().distribute( new PlayerLeaveGameInfo( id, player, true ) );
+        plugin.getDistributor().distribute( new PlayerLeaveGameInfo( id, player, resetHealth ) );
         if ( teleport ) {
             player.teleport( plugin.getLocationStore().getLobbyPosition().toLocation() );
         }
