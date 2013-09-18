@@ -79,6 +79,7 @@ public class SetupData {
         SkyPlacementConfig placement = config.getPlacement();
         placement.setPlacementY( 20 );
         placement.setDistanceApart( 200 );
+        config.setSpawns( spawns );
         return config;
     }
 
