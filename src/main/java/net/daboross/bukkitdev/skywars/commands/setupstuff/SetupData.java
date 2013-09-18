@@ -16,26 +16,35 @@
  */
 package net.daboross.bukkitdev.skywars.commands.setupstuff;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.Data;
+import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 
 /**
  *
  */
-@AllArgsConstructor
-@NoArgsConstructor
-public class SetupState {
+@Data
+public class SetupData {
 
-    @Getter
-    @Setter
-    private boolean minSet;
-    @Getter
-    @Setter
-    private boolean started;
+    private SkyBlockLocation originPos1;
+    private SkyBlockLocation originPos2;
+    private SkyBlockLocation originMin;
+    private List<SkyBlockLocation> spawns = new ArrayList<>();
 
-    public boolean isDefualt() {
-        return !started && !minSet;
+    public void setOriginPos1( SkyBlockLocation originPos1 ) {
+        this.originPos1 = originPos1;
+        calculateMin();
+    }
+
+    public void setOriginPos2( SkyBlockLocation originPos2 ) {
+        this.originPos2 = originPos2;
+        calculateMin();
+    }
+
+    public void calculateMin() {
+        if ( originPos1 != null && originPos2 != null ) {
+            originMin = SkyBlockLocation.min( originPos1, originPos2 );
+        }
     }
 }

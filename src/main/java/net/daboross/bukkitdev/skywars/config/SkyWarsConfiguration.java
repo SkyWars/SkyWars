@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
+import lombok.Getter;
 import net.daboross.bukkitdev.skywars.SkyStatic;
 import net.daboross.bukkitdev.skywars.StartupFailedException;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -41,6 +42,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
     private final SkyWars plugin;
     private File mainConfigFile;
+    @Getter
     private File arenaFolder;
     private FileConfiguration mainConfig;
     private SkyArenaConfig parentArena;

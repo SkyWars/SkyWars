@@ -26,7 +26,7 @@ import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
  */
 public class SetupStates {
 
-    private final Map<String, SetupState> setupStates;
+    private final Map<String, SetupData> setupStates;
     private final Map<String, SkyArenaConfig> nextArenas;
 
     public SetupStates() {
@@ -34,17 +34,12 @@ public class SetupStates {
         this.nextArenas = new HashMap<>();
     }
 
-    public SetupState getSetupState( String user ) {
-        SetupState state = setupStates.get( user.toLowerCase( Locale.ENGLISH ) );
-        if ( state == null ) {
-            state = new SetupState();
-            setSetupState( user, state );
-        }
-        return state;
+    public SetupData getSetupState( String user ) {
+        return setupStates.get( user.toLowerCase( Locale.ENGLISH ) );
     }
 
-    public void setSetupState( String user, SetupState state ) {
-        if ( state == null || state.isDefualt() ) {
+    public void setSetupState( String user, SetupData state ) {
+        if ( state == null ) {
             setupStates.remove( user.toLowerCase( Locale.ENGLISH ) );
         } else {
             setupStates.put( user.toLowerCase( Locale.ENGLISH ), state );

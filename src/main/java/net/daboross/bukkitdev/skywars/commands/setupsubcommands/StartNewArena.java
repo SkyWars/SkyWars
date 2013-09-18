@@ -16,11 +16,16 @@
  */
 package net.daboross.bukkitdev.skywars.commands.setupsubcommands;
 
+import java.io.File;
 import lombok.NonNull;
+import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
+import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
-import net.daboross.bukkitdev.skywars.commands.setupstuff.FirstPositionSetCondition;
+import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
+import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupData;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
+import net.daboross.bukkitdev.skywars.commands.setupstuff.StartedArenaCondition;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -34,15 +39,23 @@ public class StartNewArena extends SubCommand {
 
     public StartNewArena( @NonNull SkyWars plugin, @NonNull SetupStates states ) {
         super( "start", false, null, "Start a new arena setup." );
-        addArgumentNames( "Name" );
-        FirstPositionSetCondition condition = new FirstPositionSetCondition( states );
+        addArgumentNames( "Arena name" );
+        StartedArenaCondition condition = new StartedArenaCondition( states, false );
         addCommandFilter( condition );
         addCommandPreCondition( condition );
+        addCommandFilter( new ArgumentFilter( ArgumentFilter.ArgumentCondition.EQUALS, 1, "Please supply one and only one argument." ) );
         this.plugin = plugin;
         this.states = states;
     }
 
     @Override
     public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
+        states.setSetupState( sender.getName(), new SetupData() );
+        SkyArenaConfig config = new SkyArenaConfig();
+        config.setArenaName( subCommandArgs[0] );
+        config.setFile( new File( plugin.getConfiguration().getArenaFolder(), subCommandArgs[0] + ".yml" ) );
+        states.setNextArena( sender.getName(), new SkyArenaConfig() );
+        sender.sendMessage( ColorList.REG + "Started setting up an arena called " + ColorList.DATA + subCommandArgs[0] );
+        sender.sendMessage( ColorList.REG+"You probably want to set the boundary positions now.");
     }
 }

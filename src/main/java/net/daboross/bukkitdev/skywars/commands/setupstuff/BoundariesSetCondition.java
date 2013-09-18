@@ -28,13 +28,14 @@ import org.bukkit.command.CommandSender;
  *
  */
 @AllArgsConstructor
-public class FirstPositionSetCondition implements CommandPreCondition, CommandFilter {
+public class BoundariesSetCondition implements CommandPreCondition, CommandFilter {
 
     private final SetupStates states;
 
     @Override
     public boolean canContinue( CommandSender sender, SubCommand subCommand ) {
-        if ( states.getSetupState( sender.getName() ).isMinSet() ) {
+        SetupData state = states.getSetupState( sender.getName() );
+        if ( state != null && state.getOriginMin() != null ) {
             return true;
         }
         return false;
@@ -42,7 +43,8 @@ public class FirstPositionSetCondition implements CommandPreCondition, CommandFi
 
     @Override
     public boolean canContinue( CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
-        if ( states.getSetupState( sender.getName() ).isMinSet() ) {
+        SetupData state = states.getSetupState( sender.getName() );
+        if ( state != null && state.getOriginMin() != null ) {
             return true;
         }
         return false;

@@ -22,6 +22,7 @@ import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
+import net.daboross.bukkitdev.skywars.commands.setupstuff.StartedArenaCondition;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -37,6 +38,9 @@ public class SetMinimumPosition extends SubCommand {
 
     public SetMinimumPosition( @NonNull SkyWars plugin, @NonNull SetupStates states ) {
         super( "setmin", false, null, "Sets the minimum position for the arena to copy from to your current eye location." );
+        StartedArenaCondition condition = new StartedArenaCondition( states, true );
+        addCommandFilter( condition );
+        addCommandPreCondition( condition );
         this.plugin = plugin;
         this.states = states;
     }
@@ -47,5 +51,6 @@ public class SetMinimumPosition extends SubCommand {
         Location eye = p.getEyeLocation();
         SkyBlockLocation min = new SkyBlockLocation( eye );
         sender.sendMessage( ColorList.REG + "Setting the minimum position to x=" + min.x + " y=" + min.y + " z=" + min.z + " world=" + min.world );
+        states.getSetupState( p.getName() ).setOriginMin( min );
     }
 }

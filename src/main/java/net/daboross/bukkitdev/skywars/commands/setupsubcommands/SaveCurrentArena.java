@@ -19,7 +19,7 @@ package net.daboross.bukkitdev.skywars.commands.setupsubcommands;
 import lombok.NonNull;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
-import net.daboross.bukkitdev.skywars.commands.setupstuff.FirstPositionSetCondition;
+import net.daboross.bukkitdev.skywars.commands.setupstuff.BoundariesSetCondition;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -34,7 +34,7 @@ public class SaveCurrentArena extends SubCommand {
 
     public SaveCurrentArena( @NonNull SkyWars plugin, @NonNull SetupStates states ) {
         super( "save", false, null, "Saves the current arena setup to file." );
-        FirstPositionSetCondition condition = new FirstPositionSetCondition( states );
+        BoundariesSetCondition condition = new BoundariesSetCondition( states );
         addCommandFilter( condition );
         addCommandPreCondition( condition );
         this.plugin = plugin;
