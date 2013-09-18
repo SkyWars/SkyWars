@@ -34,7 +34,7 @@ public class SetupCommand {
 
     public SetupCommand( @NonNull SkyWars plugin ) {
         this.plugin = plugin;
-        this.base = new CommandExecutorBase( null );
+        this.base = new CommandExecutorBase( "skywars.setup" );
         this.states = new SetupStates();
         this.initCommands();
     }

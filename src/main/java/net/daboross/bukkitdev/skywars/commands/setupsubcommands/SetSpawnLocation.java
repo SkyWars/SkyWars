@@ -17,32 +17,35 @@
 package net.daboross.bukkitdev.skywars.commands.setupsubcommands;
 
 import lombok.NonNull;
+import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
-import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.BoundariesSetCondition;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  *
  */
-public class SaveCurrentArena extends SubCommand {
+public class SetSpawnLocation extends SubCommand {
 
-    private final SkyWars plugin;
     private final SetupStates states;
 
-    public SaveCurrentArena( @NonNull SkyWars plugin, @NonNull SetupStates states ) {
-        super( "save", false, null, "Saves the current arena setup to file." );
+    public SetSpawnLocation( @NonNull SetupStates states ) {
+        super( "save", false, null, "Adds a new spawn location at your current location" );
         BoundariesSetCondition condition = new BoundariesSetCondition( states );
         addCommandFilter( condition );
         addCommandPreCondition( condition );
-        this.plugin = plugin;
         this.states = states;
     }
 
     @Override
     public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
-        sender.sendMessage( "Unimplemented :/" );
+        Player p = (Player) sender;
+        SkyPlayerLocation pos = new SkyPlayerLocation( p.getLocation() );
+        sender.sendMessage( ColorList.REG + "Adding a new spawn location at " + pos.toString() );
+        states.getSetupState( p.getName() ).getSpawns().add( pos );
     }
 }

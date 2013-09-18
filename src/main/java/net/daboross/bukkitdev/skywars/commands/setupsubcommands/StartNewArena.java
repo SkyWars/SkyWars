@@ -22,7 +22,6 @@ import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
-import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupData;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.StartedArenaCondition;
@@ -50,12 +49,11 @@ public class StartNewArena extends SubCommand {
 
     @Override
     public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
-        states.setSetupState( sender.getName(), new SetupData() );
-        SkyArenaConfig config = new SkyArenaConfig();
-        config.setArenaName( subCommandArgs[0] );
-        config.setFile( new File( plugin.getConfiguration().getArenaFolder(), subCommandArgs[0] + ".yml" ) );
-        states.setNextArena( sender.getName(), new SkyArenaConfig() );
+        SetupData state = new SetupData();
+        state.setArenaName( subCommandArgs[0] );
+        state.setSaveFile( new File( plugin.getConfiguration().getArenaFolder(), subCommandArgs[0] + ".yml" ) );
+        states.setSetupState( sender.getName(), state );
         sender.sendMessage( ColorList.REG + "Started setting up an arena called " + ColorList.DATA + subCommandArgs[0] );
-        sender.sendMessage( ColorList.REG+"You probably want to set the boundary positions now.");
+        sender.sendMessage( ColorList.REG + "You probably want to set the boundary positions now." );
     }
 }
