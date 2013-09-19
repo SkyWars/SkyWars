@@ -30,6 +30,7 @@ import net.daboross.bukkitdev.skywars.commands.mainsubcommands.SetPortalCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.StatusCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.VersionCommand;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
+import net.daboross.bukkitdev.skywars.commands.mainsubcommands.RemoveLastPortalCommand;
 import org.bukkit.command.PluginCommand;
 
 /**
@@ -52,6 +53,7 @@ public class MainCommand {
         base.addSubCommand( new LeaveCommand( plugin ) );
         base.addSubCommand( new SetLobbyCommand( plugin ) );
         base.addSubCommand( new SetPortalCommand( plugin ) );
+        base.addSubCommand( new RemoveLastPortalCommand( plugin ) );
         base.addSubCommand( new CancelCommand( plugin ) );
         base.addSubCommand( new StatusCommand( plugin ) );
         base.addSubCommand( new VersionCommand( plugin ) );

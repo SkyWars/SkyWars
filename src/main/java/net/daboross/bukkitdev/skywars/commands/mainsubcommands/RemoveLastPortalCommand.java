@@ -1,0 +1,51 @@
+/*
+ * Copyright (C) 2013 Dabo Ross <http://www.daboross.net/>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
+
+import java.util.List;
+import net.daboross.bukkitdev.commandexecutorbase.ColorList;
+import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
+import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
+import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
+import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+
+public class RemoveLastPortalCommand extends SubCommand {
+
+    private static final String CONFIRMATION = ColorList.REG + "Removed portal at %s";
+    private static final String ERROR = ColorList.ERR + "No portals are set";
+    private final SkyWars plugin;
+
+    public RemoveLastPortalCommand( SkyWars plugin ) {
+        super( "dellobby", false, "skywars.setlobby", "Removes the last set portal" );
+        this.addCommandFilter( new ArgumentFilter( ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!" ) );
+        this.plugin = plugin;
+    }
+
+    @Override
+    public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
+        List<SkyBlockLocation> portals = plugin.getLocationStore().getPortals();
+        if ( portals.isEmpty() ) {
+            sender.sendMessage( ERROR );
+        } else {
+            SkyBlockLocation portal = portals.remove( portals.size() - 1 );
+            sender.sendMessage( String.format( CONFIRMATION, portal ) );
+        }
+    }
+}
