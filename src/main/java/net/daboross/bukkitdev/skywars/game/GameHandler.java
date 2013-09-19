@@ -37,7 +37,7 @@ public class GameHandler implements SkyGameHandler {
 
     private final SkyWarsPlugin plugin;
 
-    public GameHandler( SkyWarsPlugin plugin ) {
+    public GameHandler( @NonNull SkyWarsPlugin plugin ) {
         this.plugin = plugin;
     }
 
@@ -63,7 +63,16 @@ public class GameHandler implements SkyGameHandler {
 
     @Override
     public void removePlayerFromGame( @NonNull String playerName, boolean respawn, boolean broadcast ) {
-        playerName = playerName.toLowerCase( Locale.ENGLISH );
+        Player p = plugin.getServer().getPlayerExact( playerName );
+        if ( p == null ) {
+            throw new IllegalArgumentException( "Player " + playerName + " isn't online" );
+        }
+        this.removePlayerFromGame( p, respawn, broadcast );
+    }
+
+    @Override
+    public void removePlayerFromGame( @NonNull Player player, boolean respawn, boolean broadcast ) {
+        String playerName = player.getName().toLowerCase( Locale.ENGLISH );
         SkyCurrentGameTracker cg = plugin.getCurrentGameTracker();
         int id = cg.getGameID( playerName );
         if ( id == -1 ) {
@@ -72,7 +81,6 @@ public class GameHandler implements SkyGameHandler {
         GameIDHandler idh = plugin.getIDHandler();
         ArenaGame game = idh.getGame( id );
         game.removePlayer( playerName );
-        Player player = Bukkit.getPlayerExact( playerName );
         plugin.getDistributor().distribute( new PlayerLeaveGameInfo( id, player ) );
         if ( respawn ) {
             respawnPlayer( player );
@@ -87,13 +95,15 @@ public class GameHandler implements SkyGameHandler {
 
     @Override
     public void respawnPlayer( @NonNull String playerName ) {
-        respawnPlayer( Bukkit.getPlayer( playerName ) );
+        Player p = plugin.getServer().getPlayerExact( playerName );
+        if ( p == null ) {
+            throw new IllegalArgumentException( "Player " + playerName + " isn't online" );
+        }
+        this.respawnPlayer( p );
     }
 
-    private void respawnPlayer( Player p ) {
-        if ( p == null ) {
-            throw new IllegalArgumentException( "Player isn't online" );
-        }
+    @Override
+    public void respawnPlayer( @NonNull Player p ) {
         p.teleport( plugin.getLocationStore().getLobbyPosition().toLocation() );
         plugin.getDistributor().distribute( new PlayerRespawnAfterGameEndInfo( p ) );
     }
