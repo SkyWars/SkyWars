@@ -40,6 +40,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
  */
 public class SkyWarsConfiguration implements SkyConfiguration {
 
+    private List<SkyArenaConfig> enabledArenas;
+    private SkyFileConfig mainConfig;
     private final SkyWars plugin;
     @Getter
     private File mainConfigFile;
@@ -47,14 +49,12 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private File arenaFolder;
     @Getter
     private SkyArenaConfig parentArena;
-    private List<SkyArenaConfig> enabledArenas;
     @Getter
     private ArenaOrder arenaOrder;
     @Getter
     private String messagePrefix;
     @Getter
     private boolean inventorySaveEnabled;
-    private SkyFileConfig mainConfig;
 
     public SkyWarsConfiguration( SkyWars plugin ) throws IOException, InvalidConfigurationException {
         this.plugin = plugin;
@@ -80,12 +80,14 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             throw new StartupFailedException( "File " + arenaFolder.getAbsolutePath() + " exists but is not a directory" );
         }
 
+        // Keys.VERSION
         int version = mainConfig.getSetInt( Keys.VERSION, Defaults.VERSION );
         if ( version > 1 ) {
             throw new StartupFailedException( "Version '" + version + "' as listed under " + Keys.VERSION + " in file " + mainConfigFile.getAbsolutePath() + " is unknown." );
         }
         mainConfig.getConfig().set( Keys.VERSION, Defaults.VERSION );
 
+        // Keys.DEBUG
         SkyStatic.setDebug( mainConfig.getSetBoolean( Keys.DEBUG, Defaults.DEBUG ) );
 
         arenaOrder = ArenaOrder.getOrder( mainConfig.getSetString( Keys.ARENA_ORDER, Defaults.ARENA_ORDER.toString() ) );
@@ -93,20 +95,27 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             throw new StartupFailedException( "Invalid ArenaOrder '" + arenaOrder + "' found under " + Keys.ARENA_ORDER + " in file " + mainConfigFile.getAbsolutePath() + ". Valid values: " + Arrays.toString( ArenaOrder.values() ) );
         }
 
+        // Keys.MESSAGE_PREFIX
         messagePrefix = mainConfig.getSetString( Keys.MESSAGE_PREFIX, Defaults.MESSAGE_PREFIX );
 
-        loadParent();
+        // Keys.SAVE_INVENTORY
+        inventorySaveEnabled = mainConfig.getSetBoolean( Keys.SAVE_INVENTORY, Defaults.SAVE_INVENTORY );
 
+        // Keys.ENABLED_ARENAS
         List<String> enabledArenaNames = mainConfig.getSetStringList( Keys.ENABLED_ARENAS, Defaults.ENABLED_ARENAS );
         enabledArenas = new ArrayList<>( enabledArenaNames.size() );
         if ( enabledArenaNames.isEmpty() ) {
             throw new StartupFailedException( "No arenas enabled" );
         }
+
+        // Save
+        mainConfig.save( String.format( Headers.CONFIG ) );
+
+        // Arenas
+        loadParent();
         for ( String arenaName : enabledArenaNames ) {
             loadArena( arenaName );
         }
-
-        mainConfig.save( String.format( Headers.CONFIG ) );
     }
 
     @Override
@@ -205,6 +214,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         private static final String ARENA_ORDER = "arena-order";
         private static final String MESSAGE_PREFIX = "message-prefix";
         private static final String DEBUG = "debug";
+        private static final String SAVE_INVENTORY = "save-inventory";
     }
 
     private static class Names {
@@ -220,6 +230,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         private static final boolean DEBUG = false;
         private static final ArenaOrder ARENA_ORDER = ArenaOrder.RANDOM;
         private static final List<String> ENABLED_ARENAS = Arrays.asList( "skyblock-warriors" );
+        private static final boolean SAVE_INVENTORY = false;
     }
 
     private static class Headers {
