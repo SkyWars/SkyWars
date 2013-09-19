@@ -72,4 +72,8 @@ public class PointStorageListener {
             p.setDisplayName( String.format( plugin.getConfiguration().getChatPrefix(), backend.getScore( p.getName() ) ) + p.getName() );
         }
     }
+
+    public void save() throws IOException {
+        backend.save();
+    }
 }

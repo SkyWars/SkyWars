@@ -18,6 +18,7 @@ package net.daboross.bukkitdev.skywars.points;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Locale;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
@@ -25,6 +26,7 @@ import net.daboross.bukkitdev.skywars.api.points.PointStorageBackend;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.json.JSONWriter;
 
 public class PointStorageJSONBackend implements PointStorageBackend {
 
@@ -50,6 +52,15 @@ public class PointStorageJSONBackend implements PointStorageBackend {
             return new JSONObject( new JSONTokener( fis ) );
         } catch ( JSONException ex ) {
             throw new IOException( "JSONException loading " + saveFile.getAbsolutePath(), ex );
+        }
+    }
+
+    @Override
+    public void save() throws IOException {
+        try ( FileWriter writer = new FileWriter( saveFile ) ) {
+            scores.write( writer );
+        } catch ( IOException | JSONException ex ) {
+            throw new IOException( "Couldn't write to " + saveFile.getAbsolutePath(), ex );
         }
     }
 

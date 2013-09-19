@@ -21,6 +21,7 @@ import net.daboross.bukkitdev.skywars.commands.MainCommand;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import lombok.Getter;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -170,6 +171,11 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         if ( enabledCorrectly ) {
             locationStore.save();
             iDHandler.saveAndUnload( this );
+            try {
+                pointStorage.save();
+            } catch ( IOException ex ) {
+                getLogger().log( Level.WARNING, "Failed to save points", ex );
+            }
             getLogger().log( Level.INFO, "SkyWars disabled successfully" );
         }
     }
