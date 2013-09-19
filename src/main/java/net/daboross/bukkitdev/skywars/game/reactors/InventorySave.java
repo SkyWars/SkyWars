@@ -37,13 +37,14 @@ public class InventorySave {
     private final SkyWars skywars;
 
     public void onGameStart( GameStartInfo info ) {
-        if ( skywars.getConfiguration().isInventorySaveEnabled() ) {
-            for ( Player p : info.getPlayers() ) {
-                PlayerInventory inv = p.getInventory();
+        boolean save = skywars.getConfiguration().isInventorySaveEnabled();
+        for ( Player p : info.getPlayers() ) {
+            PlayerInventory inv = p.getInventory();
+            if ( save ) {
                 inventorySaveInfo.put( p.getName().toLowerCase( Locale.ENGLISH ), new InventorySaveInfo( inv ) );
-                inv.clear();
-                inv.setArmorContents( new ItemStack[ inv.getArmorContents().length ] );
             }
+            inv.clear();
+            inv.setArmorContents( new ItemStack[ inv.getArmorContents().length ] );
         }
     }
 
