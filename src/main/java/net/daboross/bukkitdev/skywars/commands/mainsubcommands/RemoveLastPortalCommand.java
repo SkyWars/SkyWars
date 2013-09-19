@@ -33,7 +33,7 @@ public class RemoveLastPortalCommand extends SubCommand {
     private final SkyWars plugin;
 
     public RemoveLastPortalCommand( SkyWars plugin ) {
-        super( "dellobby", false, "skywars.setlobby", "Removes the last set portal" );
+        super( "delportal", false, "skywars.delportal", "Removes the last set portal" );
         this.addCommandFilter( new ArgumentFilter( ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!" ) );
         this.plugin = plugin;
     }
