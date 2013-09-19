@@ -74,7 +74,7 @@ public class GameHandler implements SkyGameHandler {
     public void removePlayerFromGame( @NonNull Player player, boolean respawn, boolean broadcast ) {
         String playerName = player.getName().toLowerCase( Locale.ENGLISH );
         SkyCurrentGameTracker cg = plugin.getCurrentGameTracker();
-        int id = cg.getGameID( playerName );
+        final int id = cg.getGameID( playerName );
         if ( id == -1 ) {
             throw new IllegalArgumentException( "Player not in game" );
         }
@@ -89,7 +89,12 @@ public class GameHandler implements SkyGameHandler {
             Bukkit.broadcastMessage( KillBroadcaster.getMessage( player.getName(), plugin.getAttackerStorage().getKiller( playerName ), KillBroadcaster.KillReason.LEFT, game.getArena() ) );
         }
         if ( game.getAlivePlayers().size() < 2 ) {
-            endGame( id, true );
+            plugin.getServer().getScheduler().runTask( plugin, new Runnable() {
+                @Override
+                public void run() {
+                    endGame( id, true );
+                }
+            } );
         }
     }
 
