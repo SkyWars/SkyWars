@@ -50,9 +50,9 @@ public class SaveCurrentArena extends SubCommand {
 
     @Override
     public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
-        sender.sendMessage( ColorList.REG + "Adding and saving arena." );
+        sender.sendMessage( ColorList.REG + "Saving arena" );
         SkyArenaConfig config = states.getSetupState( sender.getName() ).convertToArenaConfig();
-        plugin.getConfiguration().addAndSaveArena( config );
+        plugin.getConfiguration().saveArena( config );
         sender.sendMessage( ColorList.REG + "Now saving a configuration debug - this is for testing and will be disabled in the future." );
         new GistReportRunnable( plugin, sender.getName(), GistReport.joinText( getData( config ) ) ).runMe();
     }

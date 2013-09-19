@@ -24,8 +24,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import net.daboross.bukkitdev.skywars.StartupFailedException;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 
 /**
  *
@@ -39,6 +41,16 @@ public class SkyFileConfig {
     private final Logger logger;
     @Getter
     private YamlConfiguration config;
+
+    public void saveDefault( Plugin plugin, String path ) {
+        if ( !configFile.exists() ) {
+            try {
+                plugin.saveResource( path, false );
+            } catch ( IllegalArgumentException ex ) {
+                throw new StartupFailedException( "Couldn't save resource " + path, ex );
+            }
+        }
+    }
 
     public void load() throws IOException, InvalidConfigurationException {
         File folder = configFile.getParentFile();
@@ -81,7 +93,7 @@ public class SkyFileConfig {
         }
     }
 
-    public int getOrSetInt( String path, int defaultInt ) throws InvalidConfigurationException {
+    public int getSetInt( String path, int defaultInt ) throws InvalidConfigurationException {
         if ( config.isInt( path ) ) {
             return config.getInt( path );
         } else if ( config.contains( path ) ) {
@@ -93,7 +105,7 @@ public class SkyFileConfig {
         }
     }
 
-    public boolean getOrSetBoolean( String path, boolean defaultBoolean ) throws InvalidConfigurationException {
+    public boolean getSetBoolean( String path, boolean defaultBoolean ) throws InvalidConfigurationException {
         if ( config.isBoolean( path ) ) {
             return config.getBoolean( path );
         } else if ( config.contains( path ) ) {
@@ -102,11 +114,25 @@ public class SkyFileConfig {
             logger.log( Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, defaultBoolean, configFile} );
             config.set( path, defaultBoolean );
             return defaultBoolean;
-
         }
     }
 
-    public List<String> getStringListOrSetEmpty( String path ) throws InvalidConfigurationException {
+    public String getSetString( String path, String defaultString ) throws InvalidConfigurationException {
+        Object obj = config.get( path );
+        if ( obj instanceof String ) {
+            return (String) obj;
+        } else if ( obj instanceof Integer || obj instanceof Double ) {
+            return obj.toString();
+        } else if ( obj != null ) {
+            throw new InvalidConfigurationException( "Object " + config.get( path ) + " found under " + path + " in file " + configFile.getAbsolutePath() + " is not a boolean (true/false)" );
+        } else {
+            logger.log( Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, defaultString, configFile} );
+            config.set( path, defaultString );
+            return defaultString;
+        }
+    }
+
+    public List<String> getSetStringList( String path, List<String> defaultList ) throws InvalidConfigurationException {
         if ( config.isList( path ) ) {
             List<?> unknownList = config.getList( path );
             List<String> stringList = new ArrayList<>( unknownList.size() );
@@ -123,9 +149,8 @@ public class SkyFileConfig {
         } else if ( config.contains( path ) ) {
             throw new InvalidConfigurationException( "Object " + config.get( path ) + " found under " + path + " in file " + configFile + " is not a list" );
         } else {
-            List<String> list = new ArrayList<>();
-            config.set( path, list );
-            return list;
+            config.set( path, defaultList );
+            return defaultList;
         }
     }
 }

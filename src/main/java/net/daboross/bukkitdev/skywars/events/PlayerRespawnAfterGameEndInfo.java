@@ -20,14 +20,9 @@ import lombok.Data;
 import lombok.NonNull;
 import org.bukkit.entity.Player;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 @Data
-public class PlayerLeaveGameInfo {
+public class PlayerRespawnAfterGameEndInfo {
 
-    private final int id;
     @NonNull
     private final Player player;
 }

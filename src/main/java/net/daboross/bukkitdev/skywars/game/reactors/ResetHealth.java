@@ -18,15 +18,11 @@ package net.daboross.bukkitdev.skywars.game.reactors;
 
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.events.GameStartInfo;
-import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameInfo;
+import net.daboross.bukkitdev.skywars.events.PlayerRespawnAfterGameEndInfo;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class ResetHealth {
 
     private final Plugin plugin;
@@ -40,6 +36,7 @@ public class ResetHealth {
             p.setGameMode( GameMode.SURVIVAL );
             try {
                 p.setHealth( p.getMaxHealth() );
+                p.setFallDistance( 0 );
             } catch ( NoSuchMethodError unused ) {
                 plugin.getLogger().log( Level.INFO, "Couldn't reset health. Probably due to server version being below 1.6.2. If your server is 1.5.2, please download the 1.5.2 version of the plugin." );
             }
@@ -47,16 +44,15 @@ public class ResetHealth {
         }
     }
 
-    public void onPlayerLeave( PlayerLeaveGameInfo info ) {
-        if ( info.isResetHealth() ) {
-            Player p = info.getPlayer();
-            p.setGameMode( GameMode.SURVIVAL );
-            try {
-                p.setHealth( p.getMaxHealth() );
-            } catch ( NoSuchMethodError unused ) {
-                plugin.getLogger().log( Level.INFO, "Couldn't reset health. Probably due to server version being below 1.6.2. If your server is 1.5.2, please download the 1.5.2 version of the plugin." );
-            }
-            p.setFoodLevel( 20 );
+    public void onPlayerRespawn( PlayerRespawnAfterGameEndInfo info ) {
+        Player p = info.getPlayer();
+        p.setGameMode( GameMode.SURVIVAL );
+        try {
+            p.setHealth( p.getMaxHealth() );
+            p.setFallDistance( 0 );
+        } catch ( NoSuchMethodError unused ) {
+            plugin.getLogger().log( Level.INFO, "Couldn't reset health. Probably due to server version being below 1.6.2. If your server is 1.5.2, please download the 1.5.2 version of the plugin." );
         }
+        p.setFoodLevel( 20 );
     }
 }

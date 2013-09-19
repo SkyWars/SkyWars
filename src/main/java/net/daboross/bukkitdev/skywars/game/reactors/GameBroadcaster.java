@@ -47,7 +47,7 @@ public class GameBroadcaster {
     }
 
     public void broadcastEnd( GameEndInfo info ) {
-        if ( info.shouldBroadcast() ) {
+        if ( info.isBroadcast() ) {
             final String message;
             List<Player> winners = info.getAlivePlayers();
             if ( winners.isEmpty() ) {

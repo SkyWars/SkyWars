@@ -50,6 +50,7 @@ import net.daboross.bukkitdev.skywars.world.Statics;
 import net.daboross.bukkitdev.skywars.world.WorldUnzipper;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -84,7 +85,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     private ResetHealth resetHealth;
     @Getter
     private GameEventDistributor distributor;
-    private boolean enabledCorrectly = false, enablingDone = false;
+    private boolean enabledCorrectly = false;
 
     @Override
     public void onLoad() {
@@ -98,17 +99,19 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         setupMetrics();
         try {
             startPlugin();
-            enablingDone = true;
         } catch ( Throwable ex ) {
             getLogger().log( Level.SEVERE, "Startup failed", ex );
             enabledCorrectly = false;
-            enablingDone = true;
             getServer().getPluginManager().disablePlugin( this );
         }
     }
 
     private void startPlugin() {
-        configuration = new SkyWarsConfiguration( this );
+        try {
+            configuration = new SkyWarsConfiguration( this );
+        } catch ( IOException | InvalidConfigurationException ex ) {
+            throw new StartupFailedException( "Failed to load configuration", ex );
+        }
         for ( SkyArena arena : configuration.getEnabledArenas() ) {
             if ( arena.getBoundaries().getOrigin().world.equalsIgnoreCase( Statics.BASE_WORLD_NAME ) ) {
                 new WorldUnzipper().doWorldUnzip( getLogger() );
@@ -154,19 +157,13 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
             locationStore.save();
             iDHandler.saveAndUnload( this );
             getLogger().log( Level.INFO, "SkyWars disabled successfully" );
-        } else {
-            getLogger().log( Level.INFO, "SkyWars not disabling due to not being enabled successfully." );
         }
     }
 
     @Override
     public boolean onCommand( CommandSender sender, Command cmd, String label, String[] args ) {
         if ( !enabledCorrectly ) {
-            if ( !enablingDone ) {
-                sender.sendMessage( ColorList.ERR + "Some absoultely evil error happened enabling SkyWars. Enabling isn't done." );
-            } else {
-                sender.sendMessage( ColorList.ERR + "SkyWars not enabled correctly. Check console for errors." );
-            }
+            sender.sendMessage( ColorList.ERR + "Not fully enabled." );
         } else {
             sender.sendMessage( ColorList.ERR + "SkyWars has no clue what " + cmd.getName() + " is." );
         }

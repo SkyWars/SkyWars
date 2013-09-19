@@ -14,12 +14,43 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package net.daboross.bukkitdev.skywars.game.reactors;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import lombok.RequiredArgsConstructor;
+import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.events.GameStartInfo;
+import net.daboross.bukkitdev.skywars.events.PlayerRespawnAfterGameEndInfo;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 /**
  *
  */
+@RequiredArgsConstructor
 public class InventorySave {
 
+    private final Map<String, InventorySaveInfo> inventorySaveInfo = new HashMap<>();
+    private final SkyWars skywars;
+
+    public void onGameStart( GameStartInfo info ) {
+        if ( skywars.getConfiguration().isInventorySaveEnabled() ) {
+            for ( Player p : info.getPlayers() ) {
+                PlayerInventory inv = p.getInventory();
+                inventorySaveInfo.put( p.getName().toLowerCase( Locale.ENGLISH ), new InventorySaveInfo( inv ) );
+                inv.clear();
+                inv.setArmorContents( new ItemStack[ inv.getArmorContents().length ] );
+            }
+        }
+    }
+
+    public void onPlayerRespawn( PlayerRespawnAfterGameEndInfo info ) {
+        InventorySaveInfo save = inventorySaveInfo.remove( info.getPlayer().getName().toLowerCase( Locale.ENGLISH ) );
+        if ( save != null ) {
+            save.apply( info.getPlayer().getInventory() );
+        }
+    }
 }

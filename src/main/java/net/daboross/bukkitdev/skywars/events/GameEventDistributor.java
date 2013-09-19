@@ -22,11 +22,8 @@ import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.events.GameEndEvent;
 import net.daboross.bukkitdev.skywars.api.events.GameStartEvent;
 import net.daboross.bukkitdev.skywars.api.events.LeaveGameEvent;
+import net.daboross.bukkitdev.skywars.api.events.RespawnAfterLeaveGameEvent;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class GameEventDistributor {
 
     private final SkyWarsPlugin plugin;
@@ -79,9 +76,20 @@ public class GameEventDistributor {
             // -- Normal --
             plugin.getCurrentGameTracker().onPlayerLeaveGame( info );
             plugin.getAttackerStorage().onPlayerLeaveGame( info );
-            plugin.getResetHealth().onPlayerLeave( info );
             // -- After --
             plugin.getServer().getPluginManager().callEvent( new LeaveGameEvent( plugin, info.getId(), info.getPlayer() ) );
+        } catch ( Throwable t ) {
+            plugin.getLogger().log( Level.SEVERE, "Couldn't broadcast PlayerLeaveGame", t );
+        }
+    }
+
+    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
+    public void distribute( @NonNull PlayerRespawnAfterGameEndInfo info ) {
+        try {
+            // -- Normal --
+            plugin.getResetHealth().onPlayerRespawn( info );
+            // -- After --
+            plugin.getServer().getPluginManager().callEvent( new RespawnAfterLeaveGameEvent( plugin, info.getPlayer() ) );
         } catch ( Throwable t ) {
             plugin.getLogger().log( Level.SEVERE, "Couldn't broadcast PlayerLeaveGame", t );
         }

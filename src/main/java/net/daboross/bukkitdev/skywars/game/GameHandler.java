@@ -25,13 +25,13 @@ import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
 import net.daboross.bukkitdev.skywars.events.GameEndInfo;
 import net.daboross.bukkitdev.skywars.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameInfo;
+import net.daboross.bukkitdev.skywars.events.PlayerRespawnAfterGameEndInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
  *
- * @author Dabo Ross <http://www.daboross.net/>
  */
 public class GameHandler implements SkyGameHandler {
 
@@ -55,21 +55,14 @@ public class GameHandler implements SkyGameHandler {
         GameEndInfo info = new GameEndInfo( plugin.getIDHandler().getGame( id ), broadcast );
         Location lobby = plugin.getLocationStore().getLobbyPosition().toLocation();
         for ( Player player : info.getAlivePlayers() ) {
-            plugin.getDistributor().distribute( new PlayerLeaveGameInfo( id, player, true ) );
+            plugin.getDistributor().distribute( new PlayerLeaveGameInfo( id, player ) );
             player.teleport( lobby );
         }
         plugin.getDistributor().distribute( info );
     }
 
     @Override
-    @Deprecated
-    public void removePlayerFromGame( @NonNull String playerName, boolean teleport, boolean broadcast ) {
-        this.removePlayerFromGame( playerName, teleport, broadcast, true );
-
-    }
-
-    @Override
-    public void removePlayerFromGame( @NonNull String playerName, boolean teleport, boolean broadcast, boolean resetHealth ) {
+    public void removePlayerFromGame( @NonNull String playerName, boolean respawn, boolean broadcast ) {
         playerName = playerName.toLowerCase( Locale.ENGLISH );
         SkyCurrentGameTracker cg = plugin.getCurrentGameTracker();
         int id = cg.getGameID( playerName );
@@ -80,9 +73,9 @@ public class GameHandler implements SkyGameHandler {
         ArenaGame game = idh.getGame( id );
         game.removePlayer( playerName );
         Player player = Bukkit.getPlayerExact( playerName );
-        plugin.getDistributor().distribute( new PlayerLeaveGameInfo( id, player, resetHealth ) );
-        if ( teleport ) {
-            player.teleport( plugin.getLocationStore().getLobbyPosition().toLocation() );
+        plugin.getDistributor().distribute( new PlayerLeaveGameInfo( id, player ) );
+        if ( respawn ) {
+            respawnPlayer( player );
         }
         if ( broadcast ) {
             Bukkit.broadcastMessage( KillBroadcaster.getMessage( player.getName(), plugin.getAttackerStorage().getKiller( playerName ), KillBroadcaster.KillReason.LEFT, game.getArena() ) );
@@ -90,5 +83,18 @@ public class GameHandler implements SkyGameHandler {
         if ( game.getAlivePlayers().size() < 2 ) {
             endGame( id, true );
         }
+    }
+
+    @Override
+    public void respawnPlayer( @NonNull String playerName ) {
+        respawnPlayer( Bukkit.getPlayer( playerName ) );
+    }
+
+    private void respawnPlayer( Player p ) {
+        if ( p == null ) {
+            throw new IllegalArgumentException( "Player isn't online" );
+        }
+        p.teleport( plugin.getLocationStore().getLobbyPosition().toLocation() );
+        plugin.getDistributor().distribute( new PlayerRespawnAfterGameEndInfo( p ) );
     }
 }
