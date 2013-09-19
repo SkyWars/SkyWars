@@ -55,7 +55,9 @@ public class GameEventDistributor {
             plugin.getIDHandler().onGameEnd( info );
             // -- Normal --
             plugin.getBroadcaster().broadcastEnd( info );
-            plugin.getPointStorage().onGameEnd( info );
+            if ( plugin.getPointStorage() != null ) {
+                plugin.getPointStorage().onGameEnd( info );
+            }
             // -- High --
             plugin.getWorldHandler().onGameEnd( info );
             // -- After --
@@ -92,7 +94,9 @@ public class GameEventDistributor {
     public void distribute( @NonNull PlayerKillPlayerInfo info ) {
         try {
             // -- Normal --
-            plugin.getPointStorage().onKill( info );
+            if ( plugin.getPointStorage() != null ) {
+                plugin.getPointStorage().onKill( info );
+            }
             // -- After --
             plugin.getServer().getPluginManager().callEvent( new PlayerKillPlayerEvent( plugin, info.getGameId(), info.getKillerName(), info.getKilled() ) );
         } catch ( Throwable t ) {

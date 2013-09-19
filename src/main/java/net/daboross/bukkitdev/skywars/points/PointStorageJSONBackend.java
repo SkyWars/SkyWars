@@ -26,17 +26,14 @@ import net.daboross.bukkitdev.skywars.api.points.PointStorageBackend;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-import org.json.JSONWriter;
 
 public class PointStorageJSONBackend implements PointStorageBackend {
 
     private final File saveFile;
     private final JSONObject scores;
-    private final SkyWarsPlugin plugin;
 
     public PointStorageJSONBackend( SkyWarsPlugin plugin ) throws IOException {
-        this.plugin = plugin;
-        this.saveFile = new File( plugin.getDataFolder(), "kills.json" );
+        this.saveFile = new File( plugin.getDataFolder(), "score.json" );
         this.scores = load();
     }
 

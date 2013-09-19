@@ -171,10 +171,12 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         if ( enabledCorrectly ) {
             locationStore.save();
             iDHandler.saveAndUnload( this );
-            try {
-                pointStorage.save();
-            } catch ( IOException ex ) {
-                getLogger().log( Level.WARNING, "Failed to save points", ex );
+            if ( pointStorage != null ) {
+                try {
+                    pointStorage.save();
+                } catch ( IOException ex ) {
+                    getLogger().log( Level.WARNING, "Failed to save points", ex );
+                }
             }
             getLogger().log( Level.INFO, "SkyWars disabled successfully" );
         }
