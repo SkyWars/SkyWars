@@ -38,6 +38,7 @@ import net.daboross.bukkitdev.skywars.game.GameQueue;
 import net.daboross.bukkitdev.skywars.listeners.CommandListener;
 import net.daboross.bukkitdev.skywars.listeners.DeathStorage;
 import net.daboross.bukkitdev.skywars.game.reactors.GameBroadcaster;
+import net.daboross.bukkitdev.skywars.game.reactors.InventorySave;
 import net.daboross.bukkitdev.skywars.listeners.PortalListener;
 import net.daboross.bukkitdev.skywars.listeners.QuitListener;
 import net.daboross.bukkitdev.skywars.game.reactors.ResetHealth;
@@ -85,6 +86,8 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     private ResetHealth resetHealth;
     @Getter
     private GameEventDistributor distributor;
+    @Getter
+    private InventorySave inventorySave;
     private boolean enabledCorrectly = false;
 
     @Override
@@ -120,8 +123,9 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         }
         currentGameTracker = new CurrentGames();
         iDHandler = new GameIDHandler();
-        worldHandler = new SkyWorldHandler( this );
         broadcaster = new GameBroadcaster();
+        worldHandler = new SkyWorldHandler( this );
+        inventorySave = new InventorySave( this );
         resetHealth = new ResetHealth( this );
         locationStore = new LocationStore( this );
         gameQueue = new GameQueue( this );
