@@ -32,10 +32,6 @@ public class GameEventDistributor {
         this.plugin = plugin;
     }
 
-    @SuppressWarnings(
-            {
-        "BroadCatchBlock", "TooBroadCatch"
-    })
     public void distribute( @NonNull GameStartInfo info ) {
         try {
             // -- Normal --
@@ -43,6 +39,7 @@ public class GameEventDistributor {
             plugin.getCurrentGameTracker().onGameStart( info );
             plugin.getWorldHandler().onGameStart( info );
             plugin.getResetHealth().onGameStart( info ); // Should be after WorldHandler
+            plugin.getInventorySave().onGameStart( info );
             plugin.getBroadcaster().broadcastStart( info );
             // -- After --
             plugin.getServer().getPluginManager().callEvent( new GameStartEvent( plugin, info.getGame(), info.getPlayers() ) );
@@ -51,10 +48,6 @@ public class GameEventDistributor {
         }
     }
 
-    @SuppressWarnings(
-            {
-        "BroadCatchBlock", "TooBroadCatch"
-    })
     public void distribute( @NonNull GameEndInfo info ) {
         try {
             // -- Initial --
@@ -70,7 +63,6 @@ public class GameEventDistributor {
         }
     }
 
-    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
     public void distribute( @NonNull PlayerLeaveGameInfo info ) {
         try {
             // -- Normal --
@@ -83,11 +75,11 @@ public class GameEventDistributor {
         }
     }
 
-    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
     public void distribute( @NonNull PlayerRespawnAfterGameEndInfo info ) {
         try {
             // -- Normal --
             plugin.getResetHealth().onPlayerRespawn( info );
+            plugin.getInventorySave().onPlayerRespawn( info );
             // -- After --
             plugin.getServer().getPluginManager().callEvent( new RespawnAfterLeaveGameEvent( plugin, info.getPlayer() ) );
         } catch ( Throwable t ) {
