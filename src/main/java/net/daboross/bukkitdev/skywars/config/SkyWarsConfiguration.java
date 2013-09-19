@@ -55,6 +55,16 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private String messagePrefix;
     @Getter
     private boolean inventorySaveEnabled;
+    @Getter
+    private int deathPointDiff;
+    @Getter
+    private int winPointDiff;
+    @Getter
+    private int killPointDiff;
+    @Getter
+    private boolean prefixChat;
+    @Getter
+    private String chatPrefix;
 
     public SkyWarsConfiguration( SkyWars plugin ) throws IOException, InvalidConfigurationException {
         this.plugin = plugin;
@@ -107,6 +117,13 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         if ( enabledArenaNames.isEmpty() ) {
             throw new StartupFailedException( "No arenas enabled" );
         }
+
+        // Points
+        winPointDiff = mainConfig.getSetInt( Keys.Points.WIN_DIFF, Defaults.Points.WIN_DIFF );
+        deathPointDiff = mainConfig.getSetInt( Keys.Points.DEATH_DIFF, Defaults.Points.DEATH_DIFF );
+        killPointDiff = mainConfig.getSetInt( Keys.Points.KILL_DIFF, Defaults.Points.KILL_DIFF );
+        prefixChat = mainConfig.getSetBoolean( Keys.Points.PREFIX_CHAT, Defaults.Points.PREFIX_CHAT );
+        chatPrefix = mainConfig.getSetString( Keys.Points.CHAT_PREFIX, Defaults.Points.CHAT_PREFIX );
 
         // Save
         mainConfig.save( String.format( Headers.CONFIG ) );
@@ -215,6 +232,15 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         private static final String MESSAGE_PREFIX = "message-prefix";
         private static final String DEBUG = "debug";
         private static final String SAVE_INVENTORY = "save-inventory";
+
+        private static class Points {
+
+            private static final String DEATH_DIFF = "points.death-point-diff";
+            private static final String WIN_DIFF = "points.win-point-diff";
+            private static final String KILL_DIFF = "points.kill-point-diff";
+            private static final String PREFIX_CHAT = "points.should-prefix-chat";
+            private static final String CHAT_PREFIX = "points.chat-prefix";
+        }
     }
 
     private static class Names {
@@ -231,6 +257,15 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         private static final ArenaOrder ARENA_ORDER = ArenaOrder.RANDOM;
         private static final List<String> ENABLED_ARENAS = Arrays.asList( "skyblock-warriors" );
         private static final boolean SAVE_INVENTORY = false;
+
+        private static class Points {
+
+            private static final int DEATH_DIFF = -2;
+            private static final int WIN_DIFF = 7;
+            private static final int KILL_DIFF = 1;
+            private static final boolean PREFIX_CHAT = true;
+            private static final String CHAT_PREFIX = "&8(&4%points%&8)&1";
+        }
     }
 
     private static class Headers {
@@ -240,6 +275,11 @@ public class SkyWarsConfiguration implements SkyConfiguration {
                 + "config-version should NOT be touched.%n"
                 + "There _must_ be a <name>.yml file in arenas/ for every enabled arena.%n"
                 + "arena-order can be RANDOM or ORDERED.%n"
+                + "version should not be touched%n"
+                + "debug can be true or false%n"
+                + "message prefix is a prefix for all messages%n"
+                + "save inventories is whether or not to save inventories%n"
+                + "points are self explanatory%n"
                 + "%n"
                 + "All comment changes will be removed.%n"
                 + "%n"
