@@ -30,6 +30,7 @@ import net.daboross.bukkitdev.skywars.StartupFailedException;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -55,6 +56,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private String messagePrefix;
     @Getter
     private boolean inventorySaveEnabled;
+    @Getter
+    private boolean enablePoints;
     @Getter
     private int deathPointDiff;
     @Getter
@@ -119,12 +122,14 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         }
 
         // Points
-        winPointDiff = mainConfig.getSetInt( Keys.Points.WIN_DIFF, Defaults.Points.WIN_DIFF );
-        deathPointDiff = mainConfig.getSetInt( Keys.Points.DEATH_DIFF, Defaults.Points.DEATH_DIFF );
-        killPointDiff = mainConfig.getSetInt( Keys.Points.KILL_DIFF, Defaults.Points.KILL_DIFF );
-        prefixChat = mainConfig.getSetBoolean( Keys.Points.PREFIX_CHAT, Defaults.Points.PREFIX_CHAT );
-        chatPrefix = mainConfig.getSetString( Keys.Points.CHAT_PREFIX, Defaults.Points.CHAT_PREFIX );
-
+        enablePoints = mainConfig.getSetBoolean( Keys.Points.ENABLE, Defaults.Points.ENABLE );
+        if ( enablePoints ) {
+            winPointDiff = mainConfig.getSetInt( Keys.Points.WIN_DIFF, Defaults.Points.WIN_DIFF );
+            deathPointDiff = mainConfig.getSetInt( Keys.Points.DEATH_DIFF, Defaults.Points.DEATH_DIFF );
+            killPointDiff = mainConfig.getSetInt( Keys.Points.KILL_DIFF, Defaults.Points.KILL_DIFF );
+            prefixChat = mainConfig.getSetBoolean( Keys.Points.PREFIX_CHAT, Defaults.Points.PREFIX_CHAT );
+            chatPrefix = ChatColor.translateAlternateColorCodes( '&', mainConfig.getSetString( Keys.Points.CHAT_PREFIX, Defaults.Points.CHAT_PREFIX ) );
+        }
         // Save
         mainConfig.save( String.format( Headers.CONFIG ) );
 
@@ -235,6 +240,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
         private static class Points {
 
+            private static final String ENABLE = "points.enable-points";
             private static final String DEATH_DIFF = "points.death-point-diff";
             private static final String WIN_DIFF = "points.win-point-diff";
             private static final String KILL_DIFF = "points.kill-point-diff";
@@ -260,11 +266,12 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
         private static class Points {
 
+            private static final boolean ENABLE = false;
             private static final int DEATH_DIFF = -2;
             private static final int WIN_DIFF = 7;
             private static final int KILL_DIFF = 1;
             private static final boolean PREFIX_CHAT = true;
-            private static final String CHAT_PREFIX = "&8(&4%points%&8)&1";
+            private static final String CHAT_PREFIX = "&8(&4%s&8)&1";
         }
     }
 
@@ -279,7 +286,6 @@ public class SkyWarsConfiguration implements SkyConfiguration {
                 + "debug can be true or false%n"
                 + "message prefix is a prefix for all messages%n"
                 + "save inventories is whether or not to save inventories%n"
-                + "points are self explanatory%n"
                 + "%n"
                 + "All comment changes will be removed.%n"
                 + "%n"

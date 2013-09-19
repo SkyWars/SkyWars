@@ -22,6 +22,7 @@ import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.events.GameEndEvent;
 import net.daboross.bukkitdev.skywars.api.events.GameStartEvent;
 import net.daboross.bukkitdev.skywars.api.events.LeaveGameEvent;
+import net.daboross.bukkitdev.skywars.api.events.PlayerKillPlayerEvent;
 import net.daboross.bukkitdev.skywars.api.events.RespawnAfterLeaveGameEvent;
 
 public class GameEventDistributor {
@@ -54,6 +55,7 @@ public class GameEventDistributor {
             plugin.getIDHandler().onGameEnd( info );
             // -- Normal --
             plugin.getBroadcaster().broadcastEnd( info );
+            plugin.getPointStorage().onGameEnd( info );
             // -- High --
             plugin.getWorldHandler().onGameEnd( info );
             // -- After --
@@ -83,7 +85,18 @@ public class GameEventDistributor {
             // -- After --
             plugin.getServer().getPluginManager().callEvent( new RespawnAfterLeaveGameEvent( plugin, info.getPlayer() ) );
         } catch ( Throwable t ) {
-            plugin.getLogger().log( Level.SEVERE, "Couldn't broadcast PlayerLeaveGame", t );
+            plugin.getLogger().log( Level.SEVERE, "Couldn't broadcast PlayerRespawnAfterGameEnd", t );
+        }
+    }
+
+    public void distribute( @NonNull PlayerKillPlayerInfo info ) {
+        try {
+            // -- Normal --
+            plugin.getPointStorage().onKill( info );
+            // -- After --
+            plugin.getServer().getPluginManager().callEvent( new PlayerKillPlayerEvent( plugin, info.getGameId(), info.getKillerName(), info.getKilled() ) );
+        } catch ( Throwable t ) {
+            plugin.getLogger().log( Level.SEVERE, "Couldn't broadcast PlayerKillPlayer", t );
         }
     }
 }

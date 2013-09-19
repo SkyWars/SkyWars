@@ -45,6 +45,7 @@ import net.daboross.bukkitdev.skywars.game.reactors.ResetHealth;
 import net.daboross.bukkitdev.skywars.listeners.BuildingLimiter;
 import net.daboross.bukkitdev.skywars.listeners.MobSpawnDisable;
 import net.daboross.bukkitdev.skywars.listeners.SpawnListener;
+import net.daboross.bukkitdev.skywars.points.PointStorageListener;
 import net.daboross.bukkitdev.skywars.storage.LocationStore;
 import net.daboross.bukkitdev.skywars.world.SkyWorldHandler;
 import net.daboross.bukkitdev.skywars.world.Statics;
@@ -88,6 +89,8 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     private GameEventDistributor distributor;
     @Getter
     private InventorySave inventorySave;
+    @Getter
+    private PointStorageListener pointStorage;
     private boolean enabledCorrectly = false;
 
     @Override
@@ -132,6 +135,13 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         gameHandler = new GameHandler( this );
         attackerStorage = new DeathStorage( this );
         distributor = new GameEventDistributor( this );
+        if ( configuration.isEnablePoints() ) {
+            try {
+                pointStorage = new PointStorageListener( this );
+            } catch ( IOException ex ) {
+                throw new StartupFailedException( "Couldn't load PointStorage", ex );
+            }
+        }
         new BukkitRunnable() {
             @Override
             public void run() {
