@@ -262,15 +262,15 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         private static final boolean DEBUG = false;
         private static final ArenaOrder ARENA_ORDER = ArenaOrder.RANDOM;
         private static final List<String> ENABLED_ARENAS = Arrays.asList( "skyblock-warriors" );
-        private static final boolean SAVE_INVENTORY = false;
+        private static final boolean SAVE_INVENTORY = true;
 
         private static class Points {
 
-            private static final boolean ENABLE = false;
+            private static final boolean ENABLE = true;
             private static final int DEATH_DIFF = -2;
             private static final int WIN_DIFF = 7;
             private static final int KILL_DIFF = 1;
-            private static final boolean PREFIX_CHAT = true;
+            private static final boolean PREFIX_CHAT = false;
             private static final String CHAT_PREFIX = "&8(&4%s&8)&1";
         }
     }
