@@ -44,8 +44,9 @@ import net.daboross.bukkitdev.skywars.listeners.QuitListener;
 import net.daboross.bukkitdev.skywars.game.reactors.ResetHealth;
 import net.daboross.bukkitdev.skywars.listeners.BuildingLimiter;
 import net.daboross.bukkitdev.skywars.listeners.MobSpawnDisable;
+import net.daboross.bukkitdev.skywars.listeners.PointStorageChatListener;
 import net.daboross.bukkitdev.skywars.listeners.SpawnListener;
-import net.daboross.bukkitdev.skywars.points.PointStorageListener;
+import net.daboross.bukkitdev.skywars.points.PointStorage;
 import net.daboross.bukkitdev.skywars.storage.LocationStore;
 import net.daboross.bukkitdev.skywars.world.SkyWorldHandler;
 import net.daboross.bukkitdev.skywars.world.Statics;
@@ -89,7 +90,9 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     @Getter
     private InventorySave inventorySave;
     @Getter
-    private PointStorageListener points;
+    private PointStorage points;
+    @Getter
+    private PointStorageChatListener chatListener;
     private boolean enabledCorrectly = false;
 
     @Override
@@ -134,7 +137,8 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         attackerStorage = new DeathStorage( this );
         distributor = new GameEventDistributor( this );
         if ( configuration.isEnablePoints() ) {
-            points = new PointStorageListener( this );
+            points = new PointStorage( this );
+            chatListener = new PointStorageChatListener( this );
         }
         new BukkitRunnable() {
             @Override
@@ -149,13 +153,15 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         registerListeners( pm, new SpawnListener(), attackerStorage,
                 new QuitListener( this ), new PortalListener( this ),
                 new CommandListener( this ), new BuildingLimiter( this ),
-                new MobSpawnDisable() );
+                new MobSpawnDisable(), chatListener );
         enabledCorrectly = true;
     }
 
     private void registerListeners( PluginManager pm, Listener... listeners ) {
         for ( Listener l : listeners ) {
-            pm.registerEvents( l, this );
+            if ( l != null ) {
+                pm.registerEvents( l, this );
+            }
         }
     }
 
