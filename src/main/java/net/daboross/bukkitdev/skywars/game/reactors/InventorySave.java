@@ -49,9 +49,12 @@ public class InventorySave {
     }
 
     public void onPlayerRespawn( PlayerRespawnAfterGameEndInfo info ) {
+        PlayerInventory inv = info.getPlayer().getInventory();
+        inv.clear();
+        inv.setArmorContents( new ItemStack[ inv.getArmorContents().length ] );
         InventorySaveInfo save = inventorySaveInfo.remove( info.getPlayer().getName().toLowerCase( Locale.ENGLISH ) );
         if ( save != null ) {
-            save.apply( info.getPlayer().getInventory() );
+            save.apply( inv );
         }
     }
 }
