@@ -3,7 +3,7 @@
 
     <groupId>net.daboross.bukkitdev</groupId>
     <artifactId>skywars</artifactId>
-    <version>1.3.0</version>
+    <version>1.3.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>SkyWars</name>
@@ -30,7 +30,7 @@
         <url>https://github.com/daboross/SkyWars.git</url>
         <connection>scm:git:https://github.com/daboross/SkyWars.git</connection>
         <developerConnection>scm:git:git@github.com:daboross/SkyWars.git</developerConnection>
-        <tag>skywars-1.3.0</tag>
+        <tag>HEAD</tag>
     </scm>
     <properties>
         <build.number>unknown</build.number>
@@ -64,7 +64,7 @@
         <dependency>
             <groupId>net.daboross.bukkitdev</groupId>
             <artifactId>skywars-api</artifactId>
-            <version>1.3.0</version>
+            <version>1.3.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
