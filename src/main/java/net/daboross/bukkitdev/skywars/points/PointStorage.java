@@ -30,13 +30,13 @@ import net.daboross.bukkitdev.skywars.events.PlayerDeathInArenaInfo;
 import net.daboross.bukkitdev.skywars.events.PlayerKillPlayerInfo;
 import org.bukkit.entity.Player;
 
-public class PointStorageListener extends SkyPoints {
+public class PointStorage extends SkyPoints {
 
     private final SkyWarsPlugin plugin;
     private final PointStorageBackend backend;
 
     @SuppressWarnings("UseSpecificCatch")
-    public PointStorageListener( SkyWarsPlugin plugin ) {
+    public PointStorage( SkyWarsPlugin plugin ) {
         this.plugin = plugin;
         Class<? extends PointStorageBackend> backendClass = getBackend();
         if ( backendClass == null ) {
@@ -69,16 +69,16 @@ public class PointStorageListener extends SkyPoints {
     }
 
     @Override
-    public void addScore( String name, int diff ) {
+    public synchronized void addScore( String name, int diff ) {
         backend.addScore( name, diff );
     }
 
     @Override
-    public int getScore( String name ) {
+    public synchronized int getScore( String name ) {
         return backend.getScore( name );
     }
 
-    public void save() throws IOException {
+    public synchronized void save() throws IOException {
         backend.save();
     }
 }
