@@ -16,7 +16,6 @@
  */
 package net.daboross.bukkitdev.skywars.listeners;
 
-import java.util.regex.Matcher;
 import lombok.RequiredArgsConstructor;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.points.SkyPoints;
@@ -28,7 +27,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 @RequiredArgsConstructor
 public class PointStorageChatListener implements Listener {
 
-    private static final String REPLACEMENT = "(?i)" + Matcher.quoteReplacement( "{skywars.userpoints}" );
+    private static final String REPLACEMENT = "(?i)\\{skywars\\.userpoints\\}";
     private final SkyWars plugin;
 
     @EventHandler(priority = EventPriority.HIGH)
