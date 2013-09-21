@@ -64,10 +64,6 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private int winPointDiff;
     @Getter
     private int killPointDiff;
-    @Getter
-    private boolean prefixChat;
-    @Getter
-    private String chatPrefix;
 
     public SkyWarsConfiguration( SkyWars plugin ) throws IOException, InvalidConfigurationException {
         this.plugin = plugin;
@@ -127,9 +123,9 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             winPointDiff = mainConfig.getSetInt( Keys.Points.WIN_DIFF, Defaults.Points.WIN_DIFF );
             deathPointDiff = mainConfig.getSetInt( Keys.Points.DEATH_DIFF, Defaults.Points.DEATH_DIFF );
             killPointDiff = mainConfig.getSetInt( Keys.Points.KILL_DIFF, Defaults.Points.KILL_DIFF );
-            prefixChat = mainConfig.getSetBoolean( Keys.Points.PREFIX_CHAT, Defaults.Points.PREFIX_CHAT );
-            chatPrefix = ChatColor.translateAlternateColorCodes( '&', mainConfig.getSetString( Keys.Points.CHAT_PREFIX, Defaults.Points.CHAT_PREFIX ) );
         }
+        // Remove deprecated values
+        mainConfig.removeValues( Keys.Deprecated.CHAT_PREFIX, Keys.Deprecated.PREFIX_CHAT );
         // Save
         mainConfig.save( String.format( Headers.CONFIG ) );
 
@@ -244,6 +240,10 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             private static final String DEATH_DIFF = "points.death-point-diff";
             private static final String WIN_DIFF = "points.win-point-diff";
             private static final String KILL_DIFF = "points.kill-point-diff";
+        }
+
+        private static class Deprecated {
+
             private static final String PREFIX_CHAT = "points.should-prefix-chat";
             private static final String CHAT_PREFIX = "points.chat-prefix";
         }

@@ -149,8 +149,22 @@ public class SkyFileConfig {
         } else if ( config.contains( path ) ) {
             throw new InvalidConfigurationException( "Object " + config.get( path ) + " found under " + path + " in file " + configFile + " is not a list" );
         } else {
+            logger.log( Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, "an empty list", configFile} );
             config.set( path, defaultList );
             return defaultList;
+        }
+    }
+
+    public void removeValues( String... paths ) {
+        for ( String path : paths ) {
+            removeValue( path );
+        }
+    }
+
+    public void removeValue( String path ) {
+        if ( config.contains( path ) ) {
+            logger.log( Level.INFO, "Removing value {0} in file {1}", new Object[]{path, configFile} );
+            config.set( path, null );
         }
     }
 }
