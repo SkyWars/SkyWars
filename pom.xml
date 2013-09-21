@@ -56,12 +56,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.mcstats.bukkit</groupId>
-            <artifactId>metrics-lite</artifactId>
-            <version>R7</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>net.daboross.bukkitdev</groupId>
             <artifactId>command-executor-base</artifactId>
             <version>1.5.2</version>

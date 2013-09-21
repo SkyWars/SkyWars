@@ -21,7 +21,6 @@ import net.daboross.bukkitdev.skywars.commands.MainCommand;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import lombok.Getter;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -58,7 +57,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.mcstats.MetricsLite;
 
 /**
  *
@@ -103,7 +101,6 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
 
     @Override
     public void onEnable() {
-        setupMetrics();
         try {
             startPlugin();
         } catch ( Throwable ex ) {
@@ -190,17 +187,6 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
             sender.sendMessage( ColorList.ERR + "SkyWars has no clue what " + cmd.getName() + " is." );
         }
         return true;
-    }
-
-    private void setupMetrics() {
-        MetricsLite metrics;
-        try {
-            metrics = new MetricsLite( this );
-        } catch ( IOException ex ) {
-            getLogger().log( Level.WARNING, "Unable to create metrics: {0}", ex.toString() );
-            return;
-        }
-        metrics.start();
     }
 
     private void setupCommand() {
