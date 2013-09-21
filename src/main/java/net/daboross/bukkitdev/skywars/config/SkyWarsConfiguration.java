@@ -270,8 +270,6 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             private static final int DEATH_DIFF = -2;
             private static final int WIN_DIFF = 7;
             private static final int KILL_DIFF = 1;
-            private static final boolean PREFIX_CHAT = false;
-            private static final String CHAT_PREFIX = "&8(&4%s&8)&1";
         }
     }
 
@@ -279,50 +277,33 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
         private static final String CONFIG =
                 "####### config.yml #######%n"
-                + "config-version should NOT be touched.%n"
-                + "There _must_ be a <name>.yml file in arenas/ for every enabled arena.%n"
-                + "arena-order can be RANDOM or ORDERED.%n"
-                + "version should not be touched%n"
-                + "debug can be true or false%n"
-                + "message prefix is a prefix for all messages%n"
-                + "save inventories is whether or not to save inventories%n"
                 + "%n"
                 + "All comment changes will be removed.%n"
                 + "%n"
-                + "Extensive documentation COMING SOON. Will be available at%n"
-                + " https://github.com/daboross/SkyWars/wiki when created.%n"
+                + "For documentation, please visit %n"
+                + "https://github.com/daboross/SkyWars/wiki/Configuration%n"
                 + "#########";
         private static final String ARENA =
                 "####### %s.yml ###%n"
                 + "This is the Skyblock Warriors arena config.%n"
-                + "As you can see 'messages:' isn't listed.%n"
-                + "You can add arena-specific messages by adding a 'messages:'%n"
-                + "section mirroring the one in arena-parent.yml.%n"
-                + "Otherwise all messages are inherited from arena-parent.yml%n"
                 + "%n"
                 + "All values that are not in this configuration will be inherited from%n"
                 + " arena-parent.yml%n"
                 + "%n"
-                + "All arena configs should have the config-version as 0. This will allow them to%n"
-                + "be updated whenever any of the values change.%n"
-                + "%n"
                 + "All comment changes will be removed.%n"
                 + "%n"
-                + "Extensive documentation COMING SOON. Will be available at%n"
-                + " https://github.com/daboross/SkyWars/wiki when created.%n"
+                + "For documentation, please visit %n"
+                + "https://github.com/daboross/SkyWars/wiki/Configuration%n"
                 + "#######";
         private static final String PARENT =
                 "####### arena-parent.yml ###%n"
                 + "Any settings that an individual arena config leaves out will be inherited%n"
                 + " from this arena config.%n"
-                + "All of the options must be defined here in order for configuration to work%n"
-                + " correctly when the messages are left out of a child config.%n"
-                + "Messages section can use both & color codes and # color codes.%n"
                 + "%n"
                 + "All comment changes will be removed.%n"
                 + "%n"
-                + "Extensive documentation COMING SOON. Will be available at%n"
-                + " https://github.com/daboross/SkyWars/wiki when created.%n"
+                + "For documentation, please visit %n"
+                + "https://github.com/daboross/SkyWars/wiki/Configuration%n"
                 + "#######";
     }
 }
