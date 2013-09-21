@@ -25,6 +25,7 @@ import net.daboross.bukkitdev.skywars.Messages;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.game.SkyAttackerStorage;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
+import net.daboross.bukkitdev.skywars.events.PlayerDeathInArenaInfo;
 import net.daboross.bukkitdev.skywars.events.PlayerKillPlayerInfo;
 import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameInfo;
 import net.daboross.bukkitdev.skywars.game.KillBroadcaster;
@@ -114,6 +115,7 @@ public class DeathStorage implements Listener, SkyAttackerStorage {
         SkyGame game = plugin.getIDHandler().getGame( plugin.getCurrentGameTracker().getGameID( name ) );
         if ( game != null ) {
             String killer = lastHit.get( name.toLowerCase( Locale.ENGLISH ) );
+            plugin.getDistributor().distribute( new PlayerDeathInArenaInfo( game.getId(), evt.getEntity() ) );
             if ( killer != null ) {
                 plugin.getDistributor().distribute( new PlayerKillPlayerInfo( game.getId(), killer, evt.getEntity() ) );
             }

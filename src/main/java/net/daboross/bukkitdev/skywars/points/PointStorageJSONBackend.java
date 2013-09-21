@@ -21,18 +21,19 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Locale;
-import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.points.PointStorageBackend;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-public class PointStorageJSONBackend implements PointStorageBackend {
+public class PointStorageJSONBackend extends PointStorageBackend {
 
     private final File saveFile;
     private final JSONObject scores;
 
-    public PointStorageJSONBackend( SkyWarsPlugin plugin ) throws IOException {
+    public PointStorageJSONBackend( SkyWars plugin ) throws IOException {
+        super( plugin );
         this.saveFile = new File( plugin.getDataFolder(), "score.json" );
         this.scores = load();
     }

@@ -19,10 +19,12 @@ package net.daboross.bukkitdev.skywars.events;
 import java.util.logging.Level;
 import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
+import net.daboross.bukkitdev.skywars.api.events.ArenaPlayerDeathEvent;
 import net.daboross.bukkitdev.skywars.api.events.GameEndEvent;
 import net.daboross.bukkitdev.skywars.api.events.GameStartEvent;
 import net.daboross.bukkitdev.skywars.api.events.LeaveGameEvent;
-import net.daboross.bukkitdev.skywars.api.events.PlayerKillPlayerEvent;
+import net.daboross.bukkitdev.skywars.api.events.ArenaPlayerKillPlayerEvent;
 import net.daboross.bukkitdev.skywars.api.events.RespawnAfterLeaveGameEvent;
 
 public class GameEventDistributor {
@@ -45,7 +47,7 @@ public class GameEventDistributor {
             // -- After --
             plugin.getServer().getPluginManager().callEvent( new GameStartEvent( plugin, info.getGame(), info.getPlayers() ) );
         } catch ( Throwable t ) {
-            plugin.getLogger().log( Level.SEVERE, "Couldn't broadcast GameStart", t );
+            plugin.getLogger().log( Level.SEVERE, "Couldn't broadcast GameStart. Version is " + SkyStatic.getImplementationVersion(), t );
         }
     }
 
@@ -55,15 +57,15 @@ public class GameEventDistributor {
             plugin.getIDHandler().onGameEnd( info );
             // -- Normal --
             plugin.getBroadcaster().broadcastEnd( info );
-            if ( plugin.getPointStorage() != null ) {
-                plugin.getPointStorage().onGameEnd( info );
+            if ( plugin.getPoints() != null ) {
+                plugin.getPoints().onGameEnd( info );
             }
             // -- High --
             plugin.getWorldHandler().onGameEnd( info );
             // -- After --
             plugin.getServer().getPluginManager().callEvent( new GameEndEvent( plugin, info.getGame(), info.getAlivePlayers() ) );
         } catch ( Throwable t ) {
-            plugin.getLogger().log( Level.SEVERE, "Couldn't broadcast GameEnd", t );
+            plugin.getLogger().log( Level.SEVERE, "Couldn't broadcast GameEnd. Version is " + SkyStatic.getImplementationVersion(), t );
         }
     }
 
@@ -75,7 +77,7 @@ public class GameEventDistributor {
             // -- After --
             plugin.getServer().getPluginManager().callEvent( new LeaveGameEvent( plugin, info.getId(), info.getPlayer() ) );
         } catch ( Throwable t ) {
-            plugin.getLogger().log( Level.SEVERE, "Couldn't broadcast PlayerLeaveGame", t );
+            plugin.getLogger().log( Level.SEVERE, "Couldn't broadcast PlayerLeaveGame. Version is " + SkyStatic.getImplementationVersion(), t );
         }
     }
 
@@ -87,20 +89,33 @@ public class GameEventDistributor {
             // -- After --
             plugin.getServer().getPluginManager().callEvent( new RespawnAfterLeaveGameEvent( plugin, info.getPlayer() ) );
         } catch ( Throwable t ) {
-            plugin.getLogger().log( Level.SEVERE, "Couldn't broadcast PlayerRespawnAfterGameEnd", t );
+            plugin.getLogger().log( Level.SEVERE, "Couldn't broadcast PlayerRespawnAfterGameEnd. Version is " + SkyStatic.getImplementationVersion(), t );
         }
     }
 
     public void distribute( @NonNull PlayerKillPlayerInfo info ) {
         try {
             // -- Normal --
-            if ( plugin.getPointStorage() != null ) {
-                plugin.getPointStorage().onKill( info );
+            if ( plugin.getPoints() != null ) {
+                plugin.getPoints().onKill( info );
             }
             // -- After --
-            plugin.getServer().getPluginManager().callEvent( new PlayerKillPlayerEvent( plugin, info.getGameId(), info.getKillerName(), info.getKilled() ) );
+            plugin.getServer().getPluginManager().callEvent( new ArenaPlayerKillPlayerEvent( plugin, info.getGameId(), info.getKillerName(), info.getKilled() ) );
         } catch ( Throwable t ) {
-            plugin.getLogger().log( Level.SEVERE, "Couldn't broadcast PlayerKillPlayer", t );
+            plugin.getLogger().log( Level.SEVERE, "Couldn't broadcast PlayerKillPlayer. Version is " + SkyStatic.getImplementationVersion(), t );
+        }
+    }
+
+    public void distribute( @NonNull PlayerDeathInArenaInfo info ) {
+        try {
+            // -- Normal --
+            if ( plugin.getPoints() != null ) {
+                plugin.getPoints().onDeath( info );
+            }
+            // -- After --
+            plugin.getServer().getPluginManager().callEvent( new ArenaPlayerDeathEvent( plugin, info.getGameId(), info.getKilled() ) );
+        } catch ( Throwable t ) {
+            plugin.getLogger().log( Level.SEVERE, "Couldn't broadcast PlayerKillPlayer. Version is " + SkyStatic.getImplementationVersion(), t );
         }
     }
 }

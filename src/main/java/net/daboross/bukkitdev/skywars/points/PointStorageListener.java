@@ -17,60 +17,65 @@
 package net.daboross.bukkitdev.skywars.points;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.List;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import net.daboross.bukkitdev.skywars.StartupFailedException;
+import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
+import net.daboross.bukkitdev.skywars.api.points.SkyPoints;
 import net.daboross.bukkitdev.skywars.api.points.PointStorageBackend;
 import net.daboross.bukkitdev.skywars.events.GameEndInfo;
+import net.daboross.bukkitdev.skywars.events.PlayerDeathInArenaInfo;
 import net.daboross.bukkitdev.skywars.events.PlayerKillPlayerInfo;
 import org.bukkit.entity.Player;
 
-public class PointStorageListener {
+public class PointStorageListener extends SkyPoints {
 
     private final SkyWarsPlugin plugin;
     private final PointStorageBackend backend;
 
-    public PointStorageListener( SkyWarsPlugin plugin ) throws IOException {
+    @SuppressWarnings("UseSpecificCatch")
+    public PointStorageListener( SkyWarsPlugin plugin ) {
         this.plugin = plugin;
-        this.backend = new PointStorageJSONBackend( plugin );
-        // TODO Make backend configurable
+        Class<? extends PointStorageBackend> backendClass = getBackend();
+        if ( backendClass == null ) {
+            backendClass = PointStorageJSONBackend.class;
+        }
+        try {
+            Constructor<? extends PointStorageBackend> constructor = backendClass.getConstructor( SkyWars.class );
+            this.backend = constructor.newInstance( plugin );
+        } catch ( Exception ex ) {
+            throw new StartupFailedException( "Unable to initialize storage backend", ex );
+        }
     }
 
     public void onKill( PlayerKillPlayerInfo info ) {
         SkyConfiguration config = plugin.getConfiguration();
-        addScoreOnline( info.getKilled(), config.getDeathPointDiff() );
-        addScorePossiblyOnline( info.getKillerName(), config.getKillPointDiff() );
+        addScore( info.getKillerName(), config.getKillPointDiff() );
+    }
+
+    public void onDeath( PlayerDeathInArenaInfo info ) {
+        SkyConfiguration config = plugin.getConfiguration();
+        addScore( info.getKilled().getName(), config.getDeathPointDiff() );
     }
 
     public void onGameEnd( GameEndInfo info ) {
         SkyConfiguration config = plugin.getConfiguration();
         List<Player> alive = info.getAlivePlayers();
         if ( alive.size() == 1 ) {
-            addScoreOnline( alive.get( 0 ), config.getWinPointDiff() );
+            addScore( alive.get( 0 ).getName(), config.getWinPointDiff() );
         }
     }
 
-    public void addScoreOffline( String name, int diff ) {
+    @Override
+    public void addScore( String name, int diff ) {
         backend.addScore( name, diff );
     }
 
-    public void addScorePossiblyOnline( String name, int diff ) {
-        Player p = plugin.getServer().getPlayerExact( name );
-        addScoreOffline( name, diff );
-        if ( p != null ) {
-            updateScore( p );
-        }
-    }
-
-    public void addScoreOnline( Player p, int diff ) {
-        addScoreOffline( p.getName(), diff );
-        updateScore( p );
-    }
-
-    private void updateScore( Player p ) {
-        if ( plugin.getConfiguration().isPrefixChat() ) {
-            p.setDisplayName( String.format( plugin.getConfiguration().getChatPrefix(), backend.getScore( p.getName() ) ) + p.getName() );
-        }
+    @Override
+    public int getScore( String name ) {
+        return backend.getScore( name );
     }
 
     public void save() throws IOException {

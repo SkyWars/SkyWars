@@ -89,7 +89,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     @Getter
     private InventorySave inventorySave;
     @Getter
-    private PointStorageListener pointStorage;
+    private PointStorageListener points;
     private boolean enabledCorrectly = false;
 
     @Override
@@ -134,11 +134,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         attackerStorage = new DeathStorage( this );
         distributor = new GameEventDistributor( this );
         if ( configuration.isEnablePoints() ) {
-            try {
-                pointStorage = new PointStorageListener( this );
-            } catch ( IOException ex ) {
-                throw new StartupFailedException( "Couldn't load PointStorage", ex );
-            }
+            points = new PointStorageListener( this );
         }
         new BukkitRunnable() {
             @Override
@@ -168,9 +164,9 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         if ( enabledCorrectly ) {
             locationStore.save();
             iDHandler.saveAndUnload( this );
-            if ( pointStorage != null ) {
+            if ( points != null ) {
                 try {
-                    pointStorage.save();
+                    points.save();
                 } catch ( IOException ex ) {
                     getLogger().log( Level.WARNING, "Failed to save points", ex );
                 }
