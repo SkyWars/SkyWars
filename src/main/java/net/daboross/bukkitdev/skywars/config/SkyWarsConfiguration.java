@@ -30,15 +30,10 @@ import net.daboross.bukkitdev.skywars.StartupFailedException;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class SkyWarsConfiguration implements SkyConfiguration {
 
     private List<SkyArenaConfig> enabledArenas;
