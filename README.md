@@ -14,8 +14,7 @@
  * 1.5.2 servers should download SkyWars-1.5.2.jar
 * Put the downloaded jar in your plugins/ directory.
 * Restart your server. SkyWars will automatically create 2 new worlds. SkyWarsBaseWorld and SkyWarsArenaWorld.
-* Go to where you want the lobby to be and use `/sw setlobby`. The lobby must be set in order for games to be started.
-Those are the steps for basic configuration.
+* Go to where you want the lobby to be and use `/sw setlobby`. The lobby defaults to the spawn of the first world if it is not set.
 
 ### Useful links
 * [Commands and Permissions](https://github.com/daboross/SkyWars/wiki/Commands-and-Permissions)
@@ -24,16 +23,10 @@ Those are the steps for basic configuration.
 * [Development Builds - CI Server](http://ci.aemservers.net/job/SkyWars)
 * [Source Code](https://github.com/daboross/SkyWars)
 * [Portuguese Tutorial - Ligação para tutorial AbsintoJ feito](http://www.youtube.com/watch?v=hYTq39Iomz0)
-* [MCStats Statistics](http://mcstats.org/plugin/SkyWars)
-
-### Drawbacks
-Players will loose all items in their inventories when the game starts.
-
-Requires Java version 7. Will __not__ work with java 6.
 
 ### Bugs, Features, and Questions
 We use the github issue tracker for all bugs, features, and questions.
 See [submitting a ticket](https://github.com/daboross/SkyWars/wiki/Submitting-a-ticket)
 
 ### Map credit
-Full credit for the default map, Skyblock Warriors, goes to [SwipeShot](http://www.youtube.com/user/SwipeShot).
+* Full credit for the default map, Skyblock Warriors, goes to [SwipeShot](http://www.youtube.com/user/SwipeShot).
