@@ -68,6 +68,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>net.daboross.metrics.bukkit</groupId>
+            <artifactId>metrics-lite</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>net.daboross.json</groupId>
             <artifactId>json</artifactId>
             <version>1.0.0</version>
@@ -153,7 +159,7 @@
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                    <include>org.mcstats.bukkit:metrics-lite</include>
+                                    <include>net.daboross.metrics.bukkit:metrics-lite</include>
                                     <include>net.daboross.bukkitdev:command-executor-base</include>
                                     <include>net.daboross.bukkitdev:skywars-api</include>
                                     <include>net.daboross.json:json</include>
