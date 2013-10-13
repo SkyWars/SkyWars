@@ -28,6 +28,7 @@ import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.game.SkyGameHandler;
 import net.daboross.bukkitdev.skywars.api.location.SkyLocationStore;
+import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
 import net.daboross.bukkitdev.skywars.commands.SetupCommand;
 import net.daboross.bukkitdev.skywars.config.SkyWarsConfiguration;
 import net.daboross.bukkitdev.skywars.events.GameEventDistributor;
@@ -116,7 +117,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     private void startPlugin() throws StartupFailedException {
         try {
             configuration = new SkyWarsConfiguration( this );
-        } catch ( IOException | InvalidConfigurationException ex ) {
+        } catch ( IOException | InvalidConfigurationException | SkyConfigurationException ex ) {
             throw new StartupFailedException( "Failed to load configuration", ex );
         }
         for ( SkyArena arena : configuration.getEnabledArenas() ) {
