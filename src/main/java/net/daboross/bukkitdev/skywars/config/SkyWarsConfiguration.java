@@ -26,10 +26,10 @@ import java.util.List;
 import java.util.logging.Level;
 import lombok.Getter;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
-import net.daboross.bukkitdev.skywars.StartupFailedException;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
+import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -60,12 +60,12 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     @Getter
     private int killPointDiff;
 
-    public SkyWarsConfiguration( SkyWars plugin ) throws IOException, InvalidConfigurationException {
+    public SkyWarsConfiguration( SkyWars plugin ) throws IOException, InvalidConfigurationException, SkyConfigurationException {
         this.plugin = plugin;
         load();
     }
 
-    private void load() throws IOException, InvalidConfigurationException {
+    private void load() throws IOException, InvalidConfigurationException, SkyConfigurationException {
         if ( mainConfigFile == null ) {
             mainConfigFile = new File( plugin.getDataFolder(), Names.MAIN );
         }
@@ -78,16 +78,16 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         if ( !arenaFolder.exists() ) {
             boolean mkdirs = arenaFolder.mkdirs();
             if ( !mkdirs ) {
-                throw new StartupFailedException( "Making directory " + arenaFolder.getAbsolutePath() + " failed" );
+                throw new SkyConfigurationException( "Making directory " + arenaFolder.getAbsolutePath() + " failed" );
             }
         } else if ( !arenaFolder.isDirectory() ) {
-            throw new StartupFailedException( "File " + arenaFolder.getAbsolutePath() + " exists but is not a directory" );
+            throw new SkyConfigurationException( "File " + arenaFolder.getAbsolutePath() + " exists but is not a directory" );
         }
 
         // Keys.VERSION
         int version = mainConfig.getSetInt( Keys.VERSION, Defaults.VERSION );
         if ( version > 1 ) {
-            throw new StartupFailedException( "Version '" + version + "' as listed under " + Keys.VERSION + " in file " + mainConfigFile.getAbsolutePath() + " is unknown." );
+            throw new SkyConfigurationException( "Version '" + version + "' as listed under " + Keys.VERSION + " in file " + mainConfigFile.getAbsolutePath() + " is unknown." );
         }
         mainConfig.getConfig().set( Keys.VERSION, Defaults.VERSION );
 
@@ -96,7 +96,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
         arenaOrder = ArenaOrder.getOrder( mainConfig.getSetString( Keys.ARENA_ORDER, Defaults.ARENA_ORDER.toString() ) );
         if ( arenaOrder == null ) {
-            throw new StartupFailedException( "Invalid ArenaOrder '" + arenaOrder + "' found under " + Keys.ARENA_ORDER + " in file " + mainConfigFile.getAbsolutePath() + ". Valid values: " + Arrays.toString( ArenaOrder.values() ) );
+            throw new SkyConfigurationException( "Invalid ArenaOrder '" + arenaOrder + "' found under " + Keys.ARENA_ORDER + " in file " + mainConfigFile.getAbsolutePath() + ". Valid values: " + Arrays.toString( ArenaOrder.values() ) );
         }
 
         // Keys.MESSAGE_PREFIX
@@ -109,7 +109,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         List<String> enabledArenaNames = mainConfig.getSetStringList( Keys.ENABLED_ARENAS, Defaults.ENABLED_ARENAS );
         enabledArenas = new ArrayList<>( enabledArenaNames.size() );
         if ( enabledArenaNames.isEmpty() ) {
-            throw new StartupFailedException( "No arenas enabled" );
+            throw new SkyConfigurationException( "No arenas enabled" );
         }
 
         // Points
@@ -132,11 +132,11 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     }
 
     @Override
-    public void reload() throws IOException, InvalidConfigurationException {
-        load();
+    public void reload() throws IOException, InvalidConfigurationException, SkyConfigurationException {
+            load();
     }
 
-    private void loadArena( String name ) {
+    private void loadArena( String name ) throws SkyConfigurationException {
         if ( enabledArenas == null ) {
             throw new IllegalStateException( "Enabled arenas null" );
         }
@@ -146,18 +146,18 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             try {
                 plugin.saveResource( fileName, false );
             } catch ( IllegalArgumentException ex ) {
-                throw new StartupFailedException( name + " is in " + Keys.ENABLED_ARENAS + " but file " + file.getAbsolutePath() + " could not be found and file " + fileName + " could not be found in plugin jar." );
+                throw new SkyConfigurationException( name + " is in " + Keys.ENABLED_ARENAS + " but file " + file.getAbsolutePath() + " could not be found and file " + fileName + " could not be found in plugin jar." );
             }
         }
         FileConfiguration config = new YamlConfiguration();
         try {
             config.load( file );
         } catch ( FileNotFoundException ex ) {
-            throw new StartupFailedException( name + " is in " + Keys.ENABLED_ARENAS + " but file " + file.getAbsolutePath() + " could not be found", ex );
+            throw new SkyConfigurationException( name + " is in " + Keys.ENABLED_ARENAS + " but file " + file.getAbsolutePath() + " could not be found", ex );
         } catch ( IOException ex ) {
-            throw new StartupFailedException( "IOException load file " + file.getAbsolutePath(), ex );
+            throw new SkyConfigurationException( "IOException load file " + file.getAbsolutePath(), ex );
         } catch ( InvalidConfigurationException ex ) {
-            throw new StartupFailedException( "Failed to load configuration file " + file.getAbsolutePath(), ex );
+            throw new SkyConfigurationException( "Failed to load configuration file " + file.getAbsolutePath(), ex );
         }
         SkyArenaConfig arenaConfig = SkyArenaConfig.deserialize( config );
         arenaConfig.setArenaName( name );
@@ -169,25 +169,25 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         saveArena( file, arenaConfig, String.format( Headers.ARENA, name ) );
     }
 
-    private void loadParent() {
+    private void loadParent() throws SkyConfigurationException {
         File file = new File( plugin.getDataFolder(), "arena-parent.yml" );
         if ( !file.exists() ) {
             String fileName = "arena-parent.yml";
             try {
                 plugin.saveResource( fileName, false );
             } catch ( IllegalArgumentException ex ) {
-                throw new StartupFailedException( "arena-parent.yml could not be found in plugin jar.", ex );
+                throw new SkyConfigurationException( "arena-parent.yml could not be found in plugin jar.", ex );
             }
         }
         FileConfiguration config = new YamlConfiguration();
         try {
             config.load( file );
         } catch ( FileNotFoundException ex ) {
-            throw new StartupFailedException( "Can't find the parent arena yaml", ex );
+            throw new SkyConfigurationException( "Can't find the parent arena yaml", ex );
         } catch ( IOException ex ) {
-            throw new StartupFailedException( "IOException loading arena-parent " + file.getAbsolutePath(), ex );
+            throw new SkyConfigurationException( "IOException loading arena-parent " + file.getAbsolutePath(), ex );
         } catch ( InvalidConfigurationException ex ) {
-            throw new StartupFailedException( "Failed to load arena-parent.yml " + file.getAbsolutePath(), ex );
+            throw new SkyConfigurationException( "Failed to load arena-parent.yml " + file.getAbsolutePath(), ex );
         }
         SkyArenaConfig arenaConfig = SkyArenaConfig.deserialize( config );
         arenaConfig.setArenaName( "parent-arena" );

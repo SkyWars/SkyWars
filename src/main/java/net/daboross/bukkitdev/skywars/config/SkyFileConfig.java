@@ -42,7 +42,7 @@ public class SkyFileConfig {
     @Getter
     private YamlConfiguration config;
 
-    public void saveDefault( Plugin plugin, String path ) {
+    public void saveDefault( Plugin plugin, String path ) throws StartupFailedException {
         if ( !configFile.exists() ) {
             try {
                 plugin.saveResource( path, false );

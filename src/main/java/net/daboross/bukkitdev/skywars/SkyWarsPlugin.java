@@ -113,7 +113,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         }
     }
 
-    private void startPlugin() {
+    private void startPlugin() throws StartupFailedException {
         try {
             configuration = new SkyWarsConfiguration( this );
         } catch ( IOException | InvalidConfigurationException ex ) {

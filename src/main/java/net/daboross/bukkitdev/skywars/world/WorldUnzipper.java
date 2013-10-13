@@ -33,7 +33,7 @@ import net.daboross.bukkitdev.skywars.StartupFailedException;
  */
 public class WorldUnzipper {
 
-    public void doWorldUnzip( @NonNull Logger logger ) {
+    public void doWorldUnzip( @NonNull Logger logger ) throws StartupFailedException {
         File output = new File( Statics.BASE_WORLD_NAME );
         if ( output.exists() ) {
             return;

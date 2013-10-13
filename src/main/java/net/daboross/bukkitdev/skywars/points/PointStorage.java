@@ -36,7 +36,7 @@ public class PointStorage extends SkyPoints {
     private final PointStorageBackend backend;
 
     @SuppressWarnings("UseSpecificCatch")
-    public PointStorage( SkyWarsPlugin plugin ) {
+    public PointStorage( SkyWarsPlugin plugin ) throws StartupFailedException {
         this.plugin = plugin;
         Class<? extends PointStorageBackend> backendClass = getBackend();
         if ( backendClass == null ) {
