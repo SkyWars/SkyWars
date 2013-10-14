@@ -39,20 +39,20 @@ public class GameEndInfo {
     @Getter
     private final boolean broadcast;
 
-    public GameEndInfo( ArenaGame game, boolean broadcast ) {
-        if ( game == null ) {
+    public GameEndInfo(ArenaGame game, boolean broadcast) {
+        if (game == null) {
             throw new IllegalArgumentException();
         }
         this.game = game;
         this.broadcast = broadcast;
         List<String> alive = game.getAlivePlayers();
         alivePlayers = new ArrayList<>();
-        for ( int i = 0 ; i < alive.size() ; i++ ) {
-            Player p = Bukkit.getPlayer( alive.get( i ) );
-            if ( p == null ) {
+        for (int i = 0; i < alive.size(); i++) {
+            Player p = Bukkit.getPlayer(alive.get(i));
+            if (p == null) {
                 throw new IllegalArgumentException();
             }
-            alivePlayers.add( p );
+            alivePlayers.add(p);
         }
     }
 }

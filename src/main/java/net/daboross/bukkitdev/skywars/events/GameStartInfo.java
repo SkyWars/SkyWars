@@ -36,19 +36,19 @@ public class GameStartInfo {
     @Getter
     private final ArenaGame game;
 
-    public GameStartInfo( ArenaGame game ) {
-        if ( game == null ) {
+    public GameStartInfo(ArenaGame game) {
+        if (game == null) {
             throw new IllegalArgumentException();
         }
         this.game = game;
         List<String> playersList = game.getAlivePlayers();
-        this.players = new ArrayList<Player>( playersList.size() );
-        for ( int i = 0 ; i < playersList.size() ; i++ ) {
-            Player p = Bukkit.getPlayer( playersList.get( i ) );
-            if ( p == null ) {
-                throw new IllegalArgumentException( "Player " + playersList.get( i ) + " not online" );
+        this.players = new ArrayList<Player>(playersList.size());
+        for (int i = 0; i < playersList.size(); i++) {
+            Player p = Bukkit.getPlayer(playersList.get(i));
+            if (p == null) {
+                throw new IllegalArgumentException("Player " + playersList.get(i) + " not online");
             }
-            players.add( p );
+            players.add(p);
         }
     }
 }

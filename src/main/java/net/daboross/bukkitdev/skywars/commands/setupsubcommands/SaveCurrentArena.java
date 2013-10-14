@@ -37,26 +37,26 @@ public class SaveCurrentArena extends SubCommand {
     private final SkyWars plugin;
     private final SetupStates states;
 
-    public SaveCurrentArena( @NonNull SkyWars plugin, @NonNull SetupStates states ) {
-        super( "save", false, null, "Saves the current arena setup to file." );
-        BoundariesSetCondition condition = new BoundariesSetCondition( states );
-        addCommandFilter( condition );
-        addCommandPreCondition( condition );
+    public SaveCurrentArena(@NonNull SkyWars plugin, @NonNull SetupStates states) {
+        super("save", false, null, "Saves the current arena setup to file.");
+        BoundariesSetCondition condition = new BoundariesSetCondition(states);
+        addCommandFilter(condition);
+        addCommandPreCondition(condition);
         this.plugin = plugin;
         this.states = states;
     }
 
     @Override
-    public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
-        sender.sendMessage( ColorList.REG + "Saving arena" );
-        SkyArenaConfig config = states.getSetupState( sender.getName() ).convertToArenaConfig();
-        plugin.getConfiguration().saveArena( config );
-        sender.sendMessage( ColorList.REG + "Now saving a configuration debug - this is for testing and will be disabled in the future." );
-        new GistReportRunnable( plugin, sender.getName(), getData( config ) ).runMe();
+    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
+        sender.sendMessage(ColorList.REG + "Saving arena");
+        SkyArenaConfig config = states.getSetupState(sender.getName()).convertToArenaConfig();
+        plugin.getConfiguration().saveArena(config);
+        sender.sendMessage(ColorList.REG + "Now saving a configuration debug - this is for testing and will be disabled in the future.");
+        new GistReportRunnable(plugin, sender.getName(), getData(config)).runMe();
     }
 
-    private String getData( SkyArenaConfig config ) {
-        return "##" + config.getArenaName() + "\n```\n" + config.toIndentedString( 0 ) + "\n```\n";
+    private String getData(SkyArenaConfig config) {
+        return "##" + config.getArenaName() + "\n```\n" + config.toIndentedString(0) + "\n```\n";
     }
 
     private static class GistReportRunnable implements Runnable {
@@ -65,20 +65,20 @@ public class SaveCurrentArena extends SubCommand {
         private final String playerName;
         private final String text;
 
-        public GistReportRunnable( Plugin plugin, String playerName, String text ) {
+        public GistReportRunnable(Plugin plugin, String playerName, String text) {
             this.plugin = plugin;
             this.playerName = playerName;
             this.text = text;
         }
 
         public void runMe() {
-            plugin.getServer().getScheduler().runTaskAsynchronously( plugin, this );
+            plugin.getServer().getScheduler().runTaskAsynchronously(plugin, this);
         }
 
         @Override
         public void run() {
-            String url = GistReport.gistText( plugin.getLogger(), text );
-            plugin.getServer().getScheduler().runTask( plugin, new SendResult( playerName, ColorList.REG + "Debug data url: " + url ) );
+            String url = GistReport.gistText(plugin.getLogger(), text);
+            plugin.getServer().getScheduler().runTask(plugin, new SendResult(playerName, ColorList.REG + "Debug data url: " + url));
         }
 
         private static class SendResult implements Runnable {
@@ -86,16 +86,16 @@ public class SaveCurrentArena extends SubCommand {
             private final String playerName;
             private final String result;
 
-            public SendResult( String playerName, String result ) {
+            public SendResult(String playerName, String result) {
                 this.playerName = playerName;
                 this.result = result;
             }
 
             @Override
             public void run() {
-                CommandSender sender = Bukkit.getPlayer( playerName );
-                if ( sender != null ) {
-                    sender.sendMessage( result );
+                CommandSender sender = Bukkit.getPlayer(playerName);
+                if (sender != null) {
+                    sender.sendMessage(result);
                 }
             }
         }

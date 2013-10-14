@@ -34,24 +34,24 @@ public class StartedArenaCondition implements CommandPreCondition, CommandFilter
     private final boolean started;
 
     @Override
-    public boolean canContinue( CommandSender sender, SubCommand subCommand ) {
-        if ( states.getSetupState( sender.getName() ) == null == started ) {
+    public boolean canContinue(CommandSender sender, SubCommand subCommand) {
+        if (states.getSetupState(sender.getName()) == null == started) {
             return false;
         }
         return true;
     }
 
     @Override
-    public boolean canContinue( CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
-        if ( states.getSetupState( sender.getName() ) == null == started ) {
+    public boolean canContinue(CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
+        if (states.getSetupState(sender.getName()) == null == started) {
             return false;
         }
         return true;
     }
 
     @Override
-    public String[] getDeniedMessage( CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
-        if ( states.getSetupState( sender.getName() ) == null ) {
+    public String[] getDeniedMessage(CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
+        if (states.getSetupState(sender.getName()) == null) {
             return new String[]{ColorList.ERR + "You haven't started creating an arena yet"};
         } else {
             return new String[]{ColorList.ERR + "You already started creating an arena"};

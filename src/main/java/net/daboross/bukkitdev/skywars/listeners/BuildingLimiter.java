@@ -34,31 +34,31 @@ public class BuildingLimiter implements Listener {
 
     private final SkyWars plugin;
 
-    public BuildingLimiter( SkyWars plugin ) {
+    public BuildingLimiter(SkyWars plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler
-    public void onPlace( BlockPlaceEvent evt ) {
-        if ( !isValid( evt.getPlayer(), evt.getBlock() ) ) {
-            evt.setBuild( false );
-            evt.setCancelled( true );
+    public void onPlace(BlockPlaceEvent evt) {
+        if (!isValid(evt.getPlayer(), evt.getBlock())) {
+            evt.setBuild(false);
+            evt.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void onBreak( BlockBreakEvent evt ) {
-        if ( !isValid( evt.getPlayer(), evt.getBlock() ) ) {
-            evt.setCancelled( true );
+    public void onBreak(BlockBreakEvent evt) {
+        if (!isValid(evt.getPlayer(), evt.getBlock())) {
+            evt.setCancelled(true);
         }
     }
 
-    private boolean isValid( Player p, Block block ) {
-        SkyGame game = plugin.getIDHandler().getGame( plugin.getCurrentGameTracker().getGameID( p.getName() ) );
-        if ( game == null ) {
+    private boolean isValid(Player p, Block block) {
+        SkyGame game = plugin.getIDHandler().getGame(plugin.getCurrentGameTracker().getGameID(p.getName()));
+        if (game == null) {
             return true;
         }
         SkyBlockLocationRange range = game.getBuildingBoundaries();
-        return range.isWithin( block );
+        return range.isWithin(block);
     }
 }

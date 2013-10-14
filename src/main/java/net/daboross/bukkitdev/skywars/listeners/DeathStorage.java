@@ -54,100 +54,100 @@ public class DeathStorage implements Listener, SkyAttackerStorage {
     private final Set<String> causedVoid = new HashSet<>();
     private final Set<String> playersWhoDied = new HashSet<>();
 
-    public DeathStorage( SkyWarsPlugin plugin ) {
+    public DeathStorage(SkyWarsPlugin plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler
-    public void onQuit( PlayerQuitEvent evt ) {
-        String name = evt.getPlayer().getName().toLowerCase( Locale.ENGLISH );
-        lastHit.remove( name );
-        causedVoid.remove( name );
+    public void onQuit(PlayerQuitEvent evt) {
+        String name = evt.getPlayer().getName().toLowerCase(Locale.ENGLISH);
+        lastHit.remove(name);
+        causedVoid.remove(name);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onDamage( EntityDamageByEntityEvent evt ) {
-        if ( evt.getEntity() instanceof Player ) {
+    public void onDamage(EntityDamageByEntityEvent evt) {
+        if (evt.getEntity() instanceof Player) {
             Player p = (Player) evt.getEntity();
-            String name = p.getName().toLowerCase( Locale.ENGLISH );
+            String name = p.getName().toLowerCase(Locale.ENGLISH);
             Entity damager = evt.getDamager();
-            if ( damager instanceof HumanEntity ) {
-                lastHit.put( name, ( (HumanEntity) damager ).getName() );
-            } else if ( damager instanceof Projectile ) {
-                LivingEntity shooter = ( (Projectile) damager ).getShooter();
-                if ( shooter == null ) {
-                    lastHit.put( name, "Unknown Bowman" );
+            if (damager instanceof HumanEntity) {
+                lastHit.put(name, ((HumanEntity) damager).getName());
+            } else if (damager instanceof Projectile) {
+                LivingEntity shooter = ((Projectile) damager).getShooter();
+                if (shooter == null) {
+                    lastHit.put(name, "Unknown Bowman");
                 } else {
-                    if ( shooter instanceof HumanEntity ) {
-                        lastHit.put( name, ( (HumanEntity) shooter ).getName() );
+                    if (shooter instanceof HumanEntity) {
+                        lastHit.put(name, ((HumanEntity) shooter).getName());
                     } else {
                         String customName = shooter.getCustomName();
-                        lastHit.put( name, customName == null ? shooter.getType().toString() : customName );
+                        lastHit.put(name, customName == null ? shooter.getType().toString() : customName);
                     }
                 }
-            } else if ( damager instanceof LivingEntity ) {
-                String customName = ( (LivingEntity) damager ).getCustomName();
-                lastHit.put( name, customName == null ? damager.getType().toString() : customName );
+            } else if (damager instanceof LivingEntity) {
+                String customName = ((LivingEntity) damager).getCustomName();
+                lastHit.put(name, customName == null ? damager.getType().toString() : customName);
             } else {
-                lastHit.put( name, evt.getDamager().getType().toString() );
+                lastHit.put(name, evt.getDamager().getType().toString());
             }
-            if ( plugin.getCurrentGameTracker().isInGame( name ) ) {
-                evt.setCancelled( false );
+            if (plugin.getCurrentGameTracker().isInGame(name)) {
+                evt.setCancelled(false);
             }
         }
     }
 
     @EventHandler
-    public void onDamage( EntityDamageEvent evt ) {
-        if ( evt.getEntity() instanceof Player ) {
-            String name = ( (Player) evt.getEntity() ).getName().toLowerCase( Locale.ENGLISH );
-            if ( evt.getCause() == EntityDamageEvent.DamageCause.VOID ) {
-                causedVoid.add( name );
+    public void onDamage(EntityDamageEvent evt) {
+        if (evt.getEntity() instanceof Player) {
+            String name = ((Player) evt.getEntity()).getName().toLowerCase(Locale.ENGLISH);
+            if (evt.getCause() == EntityDamageEvent.DamageCause.VOID) {
+                causedVoid.add(name);
             } else {
-                causedVoid.remove( name );
+                causedVoid.remove(name);
             }
         }
     }
 
     @EventHandler
-    public void onDeath( PlayerDeathEvent evt ) {
+    public void onDeath(PlayerDeathEvent evt) {
         String name = evt.getEntity().getName();
-        SkyGame game = plugin.getIDHandler().getGame( plugin.getCurrentGameTracker().getGameID( name ) );
-        if ( game != null ) {
-            String killer = lastHit.get( name.toLowerCase( Locale.ENGLISH ) );
-            plugin.getDistributor().distribute( new PlayerDeathInArenaInfo( game.getId(), evt.getEntity() ) );
-            if ( killer != null ) {
-                plugin.getDistributor().distribute( new PlayerKillPlayerInfo( game.getId(), killer, evt.getEntity() ) );
+        SkyGame game = plugin.getIDHandler().getGame(plugin.getCurrentGameTracker().getGameID(name));
+        if (game != null) {
+            String killer = lastHit.get(name.toLowerCase(Locale.ENGLISH));
+            plugin.getDistributor().distribute(new PlayerDeathInArenaInfo(game.getId(), evt.getEntity()));
+            if (killer != null) {
+                plugin.getDistributor().distribute(new PlayerKillPlayerInfo(game.getId(), killer, evt.getEntity()));
             }
-            plugin.getGameHandler().removePlayerFromGame( evt.getEntity(), false, false );
-            evt.setDeathMessage( KillBroadcaster.getMessage( name, killer, causedVoid.contains( name.toLowerCase( Locale.ENGLISH ) ) ? KillBroadcaster.KillReason.VOID : KillBroadcaster.KillReason.OTHER, game.getArena() ) );
-            playersWhoDied.add( name.toLowerCase( Locale.ENGLISH ) );
-        } else if ( plugin.getGameQueue().inQueue( name ) ) {
-            plugin.getGameQueue().removePlayer( name );
-            evt.getEntity().sendMessage( Messages.Death.REMOVED_BECAUSE_DEATH );
+            plugin.getGameHandler().removePlayerFromGame(evt.getEntity(), false, false);
+            evt.setDeathMessage(KillBroadcaster.getMessage(name, killer, causedVoid.contains(name.toLowerCase(Locale.ENGLISH)) ? KillBroadcaster.KillReason.VOID : KillBroadcaster.KillReason.OTHER, game.getArena()));
+            playersWhoDied.add(name.toLowerCase(Locale.ENGLISH));
+        } else if (plugin.getGameQueue().inQueue(name)) {
+            plugin.getGameQueue().removePlayer(name);
+            evt.getEntity().sendMessage(Messages.Death.REMOVED_BECAUSE_DEATH);
         }
     }
 
-    public void onPlayerLeaveGame( PlayerLeaveGameInfo info ) {
-        lastHit.remove( info.getPlayer().getName().toLowerCase( Locale.ENGLISH ) );
+    public void onPlayerLeaveGame(PlayerLeaveGameInfo info) {
+        lastHit.remove(info.getPlayer().getName().toLowerCase(Locale.ENGLISH));
     }
 
     @Override
-    public String getKiller( String name ) {
-        return lastHit.get( name.toLowerCase( Locale.ENGLISH ) );
+    public String getKiller(String name) {
+        return lastHit.get(name.toLowerCase(Locale.ENGLISH));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onRespawn( PlayerRespawnEvent evt ) {
-        if ( playersWhoDied.remove( evt.getPlayer().getName().toLowerCase( Locale.ENGLISH ) ) ) {
-            evt.setRespawnLocation( plugin.getLocationStore().getLobbyPosition().toLocation() );
+    public void onRespawn(PlayerRespawnEvent evt) {
+        if (playersWhoDied.remove(evt.getPlayer().getName().toLowerCase(Locale.ENGLISH))) {
+            evt.setRespawnLocation(plugin.getLocationStore().getLobbyPosition().toLocation());
             final Player p = evt.getPlayer();
-            plugin.getServer().getScheduler().runTask( plugin, new Runnable() {
+            plugin.getServer().getScheduler().runTask(plugin, new Runnable() {
                 @Override
                 public void run() {
-                    plugin.getGameHandler().respawnPlayer( p );
+                    plugin.getGameHandler().respawnPlayer(p);
                 }
-            } );
+            });
         }
     }
 }

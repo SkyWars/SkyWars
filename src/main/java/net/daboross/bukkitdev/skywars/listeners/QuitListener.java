@@ -29,18 +29,18 @@ public class QuitListener implements Listener {
 
     private final SkyWarsPlugin plugin;
 
-    public QuitListener( SkyWarsPlugin plugin ) {
+    public QuitListener(SkyWarsPlugin plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler
-    public void onQuit( PlayerQuitEvent evt ) {
+    public void onQuit(PlayerQuitEvent evt) {
         String name = evt.getPlayer().getName();
-        if ( plugin.getCurrentGameTracker().isInGame( name ) ) {
-            plugin.getGameHandler().removePlayerFromGame( evt.getPlayer(), true, true );
+        if (plugin.getCurrentGameTracker().isInGame(name)) {
+            plugin.getGameHandler().removePlayerFromGame(evt.getPlayer(), true, true);
         }
-        if ( plugin.getGameQueue().inQueue( name ) ) {
-            plugin.getGameQueue().removePlayer( name );
+        if (plugin.getGameQueue().inQueue(name)) {
+            plugin.getGameQueue().removePlayer(name);
         }
     }
 }

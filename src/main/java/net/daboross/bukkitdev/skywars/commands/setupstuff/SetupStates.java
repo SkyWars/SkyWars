@@ -32,15 +32,15 @@ public class SetupStates {
         this.setupStates = new HashMap<>();
     }
 
-    public SetupData getSetupState( String user ) {
-        return setupStates.get( user.toLowerCase( Locale.ENGLISH ) );
+    public SetupData getSetupState(String user) {
+        return setupStates.get(user.toLowerCase(Locale.ENGLISH));
     }
 
-    public void setSetupState( String user, SetupData state ) {
-        if ( state == null ) {
-            setupStates.remove( user.toLowerCase( Locale.ENGLISH ) );
+    public void setSetupState(String user, SetupData state) {
+        if (state == null) {
+            setupStates.remove(user.toLowerCase(Locale.ENGLISH));
         } else {
-            setupStates.put( user.toLowerCase( Locale.ENGLISH ), state );
+            setupStates.put(user.toLowerCase(Locale.ENGLISH), state);
         }
     }
 }

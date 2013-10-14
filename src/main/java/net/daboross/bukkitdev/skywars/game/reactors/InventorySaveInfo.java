@@ -27,21 +27,21 @@ public class InventorySaveInfo {
     private final ItemStack[] items;
     private final ItemStack[] armor;
 
-    public InventorySaveInfo( PlayerInventory inv ) {
+    public InventorySaveInfo(PlayerInventory inv) {
         ItemStack[] contents = inv.getContents();
-        items = new ItemStack[ contents.length ];
+        items = new ItemStack[contents.length];
         ItemStack[] armorContents = inv.getArmorContents();
-        armor = new ItemStack[ armorContents.length ];
-        for ( int i = 0 ; i < contents.length ; i++ ) {
+        armor = new ItemStack[armorContents.length];
+        for (int i = 0; i < contents.length; i++) {
             items[i] = contents[i] == null ? null : contents[i].clone();
         }
-        for ( int i = 0 ; i < armorContents.length ; i++ ) {
+        for (int i = 0; i < armorContents.length; i++) {
             armor[i] = armorContents[i] == null ? null : armorContents[i].clone();
         }
     }
 
-    public void apply( PlayerInventory inv ) {
-        inv.setContents( items );
-        inv.setArmorContents( armor );
+    public void apply(PlayerInventory inv) {
+        inv.setContents(items);
+        inv.setArmorContents(armor);
     }
 }

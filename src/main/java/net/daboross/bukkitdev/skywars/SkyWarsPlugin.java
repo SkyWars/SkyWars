@@ -98,48 +98,48 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
 
     @Override
     public void onLoad() {
-        SkyStatic.setPluginName( this.getDescription().getName() );
-        SkyStatic.setVersion( this.getDescription().getVersion() );
-        SkyStatic.setLogger( this.getLogger() );
+        SkyStatic.setPluginName(this.getDescription().getName());
+        SkyStatic.setVersion(this.getDescription().getVersion());
+        SkyStatic.setLogger(this.getLogger());
     }
 
     @Override
     public void onEnable() {
         try {
             startPlugin();
-        } catch ( Throwable ex ) {
-            getLogger().log( Level.SEVERE, "Startup failed", ex );
+        } catch (Throwable ex) {
+            getLogger().log(Level.SEVERE, "Startup failed", ex);
             enabledCorrectly = false;
-            getServer().getPluginManager().disablePlugin( this );
+            getServer().getPluginManager().disablePlugin(this);
         }
     }
 
     private void startPlugin() throws StartupFailedException {
         try {
-            configuration = new SkyWarsConfiguration( this );
-        } catch ( IOException | InvalidConfigurationException | SkyConfigurationException ex ) {
-            throw new StartupFailedException( "Failed to load configuration", ex );
+            configuration = new SkyWarsConfiguration(this);
+        } catch (IOException | InvalidConfigurationException | SkyConfigurationException ex) {
+            throw new StartupFailedException("Failed to load configuration", ex);
         }
-        for ( SkyArena arena : configuration.getEnabledArenas() ) {
-            if ( arena.getBoundaries().getOrigin().world.equalsIgnoreCase( Statics.BASE_WORLD_NAME ) ) {
-                new WorldUnzipper().doWorldUnzip( getLogger() );
+        for (SkyArena arena : configuration.getEnabledArenas()) {
+            if (arena.getBoundaries().getOrigin().world.equalsIgnoreCase(Statics.BASE_WORLD_NAME)) {
+                new WorldUnzipper().doWorldUnzip(getLogger());
                 break;
             }
         }
         currentGameTracker = new CurrentGames();
         iDHandler = new GameIDHandler();
         broadcaster = new GameBroadcaster();
-        worldHandler = new SkyWorldHandler( this );
-        inventorySave = new InventorySave( this );
-        resetHealth = new ResetHealth( this );
-        locationStore = new LocationStore( this );
-        gameQueue = new GameQueue( this );
-        gameHandler = new GameHandler( this );
-        attackerStorage = new DeathStorage( this );
-        distributor = new GameEventDistributor( this );
-        if ( configuration.isEnablePoints() ) {
-            points = new PointStorage( this );
-            chatListener = new PointStorageChatListener( this );
+        worldHandler = new SkyWorldHandler(this);
+        inventorySave = new InventorySave(this);
+        resetHealth = new ResetHealth(this);
+        locationStore = new LocationStore(this);
+        gameQueue = new GameQueue(this);
+        gameHandler = new GameHandler(this);
+        attackerStorage = new DeathStorage(this);
+        distributor = new GameEventDistributor(this);
+        if (configuration.isEnablePoints()) {
+            points = new PointStorage(this);
+            chatListener = new PointStorageChatListener(this);
         }
         new BukkitRunnable() {
             @Override
@@ -147,59 +147,59 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
                 worldHandler.create();
                 worldHandler.findAndLoadRequiredWorlds();
             }
-        }.runTask( this );
-        new PermissionHandler( "skywars" ).setupPermissions();
+        }.runTask(this);
+        new PermissionHandler("skywars").setupPermissions();
         setupCommand();
         PluginManager pm = getServer().getPluginManager();
-        registerListeners( pm, new SpawnListener(), attackerStorage,
-                new QuitListener( this ), new PortalListener( this ),
-                new CommandListener( this ), new BuildingLimiter( this ),
-                new MobSpawnDisable(), chatListener );
+        registerListeners(pm, new SpawnListener(), attackerStorage,
+                new QuitListener(this), new PortalListener(this),
+                new CommandListener(this), new BuildingLimiter(this),
+                new MobSpawnDisable(), chatListener);
         enabledCorrectly = true;
     }
 
-    private void registerListeners( PluginManager pm, Listener... listeners ) {
-        for ( Listener l : listeners ) {
-            if ( l != null ) {
-                pm.registerEvents( l, this );
+    private void registerListeners(PluginManager pm, Listener... listeners) {
+        for (Listener l : listeners) {
+            if (l != null) {
+                pm.registerEvents(l, this);
             }
         }
     }
 
     @Override
     public void onDisable() {
-        if ( enabledCorrectly ) {
+        if (enabledCorrectly) {
             locationStore.save();
-            iDHandler.saveAndUnload( this );
-            if ( points != null ) {
+            iDHandler.saveAndUnload(this);
+            if (points != null) {
                 try {
                     points.save();
-                } catch ( IOException ex ) {
-                    getLogger().log( Level.WARNING, "Failed to save points", ex );
+                } catch (IOException ex) {
+                    getLogger().log(Level.WARNING, "Failed to save points", ex);
                 }
             }
-            getLogger().log( Level.INFO, "SkyWars disabled successfully" );
+            getLogger().log(Level.INFO, "SkyWars disabled successfully");
         }
     }
 
     @Override
-    public boolean onCommand( CommandSender sender, Command cmd, String label, String[] args ) {
-        if ( !enabledCorrectly ) {
-            sender.sendMessage( ColorList.ERR + "Not fully enabled." );
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if (!enabledCorrectly) {
+            sender.sendMessage(ColorList.ERR + "Not fully enabled.");
         } else {
-            sender.sendMessage( ColorList.ERR + "SkyWars has no clue what " + cmd.getName() + " is." );
+            sender.sendMessage(ColorList.ERR + "SkyWars has no clue what " + cmd.getName() + " is.");
         }
         return true;
     }
 
     private void setupCommand() {
-        MainCommand main = new MainCommand( this );
-        SetupCommand setup = new SetupCommand( this );
-        for ( String commandName : getDescription().getCommands().keySet() ) {
-            if ( commandName.toLowerCase( Locale.ENGLISH ).endsWith( "setup" ) ) {
-                setup.latchOnto( getCommand( commandName ) );
+        MainCommand main = new MainCommand(this);
+        SetupCommand setup = new SetupCommand(this);
+        for (String commandName : getDescription().getCommands().keySet()) {
+            if (commandName.toLowerCase(Locale.ENGLISH).endsWith("setup")) {
+                setup.latchOnto(getCommand(commandName));
             } else {
-                main.latchOnto( getCommand( commandName ) );
+                main.latchOnto(getCommand(commandName));
             }
         }
     }

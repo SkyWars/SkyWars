@@ -32,30 +32,30 @@ public class CurrentGames implements SkyCurrentGameTracker {
 
     private final Map<String, Integer> currentlyInGame = new HashMap<String, Integer>();
 
-    private void setGameID( String player, int gameID ) {
-        currentlyInGame.put( player.toLowerCase( Locale.ENGLISH ), Integer.valueOf( gameID ) );
+    private void setGameID(String player, int gameID) {
+        currentlyInGame.put(player.toLowerCase(Locale.ENGLISH), Integer.valueOf(gameID));
     }
 
     @Override
-    public boolean isInGame( String player ) {
-        return currentlyInGame.containsKey( player.toLowerCase( Locale.ENGLISH ) );
+    public boolean isInGame(String player) {
+        return currentlyInGame.containsKey(player.toLowerCase(Locale.ENGLISH));
     }
 
     @Override
-    public int getGameID( String player ) {
-        Integer val = currentlyInGame.get( player.toLowerCase( Locale.ENGLISH ) );
+    public int getGameID(String player) {
+        Integer val = currentlyInGame.get(player.toLowerCase(Locale.ENGLISH));
         return val == null ? -1 : val.intValue();
     }
 
-    public void onPlayerLeaveGame( PlayerLeaveGameInfo info ) {
-        currentlyInGame.remove( info.getPlayer().getName().toLowerCase( Locale.ENGLISH ) );
+    public void onPlayerLeaveGame(PlayerLeaveGameInfo info) {
+        currentlyInGame.remove(info.getPlayer().getName().toLowerCase(Locale.ENGLISH));
     }
 
-    public void onGameStart( GameStartInfo info ) {
+    public void onGameStart(GameStartInfo info) {
         SkyGame game = info.getGame();
         int id = game.getId();
-        for ( String name : game.getAlivePlayers() ) {
-            setGameID( name, id );
+        for (String name : game.getAlivePlayers()) {
+            setGameID(name, id);
         }
     }
 }

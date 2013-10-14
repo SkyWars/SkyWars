@@ -32,20 +32,20 @@ public class RemoveLastPortalCommand extends SubCommand {
     private static final String ERROR = ColorList.ERR + "No portals are set";
     private final SkyWars plugin;
 
-    public RemoveLastPortalCommand( SkyWars plugin ) {
-        super( "delportal", false, "skywars.delportal", "Removes the last set portal" );
-        this.addCommandFilter( new ArgumentFilter( ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!" ) );
+    public RemoveLastPortalCommand(SkyWars plugin) {
+        super("delportal", false, "skywars.delportal", "Removes the last set portal");
+        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
         this.plugin = plugin;
     }
 
     @Override
-    public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
+    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         List<SkyBlockLocation> portals = plugin.getLocationStore().getPortals();
-        if ( portals.isEmpty() ) {
-            sender.sendMessage( ERROR );
+        if (portals.isEmpty()) {
+            sender.sendMessage(ERROR);
         } else {
-            SkyBlockLocation portal = portals.remove( portals.size() - 1 );
-            sender.sendMessage( String.format( CONFIRMATION, portal ) );
+            SkyBlockLocation portal = portals.remove(portals.size() - 1);
+            sender.sendMessage(String.format(CONFIRMATION, portal));
         }
     }
 }

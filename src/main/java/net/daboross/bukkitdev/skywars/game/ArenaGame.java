@@ -40,24 +40,24 @@ public class ArenaGame implements SkyGame {
     private SkyBlockLocation min;
     private SkyBlockLocationRange boundaries;
 
-    public ArenaGame( @NonNull SkyArena arena, int id, @NonNull String[] originalPlayers ) {
+    public ArenaGame(@NonNull SkyArena arena, int id, @NonNull String[] originalPlayers) {
         this.arena = arena;
         this.id = id;
-        this.alivePlayers = new ArrayList<>( Arrays.asList( originalPlayers ) );
-        this.deadPlayers = new ArrayList<>( originalPlayers.length );
+        this.alivePlayers = new ArrayList<>(Arrays.asList(originalPlayers));
+        this.deadPlayers = new ArrayList<>(originalPlayers.length);
     }
 
-    public void removePlayer( String playerName ) {
-        playerName = playerName.toLowerCase( Locale.ENGLISH );
-        if ( !alivePlayers.remove( playerName ) ) {
-            throw new IllegalArgumentException( "Player not in game." );
+    public void removePlayer(String playerName) {
+        playerName = playerName.toLowerCase(Locale.ENGLISH);
+        if (!alivePlayers.remove(playerName)) {
+            throw new IllegalArgumentException("Player not in game.");
         }
-        deadPlayers.add( playerName );
+        deadPlayers.add(playerName);
     }
 
-    public void setMin( SkyBlockLocation min ) {
+    public void setMin(SkyBlockLocation min) {
         this.min = min;
-        this.boundaries = arena.getBoundaries().getBuilding().add( min );
+        this.boundaries = arena.getBoundaries().getBuilding().add(min);
     }
 
     @Override
@@ -72,12 +72,12 @@ public class ArenaGame implements SkyGame {
 
     @Override
     public List<String> getAlivePlayers() {
-        return Collections.unmodifiableList( alivePlayers );
+        return Collections.unmodifiableList(alivePlayers);
     }
 
     @Override
     public List<String> getDeadPlayers() {
-        return Collections.unmodifiableList( deadPlayers );
+        return Collections.unmodifiableList(deadPlayers);
     }
 
     @Override

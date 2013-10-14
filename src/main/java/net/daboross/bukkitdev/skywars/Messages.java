@@ -61,7 +61,8 @@ public class Messages {
          * Message displayed when someone uses the version command.
          * <br>
          * First %s is the plugin's name, second %s is plugin's short version,
-         * third %s is plugin's implementation version, fourth %s is API version.
+         * third %s is plugin's implementation version, fourth %s is API
+         * version.
          */
         public static final String CREDITS_AND_VERSION =
                 ColorList.REG + "%s v" + ColorList.DATA + "%s" + ColorList.REG + " created by " + ColorList.NAME + "Dabo Ross%n"

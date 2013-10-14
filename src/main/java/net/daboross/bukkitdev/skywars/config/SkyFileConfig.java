@@ -42,129 +42,129 @@ public class SkyFileConfig {
     @Getter
     private YamlConfiguration config;
 
-    public void saveDefault( Plugin plugin, String path ) throws StartupFailedException {
-        if ( !configFile.exists() ) {
+    public void saveDefault(Plugin plugin, String path) throws StartupFailedException {
+        if (!configFile.exists()) {
             try {
-                plugin.saveResource( path, false );
-            } catch ( IllegalArgumentException ex ) {
-                throw new StartupFailedException( "Couldn't save resource " + path, ex );
+                plugin.saveResource(path, false);
+            } catch (IllegalArgumentException ex) {
+                throw new StartupFailedException("Couldn't save resource " + path, ex);
             }
         }
     }
 
     public void load() throws IOException, InvalidConfigurationException {
         File folder = configFile.getParentFile();
-        if ( !folder.exists() ) {
+        if (!folder.exists()) {
             boolean mkdirs = folder.mkdirs();
-            if ( !mkdirs ) {
-                throw new IOException( "Couldn't make directory " + folder.getAbsolutePath() );
+            if (!mkdirs) {
+                throw new IOException("Couldn't make directory " + folder.getAbsolutePath());
             }
-        } else if ( !folder.isDirectory() ) {
-            throw new IOException( "File " + folder.getAbsolutePath() + " is not a directory." );
+        } else if (!folder.isDirectory()) {
+            throw new IOException("File " + folder.getAbsolutePath() + " is not a directory.");
         }
-        if ( !configFile.exists() ) {
+        if (!configFile.exists()) {
             try {
                 boolean createNewFile = configFile.createNewFile();
-                if ( !createNewFile ) {
-                    throw new IOException( "Couldn't make file " + configFile.getAbsolutePath() );
+                if (!createNewFile) {
+                    throw new IOException("Couldn't make file " + configFile.getAbsolutePath());
                 }
-            } catch ( IOException ex ) {
-                throw new IOException( "Couldn't make file " + configFile.getAbsolutePath(), ex );
+            } catch (IOException ex) {
+                throw new IOException("Couldn't make file " + configFile.getAbsolutePath(), ex);
             }
-        } else if ( !configFile.isFile() ) {
-            throw new IOException( "File or directory " + configFile.getAbsolutePath() + " is not a file" );
+        } else if (!configFile.isFile()) {
+            throw new IOException("File or directory " + configFile.getAbsolutePath() + " is not a file");
         }
         config = new YamlConfiguration();
         try {
-            config.load( configFile );
-        } catch ( IOException ex ) {
-            throw new IOException( "Failed to load " + configFile.getAbsolutePath() + " as a YAML configuration", ex );
-        } catch ( InvalidConfigurationException ex ) {
-            throw new InvalidConfigurationException( "Failed to load " + configFile.getAbsolutePath() + " as a YAML configuration", ex );
+            config.load(configFile);
+        } catch (IOException ex) {
+            throw new IOException("Failed to load " + configFile.getAbsolutePath() + " as a YAML configuration", ex);
+        } catch (InvalidConfigurationException ex) {
+            throw new InvalidConfigurationException("Failed to load " + configFile.getAbsolutePath() + " as a YAML configuration", ex);
         }
     }
 
-    public void save( String header ) throws IOException {
-        config.options().header( header ).indent( 2 );
+    public void save(String header) throws IOException {
+        config.options().header(header).indent(2);
         try {
-            config.save( configFile );
-        } catch ( IOException ex ) {
-            throw new IOException( "Failed to save to " + configFile.getAbsolutePath(), ex );
+            config.save(configFile);
+        } catch (IOException ex) {
+            throw new IOException("Failed to save to " + configFile.getAbsolutePath(), ex);
         }
     }
 
-    public int getSetInt( String path, int defaultInt ) throws InvalidConfigurationException {
-        if ( config.isInt( path ) ) {
-            return config.getInt( path );
-        } else if ( config.contains( path ) ) {
-            throw new InvalidConfigurationException( "Object " + config.get( path ) + " found under " + path + " in file " + configFile.getAbsolutePath() + " is not an integer" );
+    public int getSetInt(String path, int defaultInt) throws InvalidConfigurationException {
+        if (config.isInt(path)) {
+            return config.getInt(path);
+        } else if (config.contains(path)) {
+            throw new InvalidConfigurationException("Object " + config.get(path) + " found under " + path + " in file " + configFile.getAbsolutePath() + " is not an integer");
         } else {
-            logger.log( Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, defaultInt, configFile} );
-            config.set( path, defaultInt );
+            logger.log(Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, defaultInt, configFile});
+            config.set(path, defaultInt);
             return defaultInt;
         }
     }
 
-    public boolean getSetBoolean( String path, boolean defaultBoolean ) throws InvalidConfigurationException {
-        if ( config.isBoolean( path ) ) {
-            return config.getBoolean( path );
-        } else if ( config.contains( path ) ) {
-            throw new InvalidConfigurationException( "Object " + config.get( path ) + " found under " + path + " in file " + configFile.getAbsolutePath() + " is not a boolean (true/false)" );
+    public boolean getSetBoolean(String path, boolean defaultBoolean) throws InvalidConfigurationException {
+        if (config.isBoolean(path)) {
+            return config.getBoolean(path);
+        } else if (config.contains(path)) {
+            throw new InvalidConfigurationException("Object " + config.get(path) + " found under " + path + " in file " + configFile.getAbsolutePath() + " is not a boolean (true/false)");
         } else {
-            logger.log( Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, defaultBoolean, configFile} );
-            config.set( path, defaultBoolean );
+            logger.log(Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, defaultBoolean, configFile});
+            config.set(path, defaultBoolean);
             return defaultBoolean;
         }
     }
 
-    public String getSetString( String path, String defaultString ) throws InvalidConfigurationException {
-        Object obj = config.get( path );
-        if ( obj instanceof String ) {
+    public String getSetString(String path, String defaultString) throws InvalidConfigurationException {
+        Object obj = config.get(path);
+        if (obj instanceof String) {
             return (String) obj;
-        } else if ( obj instanceof Integer || obj instanceof Double ) {
+        } else if (obj instanceof Integer || obj instanceof Double) {
             return obj.toString();
-        } else if ( obj != null ) {
-            throw new InvalidConfigurationException( "Object " + config.get( path ) + " found under " + path + " in file " + configFile.getAbsolutePath() + " is not a boolean (true/false)" );
+        } else if (obj != null) {
+            throw new InvalidConfigurationException("Object " + config.get(path) + " found under " + path + " in file " + configFile.getAbsolutePath() + " is not a boolean (true/false)");
         } else {
-            logger.log( Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, defaultString, configFile} );
-            config.set( path, defaultString );
+            logger.log(Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, defaultString, configFile});
+            config.set(path, defaultString);
             return defaultString;
         }
     }
 
-    public List<String> getSetStringList( String path, List<String> defaultList ) throws InvalidConfigurationException {
-        if ( config.isList( path ) ) {
-            List<?> unknownList = config.getList( path );
-            List<String> stringList = new ArrayList<>( unknownList.size() );
-            for ( Object obj : unknownList ) {
-                if ( obj instanceof String ) {
-                    stringList.add( (String) obj );
-                } else if ( obj instanceof Double || obj instanceof Integer || obj instanceof Boolean ) {
-                    stringList.add( obj.toString() );
+    public List<String> getSetStringList(String path, List<String> defaultList) throws InvalidConfigurationException {
+        if (config.isList(path)) {
+            List<?> unknownList = config.getList(path);
+            List<String> stringList = new ArrayList<>(unknownList.size());
+            for (Object obj : unknownList) {
+                if (obj instanceof String) {
+                    stringList.add((String) obj);
+                } else if (obj instanceof Double || obj instanceof Integer || obj instanceof Boolean) {
+                    stringList.add(obj.toString());
                 } else {
-                    throw new InvalidConfigurationException( "Object " + obj + " found in list " + path + " in file " + configFile.getAbsolutePath() + " is not an integerr" );
+                    throw new InvalidConfigurationException("Object " + obj + " found in list " + path + " in file " + configFile.getAbsolutePath() + " is not an integerr");
                 }
             }
             return stringList;
-        } else if ( config.contains( path ) ) {
-            throw new InvalidConfigurationException( "Object " + config.get( path ) + " found under " + path + " in file " + configFile + " is not a list" );
+        } else if (config.contains(path)) {
+            throw new InvalidConfigurationException("Object " + config.get(path) + " found under " + path + " in file " + configFile + " is not a list");
         } else {
-            logger.log( Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, "an empty list", configFile} );
-            config.set( path, defaultList );
+            logger.log(Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, "an empty list", configFile});
+            config.set(path, defaultList);
             return defaultList;
         }
     }
 
-    public void removeValues( String... paths ) {
-        for ( String path : paths ) {
-            removeValue( path );
+    public void removeValues(String... paths) {
+        for (String path : paths) {
+            removeValue(path);
         }
     }
 
-    public void removeValue( String path ) {
-        if ( config.contains( path ) ) {
-            logger.log( Level.INFO, "Removing value {0} in file {1}", new Object[]{path, configFile} );
-            config.set( path, null );
+    public void removeValue(String path) {
+        if (config.contains(path)) {
+            logger.log(Level.INFO, "Removing value {0} in file {1}", new Object[]{path, configFile});
+            config.set(path, null);
         }
     }
 }

@@ -30,43 +30,43 @@ import org.bukkit.entity.Player;
  */
 public class GameBroadcaster {
 
-    public void broadcastStart( GameStartInfo info ) {
+    public void broadcastStart(GameStartInfo info) {
         List<Player> players = info.getPlayers();
         StringBuilder playerNames = new StringBuilder();
-        for ( int i = 0 ; i < players.size() ; i++ ) {
-            String name = players.get( i ).getName();
-            if ( i == 0 ) {
-                playerNames.append( ColorList.NAME ).append( name );
-            } else if ( i == players.size() - 1 ) {
-                playerNames.append( ColorList.BROADCAST ).append( " and " ).append( ColorList.NAME ).append( name );
+        for (int i = 0; i < players.size(); i++) {
+            String name = players.get(i).getName();
+            if (i == 0) {
+                playerNames.append(ColorList.NAME).append(name);
+            } else if (i == players.size() - 1) {
+                playerNames.append(ColorList.BROADCAST).append(" and ").append(ColorList.NAME).append(name);
             } else {
-                playerNames.append( ColorList.BROADCAST ).append( ", " ).append( ColorList.NAME ).append( name );
+                playerNames.append(ColorList.BROADCAST).append(", ").append(ColorList.NAME).append(name);
             }
         }
-        Bukkit.broadcastMessage( String.format( info.getGame().getArena().getMessages().getMessage( SkyMessages.GAME_STARTING ), playerNames.toString() ) );
+        Bukkit.broadcastMessage(String.format(info.getGame().getArena().getMessages().getMessage(SkyMessages.GAME_STARTING), playerNames.toString()));
     }
 
-    public void broadcastEnd( GameEndInfo info ) {
-        if ( info.isBroadcast() ) {
+    public void broadcastEnd(GameEndInfo info) {
+        if (info.isBroadcast()) {
             final String message;
             List<Player> winners = info.getAlivePlayers();
-            if ( winners.isEmpty() ) {
-                message = info.getGame().getArena().getMessages().getMessage( SkyMessages.NONE_WON );
-            } else if ( winners.size() == 1 ) {
-                message = String.format( info.getGame().getArena().getMessages().getMessage( SkyMessages.SINGLE_WON ), winners.get( 0 ).getName() );
+            if (winners.isEmpty()) {
+                message = info.getGame().getArena().getMessages().getMessage(SkyMessages.NONE_WON);
+            } else if (winners.size() == 1) {
+                message = String.format(info.getGame().getArena().getMessages().getMessage(SkyMessages.SINGLE_WON), winners.get(0).getName());
             } else {
-                StringBuilder winnerBuilder = new StringBuilder( winners.get( 0 ).getName() );
-                for ( int i = 1 ; i < winners.size() ; i++ ) {
-                    if ( i == winners.size() - 1 ) {
-                        winnerBuilder.append( " and " );
+                StringBuilder winnerBuilder = new StringBuilder(winners.get(0).getName());
+                for (int i = 1; i < winners.size(); i++) {
+                    if (i == winners.size() - 1) {
+                        winnerBuilder.append(" and ");
                     } else {
-                        winnerBuilder.append( ", " );
+                        winnerBuilder.append(", ");
                     }
-                    winnerBuilder.append( winners.get( i ).getName() );
+                    winnerBuilder.append(winners.get(i).getName());
                 }
-                message = String.format( info.getGame().getArena().getMessages().getMessage( SkyMessages.MULTI_WON ), winnerBuilder );
+                message = String.format(info.getGame().getArena().getMessages().getMessage(SkyMessages.MULTI_WON), winnerBuilder);
             }
-            Bukkit.broadcastMessage( message );
+            Bukkit.broadcastMessage(message);
         }
     }
 }

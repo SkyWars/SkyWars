@@ -31,10 +31,10 @@ public class PointStorageChatListener implements Listener {
     private final SkyWars plugin;
 
     @EventHandler(priority = EventPriority.HIGH)
-    public void onChat( AsyncPlayerChatEvent evt ) {
+    public void onChat(AsyncPlayerChatEvent evt) {
         SkyPoints points = plugin.getPoints();
-        if ( points != null ) {
-            evt.setFormat( evt.getFormat().replaceAll( REPLACEMENT, String.valueOf( points.getScore( evt.getPlayer().getName() ) ) ) );
+        if (points != null) {
+            evt.setFormat(evt.getFormat().replaceAll(REPLACEMENT, String.valueOf(points.getScore(evt.getPlayer().getName()))));
         }
     }
 }

@@ -36,46 +36,46 @@ public class PointStorage extends SkyPoints {
     private final PointStorageBackend backend;
 
     @SuppressWarnings("UseSpecificCatch")
-    public PointStorage( SkyWarsPlugin plugin ) throws StartupFailedException {
+    public PointStorage(SkyWarsPlugin plugin) throws StartupFailedException {
         this.plugin = plugin;
         Class<? extends PointStorageBackend> backendClass = getBackend();
-        if ( backendClass == null ) {
+        if (backendClass == null) {
             backendClass = PointStorageJSONBackend.class;
         }
         try {
-            Constructor<? extends PointStorageBackend> constructor = backendClass.getConstructor( SkyWars.class );
-            this.backend = constructor.newInstance( plugin );
-        } catch ( Exception ex ) {
-            throw new StartupFailedException( "Unable to initialize storage backend", ex );
+            Constructor<? extends PointStorageBackend> constructor = backendClass.getConstructor(SkyWars.class);
+            this.backend = constructor.newInstance(plugin);
+        } catch (Exception ex) {
+            throw new StartupFailedException("Unable to initialize storage backend", ex);
         }
     }
 
-    public void onKill( PlayerKillPlayerInfo info ) {
+    public void onKill(PlayerKillPlayerInfo info) {
         SkyConfiguration config = plugin.getConfiguration();
-        addScore( info.getKillerName(), config.getKillPointDiff() );
+        addScore(info.getKillerName(), config.getKillPointDiff());
     }
 
-    public void onDeath( PlayerDeathInArenaInfo info ) {
+    public void onDeath(PlayerDeathInArenaInfo info) {
         SkyConfiguration config = plugin.getConfiguration();
-        addScore( info.getKilled().getName(), config.getDeathPointDiff() );
+        addScore(info.getKilled().getName(), config.getDeathPointDiff());
     }
 
-    public void onGameEnd( GameEndInfo info ) {
+    public void onGameEnd(GameEndInfo info) {
         SkyConfiguration config = plugin.getConfiguration();
         List<Player> alive = info.getAlivePlayers();
-        if ( alive.size() == 1 ) {
-            addScore( alive.get( 0 ).getName(), config.getWinPointDiff() );
+        if (alive.size() == 1) {
+            addScore(alive.get(0).getName(), config.getWinPointDiff());
         }
     }
 
     @Override
-    public synchronized void addScore( String name, int diff ) {
-        backend.addScore( name, diff );
+    public synchronized void addScore(String name, int diff) {
+        backend.addScore(name, diff);
     }
 
     @Override
-    public synchronized int getScore( String name ) {
-        return backend.getScore( name );
+    public synchronized int getScore(String name) {
+        return backend.getScore(name);
     }
 
     public synchronized void save() throws IOException {

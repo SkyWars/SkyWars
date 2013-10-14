@@ -28,11 +28,11 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 public class MobSpawnDisable implements Listener {
 
     @EventHandler
-    public void onMobSpawn( CreatureSpawnEvent evt ) {
-        if ( evt.getSpawnReason() == SpawnReason.DEFAULT ) {
+    public void onMobSpawn(CreatureSpawnEvent evt) {
+        if (evt.getSpawnReason() == SpawnReason.DEFAULT) {
             String world = evt.getLocation().getWorld().getName();
-            if ( Statics.ARENA_WORLD_NAME.equalsIgnoreCase( world ) || Statics.BASE_WORLD_NAME.equals( world ) ) {
-                evt.setCancelled( true );
+            if (Statics.ARENA_WORLD_NAME.equalsIgnoreCase(world) || Statics.BASE_WORLD_NAME.equals(world)) {
+                evt.setCancelled(true);
             }
         }
     }

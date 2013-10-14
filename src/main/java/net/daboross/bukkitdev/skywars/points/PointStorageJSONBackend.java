@@ -32,58 +32,58 @@ public class PointStorageJSONBackend extends PointStorageBackend {
     private final File saveFile;
     private final JSONObject scores;
 
-    public PointStorageJSONBackend( SkyWars plugin ) throws IOException {
-        super( plugin );
-        this.saveFile = new File( plugin.getDataFolder(), "score.json" );
+    public PointStorageJSONBackend(SkyWars plugin) throws IOException {
+        super(plugin);
+        this.saveFile = new File(plugin.getDataFolder(), "score.json");
         this.scores = load();
     }
 
     private JSONObject load() throws IOException {
-        if ( !saveFile.exists() ) {
-            if ( saveFile.createNewFile() ) {
+        if (!saveFile.exists()) {
+            if (saveFile.createNewFile()) {
                 return new JSONObject();
             } else {
-                throw new IOException( "Couldn't create file " + saveFile.getAbsolutePath() );
+                throw new IOException("Couldn't create file " + saveFile.getAbsolutePath());
             }
         }
-        try ( FileInputStream fis = new FileInputStream( saveFile ) ) {
-            return new JSONObject( new JSONTokener( fis ) );
-        } catch ( JSONException ex ) {
-            throw new IOException( "JSONException loading " + saveFile.getAbsolutePath(), ex );
+        try (FileInputStream fis = new FileInputStream(saveFile)) {
+            return new JSONObject(new JSONTokener(fis));
+        } catch (JSONException ex) {
+            throw new IOException("JSONException loading " + saveFile.getAbsolutePath(), ex);
         }
     }
 
     @Override
     public void save() throws IOException {
-        try ( FileWriter writer = new FileWriter( saveFile ) ) {
-            scores.write( writer );
-        } catch ( IOException | JSONException ex ) {
-            throw new IOException( "Couldn't write to " + saveFile.getAbsolutePath(), ex );
+        try (FileWriter writer = new FileWriter(saveFile)) {
+            scores.write(writer);
+        } catch (IOException | JSONException ex) {
+            throw new IOException("Couldn't write to " + saveFile.getAbsolutePath(), ex);
         }
     }
 
     @Override
-    public void addScore( String player, int diff ) {
-        player = player.toLowerCase( Locale.ENGLISH );
+    public void addScore(String player, int diff) {
+        player = player.toLowerCase(Locale.ENGLISH);
         try {
-            scores.put( player, scores.getInt( player ) + diff );
-        } catch ( JSONException unused ) {
-            scores.put( player, diff );
+            scores.put(player, scores.getInt(player) + diff);
+        } catch (JSONException unused) {
+            scores.put(player, diff);
         }
     }
 
     @Override
-    public void setScore( String player, int score ) {
-        player = player.toLowerCase( Locale.ENGLISH );
-        scores.put( player, score );
+    public void setScore(String player, int score) {
+        player = player.toLowerCase(Locale.ENGLISH);
+        scores.put(player, score);
     }
 
     @Override
-    public int getScore( String player ) {
-        player = player.toLowerCase( Locale.ENGLISH );
+    public int getScore(String player) {
+        player = player.toLowerCase(Locale.ENGLISH);
         try {
-            return scores.getInt( player );
-        } catch ( JSONException unused ) {
+            return scores.getInt(player);
+        } catch (JSONException unused) {
             return 0;
         }
     }

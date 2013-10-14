@@ -27,32 +27,32 @@ public class ResetHealth {
 
     private final Plugin plugin;
 
-    public ResetHealth( Plugin plugin ) {
+    public ResetHealth(Plugin plugin) {
         this.plugin = plugin;
     }
 
-    public void onGameStart( GameStartInfo info ) {
-        for ( Player p : info.getPlayers() ) {
-            p.setGameMode( GameMode.SURVIVAL );
+    public void onGameStart(GameStartInfo info) {
+        for (Player p : info.getPlayers()) {
+            p.setGameMode(GameMode.SURVIVAL);
             try {
-                p.setHealth( p.getMaxHealth() );
-                p.setFallDistance( 0 );
-            } catch ( NoSuchMethodError unused ) {
-                plugin.getLogger().log( Level.INFO, "Couldn't reset health. Probably due to server version being below 1.6.2. If your server is 1.5.2, please download the 1.5.2 version of the plugin." );
+                p.setHealth(p.getMaxHealth());
+                p.setFallDistance(0);
+            } catch (NoSuchMethodError unused) {
+                plugin.getLogger().log(Level.INFO, "Couldn't reset health. Probably due to server version being below 1.6.2. If your server is 1.5.2, please download the 1.5.2 version of the plugin.");
             }
-            p.setFoodLevel( 20 );
+            p.setFoodLevel(20);
         }
     }
 
-    public void onPlayerRespawn( PlayerRespawnAfterGameEndInfo info ) {
+    public void onPlayerRespawn(PlayerRespawnAfterGameEndInfo info) {
         Player p = info.getPlayer();
-        p.setGameMode( GameMode.SURVIVAL );
+        p.setGameMode(GameMode.SURVIVAL);
         try {
-            p.setHealth( p.getMaxHealth() );
-            p.setFallDistance( 0 );
-        } catch ( NoSuchMethodError unused ) {
-            plugin.getLogger().log( Level.INFO, "Couldn't reset health. Probably due to server version being below 1.6.2. If your server is 1.5.2, please download the 1.5.2 version of the plugin." );
+            p.setHealth(p.getMaxHealth());
+            p.setFallDistance(0);
+        } catch (NoSuchMethodError unused) {
+            plugin.getLogger().log(Level.INFO, "Couldn't reset health. Probably due to server version being below 1.6.2. If your server is 1.5.2, please download the 1.5.2 version of the plugin.");
         }
-        p.setFoodLevel( 20 );
+        p.setFoodLevel(20);
     }
 }

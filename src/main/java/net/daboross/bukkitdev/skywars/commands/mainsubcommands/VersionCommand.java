@@ -33,14 +33,14 @@ public class VersionCommand extends SubCommand {
 
     private final SkyWars plugin;
 
-    public VersionCommand( SkyWars plugin ) {
-        super( "version", true, "skywars.version", "Gives version" );
-        this.addCommandFilter( new ArgumentFilter( ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!" ) );
+    public VersionCommand(SkyWars plugin) {
+        super("version", true, "skywars.version", "Gives version");
+        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
         this.plugin = plugin;
     }
 
     @Override
-    public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
-        sender.sendMessage( String.format( Messages.Version.CREDITS_AND_VERSION, SkyStatic.getPluginName(), SkyStatic.getVersion(), SkyStatic.getImplementationVersion() ) );
+    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
+        sender.sendMessage(String.format(Messages.Version.CREDITS_AND_VERSION, SkyStatic.getPluginName(), SkyStatic.getVersion(), SkyStatic.getImplementationVersion()));
     }
 }

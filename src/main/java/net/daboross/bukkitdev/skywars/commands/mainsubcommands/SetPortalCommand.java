@@ -34,16 +34,16 @@ public class SetPortalCommand extends SubCommand {
     private static final String CONFIRMATION = ColorList.REG + "You have set a portal at your current location.";
     private final SkyWars plugin;
 
-    public SetPortalCommand( SkyWars plugin ) {
-        super( "setportal", false, "skywars.setportal", "Sets a portal at your current location" );
-        this.addCommandFilter( new ArgumentFilter( ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!" ) );
+    public SetPortalCommand(SkyWars plugin) {
+        super("setportal", false, "skywars.setportal", "Sets a portal at your current location");
+        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
         this.plugin = plugin;
     }
 
     @Override
-    public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
+    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         Player player = (Player) sender;
-        plugin.getLocationStore().getPortals().add( new SkyBlockLocation( player.getLocation() ) );
-        sender.sendMessage( CONFIRMATION );
+        plugin.getLocationStore().getPortals().add(new SkyBlockLocation(player.getLocation()));
+        sender.sendMessage(CONFIRMATION);
     }
 }

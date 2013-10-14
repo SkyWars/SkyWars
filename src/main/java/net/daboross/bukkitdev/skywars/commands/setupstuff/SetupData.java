@@ -40,58 +40,58 @@ public class SetupData {
     private SkyBlockLocation originMax;
     private List<SkyPlayerLocation> spawns = new ArrayList<>();
 
-    public void setOriginPos1( SkyBlockLocation originPos1 ) {
+    public void setOriginPos1(SkyBlockLocation originPos1) {
         this.originPos1 = originPos1;
         setOriginMin();
         setOriginMax();
     }
 
-    public void setOriginPos2( SkyBlockLocation originPos2 ) {
+    public void setOriginPos2(SkyBlockLocation originPos2) {
         this.originPos2 = originPos2;
         setOriginMin();
         setOriginMax();
     }
 
     public void setOriginMin() {
-        if ( originPos1 != null && originPos2 != null ) {
-            originMin = SkyBlockLocation.min( originPos1, originPos2 );
+        if (originPos1 != null && originPos2 != null) {
+            originMin = SkyBlockLocation.min(originPos1, originPos2);
         }
     }
 
     public void setOriginMax() {
-        if ( originPos1 != null && originPos2 != null ) {
-            originMax = SkyBlockLocation.max( originPos1, originPos2 );
+        if (originPos1 != null && originPos2 != null) {
+            originMax = SkyBlockLocation.max(originPos1, originPos2);
         }
     }
 
     public SkyArenaConfig convertToArenaConfig() {
         SkyArenaConfig config = new SkyArenaConfig();
-        config.setArenaName( arenaName );
-        config.setFile( saveFile );
-        SkyBlockLocationRange origin = new SkyBlockLocationRange( originMin, originMax, originMin.world );
-        SkyBlockLocationRange clearing = calculateClearing( origin );
-        SkyBlockLocationRange building = calculateBuilding( clearing );
+        config.setArenaName(arenaName);
+        config.setFile(saveFile);
+        SkyBlockLocationRange origin = new SkyBlockLocationRange(originMin, originMax, originMin.world);
+        SkyBlockLocationRange clearing = calculateClearing(origin);
+        SkyBlockLocationRange building = calculateBuilding(clearing);
         SkyBoundaries boundaries = config.getBoundaries();
-        boundaries.setOrigin( origin );
-        boundaries.setClearing( clearing );
-        boundaries.setBuilding( building );
-        config.setPlacementY( 20 );
-        config.setSpawns( spawns );
-        config.setNumPlayers( spawns.size() );
+        boundaries.setOrigin(origin);
+        boundaries.setClearing(clearing);
+        boundaries.setBuilding(building);
+        config.setPlacementY(20);
+        config.setSpawns(spawns);
+        config.setNumPlayers(spawns.size());
         return config;
     }
 
-    public static SkyBlockLocationRange calculateClearing( SkyBlockLocationRange origin ) {
-        SkyBlockLocation min = new SkyBlockLocation( -1, -20, -1, null );
-        SkyBlockLocation max = new SkyBlockLocation( origin.max.x - origin.min.x + 1,
+    public static SkyBlockLocationRange calculateClearing(SkyBlockLocationRange origin) {
+        SkyBlockLocation min = new SkyBlockLocation(-1, -20, -1, null);
+        SkyBlockLocation max = new SkyBlockLocation(origin.max.x - origin.min.x + 1,
                 origin.max.y - origin.min.y + 1,
-                origin.max.z - origin.min.z + 1, null );
-        return new SkyBlockLocationRange( min, max, null );
+                origin.max.z - origin.min.z + 1, null);
+        return new SkyBlockLocationRange(min, max, null);
     }
 
-    public static SkyBlockLocationRange calculateBuilding( SkyBlockLocationRange clearing ) {
-        SkyBlockLocation min = clearing.min.add( -1, 0, -1 );
-        SkyBlockLocation max = clearing.max.add( 1, 1, 1 );
-        return new SkyBlockLocationRange( min, max, null );
+    public static SkyBlockLocationRange calculateBuilding(SkyBlockLocationRange clearing) {
+        SkyBlockLocation min = clearing.min.add(-1, 0, -1);
+        SkyBlockLocation max = clearing.max.add(1, 1, 1);
+        return new SkyBlockLocationRange(min, max, null);
     }
 }

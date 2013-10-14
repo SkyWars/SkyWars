@@ -33,25 +33,25 @@ public class NoSpawnSetCondition implements CommandPreCondition, CommandFilter {
     private final SetupStates states;
 
     @Override
-    public boolean canContinue( CommandSender sender, SubCommand subCommand ) {
-        SetupData state = states.getSetupState( sender.getName() );
-        if ( state == null || state.getSpawns().isEmpty() ) {
+    public boolean canContinue(CommandSender sender, SubCommand subCommand) {
+        SetupData state = states.getSetupState(sender.getName());
+        if (state == null || state.getSpawns().isEmpty()) {
             return true;
         }
         return false;
     }
 
     @Override
-    public boolean canContinue( CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
-        SetupData state = states.getSetupState( sender.getName() );
-        if ( state == null || state.getSpawns().isEmpty() ) {
+    public boolean canContinue(CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
+        SetupData state = states.getSetupState(sender.getName());
+        if (state == null || state.getSpawns().isEmpty()) {
             return true;
         }
         return false;
     }
 
     @Override
-    public String[] getDeniedMessage( CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
+    public String[] getDeniedMessage(CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         return new String[]{ColorList.ERR + "You can't edit the boundaries after having spawn locations set."};
     }
 }

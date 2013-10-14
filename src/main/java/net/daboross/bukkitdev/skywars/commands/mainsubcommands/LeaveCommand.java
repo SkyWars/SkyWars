@@ -33,22 +33,22 @@ public class LeaveCommand extends SubCommand {
 
     private final SkyWars plugin;
 
-    public LeaveCommand( SkyWars plugin ) {
-        super( "leave", false, "skywars.leave", "Leaves the queue or the game you are in" );
-        this.addCommandFilter( new ArgumentFilter( ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!" ) );
+    public LeaveCommand(SkyWars plugin) {
+        super("leave", false, "skywars.leave", "Leaves the queue or the game you are in");
+        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
         this.plugin = plugin;
     }
 
     @Override
-    public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
-        if ( plugin.getGameQueue().inQueue( sender.getName() ) ) {
-            plugin.getGameQueue().removePlayer( sender.getName() );
-            sender.sendMessage( Messages.Leave.REMOVED_FROM_QUEUE );
-        } else if ( plugin.getCurrentGameTracker().isInGame( sender.getName() ) ) {
-            plugin.getGameHandler().removePlayerFromGame( (Player) sender, true, true );
-            sender.sendMessage( Messages.Leave.REMOVED_FROM_GAME );
+    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
+        if (plugin.getGameQueue().inQueue(sender.getName())) {
+            plugin.getGameQueue().removePlayer(sender.getName());
+            sender.sendMessage(Messages.Leave.REMOVED_FROM_QUEUE);
+        } else if (plugin.getCurrentGameTracker().isInGame(sender.getName())) {
+            plugin.getGameHandler().removePlayerFromGame((Player) sender, true, true);
+            sender.sendMessage(Messages.Leave.REMOVED_FROM_GAME);
         } else {
-            sender.sendMessage( Messages.Leave.NOT_IN );
+            sender.sendMessage(Messages.Leave.NOT_IN);
         }
     }
 }

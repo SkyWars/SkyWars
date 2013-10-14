@@ -26,15 +26,15 @@ public class StartupFailedException extends Exception {
         super();
     }
 
-    public StartupFailedException( String message ) {
-        super( message );
+    public StartupFailedException(String message) {
+        super(message);
     }
 
-    public StartupFailedException( Throwable cause ) {
-        super( cause );
+    public StartupFailedException(Throwable cause) {
+        super(cause);
     }
 
-    public StartupFailedException( String message, Throwable cause ) {
-        super( message, cause );
+    public StartupFailedException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

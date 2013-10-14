@@ -39,40 +39,40 @@ public class GameQueue implements SkyGameQueue {
     private SkyArena nextArena;
     private int nextArenaOrderedNumber = 0;
 
-    public GameQueue( SkyWarsPlugin plugin ) {
+    public GameQueue(SkyWarsPlugin plugin) {
         this.plugin = plugin;
         prepareNextArena();
     }
 
     @Override
-    public boolean inQueue( String player ) {
-        return currentlyQueued.contains( player.toLowerCase( Locale.ENGLISH ) );
+    public boolean inQueue(String player) {
+        return currentlyQueued.contains(player.toLowerCase(Locale.ENGLISH));
     }
 
     @Override
-    public void queuePlayer( String player ) {
-        player = player.toLowerCase( Locale.ENGLISH );
-        if ( !currentlyQueued.contains( player ) ) {
-            currentlyQueued.add( player );
+    public void queuePlayer(String player) {
+        player = player.toLowerCase(Locale.ENGLISH);
+        if (!currentlyQueued.contains(player)) {
+            currentlyQueued.add(player);
         }
-        if ( currentlyQueued.size() >= nextArena.getNumPlayers() ) {
-            plugin.getDistributor().distribute( new GameStartInfo( getNextGame() ) );
+        if (currentlyQueued.size() >= nextArena.getNumPlayers()) {
+            plugin.getDistributor().distribute(new GameStartInfo(getNextGame()));
         }
     }
 
     @Override
-    public void removePlayer( String player ) {
-        currentlyQueued.remove( player.toLowerCase( Locale.ENGLISH ) );
+    public void removePlayer(String player) {
+        currentlyQueued.remove(player.toLowerCase(Locale.ENGLISH));
     }
 
     public ArenaGame getNextGame() {
-        if ( currentlyQueued.size() < 2 ) {
-            throw new IllegalStateException( "Queue size smaller than 2" );
+        if (currentlyQueued.size() < 2) {
+            throw new IllegalStateException("Queue size smaller than 2");
         }
-        Collections.shuffle( currentlyQueued );
-        String[] queueCopy = currentlyQueued.toArray( new String[ currentlyQueued.size() ] );
+        Collections.shuffle(currentlyQueued);
+        String[] queueCopy = currentlyQueued.toArray(new String[currentlyQueued.size()]);
         int id = plugin.getIDHandler().getNextId();
-        ArenaGame game = new ArenaGame( nextArena, id, queueCopy );
+        ArenaGame game = new ArenaGame(nextArena, id, queueCopy);
         prepareNextArena();
         return game;
     }
@@ -80,26 +80,26 @@ public class GameQueue implements SkyGameQueue {
     private void prepareNextArena() {
         SkyConfiguration config = plugin.getConfiguration();
         List<? extends SkyArena> enabledArenas = config.getEnabledArenas();
-        switch ( config.getArenaOrder() ) {
+        switch (config.getArenaOrder()) {
             case ORDERED:
-                if ( nextArenaOrderedNumber >= enabledArenas.size() ) {
+                if (nextArenaOrderedNumber >= enabledArenas.size()) {
                     nextArenaOrderedNumber = 0;
                 }
-                nextArena = enabledArenas.get( nextArenaOrderedNumber );
+                nextArena = enabledArenas.get(nextArenaOrderedNumber);
                 break;
             case RANDOM:
-                nextArena = Randomation.getRandom( enabledArenas );
+                nextArena = Randomation.getRandom(enabledArenas);
                 break;
             default:
-                plugin.getLogger().log( Level.WARNING, "[GameQueue] Invalid ArenaOrder found in config!" );
+                plugin.getLogger().log(Level.WARNING, "[GameQueue] Invalid ArenaOrder found in config!");
                 nextArena = null;
-                throw new IllegalStateException( "Invalid ArenaOrder found in config" );
+                throw new IllegalStateException("Invalid ArenaOrder found in config");
         }
-        currentlyQueued = new ArrayList<>( nextArena.getNumPlayers() );
+        currentlyQueued = new ArrayList<>(nextArena.getNumPlayers());
     }
 
     @Override
     public String[] getCopy() {
-        return currentlyQueued.toArray( new String[ currentlyQueued.size() ] );
+        return currentlyQueued.toArray(new String[currentlyQueued.size()]);
     }
 }

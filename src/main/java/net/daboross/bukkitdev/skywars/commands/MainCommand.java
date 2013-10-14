@@ -42,32 +42,32 @@ public class MainCommand {
     private final SkyWars plugin;
     private final CommandExecutorBase base;
 
-    public MainCommand( @NonNull SkyWars plugin ) {
+    public MainCommand(@NonNull SkyWars plugin) {
         this.plugin = plugin;
-        this.base = new CommandExecutorBase( null );
+        this.base = new CommandExecutorBase(null);
         this.initCommands();
     }
 
     private void initCommands() {
-        base.addSubCommand( new JoinCommand( plugin ) );
-        base.addSubCommand( new LeaveCommand( plugin ) );
-        base.addSubCommand( new SetLobbyCommand( plugin ) );
-        base.addSubCommand( new SetPortalCommand( plugin ) );
-        base.addSubCommand( new RemoveLastPortalCommand( plugin ) );
-        base.addSubCommand( new CancelCommand( plugin ) );
-        base.addSubCommand( new StatusCommand( plugin ) );
-        base.addSubCommand( new VersionCommand( plugin ) );
-        base.addSubCommand( new LobbyCommand( plugin ) );
-        base.addSubCommand( new CancelAllCommand( plugin ) );
-        base.addSubCommand( new ConfigurationDebugCommand( plugin ) );
+        base.addSubCommand(new JoinCommand(plugin));
+        base.addSubCommand(new LeaveCommand(plugin));
+        base.addSubCommand(new SetLobbyCommand(plugin));
+        base.addSubCommand(new SetPortalCommand(plugin));
+        base.addSubCommand(new RemoveLastPortalCommand(plugin));
+        base.addSubCommand(new CancelCommand(plugin));
+        base.addSubCommand(new StatusCommand(plugin));
+        base.addSubCommand(new VersionCommand(plugin));
+        base.addSubCommand(new LobbyCommand(plugin));
+        base.addSubCommand(new CancelAllCommand(plugin));
+        base.addSubCommand(new ConfigurationDebugCommand(plugin));
     }
 
-    public void latchOnto( PluginCommand command ) {
-        if ( command != null ) {
-            command.setDescription( "Main command for " + SkyStatic.getPluginName() );
-            command.setExecutor( base );
-            command.setUsage( "/<command>" );
-            command.setPermission( null );
+    public void latchOnto(PluginCommand command) {
+        if (command != null) {
+            command.setDescription("Main command for " + SkyStatic.getPluginName());
+            command.setExecutor(base);
+            command.setUsage("/<command>");
+            command.setPermission(null);
         }
     }
 }

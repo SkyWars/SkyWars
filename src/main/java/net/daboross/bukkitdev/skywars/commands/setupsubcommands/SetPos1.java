@@ -36,28 +36,28 @@ public class SetPos1 extends SubCommand {
 
     private final SetupStates states;
 
-    public SetPos1( @NonNull SetupStates states ) {
-        super( "setpos1", false, null, "Sets the first position for the arena to copy from to your current eye location." );
-        StartedArenaCondition condition = new StartedArenaCondition( states, true );
-        addCommandFilter( condition );
-        addCommandPreCondition( condition );
-        NoSpawnSetCondition condition2 = new NoSpawnSetCondition( states );
-        addCommandFilter( condition2 );
-        addCommandPreCondition( condition2 );
+    public SetPos1(@NonNull SetupStates states) {
+        super("setpos1", false, null, "Sets the first position for the arena to copy from to your current eye location.");
+        StartedArenaCondition condition = new StartedArenaCondition(states, true);
+        addCommandFilter(condition);
+        addCommandPreCondition(condition);
+        NoSpawnSetCondition condition2 = new NoSpawnSetCondition(states);
+        addCommandFilter(condition2);
+        addCommandPreCondition(condition2);
         this.states = states;
     }
 
     @Override
-    public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
+    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         Player p = (Player) sender;
         Location eye = p.getEyeLocation();
-        SkyBlockLocation pos1 = new SkyBlockLocation( eye );
-        SetupData state = states.getSetupState( p.getName() );
-        if ( state.getOriginPos2() != null && !state.getOriginPos2().world.equalsIgnoreCase( pos1.world ) ) {
-            sender.sendMessage( "Unsetting the second position due to you being in a different world." );
-            state.setOriginPos2( null );
+        SkyBlockLocation pos1 = new SkyBlockLocation(eye);
+        SetupData state = states.getSetupState(p.getName());
+        if (state.getOriginPos2() != null && !state.getOriginPos2().world.equalsIgnoreCase(pos1.world)) {
+            sender.sendMessage("Unsetting the second position due to you being in a different world.");
+            state.setOriginPos2(null);
         }
-        sender.sendMessage( ColorList.REG + "Setting the first position to " + pos1 );
-        state.setOriginPos1( pos1 );
+        sender.sendMessage(ColorList.REG + "Setting the first position to " + pos1);
+        state.setOriginPos1(pos1);
     }
 }

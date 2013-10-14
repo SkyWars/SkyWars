@@ -33,25 +33,25 @@ public class BoundariesSetCondition implements CommandPreCondition, CommandFilte
     private final SetupStates states;
 
     @Override
-    public boolean canContinue( CommandSender sender, SubCommand subCommand ) {
-        SetupData state = states.getSetupState( sender.getName() );
-        if ( state != null && state.getOriginMin() != null ) {
+    public boolean canContinue(CommandSender sender, SubCommand subCommand) {
+        SetupData state = states.getSetupState(sender.getName());
+        if (state != null && state.getOriginMin() != null) {
             return true;
         }
         return false;
     }
 
     @Override
-    public boolean canContinue( CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
-        SetupData state = states.getSetupState( sender.getName() );
-        if ( state != null && state.getOriginMin() != null ) {
+    public boolean canContinue(CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
+        SetupData state = states.getSetupState(sender.getName());
+        if (state != null && state.getOriginMin() != null) {
             return true;
         }
         return false;
     }
 
     @Override
-    public String[] getDeniedMessage( CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
+    public String[] getDeniedMessage(CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         return new String[]{ColorList.ERR + "You haven't set a first position yet."};
     }
 }

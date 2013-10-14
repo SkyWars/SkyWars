@@ -34,20 +34,20 @@ public class SetSpawnLocation extends SubCommand {
 
     private final SetupStates states;
 
-    public SetSpawnLocation( @NonNull SetupStates states ) {
-        super( "addspawn", false, null, "Adds a new spawn location at your current location" );
-        BoundariesSetCondition condition = new BoundariesSetCondition( states );
-        addCommandFilter( condition );
-        addCommandPreCondition( condition );
+    public SetSpawnLocation(@NonNull SetupStates states) {
+        super("addspawn", false, null, "Adds a new spawn location at your current location");
+        BoundariesSetCondition condition = new BoundariesSetCondition(states);
+        addCommandFilter(condition);
+        addCommandPreCondition(condition);
         this.states = states;
     }
 
     @Override
-    public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
+    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         Player p = (Player) sender;
-        SetupData state = states.getSetupState( p.getName() );
-        SkyPlayerLocation pos = new SkyPlayerLocation( p.getLocation() ).subtract( state.getOriginMin() );
-        sender.sendMessage( ColorList.REG + "Adding a new spawn location at " + pos.toString() );
-        state.getSpawns().add( pos );
+        SetupData state = states.getSetupState(p.getName());
+        SkyPlayerLocation pos = new SkyPlayerLocation(p.getLocation()).subtract(state.getOriginMin());
+        sender.sendMessage(ColorList.REG + "Adding a new spawn location at " + pos.toString());
+        state.getSpawns().add(pos);
     }
 }

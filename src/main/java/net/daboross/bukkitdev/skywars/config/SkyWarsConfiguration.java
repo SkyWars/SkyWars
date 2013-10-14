@@ -62,76 +62,76 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     @Getter
     private int arenaDistanceApart;
 
-    public SkyWarsConfiguration( SkyWars plugin ) throws IOException, InvalidConfigurationException, SkyConfigurationException {
+    public SkyWarsConfiguration(SkyWars plugin) throws IOException, InvalidConfigurationException, SkyConfigurationException {
         this.plugin = plugin;
         load();
     }
 
     private void load() throws IOException, InvalidConfigurationException, SkyConfigurationException {
-        if ( mainConfigFile == null ) {
-            mainConfigFile = new File( plugin.getDataFolder(), Names.MAIN );
+        if (mainConfigFile == null) {
+            mainConfigFile = new File(plugin.getDataFolder(), Names.MAIN);
         }
-        mainConfig = new SkyFileConfig( mainConfigFile, plugin.getLogger() );
+        mainConfig = new SkyFileConfig(mainConfigFile, plugin.getLogger());
         mainConfig.load();
 
-        if ( arenaFolder == null ) {
-            arenaFolder = new File( plugin.getDataFolder(), Names.ARENAS );
+        if (arenaFolder == null) {
+            arenaFolder = new File(plugin.getDataFolder(), Names.ARENAS);
         }
-        if ( !arenaFolder.exists() ) {
+        if (!arenaFolder.exists()) {
             boolean mkdirs = arenaFolder.mkdirs();
-            if ( !mkdirs ) {
-                throw new SkyConfigurationException( "Making directory " + arenaFolder.getAbsolutePath() + " failed" );
+            if (!mkdirs) {
+                throw new SkyConfigurationException("Making directory " + arenaFolder.getAbsolutePath() + " failed");
             }
-        } else if ( !arenaFolder.isDirectory() ) {
-            throw new SkyConfigurationException( "File " + arenaFolder.getAbsolutePath() + " exists but is not a directory" );
+        } else if (!arenaFolder.isDirectory()) {
+            throw new SkyConfigurationException("File " + arenaFolder.getAbsolutePath() + " exists but is not a directory");
         }
 
         // Keys.VERSION
-        int version = mainConfig.getSetInt( Keys.VERSION, Defaults.VERSION );
-        if ( version > 1 ) {
-            throw new SkyConfigurationException( "Version '" + version + "' as listed under " + Keys.VERSION + " in file " + mainConfigFile.getAbsolutePath() + " is unknown." );
+        int version = mainConfig.getSetInt(Keys.VERSION, Defaults.VERSION);
+        if (version > 1) {
+            throw new SkyConfigurationException("Version '" + version + "' as listed under " + Keys.VERSION + " in file " + mainConfigFile.getAbsolutePath() + " is unknown.");
         }
-        mainConfig.getConfig().set( Keys.VERSION, Defaults.VERSION );
+        mainConfig.getConfig().set(Keys.VERSION, Defaults.VERSION);
 
         // Keys.DEBUG
-        SkyStatic.setDebug( mainConfig.getSetBoolean( Keys.DEBUG, Defaults.DEBUG ) );
+        SkyStatic.setDebug(mainConfig.getSetBoolean(Keys.DEBUG, Defaults.DEBUG));
 
-        arenaOrder = ArenaOrder.getOrder( mainConfig.getSetString( Keys.ARENA_ORDER, Defaults.ARENA_ORDER.toString() ) );
-        if ( arenaOrder == null ) {
-            throw new SkyConfigurationException( "Invalid ArenaOrder '" + arenaOrder + "' found under " + Keys.ARENA_ORDER + " in file " + mainConfigFile.getAbsolutePath() + ". Valid values: " + Arrays.toString( ArenaOrder.values() ) );
+        arenaOrder = ArenaOrder.getOrder(mainConfig.getSetString(Keys.ARENA_ORDER, Defaults.ARENA_ORDER.toString()));
+        if (arenaOrder == null) {
+            throw new SkyConfigurationException("Invalid ArenaOrder '" + arenaOrder + "' found under " + Keys.ARENA_ORDER + " in file " + mainConfigFile.getAbsolutePath() + ". Valid values: " + Arrays.toString(ArenaOrder.values()));
         }
 
         // Keys.MESSAGE_PREFIX
-        messagePrefix = mainConfig.getSetString( Keys.MESSAGE_PREFIX, Defaults.MESSAGE_PREFIX );
+        messagePrefix = mainConfig.getSetString(Keys.MESSAGE_PREFIX, Defaults.MESSAGE_PREFIX);
 
         // Keys.SAVE_INVENTORY
-        inventorySaveEnabled = mainConfig.getSetBoolean( Keys.SAVE_INVENTORY, Defaults.SAVE_INVENTORY );
+        inventorySaveEnabled = mainConfig.getSetBoolean(Keys.SAVE_INVENTORY, Defaults.SAVE_INVENTORY);
 
         // Keys.ENABLED_ARENAS
-        List<String> enabledArenaNames = mainConfig.getSetStringList( Keys.ENABLED_ARENAS, Defaults.ENABLED_ARENAS );
-        enabledArenas = new ArrayList<>( enabledArenaNames.size() );
-        if ( enabledArenaNames.isEmpty() ) {
-            throw new SkyConfigurationException( "No arenas enabled" );
+        List<String> enabledArenaNames = mainConfig.getSetStringList(Keys.ENABLED_ARENAS, Defaults.ENABLED_ARENAS);
+        enabledArenas = new ArrayList<>(enabledArenaNames.size());
+        if (enabledArenaNames.isEmpty()) {
+            throw new SkyConfigurationException("No arenas enabled");
         }
 
         // Keys.Points
-        enablePoints = mainConfig.getSetBoolean( Keys.Points.ENABLE, Defaults.Points.ENABLE );
-        winPointDiff = mainConfig.getSetInt( Keys.Points.WIN_DIFF, Defaults.Points.WIN_DIFF );
-        deathPointDiff = mainConfig.getSetInt( Keys.Points.DEATH_DIFF, Defaults.Points.DEATH_DIFF );
-        killPointDiff = mainConfig.getSetInt( Keys.Points.KILL_DIFF, Defaults.Points.KILL_DIFF );
+        enablePoints = mainConfig.getSetBoolean(Keys.Points.ENABLE, Defaults.Points.ENABLE);
+        winPointDiff = mainConfig.getSetInt(Keys.Points.WIN_DIFF, Defaults.Points.WIN_DIFF);
+        deathPointDiff = mainConfig.getSetInt(Keys.Points.DEATH_DIFF, Defaults.Points.DEATH_DIFF);
+        killPointDiff = mainConfig.getSetInt(Keys.Points.KILL_DIFF, Defaults.Points.KILL_DIFF);
 
         // Keys.ARENA_DISTANCE_APART
-        arenaDistanceApart = mainConfig.getSetInt( Keys.ARENA_DISTANCE_APART, Defaults.ARENA_DISTANCE_APART);
-        
+        arenaDistanceApart = mainConfig.getSetInt(Keys.ARENA_DISTANCE_APART, Defaults.ARENA_DISTANCE_APART);
+
         // Remove deprecated values
-        mainConfig.removeValues( Keys.Deprecated.CHAT_PREFIX, Keys.Deprecated.PREFIX_CHAT );
+        mainConfig.removeValues(Keys.Deprecated.CHAT_PREFIX, Keys.Deprecated.PREFIX_CHAT);
         // Save
-        mainConfig.save( String.format( Headers.CONFIG ) );
+        mainConfig.save(String.format(Headers.CONFIG));
 
         // Arenas
         loadParent();
-        for ( String arenaName : enabledArenaNames ) {
-            loadArena( arenaName );
+        for (String arenaName : enabledArenaNames) {
+            loadArena(arenaName);
         }
     }
 
@@ -140,88 +140,88 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         load();
     }
 
-    private void loadArena( String name ) throws SkyConfigurationException {
-        if ( enabledArenas == null ) {
-            throw new IllegalStateException( "Enabled arenas null" );
+    private void loadArena(String name) throws SkyConfigurationException {
+        if (enabledArenas == null) {
+            throw new IllegalStateException("Enabled arenas null");
         }
-        File file = new File( arenaFolder, name + ".yml" );
-        if ( !file.exists() ) {
+        File file = new File(arenaFolder, name + ".yml");
+        if (!file.exists()) {
             String fileName = Names.ARENAS + File.separatorChar + name + ".yml";
             try {
-                plugin.saveResource( fileName, false );
-            } catch ( IllegalArgumentException ex ) {
-                throw new SkyConfigurationException( name + " is in " + Keys.ENABLED_ARENAS + " but file " + file.getAbsolutePath() + " could not be found and file " + fileName + " could not be found in plugin jar." );
+                plugin.saveResource(fileName, false);
+            } catch (IllegalArgumentException ex) {
+                throw new SkyConfigurationException(name + " is in " + Keys.ENABLED_ARENAS + " but file " + file.getAbsolutePath() + " could not be found and file " + fileName + " could not be found in plugin jar.");
             }
         }
         FileConfiguration config = new YamlConfiguration();
         try {
-            config.load( file );
-        } catch ( FileNotFoundException ex ) {
-            throw new SkyConfigurationException( name + " is in " + Keys.ENABLED_ARENAS + " but file " + file.getAbsolutePath() + " could not be found", ex );
-        } catch ( IOException ex ) {
-            throw new SkyConfigurationException( "IOException load file " + file.getAbsolutePath(), ex );
-        } catch ( InvalidConfigurationException ex ) {
-            throw new SkyConfigurationException( "Failed to load configuration file " + file.getAbsolutePath(), ex );
+            config.load(file);
+        } catch (FileNotFoundException ex) {
+            throw new SkyConfigurationException(name + " is in " + Keys.ENABLED_ARENAS + " but file " + file.getAbsolutePath() + " could not be found", ex);
+        } catch (IOException ex) {
+            throw new SkyConfigurationException("IOException load file " + file.getAbsolutePath(), ex);
+        } catch (InvalidConfigurationException ex) {
+            throw new SkyConfigurationException("Failed to load configuration file " + file.getAbsolutePath(), ex);
         }
-        SkyArenaConfig arenaConfig = SkyArenaConfig.deserialize( config );
-        arenaConfig.setArenaName( name );
-        arenaConfig.setFile( file );
-        arenaConfig.getMessages().setPrefix( messagePrefix );
-        arenaConfig.setParent( parentArena );
-        enabledArenas.add( arenaConfig );
+        SkyArenaConfig arenaConfig = SkyArenaConfig.deserialize(config);
+        arenaConfig.setArenaName(name);
+        arenaConfig.setFile(file);
+        arenaConfig.getMessages().setPrefix(messagePrefix);
+        arenaConfig.setParent(parentArena);
+        enabledArenas.add(arenaConfig);
 
-        saveArena( file, arenaConfig, String.format( Headers.ARENA, name ) );
+        saveArena(file, arenaConfig, String.format(Headers.ARENA, name));
     }
 
     private void loadParent() throws SkyConfigurationException {
-        File file = new File( plugin.getDataFolder(), "arena-parent.yml" );
-        if ( !file.exists() ) {
+        File file = new File(plugin.getDataFolder(), "arena-parent.yml");
+        if (!file.exists()) {
             String fileName = "arena-parent.yml";
             try {
-                plugin.saveResource( fileName, false );
-            } catch ( IllegalArgumentException ex ) {
-                throw new SkyConfigurationException( "arena-parent.yml could not be found in plugin jar.", ex );
+                plugin.saveResource(fileName, false);
+            } catch (IllegalArgumentException ex) {
+                throw new SkyConfigurationException("arena-parent.yml could not be found in plugin jar.", ex);
             }
         }
         FileConfiguration config = new YamlConfiguration();
         try {
-            config.load( file );
-        } catch ( FileNotFoundException ex ) {
-            throw new SkyConfigurationException( "Can't find the parent arena yaml", ex );
-        } catch ( IOException ex ) {
-            throw new SkyConfigurationException( "IOException loading arena-parent " + file.getAbsolutePath(), ex );
-        } catch ( InvalidConfigurationException ex ) {
-            throw new SkyConfigurationException( "Failed to load arena-parent.yml " + file.getAbsolutePath(), ex );
+            config.load(file);
+        } catch (FileNotFoundException ex) {
+            throw new SkyConfigurationException("Can't find the parent arena yaml", ex);
+        } catch (IOException ex) {
+            throw new SkyConfigurationException("IOException loading arena-parent " + file.getAbsolutePath(), ex);
+        } catch (InvalidConfigurationException ex) {
+            throw new SkyConfigurationException("Failed to load arena-parent.yml " + file.getAbsolutePath(), ex);
         }
-        SkyArenaConfig arenaConfig = SkyArenaConfig.deserialize( config );
-        arenaConfig.setArenaName( "parent-arena" );
-        arenaConfig.setFile( file );
-        arenaConfig.getMessages().setPrefix( messagePrefix );
+        SkyArenaConfig arenaConfig = SkyArenaConfig.deserialize(config);
+        arenaConfig.setArenaName("parent-arena");
+        arenaConfig.setFile(file);
+        arenaConfig.getMessages().setPrefix(messagePrefix);
         parentArena = arenaConfig;
-        saveArena( file, arenaConfig, String.format( Headers.PARENT ) );
+        saveArena(file, arenaConfig, String.format(Headers.PARENT));
     }
 
     @Override
     public List<SkyArenaConfig> getEnabledArenas() {
-        return Collections.unmodifiableList( enabledArenas );
+        return Collections.unmodifiableList(enabledArenas);
     }
 
-    public void saveArena( File file, SkyArenaConfig arenaConfig, String header ) {
+    public void saveArena(File file, SkyArenaConfig arenaConfig, String header) {
         YamlConfiguration newConfig = new YamlConfiguration();
-        newConfig.options().header( header ).indent( 2 );
-        arenaConfig.serialize( newConfig );
+        newConfig.options().header(header).indent(2);
+        arenaConfig.serialize(newConfig);
         try {
-            newConfig.save( file );
-        } catch ( IOException ex ) {
-            plugin.getLogger().log( Level.SEVERE, "Failed to save arena config to file " + file.getAbsolutePath(), ex );
+            newConfig.save(file);
+        } catch (IOException ex) {
+            plugin.getLogger().log(Level.SEVERE, "Failed to save arena config to file " + file.getAbsolutePath(), ex);
         }
     }
 
     @Override
-    public void saveArena( SkyArenaConfig arena ) {
-        arena.getMessages().setPrefix( messagePrefix );
-        arena.setParent( parentArena );
-        saveArena( arena.getFile(), arena, String.format( Headers.ARENA, arena.getArenaName() ) );
+    public void saveArena(SkyArenaConfig arena) {
+        arena.getMessages().setPrefix(messagePrefix);
+        arena.setParent(parentArena);
+        saveArena(arena.getFile(), arena, String.format(Headers.ARENA, arena.getArenaName()));
     }
 
     private static class Keys {
@@ -261,7 +261,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         private static final String MESSAGE_PREFIX = "&8[&cSkyWars&8]#B ";
         private static final boolean DEBUG = false;
         private static final ArenaOrder ARENA_ORDER = ArenaOrder.RANDOM;
-        private static final List<String> ENABLED_ARENAS = Arrays.asList( "skyblock-warriors" );
+        private static final List<String> ENABLED_ARENAS = Arrays.asList("skyblock-warriors");
         private static final boolean SAVE_INVENTORY = true;
         private static final int ARENA_DISTANCE_APART = 200;
 

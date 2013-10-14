@@ -36,25 +36,25 @@ public class InventorySave {
     private final Map<String, InventorySaveInfo> inventorySaveInfo = new HashMap<>();
     private final SkyWars skywars;
 
-    public void onGameStart( GameStartInfo info ) {
+    public void onGameStart(GameStartInfo info) {
         boolean save = skywars.getConfiguration().isInventorySaveEnabled();
-        for ( Player p : info.getPlayers() ) {
+        for (Player p : info.getPlayers()) {
             PlayerInventory inv = p.getInventory();
-            if ( save ) {
-                inventorySaveInfo.put( p.getName().toLowerCase( Locale.ENGLISH ), new InventorySaveInfo( inv ) );
+            if (save) {
+                inventorySaveInfo.put(p.getName().toLowerCase(Locale.ENGLISH), new InventorySaveInfo(inv));
             }
             inv.clear();
-            inv.setArmorContents( new ItemStack[ inv.getArmorContents().length ] );
+            inv.setArmorContents(new ItemStack[inv.getArmorContents().length]);
         }
     }
 
-    public void onPlayerRespawn( PlayerRespawnAfterGameEndInfo info ) {
+    public void onPlayerRespawn(PlayerRespawnAfterGameEndInfo info) {
         PlayerInventory inv = info.getPlayer().getInventory();
         inv.clear();
-        inv.setArmorContents( new ItemStack[ inv.getArmorContents().length ] );
-        InventorySaveInfo save = inventorySaveInfo.remove( info.getPlayer().getName().toLowerCase( Locale.ENGLISH ) );
-        if ( save != null ) {
-            save.apply( inv );
+        inv.setArmorContents(new ItemStack[inv.getArmorContents().length]);
+        InventorySaveInfo save = inventorySaveInfo.remove(info.getPlayer().getName().toLowerCase(Locale.ENGLISH));
+        if (save != null) {
+            save.apply(inv);
         }
     }
 }

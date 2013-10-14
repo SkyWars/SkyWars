@@ -37,27 +37,27 @@ public class SetupCommand {
     private final CommandExecutorBase base;
     private final SetupStates states;
 
-    public SetupCommand( @NonNull SkyWars plugin ) {
+    public SetupCommand(@NonNull SkyWars plugin) {
         this.plugin = plugin;
-        this.base = new CommandExecutorBase( "skywars.setup" );
+        this.base = new CommandExecutorBase("skywars.setup");
         this.states = new SetupStates();
         this.initCommands();
     }
 
     private void initCommands() {
-        base.addSubCommand( new StartNewArena( plugin, states ) );
-        base.addSubCommand( new SetPos1( states ) );
-        base.addSubCommand( new SetPos2( states ) );
-        base.addSubCommand( new SetSpawnLocation( states ) );
-        base.addSubCommand( new SaveCurrentArena( plugin, states ) );
+        base.addSubCommand(new StartNewArena(plugin, states));
+        base.addSubCommand(new SetPos1(states));
+        base.addSubCommand(new SetPos2(states));
+        base.addSubCommand(new SetSpawnLocation(states));
+        base.addSubCommand(new SaveCurrentArena(plugin, states));
     }
 
-    public void latchOnto( PluginCommand command ) {
-        if ( command != null ) {
-            command.setDescription( "Setup command for " + SkyStatic.getPluginName() );
-            command.setExecutor( base );
-            command.setUsage( "/<command>" );
-            command.setPermission( null );
+    public void latchOnto(PluginCommand command) {
+        if (command != null) {
+            command.setDescription("Setup command for " + SkyStatic.getPluginName());
+            command.setExecutor(base);
+            command.setUsage("/<command>");
+            command.setPermission(null);
         }
     }
 }

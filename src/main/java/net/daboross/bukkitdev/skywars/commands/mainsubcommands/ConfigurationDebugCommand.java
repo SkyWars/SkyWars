@@ -37,45 +37,45 @@ public class ConfigurationDebugCommand extends SubCommand {
 
     private final SkyWars plugin;
 
-    public ConfigurationDebugCommand( SkyWars plugin ) {
-        super( "cfgdebug", true, "skywars.cfgdebug", "Displays debug information for the current configuration. Best used in console. If '-p' is specified as a parameter than the output is pasted and you are given a link." );
-        super.addCommandFilter( new ArgumentFilter( ArgumentFilter.ArgumentCondition.LESS_THAN, 3, ColorList.ERR + "Too many parameters" ) );
+    public ConfigurationDebugCommand(SkyWars plugin) {
+        super("cfgdebug", true, "skywars.cfgdebug", "Displays debug information for the current configuration. Best used in console. If '-p' is specified as a parameter than the output is pasted and you are given a link.");
+        super.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.LESS_THAN, 3, ColorList.ERR + "Too many parameters"));
         this.plugin = plugin;
     }
 
     @Override
-    public void runCommand( CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs ) {
+    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         boolean paste = false;
-        if ( subCommandArgs.length > 0 ) {
-            if ( subCommandArgs[0].equalsIgnoreCase( "-p" ) ) {
+        if (subCommandArgs.length > 0) {
+            if (subCommandArgs[0].equalsIgnoreCase("-p")) {
                 paste = true;
             } else {
-                sender.sendMessage( "Invalid argument '" + subCommandArgs[0] + "'." );
-                sender.sendMessage( getHelpMessage( baseCommandLabel, subCommandLabel ) );
+                sender.sendMessage("Invalid argument '" + subCommandArgs[0] + "'.");
+                sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
                 return;
             }
         }
-        sender.sendMessage( "Gathering data" );
+        sender.sendMessage("Gathering data");
         String data = getData();
-        if ( paste ) {
-            new GistReportRunnable( plugin, sender.getName(), data ).runMe();
+        if (paste) {
+            new GistReportRunnable(plugin, sender.getName(), data).runMe();
         } else {
-            sender.sendMessage( data );
+            sender.sendMessage(data);
         }
 
     }
 
     private String getData() {
         StringBuilder dataB = new StringBuilder();
-        for ( SkyArenaConfig arena : plugin.getConfiguration().getEnabledArenas() ) {
-            dataB.append( "##" ).append( arena.getArenaName() )
-                    .append( "\n```\n" )
-                    .append( arena.toIndentedString( 0 ) )
-                    .append( "\n```\n" );
+        for (SkyArenaConfig arena : plugin.getConfiguration().getEnabledArenas()) {
+            dataB.append("##").append(arena.getArenaName())
+                    .append("\n```\n")
+                    .append(arena.toIndentedString(0))
+                    .append("\n```\n");
         }
         dataB.append("##Parent\n```\n")
                 .append(plugin.getConfiguration().getParentArena()
-                .toIndentedString( 0)).append("\n```\n");
+                .toIndentedString(0)).append("\n```\n");
         return dataB.toString();
     }
 
@@ -85,20 +85,20 @@ public class ConfigurationDebugCommand extends SubCommand {
         private final String playerName;
         private final String text;
 
-        public GistReportRunnable( Plugin plugin, String playerName, String text ) {
+        public GistReportRunnable(Plugin plugin, String playerName, String text) {
             this.plugin = plugin;
             this.playerName = playerName;
             this.text = text;
         }
 
         public void runMe() {
-            plugin.getServer().getScheduler().runTaskAsynchronously( plugin, this );
+            plugin.getServer().getScheduler().runTaskAsynchronously(plugin, this);
         }
 
         @Override
         public void run() {
-            String url = GistReport.gistText( plugin.getLogger(), text );
-            plugin.getServer().getScheduler().runTask( plugin, new SendResult( playerName, "debug-url: " + url ) );
+            String url = GistReport.gistText(plugin.getLogger(), text);
+            plugin.getServer().getScheduler().runTask(plugin, new SendResult(playerName, "debug-url: " + url));
         }
 
         private static class SendResult implements Runnable {
@@ -106,16 +106,16 @@ public class ConfigurationDebugCommand extends SubCommand {
             private final String playerName;
             private final String result;
 
-            public SendResult( String playerName, String result ) {
+            public SendResult(String playerName, String result) {
                 this.playerName = playerName;
                 this.result = result;
             }
 
             @Override
             public void run() {
-                CommandSender sender = playerName.equalsIgnoreCase( "CONSOLE" ) ? Bukkit.getConsoleSender() : Bukkit.getPlayer( playerName );
-                if ( sender != null ) {
-                    sender.sendMessage( result );
+                CommandSender sender = playerName.equalsIgnoreCase("CONSOLE") ? Bukkit.getConsoleSender() : Bukkit.getPlayer(playerName);
+                if (sender != null) {
+                    sender.sendMessage(result);
                 }
             }
         }

@@ -48,45 +48,45 @@ public class LocationStore implements Listener, SkyLocationStore {
     private FileConfiguration storage;
     private File configFile;
 
-    public LocationStore( JavaPlugin plugin ) {
+    public LocationStore(JavaPlugin plugin) {
         this.plugin = plugin;
-        ConfigurationSerialization.registerClass( SkyBlockLocation.class );
-        ConfigurationSerialization.registerClass( SkyPlayerLocation.class );
-        ConfigurationSerialization.registerClass( SkyBlockLocationRange.class );
+        ConfigurationSerialization.registerClass(SkyBlockLocation.class);
+        ConfigurationSerialization.registerClass(SkyPlayerLocation.class);
+        ConfigurationSerialization.registerClass(SkyBlockLocationRange.class);
         load();
     }
 
     private void load() {
-        if ( configFile == null ) {
-            configFile = new File( plugin.getDataFolder(), "locations.yml" );
+        if (configFile == null) {
+            configFile = new File(plugin.getDataFolder(), "locations.yml");
         }
-        storage = YamlConfiguration.loadConfiguration( configFile );
-        Object lobbyO = storage.get( "lobby" );
-        if ( lobbyO != null ) {
-            if ( lobbyO instanceof SkyBlockLocation ) {
-                lobbyPosition = new SkyPlayerLocation( (SkyBlockLocation) lobbyO );
-            } else if ( lobbyO instanceof SkyPlayerLocation ) {
+        storage = YamlConfiguration.loadConfiguration(configFile);
+        Object lobbyO = storage.get("lobby");
+        if (lobbyO != null) {
+            if (lobbyO instanceof SkyBlockLocation) {
+                lobbyPosition = new SkyPlayerLocation((SkyBlockLocation) lobbyO);
+            } else if (lobbyO instanceof SkyPlayerLocation) {
                 lobbyPosition = (SkyPlayerLocation) lobbyO;
             } else {
-                plugin.getLogger().warning( "Lobby is not ArenaLocation" );
+                plugin.getLogger().warning("Lobby is not ArenaLocation");
             }
         } else {
             List<World> worlds = Bukkit.getWorlds();
-            if ( worlds.isEmpty() ) {
-                lobbyPosition = new SkyPlayerLocation( 0, 0, 0, Statics.ARENA_WORLD_NAME );
+            if (worlds.isEmpty()) {
+                lobbyPosition = new SkyPlayerLocation(0, 0, 0, Statics.ARENA_WORLD_NAME);
             } else {
-                Location spawn = worlds.get( 0 ).getSpawnLocation();
-                lobbyPosition = new SkyPlayerLocation( spawn );
+                Location spawn = worlds.get(0).getSpawnLocation();
+                lobbyPosition = new SkyPlayerLocation(spawn);
             }
         }
-        List<?> list = storage.getList( "portals" );
-        if ( list
-                != null ) {
-            for ( Object obj : list ) {
-                if ( obj instanceof SkyBlockLocation ) {
-                    portals.add( (SkyBlockLocation) obj );
+        List<?> list = storage.getList("portals");
+        if (list
+                != null) {
+            for (Object obj : list) {
+                if (obj instanceof SkyBlockLocation) {
+                    portals.add((SkyBlockLocation) obj);
                 } else {
-                    plugin.getLogger().warning( "Non-ArenaLocation found in portals list" );
+                    plugin.getLogger().warning("Non-ArenaLocation found in portals list");
                 }
             }
         }
@@ -94,17 +94,17 @@ public class LocationStore implements Listener, SkyLocationStore {
 
     @Override
     public void save() {
-        if ( storage != null ) {
-            plugin.getLogger().log( Level.INFO, "Saving configuration" );
-            storage.set( "portals", portals );
-            storage.set( "lobby", lobbyPosition );
+        if (storage != null) {
+            plugin.getLogger().log(Level.INFO, "Saving configuration");
+            storage.set("portals", portals);
+            storage.set("lobby", lobbyPosition);
             try {
-                storage.save( configFile );
-            } catch ( IOException ex ) {
-                plugin.getLogger().log( Level.WARNING, "Failed to save to location store", ex );
+                storage.save(configFile);
+            } catch (IOException ex) {
+                plugin.getLogger().log(Level.WARNING, "Failed to save to location store", ex);
             }
         } else {
-            plugin.getLogger().log( Level.WARNING, "For some reason storage is trying to save when storage was never loaded" );
+            plugin.getLogger().log(Level.WARNING, "For some reason storage is trying to save when storage was never loaded");
         }
     }
 
@@ -114,7 +114,7 @@ public class LocationStore implements Listener, SkyLocationStore {
     }
 
     @Override
-    public void setLobbyPosition( @NonNull SkyPlayerLocation lobbyPosition ) {
+    public void setLobbyPosition(@NonNull SkyPlayerLocation lobbyPosition) {
         this.lobbyPosition = lobbyPosition;
     }
 

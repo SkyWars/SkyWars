@@ -28,10 +28,10 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 public class SpawnListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-    public void onSpawn( CreatureSpawnEvent evt ) {
+    public void onSpawn(CreatureSpawnEvent evt) {
         String world = evt.getLocation().getWorld().getName();
-        if ( world.equalsIgnoreCase( "SkyWarsArenaWorld" ) || world.equalsIgnoreCase( "SkyworldWarriors" ) ) {
-            evt.setCancelled( true );
+        if (world.equalsIgnoreCase("SkyWarsArenaWorld") || world.equalsIgnoreCase("SkyworldWarriors")) {
+            evt.setCancelled(true);
         }
     }
 }
