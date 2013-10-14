@@ -114,11 +114,10 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
         // Points
         enablePoints = mainConfig.getSetBoolean( Keys.Points.ENABLE, Defaults.Points.ENABLE );
-        if ( enablePoints ) {
-            winPointDiff = mainConfig.getSetInt( Keys.Points.WIN_DIFF, Defaults.Points.WIN_DIFF );
-            deathPointDiff = mainConfig.getSetInt( Keys.Points.DEATH_DIFF, Defaults.Points.DEATH_DIFF );
-            killPointDiff = mainConfig.getSetInt( Keys.Points.KILL_DIFF, Defaults.Points.KILL_DIFF );
-        }
+        winPointDiff = mainConfig.getSetInt( Keys.Points.WIN_DIFF, Defaults.Points.WIN_DIFF );
+        deathPointDiff = mainConfig.getSetInt( Keys.Points.DEATH_DIFF, Defaults.Points.DEATH_DIFF );
+        killPointDiff = mainConfig.getSetInt( Keys.Points.KILL_DIFF, Defaults.Points.KILL_DIFF );
+
         // Remove deprecated values
         mainConfig.removeValues( Keys.Deprecated.CHAT_PREFIX, Keys.Deprecated.PREFIX_CHAT );
         // Save
@@ -133,7 +132,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
     @Override
     public void reload() throws IOException, InvalidConfigurationException, SkyConfigurationException {
-            load();
+        load();
     }
 
     private void loadArena( String name ) throws SkyConfigurationException {
