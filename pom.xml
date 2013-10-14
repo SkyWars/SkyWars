@@ -157,14 +157,6 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <artifactSet>
-                                <includes>
-                                    <include>net.daboross.metrics.bukkit:metrics-lite</include>
-                                    <include>net.daboross.bukkitdev:command-executor-base</include>
-                                    <include>net.daboross.bukkitdev:skywars-api</include>
-                                    <include>net.daboross.json:json</include>
-                                </includes>
-                            </artifactSet>
                             <relocations>
                                 <relocation>
                                     <pattern>org.mcstats</pattern>
