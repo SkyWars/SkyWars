@@ -23,9 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import lombok.NonNull;
-import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
-import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyBoundariesConfig;
-import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyMessagesConfig;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
 import net.daboross.bukkitdev.skywars.api.location.SkyLocationStore;
 import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
@@ -56,9 +53,6 @@ public class LocationStore implements Listener, SkyLocationStore {
         ConfigurationSerialization.registerClass( SkyBlockLocation.class );
         ConfigurationSerialization.registerClass( SkyPlayerLocation.class );
         ConfigurationSerialization.registerClass( SkyBlockLocationRange.class );
-        ConfigurationSerialization.registerClass( SkyBoundariesConfig.class );
-        ConfigurationSerialization.registerClass( SkyMessagesConfig.class );
-        ConfigurationSerialization.registerClass( SkyArenaConfig.class );
         load();
     }
 

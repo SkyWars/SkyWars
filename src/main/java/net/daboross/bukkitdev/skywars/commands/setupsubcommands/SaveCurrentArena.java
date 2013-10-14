@@ -16,8 +16,6 @@
  */
 package net.daboross.bukkitdev.skywars.commands.setupsubcommands;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.NonNull;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
@@ -54,21 +52,11 @@ public class SaveCurrentArena extends SubCommand {
         SkyArenaConfig config = states.getSetupState( sender.getName() ).convertToArenaConfig();
         plugin.getConfiguration().saveArena( config );
         sender.sendMessage( ColorList.REG + "Now saving a configuration debug - this is for testing and will be disabled in the future." );
-        new GistReportRunnable( plugin, sender.getName(), GistReport.joinText( getData( config ) ) ).runMe();
+        new GistReportRunnable( plugin, sender.getName(), getData( config ) ).runMe();
     }
 
-    private List<String> getData( SkyArenaConfig config ) {
-        List<String> list = new ArrayList<>();
-        list.add( "##" + config.getArenaName() );
-        list.add( "```" );
-        list.add( "file=" + config.getFile().getAbsolutePath() );
-        list.add( "spawns=" + config.getRawSpawns() );
-        list.add( "boundaries=" + config.getBoundaries().toIndentedString( 1 ) );
-        list.add( "messages=" + config.getMessages().toIndentedString( 1 ) );
-        list.add( "placement=" + config.getPlacement().toIndentedString( 1 ) );
-        list.add( "numPlayers=" + config.getRawNumPlayers() );
-        list.add( "```" );
-        return list;
+    private String getData( SkyArenaConfig config ) {
+        return "##" + config.getArenaName() + "\n```\n" + config.toIndentedString( 0 ) + "\n```\n";
     }
 
     private static class GistReportRunnable implements Runnable {

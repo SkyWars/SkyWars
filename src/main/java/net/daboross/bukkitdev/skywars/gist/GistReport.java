@@ -28,7 +28,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONException;
@@ -39,18 +38,6 @@ import org.json.JSONStringer;
  *
  */
 public class GistReport {
-
-    public static String joinText( Iterable<String> iterable ) {
-        Iterator<String> iterator = iterable.iterator();
-        if ( !iterator.hasNext() ) {
-            return "";
-        }
-        StringBuilder builder = new StringBuilder( iterator.next() );
-        while ( iterator.hasNext() ) {
-            builder.append( "\n" ).append( iterator.next() );
-        }
-        return builder.toString();
-    }
 
     public static String gistText( Logger logger, String text ) {
         URL postUrl;

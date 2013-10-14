@@ -17,6 +17,7 @@
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
@@ -55,29 +56,27 @@ public class ConfigurationDebugCommand extends SubCommand {
             }
         }
         sender.sendMessage( "Gathering data" );
-        List<String> data = getData();
+        String data = getData();
         if ( paste ) {
-            new GistReportRunnable( plugin, sender.getName(), GistReport.joinText( data ) ).runMe();
+            new GistReportRunnable( plugin, sender.getName(), data ).runMe();
         } else {
-            sender.sendMessage( data.toArray( new String[ data.size() ] ) );
+            sender.sendMessage( data );
         }
 
     }
 
-    private List<String> getData() {
-        List<String> list = new ArrayList<>();
+    private String getData() {
+        StringBuilder dataB = new StringBuilder();
         for ( SkyArenaConfig arena : plugin.getConfiguration().getEnabledArenas() ) {
-            list.add( "##" + arena.getArenaName() + "" );
-            list.add( "```" );
-            list.add( "file=" + arena.getFile().getAbsolutePath() );
-            list.add( "spawns=" + arena.getSpawns() );
-            list.add( "boundaries=" + arena.getBoundaries().toIndentedString( 1 ) );
-            list.add( "messages=" + arena.getMessages().toIndentedString( 1 ) );
-            list.add( "placement=" + arena.getPlacement().toIndentedString( 1 ) );
-            list.add( "numPlayers=" + arena.getNumPlayers() );
-            list.add( "```" );
+            dataB.append( "##" ).append( arena.getArenaName() )
+                    .append( "\n```\n" )
+                    .append( arena.toIndentedString( 0 ) )
+                    .append( "\n```\n" );
         }
-        return list;
+        dataB.append("##Parent\n```\n")
+                .append(plugin.getConfiguration().getParentArena()
+                .toIndentedString( 0)).append("\n```\n");
+        return dataB.toString();
     }
 
     private static class GistReportRunnable implements Runnable {

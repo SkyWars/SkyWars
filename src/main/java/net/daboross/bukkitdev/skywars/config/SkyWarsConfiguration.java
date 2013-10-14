@@ -59,6 +59,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private int winPointDiff;
     @Getter
     private int killPointDiff;
+    @Getter
+    private int arenaDistanceApart;
 
     public SkyWarsConfiguration( SkyWars plugin ) throws IOException, InvalidConfigurationException, SkyConfigurationException {
         this.plugin = plugin;
@@ -112,12 +114,15 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             throw new SkyConfigurationException( "No arenas enabled" );
         }
 
-        // Points
+        // Keys.Points
         enablePoints = mainConfig.getSetBoolean( Keys.Points.ENABLE, Defaults.Points.ENABLE );
         winPointDiff = mainConfig.getSetInt( Keys.Points.WIN_DIFF, Defaults.Points.WIN_DIFF );
         deathPointDiff = mainConfig.getSetInt( Keys.Points.DEATH_DIFF, Defaults.Points.DEATH_DIFF );
         killPointDiff = mainConfig.getSetInt( Keys.Points.KILL_DIFF, Defaults.Points.KILL_DIFF );
 
+        // Keys.ARENA_DISTANCE_APART
+        arenaDistanceApart = mainConfig.getSetInt( Keys.ARENA_DISTANCE_APART, Defaults.ARENA_DISTANCE_APART);
+        
         // Remove deprecated values
         mainConfig.removeValues( Keys.Deprecated.CHAT_PREFIX, Keys.Deprecated.PREFIX_CHAT );
         // Save
@@ -227,6 +232,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         private static final String MESSAGE_PREFIX = "message-prefix";
         private static final String DEBUG = "debug";
         private static final String SAVE_INVENTORY = "save-inventory";
+        private static final String ARENA_DISTANCE_APART = "arena-distance-apart";
 
         private static class Points {
 
@@ -257,6 +263,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         private static final ArenaOrder ARENA_ORDER = ArenaOrder.RANDOM;
         private static final List<String> ENABLED_ARENAS = Arrays.asList( "skyblock-warriors" );
         private static final boolean SAVE_INVENTORY = true;
+        private static final int ARENA_DISTANCE_APART = 200;
 
         private static class Points {
 

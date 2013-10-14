@@ -22,7 +22,6 @@ import java.util.List;
 import lombok.Data;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyBoundaries;
-import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyPlacementConfig;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
 import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
@@ -76,9 +75,7 @@ public class SetupData {
         boundaries.setOrigin( origin );
         boundaries.setClearing( clearing );
         boundaries.setBuilding( building );
-        SkyPlacementConfig placement = config.getPlacement();
-        placement.setPlacementY( 20 );
-        placement.setDistanceApart( 200 );
+        config.setPlacementY( 20 );
         config.setSpawns( spawns );
         config.setNumPlayers( spawns.size() );
         return config;

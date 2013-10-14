@@ -1,4 +1,4 @@
-config-version: 0
+config-version: 1
 spawns:
 - x: 46.5
   y: 9
@@ -12,7 +12,8 @@ spawns:
 - x: 10.5
   y: 9
   z: 44.5
-num-players: 4
+num-teams: 4
+team-size: 1
 boundaries:
   origin:
     min:
@@ -42,6 +43,4 @@ boundaries:
       x: 61
       y: 41
       z: 63
-placement:
-  placement-y: 20
-  distance-apart: 200
+placement-y: 20

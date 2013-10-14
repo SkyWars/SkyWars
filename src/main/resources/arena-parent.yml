@@ -1,9 +1,10 @@
-config-version: 0
+config-version: 1
 spawns:
 - x: 0
   y: 0
   z: 0
-num-players: 2
+num-teams: 1
+team-size: 1
 boundaries:
   origin:
     min:
@@ -33,9 +34,7 @@ boundaries:
       x: 0
       y: 0
       z: 0
-placement:
-  placement-y: 20
-  distance-apart: 200
+placement-y: 20
 messages:
   death:
     killed-void: '#N%s#B pushed #N%s#B into the void of doom!'
