@@ -112,7 +112,7 @@ public class SkyWorldHandler {
     }
 
     private SkyBlockLocation getMinLocation(int id, SkyArena arena) {
-        int distanceApart = 200;
+        int distanceApart = plugin.getConfiguration().getArenaDistanceApart();
         int modX = (id % 2) * distanceApart;
         int modZ = (id / 2) * distanceApart;
         int modY = arena.getPlacementY();
