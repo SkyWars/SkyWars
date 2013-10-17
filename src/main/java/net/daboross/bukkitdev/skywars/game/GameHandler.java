@@ -53,10 +53,9 @@ public class GameHandler implements SkyGameHandler {
             throw new IllegalArgumentException("Invalid id " + id);
         }
         GameEndInfo info = new GameEndInfo(plugin.getIDHandler().getGame(id), broadcast);
-        Location lobby = plugin.getLocationStore().getLobbyPosition().toLocation();
         for (Player player : info.getAlivePlayers()) {
             plugin.getDistributor().distribute(new PlayerLeaveGameInfo(id, player));
-            player.teleport(lobby);
+            respawnPlayer(player);
         }
         plugin.getDistributor().distribute(info);
     }
