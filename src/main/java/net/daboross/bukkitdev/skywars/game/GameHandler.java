@@ -27,7 +27,6 @@ import net.daboross.bukkitdev.skywars.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameInfo;
 import net.daboross.bukkitdev.skywars.events.PlayerRespawnAfterGameEndInfo;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 /**
