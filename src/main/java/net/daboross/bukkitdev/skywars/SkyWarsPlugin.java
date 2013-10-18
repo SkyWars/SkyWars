@@ -59,6 +59,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.mcstats.MetricsLite;
 
 /**
  *
@@ -107,6 +108,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     public void onEnable() {
         try {
             startPlugin();
+            metrics();
         } catch (Throwable ex) {
             getLogger().log(Level.SEVERE, "Startup failed", ex);
             enabledCorrectly = false;
@@ -178,6 +180,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
                     getLogger().log(Level.WARNING, "Failed to save points", ex);
                 }
             }
+            SkyStatic.setLogger(getServer().getLogger());
             getLogger().log(Level.INFO, "SkyWars disabled successfully");
         }
     }
@@ -201,6 +204,20 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
             } else {
                 main.latchOnto(getCommand(commandName));
             }
+        }
+    }
+
+    private void metrics() {
+        try {
+            MetricsLite metrics;
+            try {
+                metrics = new MetricsLite(this);
+            } catch (IOException ex) {
+                return;
+            }
+            metrics.start();
+        } catch (Throwable t) {
+            // We just won't do metrics now
         }
     }
 }
