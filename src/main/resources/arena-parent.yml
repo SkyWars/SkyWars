@@ -3,7 +3,7 @@ spawns:
 - x: 0
   y: 0
   z: 0
-num-teams: 1
+num-teams: 2
 team-size: 1
 boundaries:
   origin:
