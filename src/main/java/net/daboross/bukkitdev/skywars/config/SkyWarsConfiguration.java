@@ -224,6 +224,11 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         saveArena(arena.getFile(), arena, String.format(Headers.ARENA, arena.getArenaName()));
     }
 
+    @Override
+    public YamlConfiguration getRawConfig() {
+        return mainConfig.getConfig();
+    }
+
     private static class Keys {
 
         private static final String VERSION = "config-version";
@@ -276,16 +281,16 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
     private static class Headers {
 
-        private static final String CONFIG =
-                "####### config.yml #######%n"
+        private static final String CONFIG
+                = "####### config.yml #######%n"
                 + "%n"
                 + "All comment changes will be removed.%n"
                 + "%n"
                 + "For documentation, please visit %n"
                 + "https://github.com/daboross/SkyWars/wiki/Configuration%n"
                 + "#########";
-        private static final String ARENA =
-                "####### %s.yml ###%n"
+        private static final String ARENA
+                = "####### %s.yml ###%n"
                 + "This is the Skyblock Warriors arena config.%n"
                 + "%n"
                 + "All values that are not in this configuration will be inherited from%n"
@@ -296,8 +301,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
                 + "For documentation, please visit %n"
                 + "https://github.com/daboross/SkyWars/wiki/Configuration%n"
                 + "#######";
-        private static final String PARENT =
-                "####### arena-parent.yml ###%n"
+        private static final String PARENT
+                = "####### arena-parent.yml ###%n"
                 + "Any settings that an individual arena config leaves out will be inherited%n"
                 + " from this arena config.%n"
                 + "%n"
