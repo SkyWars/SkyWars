@@ -22,7 +22,6 @@ import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
-import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 

@@ -32,6 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.NonNull;
 import lombok.SneakyThrows;
+import lombok.Synchronized;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
@@ -47,6 +48,7 @@ import org.json.JSONStringer;
 public class GistReport {
 
     private static final String GIST_API = "https://api.github.com/gists";
+    private static final Object GIST_API_URL_LOCK = new Object();
     private static URL GIST_API_URL;
     private static final String ISGD_API = "http://is.gd/create.php?format=simple&url=%s";
 
@@ -83,9 +85,6 @@ public class GistReport {
      */
     public static String reportReport(String reportText) {
         String reportURL = gistText("SkyWars gist report", "report.md", reportText);
-        if (reportURL == null) {
-            return null;
-        }
         return shortenURL(reportURL);
     }
 
@@ -97,7 +96,6 @@ public class GistReport {
      * @return
      */
     public static String gistText(String gistDescription, String gistFileName, String gistText) {
-        final Logger logger = SkyStatic.getLogger();
         if (!checkGistURL()) {
             return null;
         }
@@ -105,7 +103,7 @@ public class GistReport {
         try {
             connection = GIST_API_URL.openConnection();
         } catch (IOException ex) {
-            logger.log(Level.WARNING, "[SkyGistReport] Failed to open a connecting with ''{0}'': {1}", new Object[]{GIST_API, ex.toString()});
+            SkyStatic.getLogger().log(Level.WARNING, "[SkyGistReport] Failed to open a connecting with ''{0}'': {1}", new Object[]{GIST_API, ex.toString()});
             return null;
         }
         connection.setDoOutput(true);
@@ -120,7 +118,7 @@ public class GistReport {
                     .key("content").value(gistText)
                     .endObject().endObject().endObject().toString();
         } catch (JSONException ex) {
-            logger.log(Level.FINE, "[SkyGistReport] Failed to encode report contents in JSON: {0}", ex.toString());
+            SkyStatic.getLogger().log(Level.FINE, "[SkyGistReport] Failed to encode report contents in JSON: {0}", ex.toString());
             return null;
         }
         try (OutputStream outputStream = connection.getOutputStream()) {
@@ -129,7 +127,7 @@ public class GistReport {
                 requestWriter.close();
             }
         } catch (IOException ex) {
-            logger.log(Level.FINE, "[SkyGistReport] Failed to write output to gist: {0}", ex.toString());
+            SkyStatic.getLogger().log(Level.FINE, "[SkyGistReport] Failed to write output to gist: {0}", ex.toString());
             return null;
         }
 
@@ -137,7 +135,7 @@ public class GistReport {
         try {
             inputJson = new JSONObject(readConnection(connection));
         } catch (JSONException | IOException ex) {
-            logger.log(Level.FINE, "[SkyGistReport] Failed to read response from gist: {0}", ex.toString());
+            SkyStatic.getLogger().log(Level.FINE, "[SkyGistReport] Failed to read response from gist: {0}", ex.toString());
             return null;
         }
         String resultUrl = inputJson.optString("html_url", null);
@@ -185,14 +183,15 @@ public class GistReport {
     }
 
     private static boolean checkGistURL() {
-        if (GIST_API_URL == null) {
-            try {
-                GIST_API_URL = new URL(GIST_API);
-            } catch (MalformedURLException ex) {
-                SkyStatic.getLogger().log(Level.WARNING, "[SkyGistReport] Couldn''t encode ''{0}'' as a URL: {1}; Please notify the developer with this error ASAP.", new Object[]{GIST_API, ex.toString()});
-                return false;
+        synchronized (GIST_API_URL_LOCK) {
+            if (GIST_API_URL == null) {
+                try {
+                    GIST_API_URL = new URL(GIST_API);
+                } catch (MalformedURLException ex) {
+                    SkyStatic.getLogger().log(Level.WARNING, "[SkyGistReport] Couldn''t encode ''{0}'' as a URL: {1}; Please notify the developer with this error ASAP.", new Object[]{GIST_API, ex.toString()});
+                    return false;
+                }
             }
-            return true;
         }
         return true;
     }

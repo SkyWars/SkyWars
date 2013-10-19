@@ -43,9 +43,9 @@ public class PermissionHandler {
     }
 
     private void addOpOnlyPermissions(PluginManager pm, String... permissions) {
-        for (int i = 0; i < permissions.length; i++) {
-            String name = permissionBase + permissions[i];
-            Permission permission = getPermission(pm, permissionBase + permissions[i]);
+        for (String perm : permissions) {
+            String name = permissionBase + perm;
+            Permission permission = getPermission(pm, permissionBase + perm);
             permission.setDefault(PermissionDefault.OP);
             basePermission.getChildren().put(name, Boolean.TRUE);
             updateAndAdd(pm, permission);
@@ -53,8 +53,8 @@ public class PermissionHandler {
     }
 
     private void addEveryonePermissions(PluginManager pm, String... permissions) {
-        for (int i = 0; i < permissions.length; i++) {
-            String name = permissionBase + "." + permissions[i];
+        for (String perm : permissions) {
+            String name = permissionBase + "." + perm;
             Permission permission = getPermission(pm, name);
             permission.setDefault(PermissionDefault.TRUE);
             basePermission.getChildren().put(name, Boolean.TRUE);

@@ -45,7 +45,7 @@ public class PointStorage extends SkyPoints {
         try {
             Constructor<? extends PointStorageBackend> constructor = backendClass.getConstructor(SkyWars.class);
             this.backend = constructor.newInstance(plugin);
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             throw new StartupFailedException("Unable to initialize storage backend", ex);
         }
     }

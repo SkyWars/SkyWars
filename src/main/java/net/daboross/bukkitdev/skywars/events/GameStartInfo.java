@@ -42,7 +42,7 @@ public class GameStartInfo {
         }
         this.game = game;
         List<String> playersList = game.getAlivePlayers();
-        this.players = new ArrayList<Player>(playersList.size());
+        this.players = new ArrayList<>(playersList.size());
         for (int i = 0; i < playersList.size(); i++) {
             Player p = Bukkit.getPlayer(playersList.get(i));
             if (p == null) {

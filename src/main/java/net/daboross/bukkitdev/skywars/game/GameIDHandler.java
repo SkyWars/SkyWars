@@ -34,7 +34,7 @@ import net.daboross.bukkitdev.skywars.events.GameStartInfo;
 public class GameIDHandler implements SkyIDHandler {
 
     private final Map<Integer, ArenaGame> currentGames = new HashMap<>();
-    private final List<Integer> currentIDs = new ArrayList<Integer>();
+    private final List<Integer> currentIDs = new ArrayList<>();
 
     @Override
     public boolean gameRunning(int id) {

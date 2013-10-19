@@ -30,7 +30,7 @@ import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameInfo;
  */
 public class CurrentGames implements SkyCurrentGameTracker {
 
-    private final Map<String, Integer> currentlyInGame = new HashMap<String, Integer>();
+    private final Map<String, Integer> currentlyInGame = new HashMap<>();
 
     private void setGameID(String player, int gameID) {
         currentlyInGame.put(player.toLowerCase(Locale.ENGLISH), Integer.valueOf(gameID));

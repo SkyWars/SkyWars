@@ -49,7 +49,7 @@ public class KillScoreboardManager implements Listener {
     private final SkyWarsPlugin plugin;
     private final File saveFile;
     private final YamlConfiguration save;
-    private final Map<Integer, Scoreboard> gameScoreboards = new HashMap<Integer, Scoreboard>();
+    private final Map<Integer, Scoreboard> gameScoreboards = new HashMap<>();
 
     public KillScoreboardManager(SkyWarsPlugin plugin) throws StartupFailedException {
         this.plugin = plugin;

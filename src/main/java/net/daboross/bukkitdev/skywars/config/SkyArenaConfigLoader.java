@@ -19,8 +19,7 @@ package net.daboross.bukkitdev.skywars.config;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import lombok.RequiredArgsConstructor;
-import net.daboross.bukkitdev.skywars.api.SkyWars;
+import lombok.NoArgsConstructor;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
 import org.bukkit.configuration.ConfigurationSection;
@@ -28,10 +27,8 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class SkyArenaConfigLoader {
-
-    private final SkyWars plugin;
 
     public SkyArenaConfig loadArena(File file, String name, String messagePrefix) throws SkyConfigurationException {
         FileConfiguration config = new YamlConfiguration();

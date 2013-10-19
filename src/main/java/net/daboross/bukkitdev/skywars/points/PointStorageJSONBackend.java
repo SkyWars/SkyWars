@@ -18,11 +18,15 @@ package net.daboross.bukkitdev.skywars.points;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.util.Locale;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.points.PointStorageBackend;
+import org.apache.commons.lang.CharSet;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -55,8 +59,10 @@ public class PointStorageJSONBackend extends PointStorageBackend {
 
     @Override
     public void save() throws IOException {
-        try (FileWriter writer = new FileWriter(saveFile)) {
-            scores.write(writer);
+        try (FileOutputStream fos = new FileOutputStream(saveFile)) {
+            try (OutputStreamWriter writer = new OutputStreamWriter(fos, Charset.forName("UTF-8"))) {
+                scores.write(writer);
+            }
         } catch (IOException | JSONException ex) {
             throw new IOException("Couldn't write to " + saveFile.getAbsolutePath(), ex);
         }

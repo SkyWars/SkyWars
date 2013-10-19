@@ -64,8 +64,8 @@ public class Messages {
          * third %s is plugin's implementation version, fourth %s is API
          * version.
          */
-        public static final String CREDITS_AND_VERSION =
-                ColorList.REG + "%s v" + ColorList.DATA + "%s" + ColorList.REG + " created by " + ColorList.NAME + "Dabo Ross%n"
+        public static final String CREDITS_AND_VERSION
+                = ColorList.REG + "%s v" + ColorList.DATA + "%s" + ColorList.REG + " created by " + ColorList.NAME + "Dabo Ross%n"
                 + ColorList.REG + "Build number %s";
     }
 

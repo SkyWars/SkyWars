@@ -35,7 +35,7 @@ public class StartedArenaCondition implements CommandPreCondition, CommandFilter
 
     @Override
     public boolean canContinue(CommandSender sender, SubCommand subCommand) {
-        if (states.getSetupState(sender.getName()) == null == started) {
+        if ((states.getSetupState(sender.getName()) == null) == started) {
             return false;
         }
         return true;
@@ -43,7 +43,7 @@ public class StartedArenaCondition implements CommandPreCondition, CommandFilter
 
     @Override
     public boolean canContinue(CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        if (states.getSetupState(sender.getName()) == null == started) {
+        if ((states.getSetupState(sender.getName()) == null) == started) {
             return false;
         }
         return true;

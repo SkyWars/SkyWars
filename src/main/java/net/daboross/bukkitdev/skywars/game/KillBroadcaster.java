@@ -18,7 +18,6 @@ package net.daboross.bukkitdev.skywars.game;
 
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.config.SkyMessages;
-import org.bukkit.Bukkit;
 
 /**
  *

@@ -42,7 +42,7 @@ public class CancelAllCommand extends SubCommand {
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         SkyIDHandler idh = plugin.getIDHandler();
-        for (int id : new ArrayList<Integer>(idh.getCurrentIDs())) {
+        for (int id : new ArrayList<>(idh.getCurrentIDs())) {
             sender.sendMessage(ColorList.REG + "Canceling game " + ColorList.DATA + id);
             plugin.getGameHandler().endGame(id, true);
         }

@@ -63,7 +63,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
     public SkyWarsConfiguration(SkyWars plugin) throws IOException, InvalidConfigurationException, SkyConfigurationException {
         this.plugin = plugin;
-        this.arenaLoader = new SkyArenaConfigLoader(plugin);
+        this.arenaLoader = new SkyArenaConfigLoader();
         load();
     }
 

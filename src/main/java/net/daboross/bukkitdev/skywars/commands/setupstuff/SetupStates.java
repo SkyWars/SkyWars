@@ -19,7 +19,6 @@ package net.daboross.bukkitdev.skywars.commands.setupstuff;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 
 /**
  *

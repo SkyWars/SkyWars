@@ -65,6 +65,9 @@ public class SetupData {
     }
 
     public SkyArenaConfig convertToArenaConfig() {
+        if (originMin == null || originMax == null) {
+            throw new IllegalStateException("Origin not defined.");
+        }
         SkyArenaConfig config = new SkyArenaConfig();
         config.setArenaName(arenaName);
         config.setFile(saveFile);
@@ -77,7 +80,8 @@ public class SetupData {
         boundaries.setBuilding(building);
         config.setPlacementY(20);
         config.setSpawns(spawns);
-        config.setNumPlayers(spawns.size());
+        config.setNumTeams(spawns.size());
+        config.setTeamSize(1);
         return config;
     }
 

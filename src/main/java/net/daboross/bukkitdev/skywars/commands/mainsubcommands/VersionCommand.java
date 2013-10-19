@@ -31,12 +31,13 @@ import org.bukkit.command.CommandSender;
  */
 public class VersionCommand extends SubCommand {
 
-    private final SkyWars plugin;
-
     public VersionCommand(SkyWars plugin) {
+        this();
+    }
+
+    public VersionCommand() {
         super("version", true, "skywars.version", "Gives version");
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
-        this.plugin = plugin;
     }
 
     @Override
