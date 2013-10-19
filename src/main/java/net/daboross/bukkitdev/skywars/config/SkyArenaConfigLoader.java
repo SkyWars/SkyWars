@@ -16,5 +16,63 @@
  */
 package net.daboross.bukkitdev.skywars.config;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import lombok.RequiredArgsConstructor;
+import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
+import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+@RequiredArgsConstructor
 public class SkyArenaConfigLoader {
+
+    private final SkyWars plugin;
+
+    public SkyArenaConfig loadArena(File file, String name, String messagePrefix) throws SkyConfigurationException {
+        FileConfiguration config = new YamlConfiguration();
+        try {
+            config.load(file);
+        } catch (FileNotFoundException ex) {
+            throw new SkyConfigurationException("File " + file.getAbsolutePath() + " could not be found.", ex);
+        } catch (IOException ex) {
+            throw new SkyConfigurationException("IOException loading file " + file.getAbsolutePath(), ex);
+        } catch (InvalidConfigurationException ex) {
+            throw new SkyConfigurationException("Failed to load configuration file " + file.getAbsolutePath(), ex);
+        }
+        if (!checkVersion(config)) {
+            throw new SkyConfigurationException("Unknown config-version " + config.getInt("config-version") + " in file " + file.getAbsolutePath());
+        }
+        SkyArenaConfig arenaConfig = SkyArenaConfig.deserialize(config);
+        arenaConfig.setArenaName(name);
+        arenaConfig.setFile(file);
+        arenaConfig.getMessages().setPrefix(messagePrefix);
+        return null;
+    }
+
+    private boolean checkVersion(ConfigurationSection config) {
+        int version = config.getInt("config-version", 0);
+        if (version == 0) {
+            version0To1(config);
+            version = 1;
+        }
+        if (version == 1) {
+            // Current version
+            return true;
+        }
+        return false;
+    }
+
+    private void version0To1(ConfigurationSection config) {
+        config.set("config-version", 1);
+        config.set("num-teams", config.get("num-players"));
+        config.set("team-size", 1);
+        config.set("placement-y", config.get("placement.placement-y"));
+        config.set("num-players", null);
+        config.set("placement", null);
+    }
 }

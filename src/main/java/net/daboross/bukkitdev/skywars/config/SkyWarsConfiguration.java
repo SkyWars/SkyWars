@@ -17,7 +17,6 @@
 package net.daboross.bukkitdev.skywars.config;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +30,6 @@ import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class SkyWarsConfiguration implements SkyConfiguration {
@@ -61,9 +59,11 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private int killPointDiff;
     @Getter
     private int arenaDistanceApart;
+    private final SkyArenaConfigLoader arenaLoader;
 
     public SkyWarsConfiguration(SkyWars plugin) throws IOException, InvalidConfigurationException, SkyConfigurationException {
         this.plugin = plugin;
+        this.arenaLoader = new SkyArenaConfigLoader(plugin);
         load();
     }
 
@@ -150,23 +150,10 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             try {
                 plugin.saveResource(fileName, false);
             } catch (IllegalArgumentException ex) {
-                throw new SkyConfigurationException(name + " is in " + Keys.ENABLED_ARENAS + " but file " + file.getAbsolutePath() + " could not be found and file " + fileName + " could not be found in plugin jar.");
+                throw new SkyConfigurationException(name + " is in " + Keys.ENABLED_ARENAS + " but file " + file.getAbsolutePath() + " could not be found.");
             }
         }
-        FileConfiguration config = new YamlConfiguration();
-        try {
-            config.load(file);
-        } catch (FileNotFoundException ex) {
-            throw new SkyConfigurationException(name + " is in " + Keys.ENABLED_ARENAS + " but file " + file.getAbsolutePath() + " could not be found", ex);
-        } catch (IOException ex) {
-            throw new SkyConfigurationException("IOException load file " + file.getAbsolutePath(), ex);
-        } catch (InvalidConfigurationException ex) {
-            throw new SkyConfigurationException("Failed to load configuration file " + file.getAbsolutePath(), ex);
-        }
-        SkyArenaConfig arenaConfig = SkyArenaConfig.deserialize(config);
-        arenaConfig.setArenaName(name);
-        arenaConfig.setFile(file);
-        arenaConfig.getMessages().setPrefix(messagePrefix);
+        SkyArenaConfig arenaConfig = arenaLoader.loadArena(file, name, messagePrefix);
         arenaConfig.setParent(parentArena);
         enabledArenas.add(arenaConfig);
 
@@ -183,20 +170,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
                 throw new SkyConfigurationException("arena-parent.yml could not be found in plugin jar.", ex);
             }
         }
-        FileConfiguration config = new YamlConfiguration();
-        try {
-            config.load(file);
-        } catch (FileNotFoundException ex) {
-            throw new SkyConfigurationException("Can't find the parent arena yaml", ex);
-        } catch (IOException ex) {
-            throw new SkyConfigurationException("IOException loading arena-parent " + file.getAbsolutePath(), ex);
-        } catch (InvalidConfigurationException ex) {
-            throw new SkyConfigurationException("Failed to load arena-parent.yml " + file.getAbsolutePath(), ex);
-        }
-        SkyArenaConfig arenaConfig = SkyArenaConfig.deserialize(config);
-        arenaConfig.setArenaName("parent-arena");
-        arenaConfig.setFile(file);
-        arenaConfig.getMessages().setPrefix(messagePrefix);
+        SkyArenaConfig arenaConfig = arenaLoader.loadArena(file, "parent-arena", messagePrefix);
         parentArena = arenaConfig;
         saveArena(file, arenaConfig, String.format(Headers.PARENT));
     }
