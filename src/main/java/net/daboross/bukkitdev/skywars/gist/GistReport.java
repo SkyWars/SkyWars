@@ -30,6 +30,13 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import lombok.NonNull;
+import lombok.SneakyThrows;
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
+import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
+import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
+import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
@@ -39,64 +46,118 @@ import org.json.JSONStringer;
  */
 public class GistReport {
 
-    public static String gistText(Logger logger, String text) {
-        URL postUrl;
-        try {
-            postUrl = new URL("https://api.github.com/gists");
-        } catch (MalformedURLException ex) {
-            logger.log(Level.FINE, "Non severe error encoding api.github.com URL", ex);
+    private static final String GIST_API = "https://api.github.com/gists";
+    private static URL GIST_API_URL;
+    private static final String ISGD_API = "http://is.gd/create.php?format=simple&url=%s";
+
+    /**
+     *
+     * @param configuration Configuration to generate report of
+     * @return Raw report text
+     */
+    public static String generateReportText(@NonNull SkyConfiguration configuration) {
+        StringBuilder dataB = new StringBuilder();
+        for (SkyArenaConfig arena : configuration.getEnabledArenas()) {
+            appendArena(dataB.append("###").append(arena.getArenaName()), arena);
+        }
+        appendArena(dataB.append("###Parent"), configuration.getParentArena());
+        dataB.append("###Configuration\n```\n")
+                .append(configuration.getRawConfig().saveToString())
+                .append("\n```");
+        return dataB.toString();
+    }
+
+    private static StringBuilder appendArena(StringBuilder builder, SkyArena arena) {
+        YamlConfiguration arenaYaml = new YamlConfiguration();
+        arena.serialize(arenaYaml);
+        builder.append("\n```\n")
+                .append(arenaYaml.saveToString())
+                .append("\n```\n");
+        return builder;
+    }
+
+    /**
+     *
+     * @param reportText The text generated at some point by generateReportText
+     * @return A shortened URL for the report
+     */
+    public static String reportReport(String reportText) {
+        String reportURL = gistText("SkyWars gist report", "report.md", reportText);
+        if (reportURL == null) {
+            return null;
+        }
+        return shortenURL(reportURL);
+    }
+
+    /**
+     *
+     * @param gistDescription Description of the gist
+     * @param gistFileName File name for the gist
+     * @param gistText Test for the gist
+     * @return
+     */
+    public static String gistText(String gistDescription, String gistFileName, String gistText) {
+        final Logger logger = SkyStatic.getLogger();
+        if (!checkGistURL()) {
             return null;
         }
         URLConnection connection;
         try {
-            connection = postUrl.openConnection();
+            connection = GIST_API_URL.openConnection();
         } catch (IOException ex) {
-            logger.log(Level.FINE, "Non severe error opening api.github.com connection", ex);
+            logger.log(Level.WARNING, "[SkyGistReport] Failed to open a connecting with ''{0}'': {1}", new Object[]{GIST_API, ex.toString()});
             return null;
         }
         connection.setDoOutput(true);
         connection.setDoInput(true);
-        JSONStringer outputJson = new JSONStringer();
+        String jsonOutputString;
         try {
-            outputJson.object()
-                    .key("description").value("SkyWars debug")
+            jsonOutputString = new JSONStringer().object()
+                    .key("description").value(gistDescription)
                     .key("public").value("false")
                     .key("files").object()
                     .key("report.md").object()
-                    .key("content").value(text)
-                    .endObject().endObject().endObject();
+                    .key("content").value(gistText)
+                    .endObject().endObject().endObject().toString();
         } catch (JSONException ex) {
-            logger.log(Level.FINE, "Non severe error while writing report", ex);
+            logger.log(Level.FINE, "[SkyGistReport] Failed to encode report contents in JSON: {0}", ex.toString());
             return null;
         }
-        String jsonOuptutString = outputJson.toString();
         try (OutputStream outputStream = connection.getOutputStream()) {
             try (OutputStreamWriter requestWriter = new OutputStreamWriter(outputStream, Charset.forName("UTF-8"))) {
-                requestWriter.append(jsonOuptutString);
+                requestWriter.append(jsonOutputString);
                 requestWriter.close();
             }
         } catch (IOException ex) {
-            logger.log(Level.FINE, "Non severe error writing report", ex);
+            logger.log(Level.FINE, "[SkyGistReport] Failed to write output to gist: {0}", ex.toString());
             return null;
         }
 
         JSONObject inputJson;
         try {
             inputJson = new JSONObject(readConnection(connection));
-        } catch (JSONException | IOException unused) {
-            logger.log(Level.FINE, "Non severe error while reading response for report.", unused);
+        } catch (JSONException | IOException ex) {
+            logger.log(Level.FINE, "[SkyGistReport] Failed to read response from gist: {0}", ex.toString());
             return null;
         }
         String resultUrl = inputJson.optString("html_url", null);
-        return resultUrl == null ? null : shortenURL(logger, resultUrl);
+        return resultUrl;
     }
 
-    public static String shortenURL(Logger logger, String url) {
+    /**
+     *
+     * @param url URL To shorten
+     * @return Shortened URL
+     */
+    @SneakyThrows(UnsupportedEncodingException.class) // Never going to be thrown for UTF-8
+    public static String shortenURL(String url) {
+        final Logger logger = SkyStatic.getLogger();
         URL requestUrl;
+        String requestUrlString = String.format(ISGD_API, URLEncoder.encode(url, "UTF-8"));
         try {
-            requestUrl = new URL("http://is.gd/create.php?format=simple&url=" + URLEncoder.encode(url, "UTF-8"));
-        } catch (MalformedURLException | UnsupportedEncodingException ex) {
-            logger.log(Level.FINE, "Non severe error encoding is.gd URL", ex);
+            requestUrl = new URL(requestUrlString);
+        } catch (MalformedURLException ex) {
+            logger.log(Level.FINE, "[SkyGistReport] Failed to encode url {0}: {1}", new Object[]{requestUrlString, ex.toString()});
             return url;
         }
         URLConnection connection;
@@ -104,7 +165,7 @@ public class GistReport {
             connection = requestUrl.openConnection();
             return readConnection(connection);
         } catch (IOException ex) {
-            logger.log(Level.FINE, "Non severe error getting is.gd response", ex);
+            logger.log(Level.FINE, "[SkyGistReport] Failed to read is.gd response", ex);
             return url;
         }
     }
@@ -120,8 +181,19 @@ public class GistReport {
                 }
                 return result.toString();
             }
-        } catch (IOException ex) {
-            throw ex;
         }
+    }
+
+    private static boolean checkGistURL() {
+        if (GIST_API_URL == null) {
+            try {
+                GIST_API_URL = new URL(GIST_API);
+            } catch (MalformedURLException ex) {
+                SkyStatic.getLogger().log(Level.WARNING, "[SkyGistReport] Couldn''t encode ''{0}'' as a URL: {1}; Please notify the developer with this error ASAP.", new Object[]{GIST_API, ex.toString()});
+                return false;
+            }
+            return true;
+        }
+        return true;
     }
 }

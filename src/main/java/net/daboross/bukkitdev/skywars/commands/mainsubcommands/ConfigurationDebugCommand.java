@@ -16,14 +16,12 @@
  */
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import lombok.AllArgsConstructor;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
+import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
-import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.gist.GistReport;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -56,7 +54,7 @@ public class ConfigurationDebugCommand extends SubCommand {
             }
         }
         sender.sendMessage("Gathering data");
-        String data = getData();
+        String data = GistReport.generateReportText(plugin.getConfiguration());
         if (paste) {
             new GistReportRunnable(plugin, sender.getName(), data).runMe();
         } else {
@@ -65,31 +63,12 @@ public class ConfigurationDebugCommand extends SubCommand {
 
     }
 
-    private String getData() {
-        StringBuilder dataB = new StringBuilder();
-        for (SkyArenaConfig arena : plugin.getConfiguration().getEnabledArenas()) {
-            dataB.append("##").append(arena.getArenaName())
-                    .append("\n```\n")
-                    .append(arena.toIndentedString(0))
-                    .append("\n```\n");
-        }
-        dataB.append("##Parent\n```\n")
-                .append(plugin.getConfiguration().getParentArena()
-                .toIndentedString(0)).append("\n```\n");
-        return dataB.toString();
-    }
-
+    @AllArgsConstructor
     private static class GistReportRunnable implements Runnable {
 
         private final Plugin plugin;
         private final String playerName;
-        private final String text;
-
-        public GistReportRunnable(Plugin plugin, String playerName, String text) {
-            this.plugin = plugin;
-            this.playerName = playerName;
-            this.text = text;
-        }
+        private final String report;
 
         public void runMe() {
             plugin.getServer().getScheduler().runTaskAsynchronously(plugin, this);
@@ -97,8 +76,8 @@ public class ConfigurationDebugCommand extends SubCommand {
 
         @Override
         public void run() {
-            String url = GistReport.gistText(plugin.getLogger(), text);
-            plugin.getServer().getScheduler().runTask(plugin, new SendResult(playerName, "debug-url: " + url));
+            String url = GistReport.reportReport(report);
+            plugin.getServer().getScheduler().runTask(plugin, new SendResult(playerName, "Report url: " + url));
         }
 
         private static class SendResult implements Runnable {
