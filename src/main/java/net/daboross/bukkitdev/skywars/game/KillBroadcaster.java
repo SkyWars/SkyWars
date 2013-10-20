@@ -17,7 +17,7 @@
 package net.daboross.bukkitdev.skywars.game;
 
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
-import net.daboross.bukkitdev.skywars.api.config.SkyMessages;
+import net.daboross.bukkitdev.skywars.api.config.SkyMessageKeys;
 
 /**
  *
@@ -29,20 +29,20 @@ public class KillBroadcaster {
         if (damager == null) {
             switch (reason) {
                 case VOID:
-                    return String.format(arena.getMessages().getMessage(SkyMessages.SUICIDE_VOID), player);
+                    return String.format(arena.getMessages().getMessage(SkyMessageKeys.SUICIDE_VOID), player);
                 case LEFT:
-                    return String.format(arena.getMessages().getMessage(SkyMessages.FORFEITED), player);
+                    return String.format(arena.getMessages().getMessage(SkyMessageKeys.FORFEITED), player);
                 case OTHER:
-                    return String.format(arena.getMessages().getMessage(SkyMessages.KILLED_OTHER), player);
+                    return String.format(arena.getMessages().getMessage(SkyMessageKeys.KILLED_OTHER), player);
             }
         } else {
             switch (reason) {
                 case VOID:
-                    return String.format(arena.getMessages().getMessage(SkyMessages.KILLED_VOID), damager, player);
+                    return String.format(arena.getMessages().getMessage(SkyMessageKeys.KILLED_VOID), damager, player);
                 case LEFT:
-                    return String.format(arena.getMessages().getMessage(SkyMessages.FORFEITED_DAMAGED), damager, player);
+                    return String.format(arena.getMessages().getMessage(SkyMessageKeys.FORFEITED_DAMAGED), damager, player);
                 case OTHER:
-                    return String.format(arena.getMessages().getMessage(SkyMessages.KILLED_OTHER), damager, player);
+                    return String.format(arena.getMessages().getMessage(SkyMessageKeys.KILLED_OTHER), damager, player);
             }
         }
         throw new IllegalArgumentException();

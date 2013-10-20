@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import lombok.NoArgsConstructor;
+import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
 import org.bukkit.configuration.ConfigurationSection;
@@ -72,4 +73,5 @@ public class SkyArenaConfigLoader {
         config.set("num-players", null);
         config.set("placement", null);
     }
+
 }

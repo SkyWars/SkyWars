@@ -19,8 +19,10 @@ package net.daboross.bukkitdev.skywars.game;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
@@ -36,6 +38,9 @@ public class ArenaGame implements SkyGame {
     private final int id;
     private final List<String> alivePlayers;
     private final List<String> deadPlayers;
+    private final boolean teamsEnabled;
+    private final Map<String, Integer> playerTeams;
+    private final Map<Integer, List<String>> teamPlayers;
     private final SkyArena arena;
     private SkyBlockLocation min;
     private SkyBlockLocationRange boundaries;
@@ -45,12 +50,29 @@ public class ArenaGame implements SkyGame {
         this.id = id;
         this.alivePlayers = new ArrayList<>(Arrays.asList(originalPlayers));
         this.deadPlayers = new ArrayList<>(originalPlayers.length);
+        int teamSize = arena.getTeamSize();
+        if (teamSize > 1) {
+            teamsEnabled = true;
+            this.playerTeams = new HashMap<>(alivePlayers.size());
+            this.teamPlayers = new HashMap<>(alivePlayers.size() / teamSize);
+            for (int i = 0, lastTeam = -1, team; i < alivePlayers.size(); i++) {
+                team = i / teamSize;
+                if (team != lastTeam) {
+                    teamPlayers.put(team, new ArrayList<String>(teamSize));
+                }
+                playerTeams.put(alivePlayers.get(i), team);
+            }
+        } else {
+            playerTeams = null;
+            teamPlayers = null;
+            teamsEnabled = false;
+        }
     }
 
     public void removePlayer(String playerName) {
         playerName = playerName.toLowerCase(Locale.ENGLISH);
         if (!alivePlayers.remove(playerName)) {
-            throw new IllegalArgumentException("Player not in game.");
+            throw new IllegalArgumentException("Player not alive in game.");
         }
         deadPlayers.add(playerName);
     }
@@ -88,5 +110,38 @@ public class ArenaGame implements SkyGame {
     @Override
     public SkyBlockLocationRange getBuildingBoundaries() {
         return boundaries;
+    }
+
+    @Override
+    public boolean areTeamsEnabled() {
+        return teamsEnabled;
+    }
+
+    @Override
+    public int getTeamNumber(String player) {
+        if (!teamsEnabled) {
+            throw new IllegalStateException("Teams aren't enabled");
+        }
+        Integer team = playerTeams.get(player.toLowerCase());
+        if (team == null) {
+            throw new IllegalArgumentException("Player not in game.");
+        }
+        return team;
+    }
+
+    @Override
+    public List<String> getAlivePlayersInTeam(int teamNumber) {
+        if (!teamsEnabled) {
+            throw new IllegalStateException("Teams aren't enabled");
+        }
+        return null;
+    }
+
+    @Override
+    public List<String> getAllPlayersInTeam(int teamNumber) {
+        if (!teamsEnabled) {
+            throw new IllegalStateException("Teams aren't enabled");
+        }
+        return null;
     }
 }
