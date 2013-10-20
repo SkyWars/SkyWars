@@ -23,7 +23,7 @@
 * [Development Builds - CI Server](http://ci.aemservers.net/job/SkyWars)
 * [Source Code](https://github.com/daboross/SkyWars)
 * [Portuguese Tutorial - Ligação para tutorial AbsintoJ feito](http://www.youtube.com/watch?v=hYTq39Iomz0)
-* [Travis CI![Build Status](https://travis-ci.org/daboross/SkyWars.png?branch=master)](https://travis-ci.org/daboross/SkyWars)
+* [Travis CI - ![Build Status](https://travis-ci.org/daboross/SkyWars.png?branch=master)](https://travis-ci.org/daboross/SkyWars)
 
 ### Bugs, Features, and Questions
 We use the github issue tracker for all bugs, features, and questions.
