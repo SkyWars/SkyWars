@@ -1,3 +1,5 @@
+SkyWars - [![Build Status](https://travis-ci.org/daboross/SkyWars.png?branch=master)](https://travis-ci.org/daboross/SkyWars)
+---
 ### Features
 * Automatically create new arenas every time enough people join the queue.
 * Have *as many arenas* going at the same time as you want!
@@ -23,7 +25,6 @@
 * [Development Builds - CI Server](http://ci.aemservers.net/job/SkyWars)
 * [Source Code](https://github.com/daboross/SkyWars)
 * [Portuguese Tutorial - Ligação para tutorial AbsintoJ feito](http://www.youtube.com/watch?v=hYTq39Iomz0)
-* [Travis CI - ![Build Status](https://travis-ci.org/daboross/SkyWars.png?branch=master)](https://travis-ci.org/daboross/SkyWars)
 
 ### Bugs, Features, and Questions
 We use the github issue tracker for all bugs, features, and questions.
