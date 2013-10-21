@@ -49,7 +49,7 @@ public class SkyArenaConfigLoader {
         arenaConfig.setArenaName(name);
         arenaConfig.setFile(file);
         arenaConfig.getMessages().setPrefix(messagePrefix);
-        return null;
+        return arenaConfig;
     }
 
     private boolean checkVersion(ConfigurationSection config) {
