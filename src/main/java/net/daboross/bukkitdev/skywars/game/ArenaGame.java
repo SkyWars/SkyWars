@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import lombok.Getter;
 import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
@@ -38,12 +39,14 @@ public class ArenaGame implements SkyGame {
     private final int id;
     private final List<String> alivePlayers;
     private final List<String> deadPlayers;
-    private final boolean teamsEnabled;
-    private final Map<String, Integer> playerTeams;
-    private final Map<Integer, List<String>> teamPlayers;
     private final SkyArena arena;
     private SkyBlockLocation min;
     private SkyBlockLocationRange boundaries;
+    private final boolean teamsEnabled;
+    private final Map<String, Integer> playerTeams;
+    private final Map<Integer, List<String>> teamPlayers;
+    @Getter
+    private final int numTeams;
 
     public ArenaGame(@NonNull SkyArena arena, int id, @NonNull String[] originalPlayers) {
         this.arena = arena;
@@ -55,17 +58,21 @@ public class ArenaGame implements SkyGame {
             teamsEnabled = true;
             this.playerTeams = new HashMap<>(alivePlayers.size());
             this.teamPlayers = new HashMap<>(alivePlayers.size() / teamSize);
-            for (int i = 0, lastTeam = -1, team; i < alivePlayers.size(); i++) {
+            int team = 0;
+            for (int i = 0, lastTeam = -1; i < alivePlayers.size(); i++) {
                 team = i / teamSize;
                 if (team != lastTeam) {
                     teamPlayers.put(team, new ArrayList<String>(teamSize));
+                    lastTeam = team;
                 }
                 playerTeams.put(alivePlayers.get(i), team);
             }
+            numTeams = team + 1;
         } else {
             playerTeams = null;
             teamPlayers = null;
             teamsEnabled = false;
+            numTeams = -1;
         }
     }
 
