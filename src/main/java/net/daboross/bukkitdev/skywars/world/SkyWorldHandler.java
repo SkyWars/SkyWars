@@ -28,6 +28,8 @@ import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
 import net.daboross.bukkitdev.skywars.events.GameEndInfo;
 import net.daboross.bukkitdev.skywars.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.game.ArenaGame;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
@@ -91,11 +93,17 @@ public class SkyWorldHandler {
         SkyBlockLocation min = getMinLocation(game);
         game.setMin(min);
         copier.copyArena(min, game.getArena().getBoundaries().getOrigin());
-        List<Player> players = info.getPlayers();
         List<SkyPlayerLocation> spawns = game.getArena().getSpawns();
         Collections.shuffle(spawns);
-        for (int i = 0, currentSpawn = 0; i < players.size(); i++) {
-            players.get(i).teleport(min.add(spawns.get(currentSpawn++)).toLocation());
+        int numTeams = game.getNumTeams();
+        for (int i = 0, currentSpawn = 0; i < numTeams; i++) {
+            Location spawn = min.add(spawns.get(currentSpawn++)).toLocation();
+            for (String name : game.getAllPlayersInTeam(i)) {
+                Player p = Bukkit.getPlayer(name);
+                if (p != null) {
+                    p.teleport(spawn);
+                }
+            }
             if (currentSpawn > spawns.size()) {
                 currentSpawn = 0;
             }
