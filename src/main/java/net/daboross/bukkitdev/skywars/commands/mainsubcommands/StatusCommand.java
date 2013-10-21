@@ -50,48 +50,42 @@ public class StatusCommand extends SubCommand {
         sender.sendMessage(String.format(ColorList.TOP_FORMAT, "Current Arenas"));
         for (Integer id : idh.getCurrentIDs()) {
             SkyGame game = idh.getGame(id);
-            sender.sendMessage(ColorList.DATA + id + ColorList.REG + ": " + getPlayerString(game));
+            sender.sendMessage(getPlayerString(game));
         }
     }
 
     private String getPlayerString(SkyGame game) {
-        StringBuilder resultBuilder = new StringBuilder();
+        StringBuilder b = new StringBuilder();
+        b.append(ColorList.DATA).append(game.getId()).append(ColorList.REG).append(":");
         List<String> alive = game.getAlivePlayers();
-        List<String> dead = game.getDeadPlayers();
-        switch (alive.size()) {
-            case 0:
-                break;
-            case 1:
-                resultBuilder.append(ChatColor.GREEN).append(alive.get(0));
-                break;
-            default:
-                resultBuilder.append(ChatColor.GREEN).append(alive.get(0));
-                for (int i = 1; i < alive.size(); i++) {
-                    resultBuilder.append(ColorList.REG).append(", ").append(ChatColor.GREEN).append(alive.get(i));
-                }
-        }
-        switch (dead.size()) {
-            case 0:
-                break;
-            case 1:
-                if (resultBuilder.length() == 0) {
-                    resultBuilder.append(ChatColor.RED).append(dead.get(0));
-                } else {
-                    resultBuilder.append(ColorList.REG).append(", ").append(ChatColor.RED).append(dead.get(0));
-                }
-                break;
-            default:
-                if (resultBuilder.length() == 0) {
-                    resultBuilder.append(ChatColor.RED).append(dead.get(0));
-                    for (int i = 1; i < alive.size(); i++) {
-                        resultBuilder.append(ColorList.REG).append(", ").append(ChatColor.RED).append(dead.get(i));
+        if (game.areTeamsEnabled()) {
+            switch (alive.size()) {
+                case 0:
+                    b.append(" -- ");
+                    break;
+                case 1:
+                    b.append(ChatColor.GREEN).append(alive.get(0));
+                    break;
+                default:
+                    for (String name : alive) {
+                        b.append("\n  ").append(ChatColor.GREEN).append(name).append(ColorList.REG).append(" - Team ").append(ColorList.DATA).append(game.getTeamNumber(name));
                     }
-                } else {
-                    for (int i = 0; i < dead.size(); i++) {
-                        resultBuilder.append(ColorList.REG).append(", ").append(ChatColor.RED).append(dead.get(i));
+            }
+        } else {
+            switch (alive.size()) {
+                case 0:
+                    b.append(" -- ");
+                    break;
+                case 1:
+                    b.append(ChatColor.GREEN).append(alive.get(0));
+                    break;
+                default:
+                    b.append(ChatColor.GREEN).append(alive.get(0));
+                    for (String name : alive) {
+                        b.append(ColorList.REG).append(", ").append(ChatColor.GREEN).append(name);
                     }
-                }
+            }
         }
-        return resultBuilder.toString();
+        return b.toString();
     }
 }
