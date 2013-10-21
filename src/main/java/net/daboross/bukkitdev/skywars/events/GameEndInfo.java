@@ -47,7 +47,7 @@ public class GameEndInfo {
         List<String> alive = game.getAlivePlayers();
         alivePlayers = new ArrayList<>();
         for (int i = 0; i < alive.size(); i++) {
-            Player p = Bukkit.getPlayer(alive.get(i));
+            Player p = Bukkit.getPlayerExact(alive.get(i));
             if (p == null) {
                 throw new IllegalArgumentException();
             }

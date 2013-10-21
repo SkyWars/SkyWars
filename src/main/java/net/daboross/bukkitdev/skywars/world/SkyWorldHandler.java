@@ -99,7 +99,7 @@ public class SkyWorldHandler {
         for (int i = 0, currentSpawn = 0; i < numTeams; i++) {
             Location spawn = min.add(spawns.get(currentSpawn++)).toLocation();
             for (String name : game.getAllPlayersInTeam(i)) {
-                Player p = Bukkit.getPlayer(name);
+                Player p = Bukkit.getPlayerExact(name);
                 if (p != null) {
                     p.teleport(spawn);
                 }

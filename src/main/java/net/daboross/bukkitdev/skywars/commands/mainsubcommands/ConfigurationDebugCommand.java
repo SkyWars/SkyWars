@@ -91,7 +91,7 @@ public class ConfigurationDebugCommand extends SubCommand {
 
             @Override
             public void run() {
-                CommandSender sender = playerName.equalsIgnoreCase("CONSOLE") ? Bukkit.getConsoleSender() : Bukkit.getPlayer(playerName);
+                CommandSender sender = playerName.equalsIgnoreCase("CONSOLE") ? Bukkit.getConsoleSender() : Bukkit.getPlayerExact(playerName);
                 if (sender != null) {
                     sender.sendMessage(result);
                 }
