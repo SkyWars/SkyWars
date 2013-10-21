@@ -76,9 +76,9 @@ public class StatusCommand extends SubCommand {
                     b.append(ChatColor.GREEN).append(alive.get(0));
                     break;
                 default:
-                    b.append(ChatColor.GREEN).append(alive.get(0));
-                    for (String name : alive) {
-                        b.append(ColorList.REG).append(", ").append(ChatColor.GREEN).append(name);
+                    b.append(" ").append(ChatColor.GREEN).append(alive.get(0));
+                    for (int i = 1; i < alive.size(); i++) {
+                        b.append(ColorList.REG).append(", ").append(ChatColor.GREEN).append(alive.get(i));
                     }
             }
         }
