@@ -36,7 +36,7 @@ import net.daboross.bukkitdev.skywars.game.CurrentGames;
 import net.daboross.bukkitdev.skywars.game.GameHandler;
 import net.daboross.bukkitdev.skywars.game.GameIDHandler;
 import net.daboross.bukkitdev.skywars.game.GameQueue;
-import net.daboross.bukkitdev.skywars.listeners.CommandListener;
+import net.daboross.bukkitdev.skywars.listeners.CommandWhitelistListener;
 import net.daboross.bukkitdev.skywars.listeners.AttackerStorageListener;
 import net.daboross.bukkitdev.skywars.game.reactors.GameBroadcaster;
 import net.daboross.bukkitdev.skywars.game.reactors.InventorySave;
@@ -160,7 +160,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         PluginManager pm = getServer().getPluginManager();
         registerListeners(pm, new SpawnListener(), attackerStorage,
                 new QuitListener(this), new PortalListener(this),
-                new CommandListener(this), new BuildingLimiter(this),
+                new CommandWhitelistListener(this), new BuildingLimiter(this),
                 new MobSpawnDisable(), chatListener);
         enabledCorrectly = true;
     }

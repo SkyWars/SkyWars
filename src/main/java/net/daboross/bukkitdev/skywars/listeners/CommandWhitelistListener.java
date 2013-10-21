@@ -16,22 +16,30 @@
  */
 package net.daboross.bukkitdev.skywars.listeners;
 
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 @RequiredArgsConstructor
-public class CommandListener implements Listener {
+public class CommandWhitelistListener implements Listener {
 
     private final SkyWarsPlugin plugin;
 
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent evt) {
-        if (evt.getMessage().length() < 3 || !evt.getMessage().substring(1, 3).equalsIgnoreCase("sw")) {
+        SkyConfiguration config = plugin.getConfiguration();
+        if (config.isCommandWhitelistEnabled()) {
             if (plugin.getCurrentGameTracker().isInGame(evt.getPlayer().getName())) {
-                evt.setCancelled(true);
+                Pattern pattern = config.getCommandWhitelistCommandRegex();
+                if (pattern != null) {
+                    if (config.isCommandWhitelistABlacklist() == pattern.matcher(evt.getMessage()).find()) {
+                        evt.setCancelled(true);
+                    }
+                }
             }
         }
     }

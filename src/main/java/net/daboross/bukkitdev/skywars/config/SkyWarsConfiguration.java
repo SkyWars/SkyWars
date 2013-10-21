@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.Getter;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -59,6 +61,12 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private int killPointDiff;
     @Getter
     private int arenaDistanceApart;
+    @Getter
+    private boolean commandWhitelistEnabled;
+    @Getter
+    private boolean commandWhitelistABlacklist;
+    @Getter
+    private Pattern commandWhitelistCommandRegex;
     private final SkyArenaConfigLoader arenaLoader;
 
     public SkyWarsConfiguration(SkyWars plugin) throws IOException, InvalidConfigurationException, SkyConfigurationException {
@@ -123,6 +131,10 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         // Keys.ARENA_DISTANCE_APART
         arenaDistanceApart = mainConfig.getSetInt(Keys.ARENA_DISTANCE_APART, Defaults.ARENA_DISTANCE_APART);
 
+        //Command Whitelist
+        commandWhitelistEnabled = mainConfig.getSetBoolean(Keys.CommandWhitelist.WHITELIST_ENABLED, Defaults.CommandWhitelist.WHITELIST_ENABLED);
+        commandWhitelistABlacklist = mainConfig.getSetBoolean(Keys.CommandWhitelist.IS_BLACKLIST, Defaults.CommandWhitelist.IS_BLACKLIST);
+        commandWhitelistCommandRegex = createCommandRegex(mainConfig.getSetStringList(Keys.CommandWhitelist.COMMAND_WHITELIST, Defaults.CommandWhitelist.COMMAND_WHITELIST));
         // Remove deprecated values
         mainConfig.removeValues(Keys.Deprecated.CHAT_PREFIX, Keys.Deprecated.PREFIX_CHAT);
         // Save
@@ -132,6 +144,21 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         loadParent();
         for (String arenaName : enabledArenaNames) {
             loadArena(arenaName);
+        }
+    }
+
+    private Pattern createCommandRegex(List<String> commands) {
+        if (commands.isEmpty()) {
+            return null;
+        } else if (commands.size() == 1) {
+            return Pattern.compile("^"+Matcher.quoteReplacement(commands.get(0))+" .*$");
+        } else {
+            StringBuilder b = new StringBuilder("^(" + Matcher.quoteReplacement(commands.get(0)));
+            for (int i = 1; i < commands.size(); i++) {
+                b.append("|").append(Matcher.quoteReplacement(commands.get(0)));
+            }
+            b.append(") .*$");
+            return Pattern.compile(b.toString());
         }
     }
 
@@ -172,6 +199,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         }
         SkyArenaConfig arenaConfig = arenaLoader.loadArena(file, "parent-arena", messagePrefix);
         parentArena = arenaConfig;
+        parentArena.confirmAllValuesExist();
         saveArena(file, arenaConfig, String.format(Headers.PARENT));
     }
 
@@ -221,6 +249,13 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             private static final String KILL_DIFF = "points.kill-point-diff";
         }
 
+        private static class CommandWhitelist {
+
+            private static final String WHITELIST_ENABLED = "command-whitelist.whitelist-enabled";
+            private static final String IS_BLACKLIST = "command-whitelist.treated-as-blacklist";
+            private static final String COMMAND_WHITELIST = "command-whitelist.whitelist";
+        }
+
         private static class Deprecated {
 
             private static final String PREFIX_CHAT = "points.should-prefix-chat";
@@ -251,6 +286,14 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             private static final int WIN_DIFF = 7;
             private static final int KILL_DIFF = 1;
         }
+
+        private static class CommandWhitelist {
+
+            private static final boolean WHITELIST_ENABLED = true;
+            private static final boolean IS_BLACKLIST = false;
+            private static final List<String> COMMAND_WHITELIST = Arrays.asList("/skywars", "/sw", "/me");
+        }
+
     }
 
     private static class Headers {
