@@ -25,10 +25,6 @@ import net.daboross.bukkitdev.skywars.api.SkyWars;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class JoinCommand extends SubCommand {
 
     private final SkyWars plugin;

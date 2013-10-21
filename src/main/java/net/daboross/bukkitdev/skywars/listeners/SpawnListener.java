@@ -21,10 +21,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class SpawnListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)

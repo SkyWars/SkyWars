@@ -16,10 +16,6 @@
  */
 package net.daboross.bukkitdev.skywars;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class StartupFailedException extends Exception {
 
     public StartupFailedException() {

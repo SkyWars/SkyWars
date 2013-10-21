@@ -24,9 +24,6 @@ import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-/**
- *
- */
 @AllArgsConstructor
 public class NoSpawnSetCondition implements CommandPreCondition, CommandFilter {
 

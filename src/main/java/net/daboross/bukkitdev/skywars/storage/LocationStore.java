@@ -36,10 +36,6 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class LocationStore implements Listener, SkyLocationStore {
 
     private final JavaPlugin plugin;

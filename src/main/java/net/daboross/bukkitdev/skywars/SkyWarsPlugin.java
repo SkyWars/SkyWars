@@ -37,7 +37,7 @@ import net.daboross.bukkitdev.skywars.game.GameHandler;
 import net.daboross.bukkitdev.skywars.game.GameIDHandler;
 import net.daboross.bukkitdev.skywars.game.GameQueue;
 import net.daboross.bukkitdev.skywars.listeners.CommandListener;
-import net.daboross.bukkitdev.skywars.listeners.DeathStorage;
+import net.daboross.bukkitdev.skywars.listeners.AttackerStorageListener;
 import net.daboross.bukkitdev.skywars.game.reactors.GameBroadcaster;
 import net.daboross.bukkitdev.skywars.game.reactors.InventorySave;
 import net.daboross.bukkitdev.skywars.listeners.PortalListener;
@@ -83,7 +83,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     @Getter
     private SkyWorldHandler worldHandler;
     @Getter
-    private DeathStorage attackerStorage;
+    private AttackerStorageListener attackerStorage;
     @Getter
     private GameBroadcaster broadcaster;
     @Getter
@@ -108,6 +108,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     }
 
     @Override
+    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
     public void onEnable() {
         try {
             startPlugin();
@@ -140,7 +141,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         locationStore = new LocationStore(this);
         gameQueue = new GameQueue(this);
         gameHandler = new GameHandler(this);
-        attackerStorage = new DeathStorage(this);
+        attackerStorage = new AttackerStorageListener(this);
         distributor = new GameEventDistributor(this);
         teamListener = new TeamScoreboardListener();
         if (configuration.isEnablePoints()) {

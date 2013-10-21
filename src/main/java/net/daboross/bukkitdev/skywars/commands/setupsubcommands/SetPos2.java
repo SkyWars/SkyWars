@@ -29,9 +29,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-/**
- *
- */
 public class SetPos2 extends SubCommand {
 
     private final SetupStates states;

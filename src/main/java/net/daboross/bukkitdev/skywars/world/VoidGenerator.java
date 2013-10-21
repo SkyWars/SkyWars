@@ -21,10 +21,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.generator.ChunkGenerator;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class VoidGenerator extends ChunkGenerator {
 
     @Override

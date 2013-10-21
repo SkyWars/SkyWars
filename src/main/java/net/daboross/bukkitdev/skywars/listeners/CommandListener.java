@@ -16,22 +16,16 @@
  */
 package net.daboross.bukkitdev.skywars.listeners;
 
+import lombok.RequiredArgsConstructor;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
+@RequiredArgsConstructor
 public class CommandListener implements Listener {
 
     private final SkyWarsPlugin plugin;
-
-    public CommandListener(SkyWarsPlugin plugin) {
-        this.plugin = plugin;
-    }
 
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent evt) {

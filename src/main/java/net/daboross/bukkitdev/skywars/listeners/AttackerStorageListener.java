@@ -28,7 +28,7 @@ import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.events.PlayerDeathInArenaInfo;
 import net.daboross.bukkitdev.skywars.events.PlayerKillPlayerInfo;
 import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameInfo;
-import net.daboross.bukkitdev.skywars.game.KillBroadcaster;
+import net.daboross.bukkitdev.skywars.game.KillMessages;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.LivingEntity;
@@ -42,21 +42,15 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import lombok.RequiredArgsConstructor;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
-public class DeathStorage implements Listener, SkyAttackerStorage {
+@RequiredArgsConstructor
+public class AttackerStorageListener implements Listener, SkyAttackerStorage {
 
     private final SkyWarsPlugin plugin;
     private final Map<String, String> lastHit = new HashMap<>();
     private final Set<String> causedVoid = new HashSet<>();
     private final Set<String> playersWhoDied = new HashSet<>();
-
-    public DeathStorage(SkyWarsPlugin plugin) {
-        this.plugin = plugin;
-    }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent evt) {
@@ -120,7 +114,7 @@ public class DeathStorage implements Listener, SkyAttackerStorage {
                 plugin.getDistributor().distribute(new PlayerKillPlayerInfo(game.getId(), killer, evt.getEntity()));
             }
             plugin.getGameHandler().removePlayerFromGame(evt.getEntity(), false, false);
-            evt.setDeathMessage(KillBroadcaster.getMessage(name, killer, causedVoid.contains(name.toLowerCase(Locale.ENGLISH)) ? KillBroadcaster.KillReason.VOID : KillBroadcaster.KillReason.OTHER, game.getArena()));
+            evt.setDeathMessage(KillMessages.getMessage(name, killer, causedVoid.contains(name.toLowerCase(Locale.ENGLISH)) ? KillMessages.KillReason.VOID : KillMessages.KillReason.OTHER, game.getArena()));
             playersWhoDied.add(name.toLowerCase(Locale.ENGLISH));
         } else if (plugin.getGameQueue().inQueue(name)) {
             plugin.getGameQueue().removePlayer(name);

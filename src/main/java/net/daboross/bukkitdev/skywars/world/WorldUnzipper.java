@@ -27,10 +27,6 @@ import java.util.zip.ZipInputStream;
 import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.StartupFailedException;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class WorldUnzipper {
 
     public void doWorldUnzip(@NonNull Logger logger) throws StartupFailedException {

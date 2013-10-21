@@ -19,11 +19,7 @@ package net.daboross.bukkitdev.skywars.game;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.config.SkyMessageKeys;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
-public class KillBroadcaster {
+public class KillMessages {
 
     public static String getMessage(String player, String damager, KillReason reason, SkyArena arena) {
         if (damager == null) {

@@ -28,10 +28,6 @@ import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.game.SkyGameQueue;
 import net.daboross.bukkitdev.skywars.events.GameStartInfo;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class GameQueue implements SkyGameQueue {
 
     private final SkyWarsPlugin plugin;

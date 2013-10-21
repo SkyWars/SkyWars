@@ -24,10 +24,6 @@ import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class CancelCommand extends SubCommand {
 
     private final SkyWars plugin;

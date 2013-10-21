@@ -21,10 +21,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class QuitListener implements Listener {
 
     private final SkyWarsPlugin plugin;

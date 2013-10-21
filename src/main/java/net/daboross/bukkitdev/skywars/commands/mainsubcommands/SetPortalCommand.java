@@ -25,10 +25,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class SetPortalCommand extends SubCommand {
 
     private static final String CONFIRMATION = ColorList.REG + "You have set a portal at your current location.";

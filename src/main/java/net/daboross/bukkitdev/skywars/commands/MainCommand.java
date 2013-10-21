@@ -33,10 +33,6 @@ import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.RemoveLastPortalCommand;
 import org.bukkit.command.PluginCommand;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class MainCommand {
 
     private final SkyWars plugin;

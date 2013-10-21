@@ -30,10 +30,6 @@ import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class ArenaGame implements SkyGame {
 
     private final int id;

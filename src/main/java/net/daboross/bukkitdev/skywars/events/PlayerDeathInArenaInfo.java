@@ -16,15 +16,14 @@
  */
 package net.daboross.bukkitdev.skywars.events;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Data;
+import lombok.NonNull;
 import org.bukkit.entity.Player;
 
-@RequiredArgsConstructor
+@Data
 public class PlayerDeathInArenaInfo {
 
-    @Getter
     private final int gameId;
-    @Getter
+    @NonNull
     private final Player killed;
 }

@@ -31,9 +31,6 @@ import net.daboross.bukkitdev.skywars.events.PlayerRespawnAfterGameEndInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-/**
- *
- */
 public class GameHandler implements SkyGameHandler {
 
     private final SkyWarsPlugin plugin;
@@ -86,7 +83,7 @@ public class GameHandler implements SkyGameHandler {
             respawnPlayer(player);
         }
         if (broadcast) {
-            Bukkit.broadcastMessage(KillBroadcaster.getMessage(player.getName(), plugin.getAttackerStorage().getKiller(playerName), KillBroadcaster.KillReason.LEFT, game.getArena()));
+            Bukkit.broadcastMessage(KillMessages.getMessage(player.getName(), plugin.getAttackerStorage().getKiller(playerName), KillMessages.KillReason.LEFT, game.getArena()));
         }
         if (isGameWon(game)) {
             plugin.getServer().getScheduler().runTask(plugin, new Runnable() {

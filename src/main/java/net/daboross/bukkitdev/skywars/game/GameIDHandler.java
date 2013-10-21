@@ -27,10 +27,6 @@ import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
 import net.daboross.bukkitdev.skywars.events.GameEndInfo;
 import net.daboross.bukkitdev.skywars.events.GameStartInfo;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class GameIDHandler implements SkyIDHandler {
 
     private final Map<Integer, ArenaGame> currentGames = new HashMap<>();

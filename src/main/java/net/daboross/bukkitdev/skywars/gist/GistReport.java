@@ -42,13 +42,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 
-/**
- *
- */
 public class GistReport {
 
-    private static final String GIST_API = "https://api.github.com/gists";
     private static final Object GIST_API_URL_LOCK = new Object();
+    private static final String GIST_API = "https://api.github.com/gists";
     private static URL GIST_API_URL;
     private static final String ISGD_API = "http://is.gd/create.php?format=simple&url=%s";
 

@@ -26,10 +26,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class PortalListener implements Listener {
 
     private final SkyWarsPlugin plugin;

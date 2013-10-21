@@ -29,9 +29,6 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
-/**
- *
- */
 @RequiredArgsConstructor
 public class SkyFileConfig {
 

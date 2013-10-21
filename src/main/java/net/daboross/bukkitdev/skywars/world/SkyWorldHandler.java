@@ -34,10 +34,6 @@ import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class SkyWorldHandler {
 
     private final SkyWars plugin;

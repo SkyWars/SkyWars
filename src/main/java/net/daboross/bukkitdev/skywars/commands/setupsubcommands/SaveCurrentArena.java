@@ -27,9 +27,6 @@ import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-/**
- *
- */
 public class SaveCurrentArena extends SubCommand {
 
     private final SkyWars plugin;

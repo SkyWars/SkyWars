@@ -19,9 +19,6 @@ package net.daboross.bukkitdev.skywars.game.reactors;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-/**
- *
- */
 public class InventorySaveInfo {
 
     private final ItemStack[] items;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 dabo
+ * Copyright (C) 2013 Dabo Ross <http://www.daboross.net/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,10 +25,6 @@ import org.bukkit.Server;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-/**
- *
- * @author dabo
- */
 public class TeamScoreboardListener {
 
     public void onGameStart(GameStartInfo info) {
@@ -50,5 +46,6 @@ public class TeamScoreboardListener {
     }
 
     public void onPlayerLeaveGame(PlayerLeaveGameInfo info) {
+        // TODO: Teams shouldn't last forever
     }
 }

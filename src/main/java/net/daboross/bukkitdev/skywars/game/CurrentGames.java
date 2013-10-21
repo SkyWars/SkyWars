@@ -24,10 +24,6 @@ import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameInfo;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class CurrentGames implements SkyCurrentGameTracker {
 
     private final Map<String, Integer> currentlyInGame = new HashMap<>();

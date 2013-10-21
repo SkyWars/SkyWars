@@ -21,10 +21,6 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.PluginManager;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class PermissionHandler {
 
     private final String permissionBase;

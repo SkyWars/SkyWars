@@ -26,9 +26,6 @@ import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
 import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
 
-/**
- *
- */
 @Data
 public class SetupData {
 

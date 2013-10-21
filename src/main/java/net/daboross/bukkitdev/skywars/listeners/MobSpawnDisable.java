@@ -22,9 +22,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 
-/**
- *
- */
 public class MobSpawnDisable implements Listener {
 
     @EventHandler

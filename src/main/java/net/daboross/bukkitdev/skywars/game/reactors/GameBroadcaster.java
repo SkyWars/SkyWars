@@ -24,10 +24,6 @@ import net.daboross.bukkitdev.skywars.events.GameStartInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class GameBroadcaster {
 
     public void broadcastStart(GameStartInfo info) {

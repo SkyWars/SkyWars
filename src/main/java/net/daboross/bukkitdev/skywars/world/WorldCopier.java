@@ -29,10 +29,6 @@ import org.bukkit.block.Chest;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class WorldCopier {
 
     public WorldCopier(Plugin unused) {

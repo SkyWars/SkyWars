@@ -39,10 +39,6 @@
 //import org.bukkit.scoreboard.Scoreboard;
 //import org.bukkit.scoreboard.ScoreboardManager;
 //
-///**
-// *
-// * @author Dabo Ross <http://www.daboross.net/>
-// */
 //public class KillScoreboardManager implements Listener {
 //
 //    private final ScoreboardManager manager;

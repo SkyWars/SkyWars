@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.listeners;
 
+import lombok.RequiredArgsConstructor;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
@@ -26,17 +27,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
+@RequiredArgsConstructor
 public class BuildingLimiter implements Listener {
 
     private final SkyWars plugin;
-
-    public BuildingLimiter(SkyWars plugin) {
-        this.plugin = plugin;
-    }
 
     @EventHandler
     public void onPlace(BlockPlaceEvent evt) {

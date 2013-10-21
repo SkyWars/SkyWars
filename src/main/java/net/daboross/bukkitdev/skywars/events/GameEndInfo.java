@@ -24,10 +24,6 @@ import net.daboross.bukkitdev.skywars.game.ArenaGame;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 @EqualsAndHashCode
 public class GameEndInfo {
 

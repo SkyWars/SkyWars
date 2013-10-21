@@ -28,9 +28,6 @@ import net.daboross.bukkitdev.skywars.commands.setupsubcommands.SetSpawnLocation
 import net.daboross.bukkitdev.skywars.commands.setupsubcommands.StartNewArena;
 import org.bukkit.command.PluginCommand;
 
-/**
- *
- */
 public class SetupCommand {
 
     private final SkyWars plugin;

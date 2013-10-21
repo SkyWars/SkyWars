@@ -16,10 +16,6 @@
  */
 package net.daboross.bukkitdev.skywars.world;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class Statics {
 
     public static final String BASE_WORLD_NAME = "SkyWarsBaseWorld";

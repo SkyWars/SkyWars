@@ -27,9 +27,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
-/**
- *
- */
 public class ConfigurationDebugCommand extends SubCommand {
 
     private final SkyWars plugin;

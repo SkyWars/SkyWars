@@ -18,10 +18,6 @@ package net.daboross.bukkitdev.skywars;
 
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class Messages {
 
     public static class Join {

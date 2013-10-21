@@ -28,16 +28,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class StatusCommand extends SubCommand {
 
     private final SkyWars plugin;
 
     public StatusCommand(SkyWars plugin) {
-        super("status", true, "skywars.status", "Gives game status");
+        super("status", true, "skywars.status", "Gives status on current games");
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
         this.plugin = plugin;
     }
