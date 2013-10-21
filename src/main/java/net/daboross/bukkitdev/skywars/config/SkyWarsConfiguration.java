@@ -153,7 +153,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         } else {
             StringBuilder b = new StringBuilder("(?i)^(" + Matcher.quoteReplacement(commands.get(0)));
             for (int i = 1; i < commands.size(); i++) {
-                b.append("|").append(Matcher.quoteReplacement(commands.get(0)));
+                b.append("|").append(Matcher.quoteReplacement(commands.get(i)));
             }
             b.append(")( .*|$)");
             return Pattern.compile(b.toString());
