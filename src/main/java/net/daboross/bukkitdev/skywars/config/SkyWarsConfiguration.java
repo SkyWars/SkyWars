@@ -150,14 +150,12 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private Pattern createCommandRegex(List<String> commands) {
         if (commands.isEmpty()) {
             return null;
-        } else if (commands.size() == 1) {
-            return Pattern.compile("^"+Matcher.quoteReplacement(commands.get(0))+" .*$");
         } else {
-            StringBuilder b = new StringBuilder("^(" + Matcher.quoteReplacement(commands.get(0)));
+            StringBuilder b = new StringBuilder("(?i)^(" + Matcher.quoteReplacement(commands.get(0)));
             for (int i = 1; i < commands.size(); i++) {
                 b.append("|").append(Matcher.quoteReplacement(commands.get(0)));
             }
-            b.append(") .*$");
+            b.append(")( .*|$)");
             return Pattern.compile(b.toString());
         }
     }
