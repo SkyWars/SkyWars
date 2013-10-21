@@ -16,10 +16,12 @@
  */
 package net.daboross.bukkitdev.skywars.game;
 
+import java.util.List;
 import java.util.Locale;
 import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.game.SkyCurrentGameTracker;
+import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.api.game.SkyGameHandler;
 import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
 import net.daboross.bukkitdev.skywars.events.GameEndInfo;
@@ -86,13 +88,35 @@ public class GameHandler implements SkyGameHandler {
         if (broadcast) {
             Bukkit.broadcastMessage(KillBroadcaster.getMessage(player.getName(), plugin.getAttackerStorage().getKiller(playerName), KillBroadcaster.KillReason.LEFT, game.getArena()));
         }
-        if (game.getAlivePlayers().size() < 2) {
+        if (isGameWon(game)) {
             plugin.getServer().getScheduler().runTask(plugin, new Runnable() {
                 @Override
                 public void run() {
                     endGame(id, true);
                 }
             });
+        }
+    }
+
+    private boolean isGameWon(SkyGame game) {
+        List<String> alivePlayers = game.getAlivePlayers();
+        int size = alivePlayers.size();
+        if (size < 2) {
+            return true;
+        } else if (!game.areTeamsEnabled()
+                || size > game.getArena().getTeamSize()) {
+            return false;
+        } else {
+            int knownTeam = -1;
+            for (String player : alivePlayers) {
+                int thisTeam = game.getTeamNumber(player);
+                if (knownTeam == -1) {
+                    knownTeam = thisTeam;
+                } else if (thisTeam != knownTeam) {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 
