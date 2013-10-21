@@ -44,6 +44,7 @@ public class GameEventDistributor {
             plugin.getResetHealth().onGameStart(info); // Should be after WorldHandler
             plugin.getInventorySave().onGameStart(info);
             plugin.getBroadcaster().broadcastStart(info);
+            plugin.getTeamListener().onGameStart(info);
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new GameStartEvent(plugin, info.getGame(), info.getPlayers()));
         } catch (Throwable t) {
@@ -74,6 +75,7 @@ public class GameEventDistributor {
             // -- Normal --
             plugin.getCurrentGameTracker().onPlayerLeaveGame(info);
             plugin.getAttackerStorage().onPlayerLeaveGame(info);
+            plugin.getTeamListener().onPlayerLeaveGame(info);
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new LeaveGameEvent(plugin, info.getId(), info.getPlayer()));
         } catch (Throwable t) {

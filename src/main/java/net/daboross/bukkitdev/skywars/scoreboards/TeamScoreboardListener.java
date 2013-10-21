@@ -14,17 +14,41 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package net.daboross.bukkitdev.skywars.scoreboards;
 
-import lombok.RequiredArgsConstructor;
-import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.game.SkyGame;
+import net.daboross.bukkitdev.skywars.events.GameStartInfo;
+import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameInfo;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Server;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 /**
  *
  * @author dabo
  */
-@RequiredArgsConstructor
 public class TeamScoreboardListener {
-    private final SkyWars plugin;
+
+    public void onGameStart(GameStartInfo info) {
+        SkyGame game = info.getGame();
+        if (game.areTeamsEnabled()) {
+            Server server = Bukkit.getServer();
+            Scoreboard board = server.getScoreboardManager().getNewScoreboard();
+            for (int teamNum = 0, max = game.getNumTeams(); teamNum < max; teamNum++) {
+                String teamName = "Team " + teamNum;
+                Team team = board.registerNewTeam(teamName);
+                team.setAllowFriendlyFire(false);
+                team.setCanSeeFriendlyInvisibles(true);
+                team.setPrefix(ChatColor.GRAY + "[" + ChatColor.DARK_RED + teamNum + ChatColor.GRAY + "]");
+                for (String name : game.getAllPlayersInTeam(teamNum)) {
+                    team.addPlayer(server.getPlayerExact(name));
+                }
+            }
+        }
+    }
+
+    public void onPlayerLeaveGame(PlayerLeaveGameInfo info) {
+    }
 }

@@ -48,6 +48,7 @@ import net.daboross.bukkitdev.skywars.listeners.MobSpawnDisable;
 import net.daboross.bukkitdev.skywars.listeners.PointStorageChatListener;
 import net.daboross.bukkitdev.skywars.listeners.SpawnListener;
 import net.daboross.bukkitdev.skywars.points.PointStorage;
+import net.daboross.bukkitdev.skywars.scoreboards.TeamScoreboardListener;
 import net.daboross.bukkitdev.skywars.storage.LocationStore;
 import net.daboross.bukkitdev.skywars.world.SkyWorldHandler;
 import net.daboross.bukkitdev.skywars.world.Statics;
@@ -95,6 +96,8 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     private PointStorage points;
     @Getter
     private PointStorageChatListener chatListener;
+    @Getter
+    private TeamScoreboardListener teamListener;
     private boolean enabledCorrectly = false;
 
     @Override
@@ -139,6 +142,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         gameHandler = new GameHandler(this);
         attackerStorage = new DeathStorage(this);
         distributor = new GameEventDistributor(this);
+        teamListener = new TeamScoreboardListener();
         if (configuration.isEnablePoints()) {
             points = new PointStorage(this);
             chatListener = new PointStorageChatListener(this);
