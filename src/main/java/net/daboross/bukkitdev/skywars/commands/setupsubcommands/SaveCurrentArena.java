@@ -19,6 +19,7 @@ package net.daboross.bukkitdev.skywars.commands.setupsubcommands;
 import lombok.NonNull;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
+import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.BoundariesSetCondition;
@@ -39,6 +40,7 @@ public class SaveCurrentArena extends SubCommand {
         BoundariesSetCondition condition = new BoundariesSetCondition(states);
         addCommandFilter(condition);
         addCommandPreCondition(condition);
+        addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments"));
         this.plugin = plugin;
         this.states = states;
     }
@@ -48,7 +50,6 @@ public class SaveCurrentArena extends SubCommand {
         sender.sendMessage(ColorList.REG + "Saving arena");
         SkyArenaConfig config = states.getSetupState(sender.getName()).convertToArenaConfig();
         plugin.getConfiguration().saveArena(config);
-        sender.sendMessage(ColorList.REG + "Now saving a configuration debug - this is for testing and will be disabled in the future.");
+        sender.sendMessage(ColorList.REG + "Arena saved");
     }
-
 }
