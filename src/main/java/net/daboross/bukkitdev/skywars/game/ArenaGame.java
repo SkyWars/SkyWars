@@ -134,7 +134,17 @@ public class ArenaGame implements SkyGame {
         if (!teamsEnabled) {
             throw new IllegalStateException("Teams aren't enabled");
         }
-        return null;
+        List<String> alive = new ArrayList<>(arena.getTeamSize());
+        List<String> all = teamPlayers.get(teamNumber);
+        if (all == null) {
+            return null;
+        }
+        for (String name : all) {
+            if (alivePlayers.contains(name)) {
+                alive.add(name);
+            }
+        }
+        return Collections.unmodifiableList(alive);
     }
 
     @Override
@@ -142,6 +152,7 @@ public class ArenaGame implements SkyGame {
         if (!teamsEnabled) {
             throw new IllegalStateException("Teams aren't enabled");
         }
-        return null;
+        List<String> alive = teamPlayers.get(teamNumber);
+        return alive == null ? null : Collections.unmodifiableList(alive);
     }
 }
