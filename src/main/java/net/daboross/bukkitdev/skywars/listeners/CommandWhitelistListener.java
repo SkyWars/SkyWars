@@ -38,7 +38,7 @@ public class CommandWhitelistListener implements Listener {
                 Pattern pattern = config.getCommandWhitelistCommandRegex();
                 if (pattern != null) {
                     if (config.isCommandWhitelistABlacklist() == pattern.matcher(evt.getMessage()).find()) {
-                        plugin.getLogger().log(Level.INFO, "[CommandWhitelist] Blocked command '" + evt.getMessage() + "' by " + evt.getPlayer().getName() + " because it didn't match " + pattern);
+                        plugin.getLogger().log(Level.INFO, "[CommandWhitelist] Blocked command ''{0}'' by {1} because it didn''t match {2}", new Object[]{evt.getMessage(), evt.getPlayer().getName(), pattern});
                         evt.setCancelled(true);
                     }
                 }
