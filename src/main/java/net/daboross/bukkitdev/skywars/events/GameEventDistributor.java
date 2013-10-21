@@ -35,6 +35,7 @@ public class GameEventDistributor {
         this.plugin = plugin;
     }
 
+    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
     public void distribute(@NonNull GameStartInfo info) {
         try {
             // -- Normal --
@@ -52,6 +53,7 @@ public class GameEventDistributor {
         }
     }
 
+    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
     public void distribute(@NonNull GameEndInfo info) {
         try {
             // -- Initial --
@@ -70,6 +72,7 @@ public class GameEventDistributor {
         }
     }
 
+    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
     public void distribute(@NonNull PlayerLeaveGameInfo info) {
         try {
             // -- Normal --
@@ -83,6 +86,7 @@ public class GameEventDistributor {
         }
     }
 
+    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
     public void distribute(@NonNull PlayerRespawnAfterGameEndInfo info) {
         try {
             // -- Normal --
@@ -95,6 +99,7 @@ public class GameEventDistributor {
         }
     }
 
+    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
     public void distribute(@NonNull PlayerKillPlayerInfo info) {
         try {
             // -- Normal --
@@ -108,6 +113,7 @@ public class GameEventDistributor {
         }
     }
 
+    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
     public void distribute(@NonNull PlayerDeathInArenaInfo info) {
         try {
             // -- Normal --
