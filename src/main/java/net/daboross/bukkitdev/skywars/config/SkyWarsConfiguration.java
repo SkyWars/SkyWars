@@ -302,7 +302,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
                 + "All comment changes will be removed.%n"
                 + "%n"
                 + "For documentation, please visit %n"
-                + "https://github.com/daboross/SkyWars/wiki/Configuration%n"
+                + "https://github.com/daboross/SkyWars/wiki/Configuration-main-config%n"
                 + "#########";
         private static final String ARENA
                 = "####### %s.yml ###%n"
@@ -314,7 +314,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
                 + "All comment changes will be removed.%n"
                 + "%n"
                 + "For documentation, please visit %n"
-                + "https://github.com/daboross/SkyWars/wiki/Configuration%n"
+                + "https://github.com/daboross/SkyWars/wiki/Configuration-arenas%n"
                 + "#######";
         private static final String PARENT
                 = "####### arena-parent.yml ###%n"
@@ -324,7 +324,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
                 + "All comment changes will be removed.%n"
                 + "%n"
                 + "For documentation, please visit %n"
-                + "https://github.com/daboross/SkyWars/wiki/Configuration%n"
+                + "https://github.com/daboross/SkyWars/wiki/Configuration-parent%n"
                 + "#######";
     }
 }
