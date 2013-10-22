@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.game.ArenaGame;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -34,16 +35,13 @@ public class GameEndInfo {
     @Getter
     private final boolean broadcast;
 
-    public GameEndInfo(ArenaGame game, boolean broadcast) {
-        if (game == null) {
-            throw new IllegalArgumentException();
-        }
+    public GameEndInfo(@NonNull ArenaGame game, boolean broadcast) {
         this.game = game;
         this.broadcast = broadcast;
         List<String> alive = game.getAlivePlayers();
         alivePlayers = new ArrayList<>();
-        for (int i = 0; i < alive.size(); i++) {
-            Player p = Bukkit.getPlayerExact(alive.get(i));
+        for (String name : alive) {
+            Player p = Bukkit.getPlayerExact(name);
             if (p == null) {
                 throw new IllegalArgumentException();
             }
