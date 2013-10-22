@@ -55,13 +55,17 @@ public class ArenaGame implements SkyGame {
             this.playerTeams = new HashMap<>(alivePlayers.size());
             this.teamPlayers = new HashMap<>(alivePlayers.size() / teamSize);
             int team = 0;
+            List<String> currentTeamList = null;
             for (int i = 0, lastTeam = -1; i < alivePlayers.size(); i++) {
                 team = i / teamSize;
                 if (team != lastTeam) {
-                    teamPlayers.put(team, new ArrayList<String>(teamSize));
+                    currentTeamList = new ArrayList<>(teamSize);
+                    teamPlayers.put(team, currentTeamList);
                     lastTeam = team;
                 }
-                playerTeams.put(alivePlayers.get(i), team);
+                String name = alivePlayers.get(i);
+                playerTeams.put(name, team);
+                currentTeamList.add(name);
             }
             numTeams = team + 1;
         } else {
