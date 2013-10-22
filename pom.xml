@@ -3,7 +3,7 @@
 
     <groupId>net.daboross.bukkitdev</groupId>
     <artifactId>skywars</artifactId>
-    <version>1.3.1-SNAPSHOT</version>
+    <version>1.3.1-BETA</version>
     <packaging>jar</packaging>
 
     <name>SkyWars</name>
@@ -64,7 +64,7 @@
         <dependency>
             <groupId>net.daboross.bukkitdev</groupId>
             <artifactId>skywars-api</artifactId>
-            <version>1.3.1-SNAPSHOT</version>
+            <version>1.3.1-BETA</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
