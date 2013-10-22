@@ -95,7 +95,9 @@ public class SkyWorldHandler {
             int numTeams = game.getNumTeams();
             for (int i = 0, currentSpawn = 0; i < numTeams; i++) {
                 Location spawn = min.add(spawns.get(currentSpawn++)).toLocation();
+                plugin.getLogger().log(Level.INFO, "Starting spawning team #{0} to spawn {1}", new Object[]{i, spawn});
                 for (String name : game.getAllPlayersInTeam(i)) {
+                    plugin.getLogger().log(Level.INFO, "Sending {0} to that spawn", name);
                     Player p = Bukkit.getPlayerExact(name);
                     if (p != null) {
                         p.teleport(spawn);
