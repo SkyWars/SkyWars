@@ -91,17 +91,27 @@ public class SkyWorldHandler {
         copier.copyArena(min, game.getArena().getBoundaries().getOrigin());
         List<SkyPlayerLocation> spawns = game.getArena().getSpawns();
         Collections.shuffle(spawns);
-        int numTeams = game.getNumTeams();
-        for (int i = 0, currentSpawn = 0; i < numTeams; i++) {
-            Location spawn = min.add(spawns.get(currentSpawn++)).toLocation();
-            for (String name : game.getAllPlayersInTeam(i)) {
-                Player p = Bukkit.getPlayerExact(name);
-                if (p != null) {
-                    p.teleport(spawn);
+        if (game.areTeamsEnabled()) {
+            int numTeams = game.getNumTeams();
+            for (int i = 0, currentSpawn = 0; i < numTeams; i++) {
+                Location spawn = min.add(spawns.get(currentSpawn++)).toLocation();
+                for (String name : game.getAllPlayersInTeam(i)) {
+                    Player p = Bukkit.getPlayerExact(name);
+                    if (p != null) {
+                        p.teleport(spawn);
+                    }
+                }
+                if (currentSpawn > spawns.size()) {
+                    currentSpawn = 0;
                 }
             }
-            if (currentSpawn > spawns.size()) {
-                currentSpawn = 0;
+        } else {
+            List<Player> players = info.getPlayers();
+            for (int i = 0, currentSpawn = 0; i < players.size(); i++) {
+                players.get(i).teleport(min.add(spawns.get(currentSpawn++)).toLocation());
+                if (currentSpawn > spawns.size()) {
+                    currentSpawn = 0;
+                }
             }
         }
     }
