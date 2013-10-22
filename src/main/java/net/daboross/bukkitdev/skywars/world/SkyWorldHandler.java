@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import lombok.NonNull;
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
@@ -95,9 +96,9 @@ public class SkyWorldHandler {
             int numTeams = game.getNumTeams();
             for (int i = 0, currentSpawn = 0; i < numTeams; i++) {
                 Location spawn = min.add(spawns.get(currentSpawn++)).toLocation();
-                plugin.getLogger().log(Level.INFO, "Starting spawning team #{0} to spawn {1}", new Object[]{i, spawn});
+                SkyStatic.debug("Starting spawning team #" + i + " to spawn " + spawn);
                 for (String name : game.getAllPlayersInTeam(i)) {
-                    plugin.getLogger().log(Level.INFO, "Sending {0} to that spawn", name);
+                    SkyStatic.debug("Sending " + name + " to that spawn");
                     Player p = Bukkit.getPlayerExact(name);
                     if (p != null) {
                         p.teleport(spawn);
