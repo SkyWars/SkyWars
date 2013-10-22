@@ -117,8 +117,8 @@ public class SkyWorldHandler {
     }
 
     public void onGameEnd(GameEndInfo info) {
-        SkyBlockLocation center = getMinLocation(info.getGame());
-        copier.destroyArena(center, info.getGame().getArena().getBoundaries().getClearing().add(info.getGame().getMin()));
+        SkyBlockLocation min = info.getGame().getMin();
+        copier.destroyArena(min, info.getGame().getArena().getBoundaries().getClearing());
     }
 
     private SkyBlockLocation getMinLocation(SkyGame game) {

@@ -38,23 +38,21 @@ public class WorldCopier {
         copy(from.min, from.max, toMin);
     }
 
-    public void destroyArena(@NonNull SkyBlockLocation center, @NonNull SkyBlockLocationRange area) {
-        World world = Bukkit.getWorld(center.world);
+    public void destroyArena(@NonNull SkyBlockLocation arenaMin, @NonNull SkyBlockLocationRange area) {
+        World world = Bukkit.getWorld(arenaMin.world);
         if (world == null) {
             throw new IllegalArgumentException("No world applicable.");
         }
-        int xLength = area.max.x - area.min.x + 30;
-        int zLength = area.max.z - area.min.z + 30;
-        SkyBlockLocation min = new SkyBlockLocation(center.x - xLength / 2, area.min.y, center.z - zLength / 2, center.world);
-        SkyBlockLocation length = new SkyBlockLocation(xLength, area.max.y - area.min.y, zLength, center.world);
-        destroyArena(min, length, world);
+        SkyBlockLocation clearingMin = new SkyBlockLocation(arenaMin.x + area.min.x, arenaMin.y + area.min.y, arenaMin.z + area.min.z, null);
+        SkyBlockLocation clearingMax = new SkyBlockLocation(arenaMin.x + area.max.x, arenaMin.y + area.max.y, arenaMin.z + area.max.z, null);
+        destroyArena(clearingMin, clearingMax, world);
     }
 
-    public void destroyArena(@NonNull SkyBlockLocation min, @NonNull SkyBlockLocation length, @NonNull World world) {
-        for (int x = 0; x < length.x; x++) {
-            for (int y = 0; y < length.y; y++) {
-                for (int z = 0; z < length.z; z++) {
-                    world.getBlockAt(min.x + x, min.y + y, min.z + z).setType(Material.AIR);
+    public void destroyArena(@NonNull SkyBlockLocation min, @NonNull SkyBlockLocation max, @NonNull World world) {
+        for (int x = min.x; x <= max.x; x++) {
+            for (int y = min.y; y <= max.y; y++) {
+                for (int z = min.z; z <= max.z; z++) {
+                    world.getBlockAt(x, y, z).setType(Material.AIR);
                 }
             }
         }
