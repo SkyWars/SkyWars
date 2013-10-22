@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.world;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -90,7 +91,7 @@ public class SkyWorldHandler {
         SkyBlockLocation min = getMinLocation(game);
         game.setMin(min);
         copier.copyArena(min, game.getArena().getBoundaries().getOrigin());
-        List<SkyPlayerLocation> spawns = game.getArena().getSpawns();
+        List<SkyPlayerLocation> spawns = new ArrayList<>(game.getArena().getSpawns());
         Collections.shuffle(spawns);
         if (game.areTeamsEnabled()) {
             int numTeams = game.getNumTeams();
