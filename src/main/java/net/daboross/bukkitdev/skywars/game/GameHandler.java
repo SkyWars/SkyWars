@@ -16,8 +16,10 @@
  */
 package net.daboross.bukkitdev.skywars.game;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.game.SkyCurrentGameTracker;
@@ -33,6 +35,7 @@ import org.bukkit.entity.Player;
 
 public class GameHandler implements SkyGameHandler {
 
+    private final Set<Integer> gamesCurrentlyEnding = new HashSet<>();
     private final SkyWarsPlugin plugin;
 
     public GameHandler(@NonNull SkyWarsPlugin plugin) {
@@ -50,12 +53,14 @@ public class GameHandler implements SkyGameHandler {
         if (!idHandler.gameRunning(id)) {
             throw new IllegalArgumentException("Invalid id " + id);
         }
-        GameEndInfo info = new GameEndInfo(plugin.getIDHandler().getGame(id), broadcast);
+        ArenaGame game = plugin.getIDHandler().getGame(id);
+        GameEndInfo info = new GameEndInfo(game, broadcast);
         for (Player player : info.getAlivePlayers()) {
             plugin.getDistributor().distribute(new PlayerLeaveGameInfo(id, player));
             respawnPlayer(player);
         }
         plugin.getDistributor().distribute(info);
+        gamesCurrentlyEnding.remove(id);
     }
 
     @Override
@@ -85,7 +90,8 @@ public class GameHandler implements SkyGameHandler {
         if (broadcast) {
             Bukkit.broadcastMessage(KillMessages.getMessage(player.getName(), plugin.getAttackerStorage().getKiller(playerName), KillMessages.KillReason.LEFT, game.getArena()));
         }
-        if (isGameWon(game)) {
+        if ((!gamesCurrentlyEnding.contains(id)) && isGameWon(game)) {
+            gamesCurrentlyEnding.add(id);
             plugin.getServer().getScheduler().runTask(plugin, new Runnable() {
                 @Override
                 public void run() {
