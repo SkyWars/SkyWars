@@ -16,6 +16,9 @@
  */
 package net.daboross.bukkitdev.skywars.gist;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,11 +35,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import lombok.Synchronized;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
+import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,19 +55,26 @@ public class GistReport {
 
     /**
      *
-     * @param configuration Configuration to generate report of
+     * @param plugin plugin
      * @return Raw report text
      */
-    public static String generateReportText(@NonNull SkyConfiguration configuration) {
-        StringBuilder dataB = new StringBuilder();
+    public static String generateReportText(@NonNull SkyWars plugin) {
+        SkyConfiguration configuration = plugin.getConfiguration();
+        StringBuilder build = new StringBuilder();
+        build.append("####Server information\n* Plugin Name: ").append(SkyStatic.getPluginName())
+                .append("\n* Plugin Version: ").append(plugin.getDescription().getVersion())
+                .append("\n* Implementation Version: ").append(SkyStatic.getImplementationVersion())
+                .append("\n* Server Software: ").append(Bukkit.getName())
+                .append("\n* Server Version: ").append(Bukkit.getVersion())
+                .append("\n####Configuration\n```\n")
+                .append(getRawConfig(plugin))
+                .append("\n```\n");
         for (SkyArenaConfig arena : configuration.getEnabledArenas()) {
-            appendArena(dataB.append("###").append(arena.getArenaName()), arena);
+            appendArena(build.append("####").append(arena.getArenaName())
+                    .append(" - ").append(arena.getFile() == null ? "No file" : arena.getFile().getAbsolutePath()), arena);
         }
-        appendArena(dataB.append("###Parent"), configuration.getParentArena());
-        dataB.append("###Configuration\n```\n")
-                .append(configuration.getRawConfig().saveToString())
-                .append("\n```");
-        return dataB.toString();
+        appendArena(build.append("####Parent"), configuration.getParentArena());
+        return build.toString();
     }
 
     private static StringBuilder appendArena(StringBuilder builder, SkyArena arena) {
@@ -73,6 +84,25 @@ public class GistReport {
                 .append(arenaYaml.saveToString())
                 .append("\n```\n");
         return builder;
+    }
+
+    private static String getRawConfig(SkyWars plugin) {
+        File f = new File(plugin.getDataFolder(), "main-config.yml");
+        StringBuilder build = new StringBuilder();
+        try (FileInputStream fis = new FileInputStream(f)) {
+            try (InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"))) {
+                try (BufferedReader buff = new BufferedReader(isr)) {
+                    String line;
+                    while ((line = buff.readLine()) != null) {
+                        build.append(line);
+                        build.append('\n');
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            return null;
+        }
+        return build.toString();
     }
 
     /**
