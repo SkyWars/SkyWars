@@ -16,7 +16,10 @@
  */
 package net.daboross.bukkitdev.skywars.scoreboards;
 
+import java.util.HashMap;
+import java.util.Map;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
+import net.daboross.bukkitdev.skywars.events.GameEndInfo;
 import net.daboross.bukkitdev.skywars.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameInfo;
 import org.bukkit.Bukkit;
@@ -27,11 +30,15 @@ import org.bukkit.scoreboard.Team;
 
 public class TeamScoreboardListener {
 
+    private final Map<String, Team> teams = new HashMap<>();
+    private final Map<Integer, Scoreboard> scoreboards = new HashMap<>();
+
     public void onGameStart(GameStartInfo info) {
         SkyGame game = info.getGame();
         if (game.areTeamsEnabled()) {
             Server server = Bukkit.getServer();
             Scoreboard board = server.getScoreboardManager().getNewScoreboard();
+            scoreboards.put(game.getId(), board);
             for (int teamNum = 0, max = game.getNumTeams(); teamNum < max; teamNum++) {
                 String teamName = "Team " + teamNum;
                 Team team = board.registerNewTeam(teamName);
@@ -40,12 +47,25 @@ public class TeamScoreboardListener {
                 team.setPrefix(ChatColor.GRAY + "[" + ChatColor.DARK_RED + teamNum + ChatColor.GRAY + "]");
                 for (String name : game.getAllPlayersInTeam(teamNum)) {
                     team.addPlayer(server.getPlayerExact(name));
+                    teams.put(name.toLowerCase(), team);
                 }
             }
         }
     }
 
     public void onPlayerLeaveGame(PlayerLeaveGameInfo info) {
-        // TODO: Teams shouldn't last forever
+        Team team = teams.remove(info.getPlayer().getName().toLowerCase());
+        if (team != null) {
+            team.removePlayer(info.getPlayer());
+        }
+    }
+
+    public void onGameEnd(GameEndInfo info) {
+        Scoreboard scoreboard = scoreboards.remove(info.getGame().getId());
+        if (scoreboard != null) {
+            for (Team team : scoreboard.getTeams()) {
+                team.unregister();
+            }
+        }
     }
 }
