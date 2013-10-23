@@ -10,25 +10,28 @@ SkyWars - [![Build Status](https://travis-ci.org/daboross/SkyWars.png?branch=mas
 * Clears player inventories when the join a game and when the leave.
 
 ### Basic Installation
-* Make sure your server is running Java 7.
+* Make sure your server is running Java 7. SkyWars **will not work** with Java 6.
 * Download the correct SkyWars jar file for your server version.
- * 1.6.2 servers should download SkyWars.jar
+ * 1.6.2 & 1.6.4 servers should download SkyWars.jar
  * 1.5.2 servers should download SkyWars-1.5.2.jar
 * Put the downloaded jar in your plugins/ directory.
 * Restart your server. SkyWars will automatically create 2 new worlds. SkyWarsBaseWorld and SkyWarsArenaWorld.
-* Go to where you want the lobby to be and use `/sw setlobby`. The lobby defaults to the spawn of the first world if it is not set.
+* Go to where you want the lobby to be and use `/sw setlobby`.
 
 ### Useful links
 * [Commands and Permissions](https://github.com/daboross/SkyWars/wiki/Commands-and-Permissions)
+* [Configuration Guide](https://github.com/daboross/SkyWars/wiki/Configuration)
+* [Setting up a new Arena](https://github.com/daboross/SkyWars/wiki/Setting-up-a-new-arena)
 * [Worlds](https://github.com/daboross/SkyWars/wiki/Worlds)
 * [Common Issues](https://github.com/daboross/SkyWars/wiki/Common-Issues)
-* [Development Builds - CI Server](http://ci.aemservers.net/job/SkyWars)
-* [Source Code](https://github.com/daboross/SkyWars)
 * [Portuguese Tutorial - Ligação para tutorial AbsintoJ feito](http://www.youtube.com/watch?v=hYTq39Iomz0)
+* [GitHub](https://github.com/daboross/SkyWars)
+* [MCStats Statistics](http://mcstats.org/plugin/SkyWars)
+* [Dev builds - CI Server](http://ci.aemservers.net/job/SkyWars)
 
 ### Bugs, Features, and Questions
 We use the github issue tracker for all bugs, features, and questions.
 See [submitting a ticket](https://github.com/daboross/SkyWars/wiki/Submitting-a-ticket)
 
 ### Map credit
-* Full credit for the default map, Skyblock Warriors, goes to [SwipeShot](http://www.youtube.com/user/SwipeShot).
+Full credit for the default map, Skyblock Warriors, goes to [SwipeShot](http://www.youtube.com/user/SwipeShot).
