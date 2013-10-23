@@ -66,14 +66,14 @@ public class GistReport {
                 .append("\n* Implementation Version: ").append(SkyStatic.getImplementationVersion())
                 .append("\n* Server Software: ").append(Bukkit.getName())
                 .append("\n* Server Version: ").append(Bukkit.getVersion())
-                .append("\n####Configuration\n```\n")
+                .append("\n\n####Configuration\n```\n")
                 .append(getRawConfig(plugin))
                 .append("\n```\n");
         for (SkyArenaConfig arena : configuration.getEnabledArenas()) {
-            appendArena(build.append("####").append(arena.getArenaName())
+            appendArena(build.append("\n####").append(arena.getArenaName())
                     .append(" - ").append(arena.getFile() == null ? "No file" : arena.getFile().getAbsolutePath()), arena);
         }
-        appendArena(build.append("####Parent"), configuration.getParentArena());
+        appendArena(build.append("\n####Parent"), configuration.getParentArena());
         return build.toString();
     }
 
