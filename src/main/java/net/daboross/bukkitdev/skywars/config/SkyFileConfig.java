@@ -35,6 +35,7 @@ public class SkyFileConfig {
     @Getter
     private final File configFile;
     @Getter
+    @SuppressWarnings("NonConstantLogger")
     private final Logger logger;
     @Getter
     private YamlConfiguration config;
@@ -160,7 +161,7 @@ public class SkyFileConfig {
 
     public void removeValue(String path) {
         if (config.contains(path)) {
-            logger.log(Level.INFO, "Removing value {0} in file {1}", new Object[]{path, configFile});
+            logger.log(Level.INFO, "Removing deprecated value {0} in file {1}", new Object[]{path, configFile});
             config.set(path, null);
         }
     }
