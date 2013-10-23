@@ -36,11 +36,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class SkyWarsConfiguration implements SkyConfiguration {
 
+    private final SkyArenaConfigLoader arenaLoader = new SkyArenaConfigLoader();
     private List<SkyArenaConfig> enabledArenas;
-    private SkyFileConfig mainConfig;
     private final SkyWars plugin;
-    @Getter
-    private File mainConfigFile;
     @Getter
     private File arenaFolder;
     @Getter
@@ -67,19 +65,16 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private boolean commandWhitelistABlacklist;
     @Getter
     private Pattern commandWhitelistCommandRegex;
-    private final SkyArenaConfigLoader arenaLoader;
 
     public SkyWarsConfiguration(SkyWars plugin) throws IOException, InvalidConfigurationException, SkyConfigurationException {
         this.plugin = plugin;
-        this.arenaLoader = new SkyArenaConfigLoader();
         load();
     }
 
     private void load() throws IOException, InvalidConfigurationException, SkyConfigurationException {
-        if (mainConfigFile == null) {
-            mainConfigFile = new File(plugin.getDataFolder(), Names.MAIN);
-        }
-        mainConfig = new SkyFileConfig(mainConfigFile, plugin.getLogger());
+        // This is expected to be only done once, so it is OK to not store some values
+        File mainConfigFile = new File(plugin.getDataFolder(), Names.MAIN);
+        SkyFileConfig mainConfig = new SkyFileConfig(mainConfigFile, plugin.getLogger());
         mainConfig.load();
 
         if (arenaFolder == null) {
@@ -94,14 +89,12 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             throw new SkyConfigurationException("File " + arenaFolder.getAbsolutePath() + " exists but is not a directory");
         }
 
-        // Keys.VERSION
         int version = mainConfig.getSetInt(Keys.VERSION, Defaults.VERSION);
         if (version > 1) {
             throw new SkyConfigurationException("Version '" + version + "' as listed under " + Keys.VERSION + " in file " + mainConfigFile.getAbsolutePath() + " is unknown.");
         }
         mainConfig.getConfig().set(Keys.VERSION, Defaults.VERSION);
 
-        // Keys.DEBUG
         SkyStatic.setDebug(mainConfig.getSetBoolean(Keys.DEBUG, Defaults.DEBUG));
 
         arenaOrder = ArenaOrder.getOrder(mainConfig.getSetString(Keys.ARENA_ORDER, Defaults.ARENA_ORDER.toString()));
@@ -109,34 +102,31 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             throw new SkyConfigurationException("Invalid ArenaOrder '" + arenaOrder + "' found under " + Keys.ARENA_ORDER + " in file " + mainConfigFile.getAbsolutePath() + ". Valid values: " + Arrays.toString(ArenaOrder.values()));
         }
 
-        // Keys.MESSAGE_PREFIX
         messagePrefix = mainConfig.getSetString(Keys.MESSAGE_PREFIX, Defaults.MESSAGE_PREFIX);
 
-        // Keys.SAVE_INVENTORY
         inventorySaveEnabled = mainConfig.getSetBoolean(Keys.SAVE_INVENTORY, Defaults.SAVE_INVENTORY);
 
-        // Keys.ENABLED_ARENAS
         List<String> enabledArenaNames = mainConfig.getSetStringList(Keys.ENABLED_ARENAS, Defaults.ENABLED_ARENAS);
         enabledArenas = new ArrayList<>(enabledArenaNames.size());
         if (enabledArenaNames.isEmpty()) {
             throw new SkyConfigurationException("No arenas enabled");
         }
 
-        // Keys.Points
+        // Points
         enablePoints = mainConfig.getSetBoolean(Keys.Points.ENABLE, Defaults.Points.ENABLE);
         winPointDiff = mainConfig.getSetInt(Keys.Points.WIN_DIFF, Defaults.Points.WIN_DIFF);
         deathPointDiff = mainConfig.getSetInt(Keys.Points.DEATH_DIFF, Defaults.Points.DEATH_DIFF);
         killPointDiff = mainConfig.getSetInt(Keys.Points.KILL_DIFF, Defaults.Points.KILL_DIFF);
 
-        // Keys.ARENA_DISTANCE_APART
         arenaDistanceApart = mainConfig.getSetInt(Keys.ARENA_DISTANCE_APART, Defaults.ARENA_DISTANCE_APART);
 
-        //Command Whitelist
         commandWhitelistEnabled = mainConfig.getSetBoolean(Keys.CommandWhitelist.WHITELIST_ENABLED, Defaults.CommandWhitelist.WHITELIST_ENABLED);
         commandWhitelistABlacklist = mainConfig.getSetBoolean(Keys.CommandWhitelist.IS_BLACKLIST, Defaults.CommandWhitelist.IS_BLACKLIST);
         commandWhitelistCommandRegex = createCommandRegex(mainConfig.getSetStringList(Keys.CommandWhitelist.COMMAND_WHITELIST, Defaults.CommandWhitelist.COMMAND_WHITELIST));
+
         // Remove deprecated values
         mainConfig.removeValues(Keys.Deprecated.CHAT_PREFIX, Keys.Deprecated.PREFIX_CHAT);
+
         // Save
         mainConfig.save(String.format(Headers.CONFIG));
 
@@ -224,11 +214,6 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         saveArena(arena.getFile(), arena, String.format(Headers.ARENA, arena.getArenaName()));
     }
 
-    @Override
-    public YamlConfiguration getRawConfig() {
-        return mainConfig.getConfig();
-    }
-
     private static class Keys {
 
         private static final String VERSION = "config-version";
@@ -270,7 +255,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private static class Defaults {
 
         private static final int VERSION = 1;
-        private static final String MESSAGE_PREFIX = "&8[&cSkyWars&8]#B ";
+        private static final String MESSAGE_PREFIX = "&8[&cSkyWars&8]&a ";
         private static final boolean DEBUG = false;
         private static final ArenaOrder ARENA_ORDER = ArenaOrder.RANDOM;
         private static final List<String> ENABLED_ARENAS = Arrays.asList("skyblock-warriors");
