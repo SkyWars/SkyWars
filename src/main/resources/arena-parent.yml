@@ -37,15 +37,15 @@ boundaries:
 placement-y: 20
 messages:
   death:
-    killed-void: '#N%s#B pushed #N%s#B into the void of doom!'
-    suicide-void: '#N%s#B jumped into the void of doom!'
-    killed-damaged: '#N%s#B killed #N%s#B!'
-    killed-other: '#N%s#B was killed!'
-    forfeited-damaged: '#N%s#B was forced for forfeit by #N%s#B!'
-    forfeited: '#N%s#B forfeited!'
+    killed-void: '&2%s&a pushed &2%s&a into the void of doom!'
+    suicide-void: '&2%s&a jumped into the void of doom!'
+    killed-damaged: '&2%s&a killed &2%s&a!'
+    killed-other: '&2%s&a was killed!'
+    forfeited-damaged: '&2%s&a was forced for forfeit by &2%s&a!'
+    forfeited: '&2%s&a forfeited!'
   winning:
-    single-won: '#N%s#B has won the SkyWars!'
-    multi-won: '#N%s#B have won the SkyWars!'
-    none-won: '#BGame ended with no victors'
+    single-won: '&2%s&a has won the SkyWars!'
+    multi-won: '&2%s&a have won the SkyWars!'
+    none-won: '&aGame ended with no victors'
   game:
-    game-starting: '#BGame starting with #N%s#B!'
+    game-starting: '&aGame starting with &2%s&a!'
