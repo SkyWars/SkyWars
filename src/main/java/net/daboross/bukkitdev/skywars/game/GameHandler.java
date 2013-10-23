@@ -54,12 +54,13 @@ public class GameHandler implements SkyGameHandler {
             throw new IllegalArgumentException("Invalid id " + id);
         }
         ArenaGame game = plugin.getIDHandler().getGame(id);
-        GameEndInfo info = new GameEndInfo(game, broadcast);
-        for (Player player : info.getAlivePlayers()) {
+        GameEndInfo gameEndInfo = new GameEndInfo(game, broadcast);
+        for (Player player : gameEndInfo.getAlivePlayers()) {
             plugin.getDistributor().distribute(new PlayerLeaveGameInfo(id, player));
             respawnPlayer(player);
         }
-        plugin.getDistributor().distribute(info);
+        // All PlayerLeaveGameInfos MUST be distributed before the GameEndInfo is
+        plugin.getDistributor().distribute(gameEndInfo);
         gamesCurrentlyEnding.remove(id);
     }
 
