@@ -32,31 +32,16 @@ public class ConfigurationDebugCommand extends SubCommand {
     private final SkyWars plugin;
 
     public ConfigurationDebugCommand(SkyWars plugin) {
-        super("cfgdebug", true, "skywars.cfgdebug", "Displays debug information for the current configuration. Best used in console. If '-p' is specified as a parameter than the output is pasted and you are given a link.");
-        super.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.LESS_THAN, 3, ColorList.ERR + "Too many parameters"));
+        super("report", true, "skywars.report", "Generates a report and uploads it to gist.github.com, then gives you a link.");
+        super.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many parameters"));
         this.plugin = plugin;
     }
 
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        boolean paste = false;
-        if (subCommandArgs.length > 0) {
-            if (subCommandArgs[0].equalsIgnoreCase("-p")) {
-                paste = true;
-            } else {
-                sender.sendMessage("Invalid argument '" + subCommandArgs[0] + "'.");
-                sender.sendMessage(getHelpMessage(baseCommandLabel, subCommandLabel));
-                return;
-            }
-        }
-        sender.sendMessage("Gathering data");
-        String data = GistReport.generateReportText(plugin.getConfiguration());
-        if (paste) {
-            new GistReportRunnable(plugin, sender.getName(), data).runMe();
-        } else {
-            sender.sendMessage(data);
-        }
-
+        sender.sendMessage(ColorList.REG + "Gathering data & Submitting");
+        String data = GistReport.generateReportText(plugin);
+        new GistReportRunnable(plugin, sender.getName(), data).runMe();
     }
 
     @AllArgsConstructor
@@ -73,7 +58,7 @@ public class ConfigurationDebugCommand extends SubCommand {
         @Override
         public void run() {
             String url = GistReport.reportReport(report);
-            plugin.getServer().getScheduler().runTask(plugin, new SendResult(playerName, "Report url: " + url));
+            plugin.getServer().getScheduler().runTask(plugin, new SendResult(playerName, ColorList.REG + "Report: " + ColorList.DATA + url));
         }
 
         private static class SendResult implements Runnable {
