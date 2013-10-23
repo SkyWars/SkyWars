@@ -54,33 +54,30 @@ public class StatusCommand extends SubCommand {
         StringBuilder b = new StringBuilder();
         b.append(ColorList.DATA).append(game.getId()).append(ColorList.REG).append(":");
         List<String> alive = game.getAlivePlayers();
-        if (game.areTeamsEnabled()) {
-            switch (alive.size()) {
-                case 0:
-                    b.append(" -- ");
-                    break;
-                case 1:
-                    b.append(ChatColor.GREEN).append(alive.get(0));
-                    break;
-                default:
-                    for (String name : alive) {
-                        b.append("\n  ").append(ChatColor.GREEN).append(name).append(ColorList.REG).append(" - Team ").append(ColorList.DATA).append(game.getTeamNumber(name));
+        switch (alive.size()) {
+            case 0:
+                b.append(" -- ");
+                break;
+            case 1:
+                b.append(ChatColor.GREEN).append(alive.get(0));
+                break;
+            default:
+                if (game.areTeamsEnabled()) {
+                    for (int team = 0; team < game.getNumTeams(); team++) {
+                        List<String> players = game.getAlivePlayersInTeam(team);
+                        if (!players.isEmpty()) {
+                            b.append("\n  ").append(ColorList.REG).append("Team ").append(ColorList.DATA).append(team).append(ColorList.REG).append(": ").append(ColorList.DATA).append(players.get(0));
+                            for (int i = 1; i < players.size(); i++) {
+                                b.append(ColorList.REG).append(", ").append(ColorList.DATA).append(players.get(i));
+                            }
+                        }
                     }
-            }
-        } else {
-            switch (alive.size()) {
-                case 0:
-                    b.append(" -- ");
-                    break;
-                case 1:
-                    b.append(ChatColor.GREEN).append(alive.get(0));
-                    break;
-                default:
+                } else {
                     b.append(" ").append(ChatColor.GREEN).append(alive.get(0));
                     for (int i = 1; i < alive.size(); i++) {
                         b.append(ColorList.REG).append(", ").append(ChatColor.GREEN).append(alive.get(i));
                     }
-            }
+                }
         }
         return b.toString();
     }
