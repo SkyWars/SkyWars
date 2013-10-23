@@ -10,7 +10,7 @@ SkyWars - [![Build Status](https://travis-ci.org/daboross/SkyWars.png?branch=mas
 * Clears player inventories when the join a game and when the leave.
 
 ### Basic Installation
-* Make sure your server is running Java 7.
+* Make sure your server is running Java 7. SkyWars **will not work** with Java 6.
 * Download the correct SkyWars jar file for your server version.
  * 1.6.2 & 1.6.4 servers should download SkyWars.jar
  * 1.5.2 servers should download SkyWars-1.5.2.jar
@@ -20,11 +20,12 @@ SkyWars - [![Build Status](https://travis-ci.org/daboross/SkyWars.png?branch=mas
 
 ### Useful links
 * [Commands and Permissions](https://github.com/daboross/SkyWars/wiki/Commands-and-Permissions)
+* [Configuration Guide](https://github.com/daboross/SkyWars/wiki/Configuration)
+* [Setting up a new Arena](https://github.com/daboross/SkyWars/wiki/Setting-up-a-new-arena)
 * [Worlds](https://github.com/daboross/SkyWars/wiki/Worlds)
-* [Common issues](https://github.com/daboross/SkyWars/wiki/Common-Issues)
-* [Setting up a new arena](https://github.com/daboross/SkyWars/wiki/Setting-up-a-new-arena)
+* [Common Issues](https://github.com/daboross/SkyWars/wiki/Common-Issues)
 * [Portuguese Tutorial - Ligação para tutorial AbsintoJ feito](http://www.youtube.com/watch?v=hYTq39Iomz0)
-* [Github](https://github.com/daboross/SkyWars)
+* [GitHub](https://github.com/daboross/SkyWars)
 * [MCStats Statistics](http://mcstats.org/plugin/SkyWars)
 * [Dev builds - CI Server](http://ci.aemservers.net/job/SkyWars)
 
