@@ -33,7 +33,7 @@ public class RemoveLastPortalCommand extends SubCommand {
 
     public RemoveLastPortalCommand(SkyWars plugin) {
         super("delportal", false, "skywars.delportal", SkyTrans.get(TransKey.CMD_DELPORTAL_DESCRIPTION));
-        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
+        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
         this.plugin = plugin;
     }
 

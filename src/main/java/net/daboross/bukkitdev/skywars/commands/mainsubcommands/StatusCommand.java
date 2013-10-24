@@ -36,7 +36,7 @@ public class StatusCommand extends SubCommand {
 
     public StatusCommand(SkyWars plugin) {
         super("status", true, "skywars.status", SkyTrans.get(TransKey.CMD_STATUS_DESCRIPTION));
-        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
+        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
         this.plugin = plugin;
     }
 

@@ -33,7 +33,7 @@ public class SetLobbyCommand extends SubCommand {
 
     public SetLobbyCommand(SkyWars plugin) {
         super("setlobby", false, "skywars.setlobby", SkyTrans.get(TransKey.CMD_SETLOBBY_DESCRIPTION));
-        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
+        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
         this.plugin = plugin;
     }
 

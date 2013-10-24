@@ -34,7 +34,7 @@ public class ConfigurationDebugCommand extends SubCommand {
 
     public ConfigurationDebugCommand(SkyWars plugin) {
         super("report", true, "skywars.report", SkyTrans.get(TransKey.CMD_REPORT_DESCRIPTION));
-        super.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
+        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
         this.plugin = plugin;
     }
 
