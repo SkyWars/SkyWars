@@ -22,6 +22,7 @@ import java.util.List;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.StartupFailedException;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.points.SkyPoints;
 import net.daboross.bukkitdev.skywars.api.points.PointStorageBackend;
@@ -70,6 +71,7 @@ public class PointStorage extends SkyPoints {
 
     @Override
     public synchronized void addScore(String name, int diff) {
+        SkyStatic.debug("Adding " + diff + " score to " + name)
         backend.addScore(name, diff);
     }
 
