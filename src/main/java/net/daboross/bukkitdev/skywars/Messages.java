@@ -62,7 +62,8 @@ public class Messages {
          */
         public static final String CREDITS_AND_VERSION
                 = ColorList.REG + "%s v" + ColorList.DATA + "%s" + ColorList.REG + " created by " + ColorList.NAME + "Dabo Ross%n"
-                + ColorList.REG + "Build number %s";
+                + ColorList.REG + " Implementation version %s";
+        public static final String CREDITS_AND_VERSION_WHEN_VERSION_IS_SAME = ColorList.REG + "%s v" + ColorList.DATA + "%s" + ColorList.REG + " created by " + ColorList.NAME + "Dabo Ross";
     }
 
     public static class Leave {
