@@ -110,6 +110,12 @@
                     <include>**</include>
                 </includes>
             </resource>
+            <resource>
+                <directory>${project.basedir}/src/main/translations</directory>
+                <includes>
+                    <include>**</include>
+                </includes>
+            </resource>
         </resources>
         <plugins>
             <plugin>
