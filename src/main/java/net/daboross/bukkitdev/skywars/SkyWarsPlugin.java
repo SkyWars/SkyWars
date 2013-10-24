@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.logging.Level;
 import lombok.Getter;
-import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
@@ -30,6 +29,7 @@ import net.daboross.bukkitdev.skywars.api.game.SkyGameHandler;
 import net.daboross.bukkitdev.skywars.api.location.SkyLocationStore;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTranslations;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.commands.MainCommand;
 import net.daboross.bukkitdev.skywars.commands.SetupCommand;
 import net.daboross.bukkitdev.skywars.config.SkyWarsConfiguration;
@@ -204,9 +204,9 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (!enabledCorrectly) {
-            sender.sendMessage(ColorList.ERR + "Not fully enabled.");
+            sender.sendMessage(SkyTrans.get(TransKey.NOT_FULLY_ENABLED));
         } else {
-            sender.sendMessage(ColorList.ERR + "SkyWars has no clue what " + cmd.getName() + " is.");
+            sender.sendMessage(SkyTrans.get(TransKey.NO_CLUE_COMMAND, cmd.getName()));
         }
         return true;
     }
