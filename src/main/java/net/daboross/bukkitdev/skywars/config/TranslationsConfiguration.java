@@ -20,20 +20,24 @@ import java.io.File;
 import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTranslations;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class TranslationsConfiguration implements SkyTranslations {
 
+    private final SkyWars plugin;
     private final File configFile;
     private final Map<TransKey, String> values;
 
     public TranslationsConfiguration(SkyWars plugin) throws SkyConfigurationException {
+        this.plugin = plugin;
         this.configFile = new File(plugin.getDataFolder(), "messages.yml");
         this.values = new EnumMap<>(TransKey.class);
         this.load();
@@ -64,6 +68,12 @@ public class TranslationsConfiguration implements SkyTranslations {
         }
         for (Map.Entry<TransKey, String> entry : values.entrySet()) {
             config.set(entry.getKey().key, entry.getValue());
+            entry.setValue(ChatColor.translateAlternateColorCodes('&', entry.getValue()));
+        }
+        try {
+            config.save(configFile);
+        } catch (IOException ex) {
+            plugin.getLogger().log(Level.WARNING, "Failed to save translations config file", ex);
         }
     }
 
