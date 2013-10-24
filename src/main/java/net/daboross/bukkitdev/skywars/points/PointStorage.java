@@ -71,7 +71,7 @@ public class PointStorage extends SkyPoints {
 
     @Override
     public synchronized void addScore(String name, int diff) {
-        SkyStatic.debug("Adding " + diff + " score to " + name)
+        SkyStatic.debug("Adding " + diff + " score to " + name);
         backend.addScore(name, diff);
     }
 
