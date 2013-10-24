@@ -105,7 +105,7 @@ public class SkyWorldHandler {
                         p.teleport(spawn);
                     }
                 }
-                if (currentSpawn => spawns.size()) {
+                if (currentSpawn >= spawns.size()) {
                     currentSpawn = 0;
                 }
             }
