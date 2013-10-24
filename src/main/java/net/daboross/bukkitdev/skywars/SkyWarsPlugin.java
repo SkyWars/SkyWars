@@ -16,36 +16,39 @@
  */
 package net.daboross.bukkitdev.skywars;
 
-import net.daboross.bukkitdev.skywars.api.SkyStatic;
-import net.daboross.bukkitdev.skywars.commands.MainCommand;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.logging.Level;
 import lombok.Getter;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
+import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
 import net.daboross.bukkitdev.skywars.api.game.SkyGameHandler;
 import net.daboross.bukkitdev.skywars.api.location.SkyLocationStore;
-import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTranslations;
+import net.daboross.bukkitdev.skywars.commands.MainCommand;
 import net.daboross.bukkitdev.skywars.commands.SetupCommand;
 import net.daboross.bukkitdev.skywars.config.SkyWarsConfiguration;
+import net.daboross.bukkitdev.skywars.config.TranslationsConfiguration;
 import net.daboross.bukkitdev.skywars.events.GameEventDistributor;
 import net.daboross.bukkitdev.skywars.game.CurrentGames;
 import net.daboross.bukkitdev.skywars.game.GameHandler;
 import net.daboross.bukkitdev.skywars.game.GameIDHandler;
 import net.daboross.bukkitdev.skywars.game.GameQueue;
-import net.daboross.bukkitdev.skywars.listeners.CommandWhitelistListener;
-import net.daboross.bukkitdev.skywars.listeners.AttackerStorageListener;
 import net.daboross.bukkitdev.skywars.game.reactors.GameBroadcaster;
 import net.daboross.bukkitdev.skywars.game.reactors.InventorySave;
-import net.daboross.bukkitdev.skywars.listeners.PortalListener;
-import net.daboross.bukkitdev.skywars.listeners.QuitListener;
 import net.daboross.bukkitdev.skywars.game.reactors.ResetHealth;
+import net.daboross.bukkitdev.skywars.listeners.AttackerStorageListener;
 import net.daboross.bukkitdev.skywars.listeners.BuildingLimiter;
+import net.daboross.bukkitdev.skywars.listeners.CommandWhitelistListener;
 import net.daboross.bukkitdev.skywars.listeners.MobSpawnDisable;
 import net.daboross.bukkitdev.skywars.listeners.PointStorageChatListener;
+import net.daboross.bukkitdev.skywars.listeners.PortalListener;
+import net.daboross.bukkitdev.skywars.listeners.QuitListener;
 import net.daboross.bukkitdev.skywars.listeners.SpawnListener;
 import net.daboross.bukkitdev.skywars.points.PointStorage;
 import net.daboross.bukkitdev.skywars.scoreboards.TeamScoreboardListener;
@@ -68,6 +71,8 @@ import org.mcstats.MetricsLite;
  */
 public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
 
+    @Getter
+    private SkyTranslations translations;
     @Getter
     private SkyConfiguration configuration;
     @Getter
@@ -132,6 +137,12 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
                 break;
             }
         }
+        try {
+            translations = new TranslationsConfiguration(this);
+        } catch (SkyConfigurationException ex) {
+            throw new StartupFailedException("Failed to load translations", ex);
+        }
+        SkyTrans.setInstance(translations);
         currentGameTracker = new CurrentGames();
         iDHandler = new GameIDHandler();
         broadcaster = new GameBroadcaster();
@@ -224,5 +235,19 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         } catch (Throwable t) {
             // We just won't do metrics now
         }
+    }
+
+    @Override
+    public boolean reloadTranslations() {
+        SkyTranslations tempTrans;
+        try {
+            tempTrans = new TranslationsConfiguration(this);
+        } catch (SkyConfigurationException | RuntimeException ex) {
+            getLogger().log(Level.WARNING, "Failed to reload translations. Just using older version for now.", ex);
+            return false;
+        }
+        translations = tempTrans;
+        SkyTrans.setInstance(tempTrans);
+        return true;
     }
 }
