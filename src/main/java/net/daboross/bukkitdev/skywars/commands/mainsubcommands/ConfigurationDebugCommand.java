@@ -17,10 +17,11 @@
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
 import lombok.AllArgsConstructor;
-import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.gist.GistReport;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -32,14 +33,14 @@ public class ConfigurationDebugCommand extends SubCommand {
     private final SkyWars plugin;
 
     public ConfigurationDebugCommand(SkyWars plugin) {
-        super("report", true, "skywars.report", "Generates a report and uploads it to gist.github.com, then gives you a link.");
-        super.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many parameters"));
+        super("report", true, "skywars.report", SkyTrans.get(TransKey.CMD_REPORT_DESCRIPTION));
+        super.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
         this.plugin = plugin;
     }
 
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        sender.sendMessage(ColorList.REG + "Gathering data & Submitting");
+        sender.sendMessage(SkyTrans.get(TransKey.CMD_REPORT_START));
         String data = GistReport.generateReportText(plugin);
         new GistReportRunnable(plugin, sender.getName(), data).runMe();
     }
@@ -58,7 +59,7 @@ public class ConfigurationDebugCommand extends SubCommand {
         @Override
         public void run() {
             String url = GistReport.reportReport(report);
-            plugin.getServer().getScheduler().runTask(plugin, new SendResult(playerName, ColorList.REG + "Report: " + ColorList.DATA + url));
+            plugin.getServer().getScheduler().runTask(plugin, new SendResult(playerName, SkyTrans.get(TransKey.CMD_REPORT_OUTPUT, url)));
         }
 
         private static class SendResult implements Runnable {

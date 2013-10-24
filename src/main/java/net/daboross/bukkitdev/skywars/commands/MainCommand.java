@@ -29,7 +29,8 @@ import net.daboross.bukkitdev.skywars.commands.mainsubcommands.SetLobbyCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.SetPortalCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.StatusCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.VersionCommand;
-import net.daboross.bukkitdev.skywars.api.SkyStatic;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.RemoveLastPortalCommand;
 import org.bukkit.command.PluginCommand;
 
@@ -60,7 +61,7 @@ public class MainCommand {
 
     public void latchOnto(PluginCommand command) {
         if (command != null) {
-            command.setDescription("Main command for " + SkyStatic.getPluginName());
+            command.setDescription(SkyTrans.get(TransKey.MAIN_CMD_DESCRIPTION));
             command.setExecutor(base);
             command.setUsage("/<command>");
             command.setPermission(null);

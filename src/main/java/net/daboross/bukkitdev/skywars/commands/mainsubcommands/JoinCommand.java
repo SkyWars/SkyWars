@@ -20,8 +20,9 @@ import java.util.Locale;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
-import net.daboross.bukkitdev.skywars.Messages;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -30,7 +31,7 @@ public class JoinCommand extends SubCommand {
     private final SkyWars plugin;
 
     public JoinCommand(SkyWars plugin) {
-        super("join", false, "skywars.join", "Joins the queue for the next game");
+        super("join", false, "skywars.join", SkyTrans.get(TransKey.CMD_JOIN_DESCRIPTION));
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
         this.plugin = plugin;
     }
@@ -39,11 +40,11 @@ public class JoinCommand extends SubCommand {
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         String name = sender.getName().toLowerCase(Locale.ENGLISH);
         if (plugin.getCurrentGameTracker().isInGame(name)) {
-            sender.sendMessage(Messages.Join.IN_GAME);
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_IN_GAME));
         } else if (plugin.getGameQueue().inQueue(name)) {
-            sender.sendMessage(Messages.Join.ALREADY_QUEUED);
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_ALREADY_QUEUED));
         } else {
-            sender.sendMessage(Messages.Join.CONFIRMATION);
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_CONFIRMATION));
             plugin.getGameQueue().queuePlayer(name);
         }
     }

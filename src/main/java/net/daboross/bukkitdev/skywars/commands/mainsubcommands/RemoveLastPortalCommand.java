@@ -22,17 +22,17 @@ import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 public class RemoveLastPortalCommand extends SubCommand {
 
-    private static final String CONFIRMATION = ColorList.REG + "Removed portal at %s";
-    private static final String ERROR = ColorList.ERR + "No portals are set";
     private final SkyWars plugin;
 
     public RemoveLastPortalCommand(SkyWars plugin) {
-        super("delportal", false, "skywars.delportal", "Removes the last set portal");
+        super("delportal", false, "skywars.delportal", SkyTrans.get(TransKey.CMD_DELPORTAL_DESCRIPTION));
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
         this.plugin = plugin;
     }
@@ -41,10 +41,10 @@ public class RemoveLastPortalCommand extends SubCommand {
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         List<SkyBlockLocation> portals = plugin.getLocationStore().getPortals();
         if (portals.isEmpty()) {
-            sender.sendMessage(ERROR);
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_DELPORTAL_NO_PORTAL_ERROR));
         } else {
             SkyBlockLocation portal = portals.remove(portals.size() - 1);
-            sender.sendMessage(String.format(CONFIRMATION, portal));
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_DELPORTAL_CONFIRMATION, portal));
         }
     }
 }

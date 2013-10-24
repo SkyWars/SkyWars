@@ -21,6 +21,8 @@ import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -29,7 +31,7 @@ public class CancelCommand extends SubCommand {
     private final SkyWars plugin;
 
     public CancelCommand(SkyWars plugin) {
-        super("cancel", true, "skywars.cancel", "Cancels a current game with the given id");
+        super("cancel", true, "skywars.cancel", SkyTrans.get(TransKey.CMD_CANCEL_DESCRIPTION));
         addArgumentNames("ID");
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.LESS_THAN, 2, ColorList.ERR + "Too many arguments!"));
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.GREATER_THAN, 0, ColorList.ERR + "Not enough arguments!"));
@@ -42,15 +44,15 @@ public class CancelCommand extends SubCommand {
         try {
             id = Integer.parseInt(subCommandArgs[0]);
         } catch (NumberFormatException ex) {
-            sender.sendMessage(ColorList.ERR_ARGS + subCommandArgs[0] + ColorList.ERR + " isn't an integer!");
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_CANCEL_NOT_AN_INT, subCommandArgs[0]));
             return;
         }
         SkyIDHandler idh = plugin.getIDHandler();
         if (idh.getGame(id) == null) {
-            sender.sendMessage(ColorList.ERR + "There aren't any games with the id " + ColorList.ERR_ARGS + id);
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_CANCEL_NO_GAMES_WITH_ID, id));
             return;
         }
-        sender.sendMessage(ColorList.REG + "Canceling game " + ColorList.DATA + id);
+        sender.sendMessage(SkyTrans.get(TransKey.CMD_CANCEL_CONFIRMATION, id));
         plugin.getGameHandler().endGame(id, true);
     }
 }

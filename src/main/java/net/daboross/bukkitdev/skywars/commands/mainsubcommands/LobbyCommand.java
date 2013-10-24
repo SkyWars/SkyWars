@@ -19,8 +19,9 @@ package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
-import net.daboross.bukkitdev.skywars.Messages;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -30,7 +31,7 @@ public class LobbyCommand extends SubCommand {
     private final SkyWars plugin;
 
     public LobbyCommand(SkyWars plugin) {
-        super("lobby", false, "skywars.lobby", "Teleports you to the lobby");
+        super("lobby", false, "skywars.lobby", SkyTrans.get(TransKey.CMD_LOBBY_DESCRIPTION));
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
         this.plugin = plugin;
     }
@@ -39,10 +40,10 @@ public class LobbyCommand extends SubCommand {
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         Player player = (Player) sender;
         if (plugin.getCurrentGameTracker().isInGame(player.getName())) {
-            sender.sendMessage(Messages.Lobby.IN_GAME);
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_LOBBY_IN_GAME));
         } else {
             player.teleport(plugin.getLocationStore().getLobbyPosition().toLocation());
-            sender.sendMessage(Messages.Lobby.CONFIRMATION);
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_LOBBY_CONFIRMATION));
         }
     }
 }

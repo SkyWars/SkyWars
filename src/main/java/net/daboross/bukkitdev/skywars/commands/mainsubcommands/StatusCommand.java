@@ -24,6 +24,8 @@ import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -33,7 +35,7 @@ public class StatusCommand extends SubCommand {
     private final SkyWars plugin;
 
     public StatusCommand(SkyWars plugin) {
-        super("status", true, "skywars.status", "Gives status on current games");
+        super("status", true, "skywars.status", SkyTrans.get(TransKey.CMD_STATUS_DESCRIPTION));
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
         this.plugin = plugin;
     }
@@ -41,9 +43,11 @@ public class StatusCommand extends SubCommand {
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         SkyIDHandler idh = plugin.getIDHandler();
-        sender.sendMessage(String.format(ColorList.TOP_FORMAT, "SkyWars Status"));
-        sender.sendMessage(ColorList.REG + "In Queue: " + ColorList.DATA + ArrayHelpers.combinedWithSeperator(plugin.getGameQueue().getCopy(), ColorList.REG + ", " + ColorList.DATA));
-        sender.sendMessage(String.format(ColorList.TOP_FORMAT, "Current Arenas"));
+        sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_HEADER));
+        sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_IN_QUEUE,
+                ArrayHelpers.combinedWithSeperator(plugin.getGameQueue().getCopy(),
+                        SkyTrans.get(TransKey.CMD_STATUS_QUEUE_COMMA))));
+        sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_ARENA_HEADER));
         for (Integer id : idh.getCurrentIDs()) {
             SkyGame game = idh.getGame(id);
             sender.sendMessage(getPlayerString(game));
@@ -56,7 +60,7 @@ public class StatusCommand extends SubCommand {
         List<String> alive = game.getAlivePlayers();
         switch (alive.size()) {
             case 0:
-                b.append(" -- ");
+                b.append(ColorList.DATA).append(" -- ");
                 break;
             case 1:
                 b.append(ChatColor.GREEN).append(alive.get(0));

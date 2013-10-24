@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import net.daboross.bukkitdev.skywars.Messages;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.game.SkyAttackerStorage;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
@@ -43,6 +42,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import lombok.RequiredArgsConstructor;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 
 @RequiredArgsConstructor
 public class AttackerStorageListener implements Listener, SkyAttackerStorage {
@@ -118,7 +119,7 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
             playersWhoDied.add(name.toLowerCase(Locale.ENGLISH));
         } else if (plugin.getGameQueue().inQueue(name)) {
             plugin.getGameQueue().removePlayer(name);
-            evt.getEntity().sendMessage(Messages.Death.REMOVED_BECAUSE_DEATH);
+            evt.getEntity().sendMessage(SkyTrans.get(TransKey.QUEUE_DEATH));
         }
     }
 

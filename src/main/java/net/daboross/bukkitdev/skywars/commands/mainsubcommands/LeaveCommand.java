@@ -19,8 +19,9 @@ package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
-import net.daboross.bukkitdev.skywars.Messages;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -30,7 +31,7 @@ public class LeaveCommand extends SubCommand {
     private final SkyWars plugin;
 
     public LeaveCommand(SkyWars plugin) {
-        super("leave", false, "skywars.leave", "Leaves the queue or the game you are in");
+        super("leave", false, "skywars.leave", SkyTrans.get(TransKey.CMD_LEAVE_DESCRIPTION));
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
         this.plugin = plugin;
     }
@@ -39,12 +40,12 @@ public class LeaveCommand extends SubCommand {
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         if (plugin.getGameQueue().inQueue(sender.getName())) {
             plugin.getGameQueue().removePlayer(sender.getName());
-            sender.sendMessage(Messages.Leave.REMOVED_FROM_QUEUE);
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_LEAVE_REMOVED_FROM_QUEUE));
         } else if (plugin.getCurrentGameTracker().isInGame(sender.getName())) {
             plugin.getGameHandler().removePlayerFromGame((Player) sender, true, true);
-            sender.sendMessage(Messages.Leave.REMOVED_FROM_GAME);
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_LEAVE_REMOVED_FROM_GAME));
         } else {
-            sender.sendMessage(Messages.Leave.NOT_IN);
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_LEAVE_NOT_IN));
         }
     }
 }

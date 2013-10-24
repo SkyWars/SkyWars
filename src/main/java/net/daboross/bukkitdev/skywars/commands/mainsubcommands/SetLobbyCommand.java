@@ -21,17 +21,18 @@ import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SetLobbyCommand extends SubCommand {
 
-    private static final String CONFIRMATION = ColorList.REG + "The lobby is now at your current location.";
     private final SkyWars plugin;
 
     public SetLobbyCommand(SkyWars plugin) {
-        super("setlobby", false, "skywars.setlobby", "Sets the lobby position");
+        super("setlobby", false, "skywars.setlobby", SkyTrans.get(TransKey.CMD_SETLOBBY_DESCRIPTION));
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
         this.plugin = plugin;
     }
@@ -40,6 +41,6 @@ public class SetLobbyCommand extends SubCommand {
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         Player player = (Player) sender;
         plugin.getLocationStore().setLobbyPosition(new SkyPlayerLocation(player));
-        sender.sendMessage(CONFIRMATION);
+        sender.sendMessage(SkyTrans.get(TransKey.CMD_SETLOBBY_CONFIRMATION));
     }
 }

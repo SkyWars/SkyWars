@@ -21,17 +21,18 @@ import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SetPortalCommand extends SubCommand {
 
-    private static final String CONFIRMATION = ColorList.REG + "You have set a portal at your current location.";
     private final SkyWars plugin;
 
     public SetPortalCommand(SkyWars plugin) {
-        super("setportal", false, "skywars.setportal", "Sets a portal at your current location");
+        super("setportal", false, "skywars.setportal", SkyTrans.get(TransKey.CMD_SETPORTAL_DESCRIPTION));
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
         this.plugin = plugin;
     }
@@ -40,6 +41,6 @@ public class SetPortalCommand extends SubCommand {
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         Player player = (Player) sender;
         plugin.getLocationStore().getPortals().add(new SkyBlockLocation(player.getLocation()));
-        sender.sendMessage(CONFIRMATION);
+        sender.sendMessage(SkyTrans.get(TransKey.CMD_SETPORTAL_CONFIRMATION));
     }
 }

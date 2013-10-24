@@ -22,6 +22,8 @@ import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -30,7 +32,7 @@ public class CancelAllCommand extends SubCommand {
     private final SkyWars plugin;
 
     public CancelAllCommand(SkyWars plugin) {
-        super("cancelall", true, "skywars.cancelall", "Cancels all current games.");
+        super("cancelall", true, "skywars.cancelall", SkyTrans.get(TransKey.CMD_CANCELALL_DESCRIPTION));
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
         this.plugin = plugin;
     }
@@ -39,7 +41,7 @@ public class CancelAllCommand extends SubCommand {
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         SkyIDHandler idh = plugin.getIDHandler();
         for (int id : new ArrayList<>(idh.getCurrentIDs())) {
-            sender.sendMessage(ColorList.REG + "Canceling game " + ColorList.DATA + id);
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_CANCELALL_CANCELING, id));
             plugin.getGameHandler().endGame(id, true);
         }
     }

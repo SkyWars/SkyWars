@@ -17,9 +17,10 @@
 package net.daboross.bukkitdev.skywars.listeners;
 
 import java.util.Locale;
-import net.daboross.bukkitdev.skywars.Messages;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -42,7 +43,7 @@ public class PortalListener implements Listener {
                 Player p = evt.getPlayer();
                 String name = p.getName().toLowerCase(Locale.ENGLISH);
                 if (!plugin.getCurrentGameTracker().isInGame(name) && !plugin.getGameQueue().inQueue(name)) {
-                    p.sendMessage(Messages.Join.CONFIRMATION);
+                    p.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_CONFIRMATION));
                     plugin.getGameQueue().queuePlayer(name);
                 }
             }
