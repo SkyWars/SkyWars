@@ -113,7 +113,7 @@ public class SkyWorldHandler {
             List<Player> players = info.getPlayers();
             for (int i = 0, currentSpawn = 0; i < players.size(); i++) {
                 players.get(i).teleport(min.add(spawns.get(currentSpawn++)).toLocation());
-                if (currentSpawn > spawns.size()) {
+                if (currentSpawn >= spawns.size()) {
                     currentSpawn = 0;
                 }
             }
