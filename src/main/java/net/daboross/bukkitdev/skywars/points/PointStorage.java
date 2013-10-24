@@ -64,7 +64,7 @@ public class PointStorage extends SkyPoints {
     public void onGameEnd(GameEndInfo info) {
         SkyConfiguration config = plugin.getConfiguration();
         List<Player> alive = info.getAlivePlayers();
-        if (!alive.isEmpty()) {
+        if (!alive.isEmpty() && alive.getSize() <= info.getGame().getArena().getTeamSize()) {
             for (Player p : alive) {
                 addScore(p.getName(), config.getWinPointDiff());
             }
