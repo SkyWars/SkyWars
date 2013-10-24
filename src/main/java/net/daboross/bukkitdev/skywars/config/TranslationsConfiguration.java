@@ -34,11 +34,13 @@ public class TranslationsConfiguration implements SkyTranslations {
 
     private final SkyWars plugin;
     private final File configFile;
+    private final File newConfigFile;
     private final Map<TransKey, String> values;
 
     public TranslationsConfiguration(SkyWars plugin) throws SkyConfigurationException {
         this.plugin = plugin;
         this.configFile = new File(plugin.getDataFolder(), "messages.yml");
+        this.newConfigFile = new File(plugin.getDataFolder(), "messages.new.yml");
         this.values = new EnumMap<>(TransKey.class);
         this.load();
     }
@@ -58,8 +60,21 @@ public class TranslationsConfiguration implements SkyTranslations {
         } catch (InvalidConfigurationException ex) {
             throw new SkyConfigurationException("Messages file " + configFile.getAbsolutePath() + " is invalid", ex);
         }
+        if (!config.contains("messages-version")) {
+            config.set("messages-version", TransKey.VERSION);
+        }
+        int version = config.getInt("messages-version");
+        if (!config.contains("auto-update")) {
+            config.set("auto-update", true);
+        }
+        boolean autoUpdate = config.getBoolean("auto-update");
+        boolean autoUpdating = autoUpdate && version < TransKey.VERSION;
+        if (autoUpdating) {
+            config.set("messages-version", TransKey.VERSION);
+        }
+
         for (TransKey key : TransKey.values()) {
-            if (config.contains(key.key)) {
+            if (config.contains(key.key) && !autoUpdating) { // When auto-updating, just use default values
                 values.put(key, config.getString(key.key));
                 config.set(key.key, null);
             } else {
@@ -70,10 +85,18 @@ public class TranslationsConfiguration implements SkyTranslations {
             config.set(entry.getKey().key, entry.getValue());
             entry.setValue(ChatColor.translateAlternateColorCodes('&', entry.getValue()));
         }
+        config.options().header(HEADER);
         try {
             config.save(configFile);
         } catch (IOException ex) {
             plugin.getLogger().log(Level.WARNING, "Failed to save translations config file", ex);
+        }
+        if (version < TransKey.VERSION && !autoUpdate) {
+            FileConfiguration newConfig = new YamlConfiguration();
+            newConfig.options().pathSeparator('%').header(String.format(NEW_HEADER, TransKey.VERSION));
+            for (TransKey key : TransKey.values()) {
+                newConfig.set(key.key, key.defaultValue);
+            }
         }
     }
 
@@ -81,4 +104,24 @@ public class TranslationsConfiguration implements SkyTranslations {
     public String get(TransKey key) {
         return values.get(key);
     }
+    private final String HEADER = "### messages.yml ###\n"
+            + "Note! If you are editing this file, set auto-update to false. \n"
+            + "If auto-update is left true, all changed values will be overwritten.\n"
+            + "\n"
+            + "When auto-update is false, new values will be added, but existing ones won't\n"
+            + "be touched. When there is a new version of existing values available, SkyWars\n"
+            + "will create a 'messages.new.yml' file containing the updated messages, that\n"
+            + "you are free to copy from.\n"
+            + "\n"
+            + "The messages-version key is used to keep track of when updated messages are\n"
+            + "available, no matter what the setting of auto-update is.";
+    private final String NEW_HEADER = "### messages.new.yml ###\n"
+            + "This file was generated because you have auto-update set to false in the\n"
+            + "messages.yml file, and there are updated messages available.\n"
+            + "\n"
+            + "If you've updated the configuration to your desire, you can set the\n"
+            + "config-version in messages.yml to %s to stop this file from re-generating,\n"
+            + "then delete it.\n"
+            + "\n"
+            + "No changes to this file will persist!";
 }
