@@ -17,11 +17,12 @@
 package net.daboross.bukkitdev.skywars.commands.setupsubcommands;
 
 import lombok.NonNull;
-import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.BoundariesSetCondition;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
 import org.bukkit.command.Command;
@@ -33,20 +34,20 @@ public class SaveCurrentArena extends SubCommand {
     private final SetupStates states;
 
     public SaveCurrentArena(@NonNull SkyWars plugin, @NonNull SetupStates states) {
-        super("save", false, null, "Saves the current arena setup to file.");
+        super("save", false, null, SkyTrans.get(TransKey.SWS_SAVE_DESCRIPTION));
         BoundariesSetCondition condition = new BoundariesSetCondition(states);
         addCommandFilter(condition);
         addCommandPreCondition(condition);
-        addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments"));
+        addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
         this.plugin = plugin;
         this.states = states;
     }
 
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        sender.sendMessage(ColorList.REG + "Saving arena");
+        sender.sendMessage(SkyTrans.get(TransKey.SWS_SAVE_SAVING));
         SkyArenaConfig config = states.getSetupState(sender.getName()).convertToArenaConfig();
         plugin.getConfiguration().saveArena(config);
-        sender.sendMessage(ColorList.REG + "Arena saved");
+        sender.sendMessage(SkyTrans.get(TransKey.SWS_SAVE_SAVED));
     }
 }

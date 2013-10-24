@@ -17,9 +17,10 @@
 package net.daboross.bukkitdev.skywars.commands.setupsubcommands;
 
 import lombok.NonNull;
-import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.BoundariesSetCondition;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupData;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
@@ -32,7 +33,7 @@ public class SetSpawnLocation extends SubCommand {
     private final SetupStates states;
 
     public SetSpawnLocation(@NonNull SetupStates states) {
-        super("addspawn", false, null, "Adds a new spawn location at your current location");
+        super("addspawn", false, null, SkyTrans.get(TransKey.SWS_ADDSPAWN_DESCRIPTION));
         BoundariesSetCondition condition = new BoundariesSetCondition(states);
         addCommandFilter(condition);
         addCommandPreCondition(condition);
@@ -44,7 +45,7 @@ public class SetSpawnLocation extends SubCommand {
         Player p = (Player) sender;
         SetupData state = states.getSetupState(p.getName());
         SkyPlayerLocation pos = new SkyPlayerLocation(p.getLocation()).subtract(state.getOriginMin());
-        sender.sendMessage(ColorList.REG + "Adding a new spawn location at " + pos.toString());
+        sender.sendMessage(SkyTrans.get(TransKey.SWS_ADDSPAWN_CONFIRMATION, pos.toString()));
         state.getSpawns().add(pos);
     }
 }

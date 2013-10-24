@@ -18,10 +18,11 @@ package net.daboross.bukkitdev.skywars.commands.setupsubcommands;
 
 import java.io.File;
 import lombok.NonNull;
-import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupData;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
 import org.bukkit.command.Command;
@@ -33,9 +34,9 @@ public class StartNewArena extends SubCommand {
     private final SetupStates states;
 
     public StartNewArena(@NonNull SkyWars plugin, @NonNull SetupStates states) {
-        super("start", false, null, "Start a new arena setup. If you already started setting up an arena, but didn't save it, this command will overwrite it!");
-        addArgumentNames("Arena name");
-        addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 1, ColorList.ERR + "Please supply one and only one argument."));
+        super("start", false, null, SkyTrans.get(TransKey.SWS_START_DESCRIPTION));
+        addArgumentNames(SkyTrans.get(TransKey.SWS_START_NAME_ARGUMENT));
+        addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 1, SkyTrans.get(TransKey.SWS_START_ONE_ARGUMENT)));
         this.plugin = plugin;
         this.states = states;
     }
@@ -46,7 +47,6 @@ public class StartNewArena extends SubCommand {
         state.setArenaName(subCommandArgs[0]);
         state.setSaveFile(new File(plugin.getConfiguration().getArenaFolder(), subCommandArgs[0] + ".yml"));
         states.setSetupState(sender.getName(), state);
-        sender.sendMessage(ColorList.REG + "Started setting up an arena called " + ColorList.DATA + subCommandArgs[0]);
-        sender.sendMessage(ColorList.REG + "You probably want to set the boundary positions now.");
+        sender.sendMessage(SkyTrans.get(TransKey.SWS_START_CONFIRMATION, subCommandArgs[0]));
     }
 }

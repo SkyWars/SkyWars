@@ -19,7 +19,8 @@ package net.daboross.bukkitdev.skywars.commands;
 import lombok.NonNull;
 import net.daboross.bukkitdev.commandexecutorbase.CommandExecutorBase;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
-import net.daboross.bukkitdev.skywars.api.SkyStatic;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
 import net.daboross.bukkitdev.skywars.commands.setupsubcommands.SaveCurrentArena;
 import net.daboross.bukkitdev.skywars.commands.setupsubcommands.SetPos1;
@@ -51,7 +52,7 @@ public class SetupCommand {
 
     public void latchOnto(PluginCommand command) {
         if (command != null) {
-            command.setDescription("Setup command for " + SkyStatic.getPluginName());
+            command.setDescription(SkyTrans.get(TransKey.SETUP_CMD_DESCRIPTION));
             command.setExecutor(base);
             command.setUsage("/<command>");
             command.setPermission(null);

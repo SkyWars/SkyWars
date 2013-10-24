@@ -19,7 +19,10 @@ package net.daboross.bukkitdev.skywars.commands.setupsubcommands;
 import lombok.NonNull;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
+import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.NoSpawnSetCondition;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupData;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
@@ -34,13 +37,14 @@ public class SetPos1 extends SubCommand {
     private final SetupStates states;
 
     public SetPos1(@NonNull SetupStates states) {
-        super("setpos1", false, null, "Sets the first position for the arena to copy from to your current eye location.");
+        super("setpos1", false, null, SkyTrans.get(TransKey.SWS_SETPOS1_DESCRIPTION));
         StartedArenaCondition condition = new StartedArenaCondition(states, true);
         addCommandFilter(condition);
         addCommandPreCondition(condition);
         NoSpawnSetCondition condition2 = new NoSpawnSetCondition(states);
         addCommandFilter(condition2);
         addCommandPreCondition(condition2);
+        addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
         this.states = states;
     }
 
@@ -51,10 +55,10 @@ public class SetPos1 extends SubCommand {
         SkyBlockLocation pos1 = new SkyBlockLocation(eye);
         SetupData state = states.getSetupState(p.getName());
         if (state.getOriginPos2() != null && !state.getOriginPos2().world.equalsIgnoreCase(pos1.world)) {
-            sender.sendMessage("Unsetting the second position due to you being in a different world.");
+            sender.sendMessage(SkyTrans.get(TransKey.SWS_SETPOS1_POS2_OTHER_WORLD));
             state.setOriginPos2(null);
         }
-        sender.sendMessage(ColorList.REG + "Setting the first position to " + pos1);
+        sender.sendMessage(SkyTrans.get(TransKey.SWS_SETPOS1_CONFIRMATION));
         state.setOriginPos1(pos1);
     }
 }
