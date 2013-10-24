@@ -22,6 +22,7 @@ import java.util.List;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.StartupFailedException;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.points.SkyPoints;
 import net.daboross.bukkitdev.skywars.api.points.PointStorageBackend;
@@ -63,13 +64,16 @@ public class PointStorage extends SkyPoints {
     public void onGameEnd(GameEndInfo info) {
         SkyConfiguration config = plugin.getConfiguration();
         List<Player> alive = info.getAlivePlayers();
-        if (alive.size() == 1) {
-            addScore(alive.get(0).getName(), config.getWinPointDiff());
+        if (!alive.isEmpty() && alive.size() <= info.getGame().getArena().getTeamSize()) {
+            for (Player p : alive) {
+                addScore(p.getName(), config.getWinPointDiff());
+            }
         }
     }
 
     @Override
     public synchronized void addScore(String name, int diff) {
+        SkyStatic.debug("Adding " + diff + " score to " + name);
         backend.addScore(name, diff);
     }
 
