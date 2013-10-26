@@ -4,7 +4,7 @@ commands.join.confirmation: '&3You have joined the queue.'
 commands.join.already-queued: '&4You were already in the queue.'
 commands.join.in-game: '&4You can''t join now, you are already in a game.'
 
-commands.leave.description: Leaves the queue or the game you are in
+commands.leave.description: 'Leaves the queue or the game you are in'
 commands.leave.removed-from-queue: '&3You are no longer in the queue.'
 commands.leave.removed-from-game: '&3You have fled the game.'
 commands.leave.not-in-any: '&4You were not in the queue.'
@@ -33,7 +33,7 @@ commands.status.arena-header: '&9 -- &2Current Arenas&9 --'
 commands.version.description: 'Gives version'
 commands.version.output: '&3%s version &2%s &3/ &2%s&3. Created by &2Dabo Ross'
 
-commands.lobby.description: Teleports you to the lobby
+commands.lobby.description: 'Teleports you to the lobby'
 commands.lobby.confirmation: '&4Teleporting to the lobby.'
 commands.lobby.in-game: '&4You can''t teleport to the lobby, you are in a game.'
 
