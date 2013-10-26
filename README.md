@@ -12,7 +12,7 @@ SkyWars - [![Build Status](https://travis-ci.org/daboross/SkyWars.png?branch=mas
 ### Basic Installation
 * Make sure your server is running Java 7. SkyWars **will not work** with Java 6.
 * Download the correct SkyWars jar file for your server version.
- * 1.6.2 & 1.6.4 servers should download SkyWars.jar
+ * 1.6.4 servers should download SkyWars.jar
  * 1.5.2 servers should download SkyWars-1.5.2.jar
 * Put the downloaded jar in your plugins/ directory.
 * Restart your server. SkyWars will automatically create 2 new worlds. SkyWarsBaseWorld and SkyWarsArenaWorld.
