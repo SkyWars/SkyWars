@@ -68,6 +68,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>net.daboross.bukkitdev</groupId>
+            <artifactId>skywars-translations</artifactId>
+            <version>1.3.2-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>net.daboross.metrics.bukkit</groupId>
             <artifactId>metrics-lite</artifactId>
             <version>1.0.0</version>
@@ -106,12 +112,6 @@
             </resource>
             <resource>
                 <directory>${project.basedir}/src/main/worlds</directory>
-                <includes>
-                    <include>**</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>${project.basedir}/src/main/translations</directory>
                 <includes>
                     <include>**</include>
                 </includes>
