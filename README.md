@@ -1,4 +1,4 @@
-SkyWars - [![Build Status](https://travis-ci.org/daboross/SkyWars.png?branch=master)](https://travis-ci.org/daboross/SkyWars)
+SkyWars - [![Build Status](https://travis-ci.org/SkyWars/SkyWars.png?branch=master)](https://travis-ci.org/SkyWars/SkyWars)
 ---
 ### Features
 * Automatically create new arenas every time enough people join the queue.
@@ -19,19 +19,19 @@ SkyWars - [![Build Status](https://travis-ci.org/daboross/SkyWars.png?branch=mas
 * Go to where you want the lobby to be and use `/sw setlobby`.
 
 ### Useful links
-* [Commands and Permissions](https://github.com/daboross/SkyWars/wiki/Commands-and-Permissions)
-* [Configuration Guide](https://github.com/daboross/SkyWars/wiki/Configuration)
-* [Setting up a new Arena](https://github.com/daboross/SkyWars/wiki/Setting-up-a-new-arena)
-* [Worlds](https://github.com/daboross/SkyWars/wiki/Worlds)
-* [Common Issues](https://github.com/daboross/SkyWars/wiki/Common-Issues)
+* [Commands and Permissions](https://github.com/SkyWars/SkyWars/wiki/Commands-and-Permissions)
+* [Configuration Guide](https://github.com/SkyWars/SkyWars/wiki/Configuration)
+* [Setting up a new Arena](https://github.com/SkyWars/SkyWars/wiki/Setting-up-a-new-arena)
+* [Worlds](https://github.com/SkyWars/SkyWars/wiki/Worlds)
+* [Common Issues](https://github.com/SkyWars/SkyWars/wiki/Common-Issues)
 * [Portuguese Tutorial - Ligação para tutorial AbsintoJ feito](http://www.youtube.com/watch?v=hYTq39Iomz0)
-* [GitHub](https://github.com/daboross/SkyWars)
+* [GitHub](https://github.com/SkyWars/SkyWars)
 * [MCStats Statistics](http://mcstats.org/plugin/SkyWars)
 * [Dev builds - CI Server](http://ci.aemservers.net/job/SkyWars)
 
 ### Bugs, Features, and Questions
 We use the github issue tracker for all bugs, features, and questions.
-See [submitting a ticket](https://github.com/daboross/SkyWars/wiki/Submitting-a-ticket)
+See [submitting a ticket](https://github.com/SkyWars/SkyWars/wiki/Submitting-a-ticket)
 
 ### Map credit
 Full credit for the default map, Skyblock Warriors, goes to [SwipeShot](http://www.youtube.com/user/SwipeShot).
