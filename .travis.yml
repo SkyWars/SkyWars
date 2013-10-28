@@ -1,3 +1,3 @@
 language: java
-install: mvn --update-snapshots --fail-never clean package
+install: mvn --fail-never clean package
 script: mvn clean package
