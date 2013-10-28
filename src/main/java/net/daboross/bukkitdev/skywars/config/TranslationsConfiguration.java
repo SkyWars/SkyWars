@@ -38,6 +38,7 @@ public class TranslationsConfiguration implements SkyTranslations {
     private final SkyWars plugin;
     private final File configFile;
     private final File newConfigFile;
+    private Locale locale;
     private Map<TransKey, String> values;
 
     public TranslationsConfiguration(SkyWars plugin) throws SkyConfigurationException {
@@ -59,12 +60,15 @@ public class TranslationsConfiguration implements SkyTranslations {
         if (!config.contains("messages-version")) {
             config.set("messages-version", TransKey.VERSION);
         }
+        if (!config.contains("messages-language")) {
+            config.set("messages-locale", "en");
+        }
         int version = config.getInt("messages-version");
         if (!config.contains("auto-update")) {
             config.set("auto-update", true);
         }
         boolean autoUpdate = config.getBoolean("auto-update");
-        boolean autoUpdating = autoUpdate && version < TransKey.VERSION;
+        boolean autoUpdating = autoUpdate && (version < TransKey.VERSION || !config.getString("messages-locale").equals(locale.getLanguage()));
         if (autoUpdating) {
             config.set("messages-version", TransKey.VERSION);
             this.values = internal;
@@ -120,7 +124,7 @@ public class TranslationsConfiguration implements SkyTranslations {
     }
 
     private Map<TransKey, String> loadInternal() throws SkyConfigurationException {
-        Locale locale = Locale.getDefault();
+        locale = Locale.getDefault();
         String file = "/messages-" + locale.getLanguage() + ".yml";
         URL path = getClass().getResource(file);
         if (path == null) {
@@ -132,7 +136,7 @@ public class TranslationsConfiguration implements SkyTranslations {
                 throw new SkyConfigurationException("There is no messages-en.yml file in the SkyWars jar.");
             }
         }
-        plugin.getLogger().log(Level.INFO, "[Translations] Loading locale {0}. (file {1})", new Object[]{locale, file});
+        plugin.getLogger().log(Level.INFO, "[Translations] Loading locale {0}.", new Object[]{locale, file});
         YamlConfiguration config = new YamlConfiguration();
         config.options().pathSeparator('%');
         try (InputStream is = path.openStream()) {
