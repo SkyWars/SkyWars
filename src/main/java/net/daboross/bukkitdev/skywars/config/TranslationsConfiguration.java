@@ -39,6 +39,7 @@ public class TranslationsConfiguration implements SkyTranslations {
     private final File configFile;
     private final File newConfigFile;
     private Locale locale;
+    private String language;
     private Map<TransKey, String> values;
 
     public TranslationsConfiguration(SkyWars plugin) throws SkyConfigurationException {
@@ -61,16 +62,17 @@ public class TranslationsConfiguration implements SkyTranslations {
             config.set("messages-version", TransKey.VERSION);
         }
         if (!config.contains("messages-language")) {
-            config.set("messages-locale", "en");
+            config.set("messages-locale", language);
         }
         int version = config.getInt("messages-version");
         if (!config.contains("auto-update")) {
             config.set("auto-update", true);
         }
         boolean autoUpdate = config.getBoolean("auto-update");
-        boolean autoUpdating = autoUpdate && (version < TransKey.VERSION || !config.getString("messages-locale").equals(locale.getLanguage()));
+        boolean autoUpdating = autoUpdate && (version < TransKey.VERSION || !config.getString("messages-locale").equals(language));
         if (autoUpdating) {
             config.set("messages-version", TransKey.VERSION);
+            config.set("messages-locale", language);
             this.values = internal;
         } else {
             this.values = new EnumMap<>(TransKey.class);
@@ -136,6 +138,7 @@ public class TranslationsConfiguration implements SkyTranslations {
                 throw new SkyConfigurationException("There is no messages-en.yml file in the SkyWars jar.");
             }
         }
+        language = locale.getLanguage();
         plugin.getLogger().log(Level.INFO, "[Translations] Loading locale {0}.", new Object[]{locale, file});
         YamlConfiguration config = new YamlConfiguration();
         config.options().pathSeparator('%');
