@@ -16,7 +16,6 @@
  */
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
-import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -40,7 +39,11 @@ public class SetPortalCommand extends SubCommand {
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         Player player = (Player) sender;
-        plugin.getLocationStore().getPortals().add(new SkyBlockLocation(player.getLocation()));
-        sender.sendMessage(SkyTrans.get(TransKey.CMD_SETPORTAL_CONFIRMATION));
+        if (plugin.getCurrentGameTracker().isInGame(player.getName())) {
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_SETPORTAL_IN_GAME));
+        } else {
+            plugin.getLocationStore().getPortals().add(new SkyBlockLocation(player.getLocation()));
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_SETPORTAL_CONFIRMATION));
+        }
     }
 }

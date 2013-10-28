@@ -11,9 +11,11 @@ commands.leave.not-in-any: '&4You were not in the queue.'
 
 commands.setlobby.description: 'Sets the lobby position'
 commands.setlobby.confirmation: '&3The lobby is now at your current location.'
+commands.setlobby.in-game: '&4You can''t set the lobby, you are in a game.'
 
 commands.setportal.description: 'Sets a portal at your current location'
 commands.setportal.confirmation: '&3You have set a portal at your current location.'
+commands.setportal.in-game: '&4You can''t set a portal, you are in a game.'
 
 commands.delportal.description: 'Removes the last set portal'
 commands.delportal.confirmation: '&3Removed portal at %s'

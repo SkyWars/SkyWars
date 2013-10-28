@@ -11,9 +11,11 @@ commands.leave.not-in-any: '&4Nao estas na lista de espera.'
 
 commands.setlobby.description: 'Definir posicao do lobby'
 commands.setlobby.confirmation: '&3Agora o lobby passa a ser onde te encontras.'
+commands.setlobby.in-game: '&4(Untranslated)'
 
 commands.setportal.description: 'Coloca um portal na tua localizacao'
 commands.setportal.confirmation: '&3Colocaste um portal na tua localizacao atual.'
+commands.setportal.in-game: '&4(Untranslated)'
 
 commands.delportal.description: 'Remove o ultimo portal definido'
 commands.delportal.confirmation: '&3Portal removido em %s'
