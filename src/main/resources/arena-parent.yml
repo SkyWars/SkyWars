@@ -35,17 +35,3 @@ boundaries:
       y: 0
       z: 0
 placement-y: 20
-messages:
-  death:
-    killed-void: '&2%s&a pushed &2%s&a into the void of doom!'
-    suicide-void: '&2%s&a jumped into the void of doom!'
-    killed-damaged: '&2%s&a killed &2%s&a!'
-    killed-other: '&2%s&a was killed!'
-    forfeited-damaged: '&2%s&a was forced for forfeit by &2%s&a!'
-    forfeited: '&2%s&a forfeited!'
-  winning:
-    single-won: '&2%s&a has won the SkyWars!'
-    multi-won: '&2%s&a have won the SkyWars!'
-    none-won: '&aGame ended with no victors'
-  game:
-    game-starting: '&aGame starting with &2%s&a!'
