@@ -40,7 +40,7 @@ public class KillMessages {
                 case LEFT:
                     return String.format(arena.getMessages().getMessage(SkyMessageKeys.FORFEITED_DAMAGED), damager, player);
                 case OTHER:
-                    return String.format(arena.getMessages().getMessage(SkyMessageKeys.KILLED_OTHER), damager, player);
+                    return String.format(arena.getMessages().getMessage(SkyMessageKeys.KILLED_DAMAGED), damager, player);
             }
         }
         throw new IllegalArgumentException();
