@@ -29,6 +29,7 @@ import lombok.Getter;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
+import net.daboross.bukkitdev.skywars.api.config.ConfigColorCode;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -102,7 +103,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             throw new SkyConfigurationException("Invalid ArenaOrder '" + arenaOrder + "' found under " + Keys.ARENA_ORDER + " in file " + mainConfigFile.getAbsolutePath() + ". Valid values: " + Arrays.toString(ArenaOrder.values()));
         }
 
-        messagePrefix = mainConfig.getSetString(Keys.MESSAGE_PREFIX, Defaults.MESSAGE_PREFIX);
+        messagePrefix = ConfigColorCode.translateCodes(mainConfig.getSetString(Keys.MESSAGE_PREFIX, Defaults.MESSAGE_PREFIX));
 
         inventorySaveEnabled = mainConfig.getSetBoolean(Keys.SAVE_INVENTORY, Defaults.SAVE_INVENTORY);
 
@@ -276,21 +277,18 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             private static final boolean IS_BLACKLIST = false;
             private static final List<String> COMMAND_WHITELIST = Arrays.asList("/skywars", "/sw", "/me");
         }
-
     }
 
     private static class Headers {
 
-        private static final String CONFIG
-                = "####### config.yml #######%n"
+        private static final String CONFIG = "####### config.yml #######%n"
                 + "%n"
                 + "All comment changes will be removed.%n"
                 + "%n"
                 + "For documentation, please visit %n"
                 + "https://github.com/daboross/SkyWars/wiki/Configuration-main-config%n"
                 + "#########";
-        private static final String ARENA
-                = "####### %s.yml ###%n"
+        private static final String ARENA = "####### %s.yml ###%n"
                 + "This is the Skyblock Warriors arena config.%n"
                 + "%n"
                 + "All values that are not in this configuration will be inherited from%n"
@@ -301,8 +299,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
                 + "For documentation, please visit %n"
                 + "https://github.com/daboross/SkyWars/wiki/Configuration-arenas%n"
                 + "#######";
-        private static final String PARENT
-                = "####### arena-parent.yml ###%n"
+        private static final String PARENT = "####### arena-parent.yml ###%n"
                 + "Any settings that an individual arena config leaves out will be inherited%n"
                 + " from this arena config.%n"
                 + "%n"
