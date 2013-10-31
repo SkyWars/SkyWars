@@ -31,6 +31,7 @@ import net.daboross.bukkitdev.skywars.commands.mainsubcommands.StatusCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.VersionCommand;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
+import net.daboross.bukkitdev.skywars.commands.mainsubcommands.ForceStartCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.RemoveLastPortalCommand;
 import org.bukkit.command.PluginCommand;
 
@@ -57,6 +58,7 @@ public class MainCommand {
         base.addSubCommand(new LobbyCommand(plugin));
         base.addSubCommand(new CancelAllCommand(plugin));
         base.addSubCommand(new ConfigurationDebugCommand(plugin));
+        base.addSubCommand(new ForceStartCommand(plugin));
     }
 
     public void latchOnto(PluginCommand command) {
