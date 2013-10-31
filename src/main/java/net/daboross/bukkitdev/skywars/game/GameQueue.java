@@ -98,4 +98,8 @@ public class GameQueue implements SkyGameQueue {
     public String[] getCopy() {
         return currentlyQueued.toArray(new String[currentlyQueued.size()]);
     }
+
+    public int getNumPlayersInQueue() {
+        return currentlyQueued.size();
+    }
 }
