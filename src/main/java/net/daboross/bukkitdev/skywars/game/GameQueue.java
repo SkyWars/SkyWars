@@ -99,6 +99,7 @@ public class GameQueue implements SkyGameQueue {
         return currentlyQueued.toArray(new String[currentlyQueued.size()]);
     }
 
+    @Override
     public int getNumPlayersInQueue() {
         return currentlyQueued.size();
     }
