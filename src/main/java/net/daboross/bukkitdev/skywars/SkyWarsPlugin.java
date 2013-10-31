@@ -34,6 +34,9 @@ import net.daboross.bukkitdev.skywars.commands.MainCommand;
 import net.daboross.bukkitdev.skywars.commands.SetupCommand;
 import net.daboross.bukkitdev.skywars.config.SkyWarsConfiguration;
 import net.daboross.bukkitdev.skywars.config.TranslationsConfiguration;
+import net.daboross.bukkitdev.skywars.economy.EconomyFailedException;
+import net.daboross.bukkitdev.skywars.economy.SkyEconomyGameRewards;
+import net.daboross.bukkitdev.skywars.economy.SkyEconomyHook;
 import net.daboross.bukkitdev.skywars.events.GameEventDistributor;
 import net.daboross.bukkitdev.skywars.game.CurrentGames;
 import net.daboross.bukkitdev.skywars.game.GameHandler;
@@ -102,6 +105,10 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     @Getter
     private PointStorageChatListener chatListener;
     @Getter
+    private SkyEconomyHook economyHook;
+    @Getter
+    private SkyEconomyGameRewards gameRewards;
+    @Getter
     private TeamScoreboardListener teamListener;
     private boolean enabledCorrectly = false;
 
@@ -113,7 +120,6 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     }
 
     @Override
-    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
     public void onEnable() {
         try {
             startPlugin();
@@ -158,6 +164,14 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         if (configuration.isEnablePoints()) {
             points = new PointStorage(this);
             chatListener = new PointStorageChatListener(this);
+        }
+        if (configuration.isEconomyEnabled()) {
+            try {
+                economyHook = new SkyEconomyHook(this);
+                gameRewards = new SkyEconomyGameRewards(this);
+            } catch (EconomyFailedException ex) {
+                getLogger().log(Level.WARNING, "{0}. Couldn't enable economy hook.", ex.getMessage());
+            }
         }
         new BukkitRunnable() {
             @Override

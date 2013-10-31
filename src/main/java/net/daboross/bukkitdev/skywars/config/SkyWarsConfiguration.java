@@ -66,6 +66,12 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private boolean commandWhitelistABlacklist;
     @Getter
     private Pattern commandWhitelistCommandRegex;
+    @Getter
+    private boolean economyEnabled;
+    @Getter
+    private int economyWinReward;
+    @Getter
+    private int economyKillReward;
 
     public SkyWarsConfiguration(SkyWars plugin) throws IOException, InvalidConfigurationException, SkyConfigurationException {
         this.plugin = plugin;
@@ -119,6 +125,11 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         deathPointDiff = mainConfig.getSetInt(Keys.Points.DEATH_DIFF, Defaults.Points.DEATH_DIFF);
         killPointDiff = mainConfig.getSetInt(Keys.Points.KILL_DIFF, Defaults.Points.KILL_DIFF);
 
+        // Economy
+        economyEnabled = mainConfig.getSetBoolean(Keys.Economy.ENABLE, Defaults.Economy.ENABLE);
+        economyKillReward = mainConfig.getSetInt(Keys.Economy.KILL_REWARD, Defaults.Economy.KILL_REWARD);
+        economyWinReward = mainConfig.getSetInt(Keys.Economy.WIN_REWARD, Defaults.Economy.WIN_REWARD);
+        
         arenaDistanceApart = mainConfig.getSetInt(Keys.ARENA_DISTANCE_APART, Defaults.ARENA_DISTANCE_APART);
 
         commandWhitelistEnabled = mainConfig.getSetBoolean(Keys.CommandWhitelist.WHITELIST_ENABLED, Defaults.CommandWhitelist.WHITELIST_ENABLED);
@@ -232,6 +243,12 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             private static final String WIN_DIFF = "points.win-point-diff";
             private static final String KILL_DIFF = "points.kill-point-diff";
         }
+        private static class Economy {
+
+            private static final String ENABLE = "economy.enable-economy";
+            private static final String WIN_REWARD = "economy-win-reward";
+            private static final String KILL_REWARD = "economy.kill-reward";
+        }
 
         private static class CommandWhitelist {
 
@@ -269,6 +286,13 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             private static final int DEATH_DIFF = -2;
             private static final int WIN_DIFF = 7;
             private static final int KILL_DIFF = 1;
+        }
+
+        private static class Economy {
+
+            private static final boolean ENABLE = false;
+            private static final int WIN_REWARD = 10;
+            private static final int KILL_REWARD = 10;
         }
 
         private static class CommandWhitelist {
