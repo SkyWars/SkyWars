@@ -72,6 +72,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private int economyWinReward;
     @Getter
     private int economyKillReward;
+    private boolean perArenaDeathMessagesEnabled;
+    private boolean perArenaWinMessagesEnabled;
 
     public SkyWarsConfiguration(SkyWars plugin) throws IOException, InvalidConfigurationException, SkyConfigurationException {
         this.plugin = plugin;
@@ -129,13 +131,16 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         economyEnabled = mainConfig.getSetBoolean(Keys.Economy.ENABLE, Defaults.Economy.ENABLE);
         economyKillReward = mainConfig.getSetInt(Keys.Economy.KILL_REWARD, Defaults.Economy.KILL_REWARD);
         economyWinReward = mainConfig.getSetInt(Keys.Economy.WIN_REWARD, Defaults.Economy.WIN_REWARD);
-        
+
         arenaDistanceApart = mainConfig.getSetInt(Keys.ARENA_DISTANCE_APART, Defaults.ARENA_DISTANCE_APART);
 
         commandWhitelistEnabled = mainConfig.getSetBoolean(Keys.CommandWhitelist.WHITELIST_ENABLED, Defaults.CommandWhitelist.WHITELIST_ENABLED);
         commandWhitelistABlacklist = mainConfig.getSetBoolean(Keys.CommandWhitelist.IS_BLACKLIST, Defaults.CommandWhitelist.IS_BLACKLIST);
         commandWhitelistCommandRegex = createCommandRegex(mainConfig.getSetStringList(Keys.CommandWhitelist.COMMAND_WHITELIST, Defaults.CommandWhitelist.COMMAND_WHITELIST));
 
+        // per-arena messages
+        perArenaDeathMessagesEnabled = mainConfig.getSetBoolean(Keys.PER_ARENA_DEATH_MESSAGES_ENABLED, Defaults.PER_ARENA_DEATH_MESSAGES_ENABLED);
+        perArenaWinMessagesEnabled = mainConfig.getSetBoolean(Keys.PER_ARENA_WIN_MESSAGES_ENABLED, Defaults.PER_ARENA_WIN_MESSAGES_ENABLED);
         // Remove deprecated values
         mainConfig.removeValues(Keys.Deprecated.CHAT_PREFIX, Keys.Deprecated.PREFIX_CHAT);
 
@@ -226,6 +231,16 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         saveArena(arena.getFile(), arena, String.format(Headers.ARENA, arena.getArenaName()));
     }
 
+    @Override
+    public boolean arePerArenaDeathMessagesEnabled() {
+        return perArenaDeathMessagesEnabled;
+    }
+
+    @Override
+    public boolean arePerArenaWinMessagesEnabled() {
+        return perArenaWinMessagesEnabled;
+    }
+
     private static class Keys {
 
         private static final String VERSION = "config-version";
@@ -235,6 +250,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         private static final String DEBUG = "debug";
         private static final String SAVE_INVENTORY = "save-inventory";
         private static final String ARENA_DISTANCE_APART = "arena-distance-apart";
+        private static final String PER_ARENA_DEATH_MESSAGES_ENABLED = "per-arena-death-messages";
+        private static final String PER_ARENA_WIN_MESSAGES_ENABLED = "per-arena-win-messages-enabled";
 
         private static class Points {
 
@@ -243,6 +260,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             private static final String WIN_DIFF = "points.win-point-diff";
             private static final String KILL_DIFF = "points.kill-point-diff";
         }
+
         private static class Economy {
 
             private static final String ENABLE = "economy.enable-economy";
@@ -279,6 +297,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         private static final List<String> ENABLED_ARENAS = Arrays.asList("skyblock-warriors");
         private static final boolean SAVE_INVENTORY = true;
         private static final int ARENA_DISTANCE_APART = 200;
+        private static final boolean PER_ARENA_DEATH_MESSAGES_ENABLED = true;
+        private static final boolean PER_ARENA_WIN_MESSAGES_ENABLED = false;
 
         private static class Points {
 
