@@ -19,7 +19,6 @@ package net.daboross.bukkitdev.skywars.economy;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
-import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.economy.SkyEconomyAbstraction;
 import net.daboross.bukkitdev.skywars.events.GameEndInfo;
 import net.daboross.bukkitdev.skywars.events.PlayerKillPlayerInfo;
