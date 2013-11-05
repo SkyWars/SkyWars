@@ -20,8 +20,11 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.economy.SkyEconomyAbstraction;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.events.GameEndInfo;
 import net.daboross.bukkitdev.skywars.events.PlayerKillPlayerInfo;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 @AllArgsConstructor
@@ -30,15 +33,27 @@ public class SkyEconomyGameRewards {
     private final SkyWars plugin;
 
     public void onPlayerKillPlayer(PlayerKillPlayerInfo info) {
-        plugin.getEconomyHook().addReward(info.getKillerName(), plugin.getConfiguration().getEconomyKillReward());
+        int reward = plugin.getConfiguration().getEconomyKillReward();
+        String killer = info.getKillerName();
+        if (plugin.getConfiguration().getEconomyRewardMessages()) {
+            Player p = Bukkit.getPlayerExact(killer);
+            if (p != null) {
+                p.sendMessage(SkyTrans.get(TransKey.ECO_REWARD_KILL, reward, info.getKilled().getName()));
+            }
+        }
+        plugin.getEconomyHook().addReward(killer, reward);
     }
 
     public void onGameEnd(GameEndInfo info) {
         int reward = plugin.getConfiguration().getEconomyKillReward();
+        boolean enableMessages = plugin.getConfiguration().getEconomyRewardMessages();
         SkyEconomyAbstraction eco = plugin.getEconomyHook();
         List<Player> alive = info.getAlivePlayers();
         if (!alive.isEmpty() && alive.size() <= info.getGame().getArena().getTeamSize()) {
             for (Player p : alive) {
+                if (enableMessages) {
+                    p.sendMessage(SkyTrans.get(TransKey.ECO_REWARD_WIN, reward));
+                }
                 eco.addReward(p.getName(), reward);
             }
         }
