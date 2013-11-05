@@ -17,38 +17,29 @@
 package net.daboross.bukkitdev.skywars.kits;
 
 import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
+import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKitItem;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyKitItemConfig;
 import org.bukkit.Material;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class SkyKitDecoder {
 
-    public static SkyKitItem itemFromJSON(String str) throws SkyConfigurationException {
-        JSONObject json;
-        try {
-            json = new JSONObject(str);
-        } catch (JSONException ex) {
-            throw new SkyConfigurationException("The string '" + str + "' is invalid JSON.");
+    public static SkyKit decodeKit(ConfigurationSection section) throws SkyConfigurationException {
+        throw new SkyConfigurationException();
+    }
+
+    public static SkyKitItem decodeItem(ConfigurationSection section) throws SkyConfigurationException {
+        if (!section.isString("type")) {
+            throw new SkyConfigurationException("The item does not define a type.");
         }
-        String typeString;
-        int amount;
-        try {
-            typeString = json.getString("type");
-        } catch (JSONException ex) {
-            throw new SkyConfigurationException("The item string '" + str + "' does not define a type.");
-        }
-        try {
-            amount = json.getInt("amount");
-        } catch (JSONException ex) {
-            amount = 1;
-        }
+        String typeString = section.getString("type");
+        int amount = section.isInt("amount") ? section.getInt("amount") : 1;
         Material type;
         try {
             type = Material.getMaterial(typeString.toUpperCase());
         } catch (Exception e) {
-            throw new SkyConfigurationException("The type string '" + str + "' is not valid. Check http://tiny.cc/BukkitMaterial for a list of valid material names.");
+            throw new SkyConfigurationException("The type string '" + typeString + "' is not valid. Check http://tiny.cc/BukkitMaterial for a list of valid material names.");
         }
         return new SkyKitItemConfig(type, amount);
     }
