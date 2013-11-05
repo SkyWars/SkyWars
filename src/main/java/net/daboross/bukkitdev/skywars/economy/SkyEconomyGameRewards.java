@@ -38,7 +38,7 @@ public class SkyEconomyGameRewards {
         if (plugin.getConfiguration().areEconomyRewardMessagesEnabled()) {
             Player p = Bukkit.getPlayerExact(killer);
             if (p != null) {
-                p.sendMessage(SkyTrans.get(TransKey.ECO_REWARD_KILL, reward + plugin.getEconomyHook().getCurrenctSymbol(reward), info.getKilled().getName()));
+                p.sendMessage(SkyTrans.get(TransKey.ECO_REWARD_KILL, getSymboledReward(reward), info.getKilled().getName()));
             }
         }
         plugin.getEconomyHook().addReward(killer, reward);
@@ -52,10 +52,19 @@ public class SkyEconomyGameRewards {
         if (!alive.isEmpty() && alive.size() <= info.getGame().getArena().getTeamSize()) {
             for (Player p : alive) {
                 if (enableMessages) {
-                    p.sendMessage(SkyTrans.get(TransKey.ECO_REWARD_WIN, reward + plugin.getEconomyHook().getCurrenctSymbol(reward)));
+                    p.sendMessage(SkyTrans.get(TransKey.ECO_REWARD_WIN, getSymboledReward(reward)));
                 }
                 eco.addReward(p.getName(), reward);
             }
+        }
+    }
+
+    public String getSymboledReward(int reward) {
+        String symbol = plugin.getEconomyHook().getCurrenctSymbol(reward);
+        if (symbol.equals("$")) {
+            return symbol + reward;
+        } else {
+            return reward + symbol;
         }
     }
 }

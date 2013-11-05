@@ -55,7 +55,7 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent evt) {
-        String name = evt.getPlayer().getName().toLowerCase(Locale.ENGLISH);
+        String name = evt.getPlayer().getName().toLowerCase();
         lastHit.remove(name);
         causedVoid.remove(name);
     }
@@ -64,7 +64,7 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
     public void onDamage(EntityDamageByEntityEvent evt) {
         if (evt.getEntity() instanceof Player) {
             Player p = (Player) evt.getEntity();
-            String name = p.getName().toLowerCase(Locale.ENGLISH);
+            String name = p.getName().toLowerCase();
             Entity damager = evt.getDamager();
             if (damager instanceof HumanEntity) {
                 lastHit.put(name, ((HumanEntity) damager).getName());
@@ -95,7 +95,7 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
     @EventHandler
     public void onDamage(EntityDamageEvent evt) {
         if (evt.getEntity() instanceof Player) {
-            String name = ((Player) evt.getEntity()).getName().toLowerCase(Locale.ENGLISH);
+            String name = ((Player) evt.getEntity()).getName().toLowerCase();
             if (evt.getCause() == EntityDamageEvent.DamageCause.VOID) {
                 causedVoid.add(name);
             } else {
@@ -109,14 +109,14 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
         String name = evt.getEntity().getName();
         SkyGame game = plugin.getIDHandler().getGame(plugin.getCurrentGameTracker().getGameID(name));
         if (game != null) {
-            String killer = lastHit.get(name.toLowerCase(Locale.ENGLISH));
+            String killer = lastHit.get(name.toLowerCase());
             plugin.getDistributor().distribute(new PlayerDeathInArenaInfo(game.getId(), evt.getEntity()));
             if (killer != null) {
                 plugin.getDistributor().distribute(new PlayerKillPlayerInfo(game.getId(), killer, evt.getEntity()));
             }
             plugin.getGameHandler().removePlayerFromGame(evt.getEntity(), false, false);
-            evt.setDeathMessage(KillMessages.getMessage(name, killer, causedVoid.contains(name.toLowerCase(Locale.ENGLISH)) ? KillMessages.KillReason.VOID : KillMessages.KillReason.OTHER, game.getArena()));
-            playersWhoDied.add(name.toLowerCase(Locale.ENGLISH));
+            evt.setDeathMessage(KillMessages.getMessage(name, killer, causedVoid.contains(name.toLowerCase()) ? KillMessages.KillReason.VOID : KillMessages.KillReason.OTHER, game.getArena()));
+            playersWhoDied.add(name.toLowerCase());
         } else if (plugin.getGameQueue().inQueue(name)) {
             plugin.getGameQueue().removePlayer(name);
             evt.getEntity().sendMessage(SkyTrans.get(TransKey.QUEUE_DEATH));
@@ -124,17 +124,17 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
     }
 
     public void onPlayerLeaveGame(PlayerLeaveGameInfo info) {
-        lastHit.remove(info.getPlayer().getName().toLowerCase(Locale.ENGLISH));
+        lastHit.remove(info.getPlayer().getName().toLowerCase());
     }
 
     @Override
     public String getKiller(String name) {
-        return lastHit.get(name.toLowerCase(Locale.ENGLISH));
+        return lastHit.get(name.toLowerCase());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onRespawn(PlayerRespawnEvent evt) {
-        if (playersWhoDied.remove(evt.getPlayer().getName().toLowerCase(Locale.ENGLISH))) {
+        if (playersWhoDied.remove(evt.getPlayer().getName().toLowerCase())) {
             evt.setRespawnLocation(plugin.getLocationStore().getLobbyPosition().toLocation());
             final Player p = evt.getPlayer();
             plugin.getServer().getScheduler().runTask(plugin, new Runnable() {
