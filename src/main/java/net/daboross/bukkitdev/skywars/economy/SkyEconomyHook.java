@@ -45,4 +45,17 @@ public class SkyEconomyHook implements SkyEconomyAbstraction {
         economy.depositPlayer(player, reward);
         SkyStatic.debug("Gave " + player + " an economy reward of " + reward);
     }
+
+    @Override
+    public String getCurrenctSymbol(double amount) {
+        String name = amount == 1 || amount == -1 ? economy.currencyNameSingular() : economy.currencyNamePlural();
+        switch (name.length()) {
+            case 0:
+                return "$";
+            case 1:
+                return name;
+            default:
+                return " " + name;
+        }
+    }
 }
