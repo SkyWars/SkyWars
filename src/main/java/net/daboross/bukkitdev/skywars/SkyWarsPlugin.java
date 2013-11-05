@@ -107,7 +107,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     @Getter
     private SkyEconomyHook economyHook;
     @Getter
-    private SkyEconomyGameRewards gameRewards;
+    private SkyEconomyGameRewards ecoRewards;
     @Getter
     private TeamScoreboardListener teamListener;
     private boolean enabledCorrectly = false;
@@ -168,7 +168,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         if (configuration.isEconomyEnabled()) {
             try {
                 economyHook = new SkyEconomyHook(this);
-                gameRewards = new SkyEconomyGameRewards(this);
+                ecoRewards = new SkyEconomyGameRewards(this);
             } catch (EconomyFailedException ex) {
                 getLogger().log(Level.WARNING, "{0}. Couldn't enable economy hook.", ex.getMessage());
             }

@@ -64,6 +64,9 @@ public class GameEventDistributor {
             if (plugin.getPoints() != null) {
                 plugin.getPoints().onGameEnd(info);
             }
+            if (plugin.getEcoRewards() != null) {
+                plugin.getEcoRewards().onGameEnd(info);
+            }
             // -- High --
             plugin.getWorldHandler().onGameEnd(info);
             // -- After --
@@ -106,6 +109,9 @@ public class GameEventDistributor {
             // -- Normal --
             if (plugin.getPoints() != null) {
                 plugin.getPoints().onKill(info);
+            }
+            if (plugin.getEcoRewards() != null) {
+                plugin.getEcoRewards().onPlayerKillPlayer(info);
             }
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new ArenaPlayerKillPlayerEvent(plugin, info.getGameId(), info.getKillerName(), info.getKilled()));

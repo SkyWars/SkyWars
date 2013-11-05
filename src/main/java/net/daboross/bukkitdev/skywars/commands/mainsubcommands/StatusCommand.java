@@ -46,7 +46,7 @@ public class StatusCommand extends SubCommand {
         sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_HEADER));
         sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_IN_QUEUE,
                 ArrayHelpers.combinedWithSeperator(plugin.getGameQueue().getCopy(),
-                        SkyTrans.get(TransKey.CMD_STATUS_QUEUE_COMMA))));
+                SkyTrans.get(TransKey.CMD_STATUS_QUEUE_COMMA))));
         sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_ARENA_HEADER));
         for (Integer id : idh.getCurrentIDs()) {
             SkyGame game = idh.getGame(id);

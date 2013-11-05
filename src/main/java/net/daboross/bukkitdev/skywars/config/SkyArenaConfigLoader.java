@@ -72,5 +72,4 @@ public class SkyArenaConfigLoader {
         config.set("num-players", null);
         config.set("placement", null);
     }
-
 }

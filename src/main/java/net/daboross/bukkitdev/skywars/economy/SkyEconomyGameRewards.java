@@ -35,7 +35,7 @@ public class SkyEconomyGameRewards {
     public void onPlayerKillPlayer(PlayerKillPlayerInfo info) {
         int reward = plugin.getConfiguration().getEconomyKillReward();
         String killer = info.getKillerName();
-        if (plugin.getConfiguration().getEconomyRewardMessages()) {
+        if (plugin.getConfiguration().areEconomyRewardMessagesEnabled()) {
             Player p = Bukkit.getPlayerExact(killer);
             if (p != null) {
                 p.sendMessage(SkyTrans.get(TransKey.ECO_REWARD_KILL, reward, info.getKilled().getName()));
@@ -46,7 +46,7 @@ public class SkyEconomyGameRewards {
 
     public void onGameEnd(GameEndInfo info) {
         int reward = plugin.getConfiguration().getEconomyKillReward();
-        boolean enableMessages = plugin.getConfiguration().getEconomyRewardMessages();
+        boolean enableMessages = plugin.getConfiguration().areEconomyRewardMessagesEnabled();
         SkyEconomyAbstraction eco = plugin.getEconomyHook();
         List<Player> alive = info.getAlivePlayers();
         if (!alive.isEmpty() && alive.size() <= info.getGame().getArena().getTeamSize()) {

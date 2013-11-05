@@ -29,6 +29,8 @@ public class MainConfigDefaults {
     public static final List<String> ENABLED_ARENAS = Arrays.asList("skyblock-warriors");
     public static final boolean SAVE_INVENTORY = true;
     public static final int ARENA_DISTANCE_APART = 200;
+    public static final boolean PER_ARENA_DEATH_MESSAGES_ENABLED = true;
+    public static final boolean PER_ARENA_WIN_MESSAGES_ENABLED = false;
 
     public static class Points {
 

@@ -72,8 +72,9 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private int economyWinReward;
     @Getter
     private int economyKillReward;
-    @Getter
-    private boolean economyMessageRewards;
+    private boolean economyRewardMessages;
+    private boolean perArenaDeathMessagesEnabled;
+    private boolean perArenaWinMessagesEnabled;
 
     public SkyWarsConfiguration(SkyWars plugin) throws IOException, InvalidConfigurationException, SkyConfigurationException {
         this.plugin = plugin;
@@ -131,7 +132,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         economyEnabled = mainConfig.getSetBoolean(MainConfigKeys.Economy.ENABLE, MainConfigDefaults.Economy.ENABLE);
         economyKillReward = mainConfig.getSetInt(MainConfigKeys.Economy.KILL_REWARD, MainConfigDefaults.Economy.KILL_REWARD);
         economyWinReward = mainConfig.getSetInt(MainConfigKeys.Economy.WIN_REWARD, MainConfigDefaults.Economy.WIN_REWARD);
-        economyMessageRewards = mainConfig.getSetBoolean(MainConfigKeys.Economy.MESSAGE, MainConfigDefaults.Economy.MESSAGE);
+        economyRewardMessages = mainConfig.getSetBoolean(MainConfigKeys.Economy.MESSAGE, MainConfigDefaults.Economy.MESSAGE);
 
         arenaDistanceApart = mainConfig.getSetInt(MainConfigKeys.ARENA_DISTANCE_APART, MainConfigDefaults.ARENA_DISTANCE_APART);
 
@@ -139,6 +140,9 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         commandWhitelistABlacklist = mainConfig.getSetBoolean(MainConfigKeys.CommandWhitelist.IS_BLACKLIST, MainConfigDefaults.CommandWhitelist.IS_BLACKLIST);
         commandWhitelistCommandRegex = createCommandRegex(mainConfig.getSetStringList(MainConfigKeys.CommandWhitelist.COMMAND_WHITELIST, MainConfigDefaults.CommandWhitelist.COMMAND_WHITELIST));
 
+        // per-arena messages
+        perArenaDeathMessagesEnabled = mainConfig.getSetBoolean(MainConfigKeys.PER_ARENA_DEATH_MESSAGES_ENABLED, MainConfigDefaults.PER_ARENA_DEATH_MESSAGES_ENABLED);
+        perArenaWinMessagesEnabled = mainConfig.getSetBoolean(MainConfigKeys.PER_ARENA_WIN_MESSAGES_ENABLED, MainConfigDefaults.PER_ARENA_WIN_MESSAGES_ENABLED);
         // Remove deprecated values
         mainConfig.removeValues(MainConfigKeys.Deprecated.CHAT_PREFIX, MainConfigKeys.Deprecated.PREFIX_CHAT);
 
@@ -227,6 +231,21 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         arena.getMessages().setPrefix(messagePrefix);
         arena.setParent(parentArena);
         saveArena(arena.getFile(), arena, String.format(Headers.ARENA, arena.getArenaName()));
+    }
+
+    @Override
+    public boolean arePerArenaDeathMessagesEnabled() {
+        return perArenaDeathMessagesEnabled;
+    }
+
+    @Override
+    public boolean arePerArenaWinMessagesEnabled() {
+        return perArenaWinMessagesEnabled;
+    }
+
+    @Override
+    public boolean areEconomyRewardMessagesEnabled() {
+        return economyRewardMessages;
     }
 
     private static class Names {
