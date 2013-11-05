@@ -1,0 +1,57 @@
+/*
+ * Copyright (C) 2013 Dabo Ross <http://www.daboross.net/>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package net.daboross.bukkitdev.skywars.config;
+
+public class MainConfigKeys {
+
+    public static final String VERSION = "config-version";
+    public static final String ENABLED_ARENAS = "enabled-arenas";
+    public static final String ARENA_ORDER = "arena-order";
+    public static final String MESSAGE_PREFIX = "message-prefix";
+    public static final String DEBUG = "debug";
+    public static final String SAVE_INVENTORY = "save-inventory";
+    public static final String ARENA_DISTANCE_APART = "arena-distance-apart";
+
+    public static class Points {
+
+        public static final String ENABLE = "points.enable-points";
+        public static final String DEATH_DIFF = "points.death-point-diff";
+        public static final String WIN_DIFF = "points.win-point-diff";
+        public static final String KILL_DIFF = "points.kill-point-diff";
+    }
+
+    public static class Economy {
+
+        public static final String ENABLE = "economy.enable-economy";
+        public static final String WIN_REWARD = "economy-win-reward";
+        public static final String KILL_REWARD = "economy.kill-reward";
+        public static final String MESSAGE = "economy.reward-messages";
+    }
+
+    public static class CommandWhitelist {
+
+        public static final String WHITELIST_ENABLED = "command-whitelist.whitelist-enabled";
+        public static final String IS_BLACKLIST = "command-whitelist.treated-as-blacklist";
+        public static final String COMMAND_WHITELIST = "command-whitelist.whitelist";
+    }
+
+    public static class Deprecated {
+
+        public static final String PREFIX_CHAT = "points.should-prefix-chat";
+        public static final String CHAT_PREFIX = "points.chat-prefix";
+    }
+}

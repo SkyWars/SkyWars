@@ -72,6 +72,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private int economyWinReward;
     @Getter
     private int economyKillReward;
+    @Getter
+    private boolean economyMessageRewards;
 
     public SkyWarsConfiguration(SkyWars plugin) throws IOException, InvalidConfigurationException, SkyConfigurationException {
         this.plugin = plugin;
@@ -96,48 +98,49 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             throw new SkyConfigurationException("File " + arenaFolder.getAbsolutePath() + " exists but is not a directory");
         }
 
-        int version = mainConfig.getSetInt(Keys.VERSION, Defaults.VERSION);
+        int version = mainConfig.getSetInt(MainConfigKeys.VERSION, MainConfigDefaults.VERSION);
         if (version > 1) {
-            throw new SkyConfigurationException("Version '" + version + "' as listed under " + Keys.VERSION + " in file " + mainConfigFile.getAbsolutePath() + " is unknown.");
+            throw new SkyConfigurationException("Version '" + version + "' as listed under " + MainConfigKeys.VERSION + " in file " + mainConfigFile.getAbsolutePath() + " is unknown.");
         }
-        mainConfig.getConfig().set(Keys.VERSION, Defaults.VERSION);
+        mainConfig.getConfig().set(MainConfigKeys.VERSION, MainConfigDefaults.VERSION);
 
-        SkyStatic.setDebug(mainConfig.getSetBoolean(Keys.DEBUG, Defaults.DEBUG));
+        SkyStatic.setDebug(mainConfig.getSetBoolean(MainConfigKeys.DEBUG, MainConfigDefaults.DEBUG));
 
-        arenaOrder = ArenaOrder.getOrder(mainConfig.getSetString(Keys.ARENA_ORDER, Defaults.ARENA_ORDER.toString()));
+        arenaOrder = ArenaOrder.getOrder(mainConfig.getSetString(MainConfigKeys.ARENA_ORDER, MainConfigDefaults.ARENA_ORDER.toString()));
         if (arenaOrder == null) {
-            throw new SkyConfigurationException("Invalid ArenaOrder '" + arenaOrder + "' found under " + Keys.ARENA_ORDER + " in file " + mainConfigFile.getAbsolutePath() + ". Valid values: " + Arrays.toString(ArenaOrder.values()));
+            throw new SkyConfigurationException("Invalid ArenaOrder '" + arenaOrder + "' found under " + MainConfigKeys.ARENA_ORDER + " in file " + mainConfigFile.getAbsolutePath() + ". Valid values: " + Arrays.toString(ArenaOrder.values()));
         }
 
-        messagePrefix = ConfigColorCode.translateCodes(mainConfig.getSetString(Keys.MESSAGE_PREFIX, Defaults.MESSAGE_PREFIX));
+        messagePrefix = ConfigColorCode.translateCodes(mainConfig.getSetString(MainConfigKeys.MESSAGE_PREFIX, MainConfigDefaults.MESSAGE_PREFIX));
 
-        inventorySaveEnabled = mainConfig.getSetBoolean(Keys.SAVE_INVENTORY, Defaults.SAVE_INVENTORY);
+        inventorySaveEnabled = mainConfig.getSetBoolean(MainConfigKeys.SAVE_INVENTORY, MainConfigDefaults.SAVE_INVENTORY);
 
-        List<String> enabledArenaNames = mainConfig.getSetStringList(Keys.ENABLED_ARENAS, Defaults.ENABLED_ARENAS);
+        List<String> enabledArenaNames = mainConfig.getSetStringList(MainConfigKeys.ENABLED_ARENAS, MainConfigDefaults.ENABLED_ARENAS);
         enabledArenas = new ArrayList<>(enabledArenaNames.size());
         if (enabledArenaNames.isEmpty()) {
             throw new SkyConfigurationException("No arenas enabled");
         }
 
         // Points
-        enablePoints = mainConfig.getSetBoolean(Keys.Points.ENABLE, Defaults.Points.ENABLE);
-        winPointDiff = mainConfig.getSetInt(Keys.Points.WIN_DIFF, Defaults.Points.WIN_DIFF);
-        deathPointDiff = mainConfig.getSetInt(Keys.Points.DEATH_DIFF, Defaults.Points.DEATH_DIFF);
-        killPointDiff = mainConfig.getSetInt(Keys.Points.KILL_DIFF, Defaults.Points.KILL_DIFF);
+        enablePoints = mainConfig.getSetBoolean(MainConfigKeys.Points.ENABLE, MainConfigDefaults.Points.ENABLE);
+        winPointDiff = mainConfig.getSetInt(MainConfigKeys.Points.WIN_DIFF, MainConfigDefaults.Points.WIN_DIFF);
+        deathPointDiff = mainConfig.getSetInt(MainConfigKeys.Points.DEATH_DIFF, MainConfigDefaults.Points.DEATH_DIFF);
+        killPointDiff = mainConfig.getSetInt(MainConfigKeys.Points.KILL_DIFF, MainConfigDefaults.Points.KILL_DIFF);
 
         // Economy
-        economyEnabled = mainConfig.getSetBoolean(Keys.Economy.ENABLE, Defaults.Economy.ENABLE);
-        economyKillReward = mainConfig.getSetInt(Keys.Economy.KILL_REWARD, Defaults.Economy.KILL_REWARD);
-        economyWinReward = mainConfig.getSetInt(Keys.Economy.WIN_REWARD, Defaults.Economy.WIN_REWARD);
-        
-        arenaDistanceApart = mainConfig.getSetInt(Keys.ARENA_DISTANCE_APART, Defaults.ARENA_DISTANCE_APART);
+        economyEnabled = mainConfig.getSetBoolean(MainConfigKeys.Economy.ENABLE, MainConfigDefaults.Economy.ENABLE);
+        economyKillReward = mainConfig.getSetInt(MainConfigKeys.Economy.KILL_REWARD, MainConfigDefaults.Economy.KILL_REWARD);
+        economyWinReward = mainConfig.getSetInt(MainConfigKeys.Economy.WIN_REWARD, MainConfigDefaults.Economy.WIN_REWARD);
+        economyMessageRewards = mainConfig.getSetBoolean(MainConfigKeys.Economy.MESSAGE, MainConfigDefaults.Economy.MESSAGE);
 
-        commandWhitelistEnabled = mainConfig.getSetBoolean(Keys.CommandWhitelist.WHITELIST_ENABLED, Defaults.CommandWhitelist.WHITELIST_ENABLED);
-        commandWhitelistABlacklist = mainConfig.getSetBoolean(Keys.CommandWhitelist.IS_BLACKLIST, Defaults.CommandWhitelist.IS_BLACKLIST);
-        commandWhitelistCommandRegex = createCommandRegex(mainConfig.getSetStringList(Keys.CommandWhitelist.COMMAND_WHITELIST, Defaults.CommandWhitelist.COMMAND_WHITELIST));
+        arenaDistanceApart = mainConfig.getSetInt(MainConfigKeys.ARENA_DISTANCE_APART, MainConfigDefaults.ARENA_DISTANCE_APART);
+
+        commandWhitelistEnabled = mainConfig.getSetBoolean(MainConfigKeys.CommandWhitelist.WHITELIST_ENABLED, MainConfigDefaults.CommandWhitelist.WHITELIST_ENABLED);
+        commandWhitelistABlacklist = mainConfig.getSetBoolean(MainConfigKeys.CommandWhitelist.IS_BLACKLIST, MainConfigDefaults.CommandWhitelist.IS_BLACKLIST);
+        commandWhitelistCommandRegex = createCommandRegex(mainConfig.getSetStringList(MainConfigKeys.CommandWhitelist.COMMAND_WHITELIST, MainConfigDefaults.CommandWhitelist.COMMAND_WHITELIST));
 
         // Remove deprecated values
-        mainConfig.removeValues(Keys.Deprecated.CHAT_PREFIX, Keys.Deprecated.PREFIX_CHAT);
+        mainConfig.removeValues(MainConfigKeys.Deprecated.CHAT_PREFIX, MainConfigKeys.Deprecated.PREFIX_CHAT);
 
         // Save
         mainConfig.save(String.format(Headers.CONFIG));
@@ -177,7 +180,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             try {
                 plugin.saveResource(fileName, false);
             } catch (IllegalArgumentException ex) {
-                throw new SkyConfigurationException(name + " is in " + Keys.ENABLED_ARENAS + " but file " + file.getAbsolutePath() + " could not be found.");
+                throw new SkyConfigurationException(name + " is in " + MainConfigKeys.ENABLED_ARENAS + " but file " + file.getAbsolutePath() + " could not be found.");
             }
         }
         SkyArenaConfig arenaConfig = arenaLoader.loadArena(file, name, messagePrefix);
@@ -226,81 +229,10 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         saveArena(arena.getFile(), arena, String.format(Headers.ARENA, arena.getArenaName()));
     }
 
-    private static class Keys {
-
-        private static final String VERSION = "config-version";
-        private static final String ENABLED_ARENAS = "enabled-arenas";
-        private static final String ARENA_ORDER = "arena-order";
-        private static final String MESSAGE_PREFIX = "message-prefix";
-        private static final String DEBUG = "debug";
-        private static final String SAVE_INVENTORY = "save-inventory";
-        private static final String ARENA_DISTANCE_APART = "arena-distance-apart";
-
-        private static class Points {
-
-            private static final String ENABLE = "points.enable-points";
-            private static final String DEATH_DIFF = "points.death-point-diff";
-            private static final String WIN_DIFF = "points.win-point-diff";
-            private static final String KILL_DIFF = "points.kill-point-diff";
-        }
-        private static class Economy {
-
-            private static final String ENABLE = "economy.enable-economy";
-            private static final String WIN_REWARD = "economy-win-reward";
-            private static final String KILL_REWARD = "economy.kill-reward";
-        }
-
-        private static class CommandWhitelist {
-
-            private static final String WHITELIST_ENABLED = "command-whitelist.whitelist-enabled";
-            private static final String IS_BLACKLIST = "command-whitelist.treated-as-blacklist";
-            private static final String COMMAND_WHITELIST = "command-whitelist.whitelist";
-        }
-
-        private static class Deprecated {
-
-            private static final String PREFIX_CHAT = "points.should-prefix-chat";
-            private static final String CHAT_PREFIX = "points.chat-prefix";
-        }
-    }
-
     private static class Names {
 
         private static final String MAIN = "main-config.yml";
         private static final String ARENAS = "arenas";
-    }
-
-    private static class Defaults {
-
-        private static final int VERSION = 1;
-        private static final String MESSAGE_PREFIX = "&8[&cSkyWars&8]&a ";
-        private static final boolean DEBUG = false;
-        private static final ArenaOrder ARENA_ORDER = ArenaOrder.RANDOM;
-        private static final List<String> ENABLED_ARENAS = Arrays.asList("skyblock-warriors");
-        private static final boolean SAVE_INVENTORY = true;
-        private static final int ARENA_DISTANCE_APART = 200;
-
-        private static class Points {
-
-            private static final boolean ENABLE = true;
-            private static final int DEATH_DIFF = -2;
-            private static final int WIN_DIFF = 7;
-            private static final int KILL_DIFF = 1;
-        }
-
-        private static class Economy {
-
-            private static final boolean ENABLE = false;
-            private static final int WIN_REWARD = 10;
-            private static final int KILL_REWARD = 10;
-        }
-
-        private static class CommandWhitelist {
-
-            private static final boolean WHITELIST_ENABLED = true;
-            private static final boolean IS_BLACKLIST = false;
-            private static final List<String> COMMAND_WHITELIST = Arrays.asList("/skywars", "/sw", "/me");
-        }
     }
 
     private static class Headers {
