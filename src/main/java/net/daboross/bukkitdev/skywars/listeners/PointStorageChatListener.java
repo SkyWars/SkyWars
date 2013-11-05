@@ -27,7 +27,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 @RequiredArgsConstructor
 public class PointStorageChatListener implements Listener {
 
-    private static final String REPLACEMENT = "(?i)\\{skywars\\.userpoints\\}";
+    private static final String REPLACEMENT = "(?i)\\{SKYWARS\\.USER(SCORE|POINTS)\\}";
     private final SkyWars plugin;
 
     @EventHandler(priority = EventPriority.HIGH)

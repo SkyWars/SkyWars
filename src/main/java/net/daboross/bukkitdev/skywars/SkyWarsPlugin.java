@@ -68,10 +68,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.mcstats.MetricsLite;
 
-/**
- *
- * @author Dabo Ross <http://www.daboross.net/>
- */
 public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
 
     @Getter

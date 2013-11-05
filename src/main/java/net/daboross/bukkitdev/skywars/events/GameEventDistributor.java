@@ -21,10 +21,10 @@ import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.events.ArenaPlayerDeathEvent;
+import net.daboross.bukkitdev.skywars.api.events.ArenaPlayerKillPlayerEvent;
 import net.daboross.bukkitdev.skywars.api.events.GameEndEvent;
 import net.daboross.bukkitdev.skywars.api.events.GameStartEvent;
 import net.daboross.bukkitdev.skywars.api.events.LeaveGameEvent;
-import net.daboross.bukkitdev.skywars.api.events.ArenaPlayerKillPlayerEvent;
 import net.daboross.bukkitdev.skywars.api.events.RespawnAfterLeaveGameEvent;
 
 public class GameEventDistributor {

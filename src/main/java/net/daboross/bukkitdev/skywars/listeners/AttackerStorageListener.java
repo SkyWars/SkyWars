@@ -21,9 +21,12 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import lombok.RequiredArgsConstructor;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.game.SkyAttackerStorage;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.events.PlayerDeathInArenaInfo;
 import net.daboross.bukkitdev.skywars.events.PlayerKillPlayerInfo;
 import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameInfo;
@@ -41,9 +44,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import lombok.RequiredArgsConstructor;
-import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
-import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 
 @RequiredArgsConstructor
 public class AttackerStorageListener implements Listener, SkyAttackerStorage {

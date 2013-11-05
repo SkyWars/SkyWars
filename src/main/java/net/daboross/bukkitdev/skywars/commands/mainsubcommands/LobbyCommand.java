@@ -16,7 +16,6 @@
  */
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
-import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
