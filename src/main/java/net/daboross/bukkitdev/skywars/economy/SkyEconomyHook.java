@@ -40,6 +40,7 @@ public class SkyEconomyHook implements SkyEconomyAbstraction {
         }
     }
 
+    @Override
     public void addReward(String player, double reward) {
         economy.depositPlayer(player, reward);
         SkyStatic.debug("Gave " + player + " an economy reward of " + reward);
