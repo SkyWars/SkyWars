@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2013 Dabo Ross <http://www.daboross.net/>
  *
@@ -39,7 +40,7 @@ public class MainConfigKeys {
     public static class Economy {
 
         public static final String ENABLE = "economy.enable-economy";
-        public static final String WIN_REWARD = "economy-win-reward";
+        public static final String WIN_REWARD = "economy.win-reward";
         public static final String KILL_REWARD = "economy.kill-reward";
         public static final String MESSAGE = "economy.reward-messages";
     }
