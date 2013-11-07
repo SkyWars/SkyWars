@@ -26,6 +26,7 @@ import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
 import net.daboross.bukkitdev.skywars.api.game.SkyGameHandler;
+import net.daboross.bukkitdev.skywars.api.kits.SkyKits;
 import net.daboross.bukkitdev.skywars.api.location.SkyLocationStore;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTranslations;
@@ -45,6 +46,7 @@ import net.daboross.bukkitdev.skywars.game.GameQueue;
 import net.daboross.bukkitdev.skywars.game.reactors.GameBroadcaster;
 import net.daboross.bukkitdev.skywars.game.reactors.InventorySave;
 import net.daboross.bukkitdev.skywars.game.reactors.ResetHealth;
+import net.daboross.bukkitdev.skywars.kits.SkyKitConfiguration;
 import net.daboross.bukkitdev.skywars.listeners.AttackerStorageListener;
 import net.daboross.bukkitdev.skywars.listeners.BuildingLimiter;
 import net.daboross.bukkitdev.skywars.listeners.CommandWhitelistListener;
@@ -106,6 +108,8 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     private SkyEconomyGameRewards ecoRewards;
     @Getter
     private TeamScoreboardListener teamListener;
+    @Getter
+    private SkyKits kits;
     private boolean enabledCorrectly = false;
 
     @Override
@@ -157,6 +161,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         attackerStorage = new AttackerStorageListener(this);
         distributor = new GameEventDistributor(this);
         teamListener = new TeamScoreboardListener();
+        kits = new SkyKitConfiguration(this);
         if (configuration.isEnablePoints()) {
             points = new PointStorage(this);
             chatListener = new PointStorageChatListener(this);

@@ -16,19 +16,51 @@
  */
 package net.daboross.bukkitdev.skywars.kits;
 
+import java.io.File;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Set;
+import java.util.logging.Level;
+import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
+import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKits;
-import net.daboross.bukkitdev.skywars.api.kits.impl.SkyKitConfig;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 public class SkyKitConfiguration implements SkyKits {
 
-    @Override
-    public Set<String> getKitNames() {
-        throw new UnsupportedOperationException();
+    private final SkyWars plugin;
+    private final HashMap<String, SkyKit> kits = new HashMap<>();
+
+    public SkyKitConfiguration(SkyWars plugin) {
+        this.plugin = plugin;
+        load();
+    }
+
+    private void load() {
+        File kitFile = new File(plugin.getDataFolder(), "kits.yml");
+        FileConfiguration config = YamlConfiguration.loadConfiguration(kitFile);
+        for (String key : config.getKeys(false)) {
+            if (config.isConfigurationSection(key)) {
+                try {
+                    kits.put(key, SkyKitDecoder.decodeKit(config.getConfigurationSection(key)));
+                } catch (SkyConfigurationException ex) {
+                    plugin.getLogger().log(Level.SEVERE, "Couldn't decode kit with name " + key + " in file " + kitFile.getAbsolutePath() + "! You may encounter errors later on because of this. Error:", ex);
+                }
+            } else {
+                plugin.getLogger().log(Level.WARNING, "There is a non-kit value in the kits.yml file ''{0}''.", config.get(key));
+            }
+        }
     }
 
     @Override
-    public SkyKitConfig getKit(String name) {
-        throw new UnsupportedOperationException();
+    public Set<String> getKitNames() {
+        return Collections.unmodifiableSet(kits.keySet());
+    }
+
+    @Override
+    public SkyKit getKit(String name) {
+        return kits.get(name);
     }
 }
