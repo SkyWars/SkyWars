@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.logging.Level;
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
@@ -39,7 +40,11 @@ public class SkyKitConfiguration implements SkyKits {
     }
 
     private void load() {
+        SkyStatic.debug("Loading kits");
         File kitFile = new File(plugin.getDataFolder(), "kits.yml");
+        if (!kitFile.exists()) {
+            plugin.saveResource("kits.yml", true);
+        }
         FileConfiguration config = YamlConfiguration.loadConfiguration(kitFile);
         for (String key : config.getKeys(false)) {
             if (config.isConfigurationSection(key)) {
@@ -51,6 +56,9 @@ public class SkyKitConfiguration implements SkyKits {
             } else {
                 plugin.getLogger().log(Level.WARNING, "There is a non-kit value in the kits.yml file ''{0}''.", config.get(key));
             }
+        }
+        for (SkyKit kit : kits.values()) {
+            SkyStatic.debug("Loaded kit: " + kit);
         }
     }
 
