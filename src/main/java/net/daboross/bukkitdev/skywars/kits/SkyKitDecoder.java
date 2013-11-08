@@ -64,21 +64,21 @@ public class SkyKitDecoder {
             if (!section.isConfigurationSection("chestplate")) {
                 throw new SkyConfigurationException("Invalid chestplate");
             } else {
-                armor[2] = decodeItemConfig(section.getConfigurationSection("helmet"));
+                armor[2] = decodeItemConfig(section.getConfigurationSection("chestplate"));
             }
         }
         if (section.contains("leggings")) {
             if (!section.isConfigurationSection("leggings")) {
                 throw new SkyConfigurationException("Invalid leggings");
             } else {
-                armor[1] = decodeItemConfig(section.getConfigurationSection("helmet"));
+                armor[1] = decodeItemConfig(section.getConfigurationSection("leggings"));
             }
         }
         if (section.contains("boots")) {
             if (!section.isConfigurationSection("boots")) {
                 throw new SkyConfigurationException("Invalid leggings");
             } else {
-                armor[0] = decodeItemConfig(section.getConfigurationSection("helmet"));
+                armor[0] = decodeItemConfig(section.getConfigurationSection("boots"));
             }
         }
         return armor;
