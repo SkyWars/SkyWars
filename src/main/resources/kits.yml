@@ -25,7 +25,8 @@ my-first-kit:
   chestplate: {type: DIAMOND_CHESTPLATE}
   leggings: {type: DIAMOND_LEGGINGS}
   # Every item may have an enchantments:. This contains a bunch of enchantments
-  # for the item.
+  # for the item. You can go to http://tiny.cc/BukkitEnchants to see a list of
+  # all the enchantment names.
   boots: {type: DIAMOND_BOOTS, enchantments: {PROTECTION_FIRE: 2, PROTECTION_FALL: 1}}
 donator-kit:
   # You can define a permission, a cost, or both for a kit.
@@ -34,7 +35,7 @@ donator-kit:
   # This donor kit is not that great, so you may want to change it.
   permission: myserver.donator.kit
   items:
-    - {type: DIAMOND_SWORD, amount: 64}
+    - {type: DIAMOND_SWORD, amount: 1, enchantments: {KNOCKBACK: 2}}
 costly-donator-kit:
   # This kit both requires the permission 'myserver.donator.kit2' and costs 200.
   permission: myserver.donator.kit2
