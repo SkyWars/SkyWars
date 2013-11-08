@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKitItem;
@@ -103,7 +104,28 @@ public class SkyKitDecoder {
         } catch (Exception e) {
             throw new SkyConfigurationException("The type string '" + typeString + "' is not valid. Check http://tiny.cc/BukkitMaterial for a list of valid material names.");
         }
-        return new SkyKitItemConfig(type, amount);
+        Map<Enchantment, Integer> enchantments = null;
+        if (section.contains("enchantments")) {
+            if (section.isConfigurationSection("enchantments")) {
+                ConfigurationSection enchantmentSection = section.getConfigurationSection("enchantments");
+                Set<String> keys = enchantmentSection.getKeys(false);
+                enchantments = new HashMap<>(keys.size());
+                for (String key : keys) {
+                    Enchantment enchantment = Enchantment.getByName(key.toUpperCase());
+                    if (enchantment == null) {
+                        throw new SkyConfigurationException("Invalid enchantment '" + key + "'. Check http://tiny.cc/BukkitEnchants for a list of valid enchantments.");
+                    }
+                    if (enchantmentSection.isInt(key)) {
+                        enchantments.put(enchantment, enchantmentSection.getInt(key));
+                    } else {
+                        throw new SkyConfigurationException("Invalid enchantment level '" + enchantmentSection.get(key) + "'. Not an integer.");
+                    }
+                }
+            } else {
+                throw new SkyConfigurationException("Enchantments invalid!");
+            }
+        }
+        return new SkyKitItemConfig(type, amount, enchantments == null ? Collections.EMPTY_MAP : enchantments);
     }
 
     public static SkyKitItem decodeItemMap(Map<String, Object> map) throws SkyConfigurationException {
@@ -137,19 +159,15 @@ public class SkyKitDecoder {
                 enchantments = new HashMap<>(enchantmentMap.size());
                 for (String key : enchantmentMap.keySet()) {
                     Object val = enchantmentMap.get(key);
-                    int level;
                     Enchantment enchantment = Enchantment.getByName(key.toUpperCase());
                     if (enchantment == null) {
                         throw new SkyConfigurationException("Invalid enchantment '" + key + "'. Check http://tiny.cc/BukkitEnchants for a list of valid enchantments.");
                     }
-                    if (val == null) {
-                        level = enchantment.getMaxLevel();
-                    } else if (val instanceof Integer) {
-                        level = (Integer) val;
+                    if (val instanceof Integer) {
+                        enchantments.put(enchantment, (Integer) val);
                     } else {
                         throw new SkyConfigurationException("Invalid enchantment level '" + val + "'. Not an integer.");
                     }
-                    enchantments.put(enchantment, level);
                 }
             } else {
                 throw new SkyConfigurationException("Enchantments invalid!");
