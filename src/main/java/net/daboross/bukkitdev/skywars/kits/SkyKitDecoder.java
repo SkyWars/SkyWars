@@ -18,6 +18,7 @@ package net.daboross.bukkitdev.skywars.kits;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
@@ -40,15 +41,19 @@ public class SkyKitDecoder {
 
     private static List<SkyKitItem> decodeInventory(ConfigurationSection section) throws SkyConfigurationException {
         List<?> items = section.getList("items");
-        List<SkyKitItem> result = new ArrayList<>(items.size());
-        for (Object o : items) {
-            if (o instanceof Map) {
-                result.add(decodeItemMap((Map<String, Object>) o));
-            } else {
-                throw new SkyConfigurationException("Invalid thing in items list '" + o + "'.s");
+        if (items != null) {
+            List<SkyKitItem> result = new ArrayList<>(items.size());
+            for (Object o : items) {
+                if (o instanceof Map) {
+                    result.add(decodeItemMap((Map<String, Object>) o));
+                } else {
+                    throw new SkyConfigurationException("Invalid thing in items list '" + o + "'.s");
+                }
             }
+            return result;
+        } else {
+            return Collections.EMPTY_LIST;
         }
-        return result;
     }
 
     private static SkyKitItem[] decodeArmor(ConfigurationSection section) throws SkyConfigurationException {
