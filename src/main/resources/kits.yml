@@ -7,9 +7,9 @@
 # #########
 
 my-first-kit:
-  # This kit has a cost of 20.
+  # This kit has a cost of 200002.
   # It is a bit overpowered, so you may want to remove it.
-  cost: 20
+  cost: 200002
   items:
     # You can list any number of items here.
     # Each item has a type:. It also may optionally have an enchantments:
@@ -37,7 +37,7 @@ donator-kit:
   items:
     - {type: DIAMOND_SWORD, amount: 1, enchantments: {KNOCKBACK: 2}}
 costly-donator-kit:
-  # This kit both requires the permission 'myserver.donator.kit2' and costs 200.
+  # This kit both requires the permission 'myserver.donator.kit2' and costs 20000.
   permission: myserver.donator.kit2
-  cost: 200
+  cost: 20000
   boots: {type: DIAMOND_BOOTS}
