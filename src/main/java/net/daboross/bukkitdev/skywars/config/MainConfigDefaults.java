@@ -38,6 +38,7 @@ public class MainConfigDefaults {
         public static final int DEATH_DIFF = -2;
         public static final int WIN_DIFF = 7;
         public static final int KILL_DIFF = 1;
+        public static final long SAVE_INTERVAL = 300;
     }
 
     public static class Economy {

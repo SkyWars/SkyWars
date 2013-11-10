@@ -19,6 +19,9 @@ package net.daboross.bukkitdev.skywars.points;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import net.daboross.bukkitdev.bukkitsavetimer.SaveTimer;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.StartupFailedException;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
@@ -35,6 +38,7 @@ public class PointStorage extends SkyPoints {
 
     private final SkyWarsPlugin plugin;
     private final PointStorageBackend backend;
+    private final SaveTimer timer;
 
     @SuppressWarnings("UseSpecificCatch")
     public PointStorage(SkyWarsPlugin plugin) throws StartupFailedException {
@@ -48,6 +52,12 @@ public class PointStorage extends SkyPoints {
             this.backend = constructor.newInstance(plugin);
         } catch (Throwable ex) {
             throw new StartupFailedException("Unable to initialize storage backend", ex);
+        }
+        long saveInterval = plugin.getConfiguration().getPointsSaveInterval();
+        if (saveInterval > 0) {
+            timer = new SaveTimer(plugin, new SaveRunnable(), TimeUnit.SECONDS, plugin.getConfiguration().getPointsSaveInterval(), true);
+        } else {
+            timer = null;
         }
     }
 
@@ -74,6 +84,9 @@ public class PointStorage extends SkyPoints {
     @Override
     public synchronized void addScore(String name, int diff) {
         SkyStatic.debug("Adding " + diff + " score to " + name);
+        if (timer != null) {
+            timer.dataChanged();
+        }
         backend.addScore(name, diff);
     }
 
@@ -84,5 +97,19 @@ public class PointStorage extends SkyPoints {
 
     public synchronized void save() throws IOException {
         backend.save();
+    }
+
+    private class SaveRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            SkyStatic.debug("AutoSaving points");
+            try {
+                save();
+            } catch (IOException ex) {
+                plugin.getLogger().log(Level.SEVERE, "Failed to save point storage backend:", ex);
+            }
+            SkyStatic.debug("Done AutoSaving points");
+        }
     }
 }

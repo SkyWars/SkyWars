@@ -35,6 +35,7 @@ public class MainConfigKeys {
         public static final String DEATH_DIFF = "points.death-point-diff";
         public static final String WIN_DIFF = "points.win-point-diff";
         public static final String KILL_DIFF = "points.kill-point-diff";
+        public static final String SAVE_INTERVAL = "points.max-save-interval";
     }
 
     public static class Economy {

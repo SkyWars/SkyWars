@@ -102,6 +102,17 @@ public class SkyFileConfig {
             return defaultInt;
         }
     }
+    public long getSetLong(String path, long defaultInt) throws InvalidConfigurationException {
+        if (config.isInt(path)) {
+            return config.getLong(path);
+        } else if (config.contains(path)) {
+            throw new InvalidConfigurationException("Object " + config.get(path) + " found under " + path + " in file " + configFile.getAbsolutePath() + " is not a long");
+        } else {
+            logger.log(Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, defaultInt, configFile});
+            config.set(path, defaultInt);
+            return defaultInt;
+        }
+    }
 
     public boolean getSetBoolean(String path, boolean defaultBoolean) throws InvalidConfigurationException {
         if (config.isBoolean(path)) {

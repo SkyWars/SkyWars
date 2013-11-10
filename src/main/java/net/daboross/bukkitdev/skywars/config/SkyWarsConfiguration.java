@@ -59,6 +59,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     @Getter
     private int killPointDiff;
     @Getter
+    private long pointsSaveInterval;
+    @Getter
     private int arenaDistanceApart;
     @Getter
     private boolean commandWhitelistEnabled;
@@ -127,6 +129,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         winPointDiff = mainConfig.getSetInt(MainConfigKeys.Points.WIN_DIFF, MainConfigDefaults.Points.WIN_DIFF);
         deathPointDiff = mainConfig.getSetInt(MainConfigKeys.Points.DEATH_DIFF, MainConfigDefaults.Points.DEATH_DIFF);
         killPointDiff = mainConfig.getSetInt(MainConfigKeys.Points.KILL_DIFF, MainConfigDefaults.Points.KILL_DIFF);
+        pointsSaveInterval = mainConfig.getSetLong(MainConfigKeys.Points.SAVE_INTERVAL, MainConfigDefaults.Points.SAVE_INTERVAL);
 
         // Economy
         economyEnabled = mainConfig.getSetBoolean(MainConfigKeys.Economy.ENABLE, MainConfigDefaults.Economy.ENABLE);
