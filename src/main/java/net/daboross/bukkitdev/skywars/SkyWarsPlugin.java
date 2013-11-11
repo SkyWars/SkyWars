@@ -154,7 +154,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         broadcaster = new GameBroadcaster();
         worldHandler = new SkyWorldHandler(this);
         inventorySave = new InventorySave(this);
-        resetHealth = new ResetHealth(this);
+        resetHealth = new ResetHealth();
         locationStore = new LocationStore(this);
         gameQueue = new GameQueue(this);
         gameHandler = new GameHandler(this);

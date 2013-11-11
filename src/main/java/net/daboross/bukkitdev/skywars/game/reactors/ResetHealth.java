@@ -16,43 +16,28 @@
  */
 package net.daboross.bukkitdev.skywars.game.reactors;
 
-import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.PlayerRespawnAfterGameEndInfo;
+import net.daboross.bukkitdev.skywars.util.CrossVersion;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 public class ResetHealth {
 
-    private final Plugin plugin;
-
-    public ResetHealth(Plugin plugin) {
-        this.plugin = plugin;
-    }
-
     public void onGameStart(GameStartInfo info) {
         for (Player p : info.getPlayers()) {
-            p.setGameMode(GameMode.SURVIVAL);
-            try {
-                p.setHealth(p.getMaxHealth());
-                p.setFallDistance(0);
-            } catch (NoSuchMethodError unused) {
-                plugin.getLogger().log(Level.INFO, "Couldn't reset health. Probably due to server version being below 1.6.2. If your server is 1.5.2, please download the 1.5.2 version of the plugin.");
-            }
-            p.setFoodLevel(20);
+            resetHealth(p);
         }
     }
 
     public void onPlayerRespawn(PlayerRespawnAfterGameEndInfo info) {
-        Player p = info.getPlayer();
+        resetHealth(info.getPlayer());
+    }
+
+    public void resetHealth(Player p) {
         p.setGameMode(GameMode.SURVIVAL);
-        try {
-            p.setHealth(p.getMaxHealth());
-            p.setFallDistance(0);
-        } catch (NoSuchMethodError unused) {
-            plugin.getLogger().log(Level.INFO, "Couldn't reset health. Probably due to server version being below 1.6.2. If your server is 1.5.2, please download the 1.5.2 version of the plugin.");
-        }
+        CrossVersion.setHealth(p, CrossVersion.getMaxHealth(p));
+        p.setFallDistance(0);
         p.setFoodLevel(20);
     }
 }

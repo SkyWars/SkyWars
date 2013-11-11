@@ -39,10 +39,6 @@ public class CrossVersion {
         }
     }
 
-    public static void setMaxHealth(@NonNull Damageable d) {
-        setHealth(d, getMaxHealth(d));
-    }
-
     public static double getHealth(@NonNull Damageable d) {
         try {
             return d.getHealth();
@@ -59,7 +55,7 @@ public class CrossVersion {
             } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                 SkyStatic.getLogger().log(Level.WARNING, "Couldn't find / use .getHealth method of LivingEntity!", ex);
             }
-            return 0;
+            return 10;
         }
     }
 
@@ -79,7 +75,7 @@ public class CrossVersion {
             } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                 SkyStatic.getLogger().log(Level.WARNING, "Couldn't find / use .getMaxHealth method of LivingEntity!", ex);
             }
-            return 0;
+            return 10;
         }
     }
 }
