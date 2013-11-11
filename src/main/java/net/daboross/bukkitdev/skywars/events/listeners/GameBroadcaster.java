@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.daboross.bukkitdev.skywars.game.reactors;
+package net.daboross.bukkitdev.skywars.events.listeners;
 
 import java.util.List;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.skywars.api.config.SkyMessageKeys;
-import net.daboross.bukkitdev.skywars.events.GameEndInfo;
-import net.daboross.bukkitdev.skywars.events.GameStartInfo;
+import net.daboross.bukkitdev.skywars.events.events.GameEndInfo;
+import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

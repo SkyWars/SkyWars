@@ -23,7 +23,7 @@ import net.daboross.bukkitdev.skywars.api.config.SkyMessageKeys;
 public class KillMessages {
 
     public static String getMessage(String player, String damager, KillReason reason, SkyArena arena) {
-        SkyStatic.debug("Getting death message for player=" + player + " killed by damager=" + damager + " with reason=" + reason);
+        SkyStatic.debug("Getting death message for player %s killed by damager %s with reason %s", player, damager, reason);
         if (damager == null) {
             switch (reason) {
                 case VOID:

@@ -16,17 +16,21 @@
  */
 package net.daboross.bukkitdev.skywars.economy;
 
+import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.economy.SkyEconomyAbstraction;
 import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class SkyEconomyHook implements SkyEconomyAbstraction {
 
     private final Economy economy;
+    private final SkyWars plugin;
 
     public SkyEconomyHook(SkyWars plugin) throws EconomyFailedException {
+        this.plugin = plugin;
         if (plugin.getServer().getPluginManager().getPlugin("Vault") == null) {
             throw new EconomyFailedException("Vault plugin not found");
         }
@@ -47,7 +51,7 @@ public class SkyEconomyHook implements SkyEconomyAbstraction {
         } else if (reward < 0) {
             economy.withdrawPlayer(player, -reward);
         }
-        SkyStatic.debug("Gave " + player + " an economy reward of " + reward);
+        SkyStatic.debug("Gave %s an economy reward of %s", player, reward);
     }
 
     @Override
@@ -61,5 +65,19 @@ public class SkyEconomyHook implements SkyEconomyAbstraction {
             default:
                 return " " + name;
         }
+    }
+
+    @Override
+    public boolean canAfford(String player, double amount) {
+        return economy.has(player, amount);
+    }
+
+    @Override
+    public boolean charge(String player, double amount) {
+        EconomyResponse response = economy.withdrawPlayer(player, amount);
+        if (response.type == EconomyResponse.ResponseType.NOT_IMPLEMENTED) {
+            plugin.getLogger().log(Level.WARNING, "Vault-Implementing economy plugin {0} doesn''t support withdrawPlayer. This will cause players to not be able to buy anything.", economy.getName());
+        }
+        return response.type == EconomyResponse.ResponseType.SUCCESS;
     }
 }

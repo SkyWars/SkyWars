@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.daboross.bukkitdev.skywars.game.reactors;
+package net.daboross.bukkitdev.skywars.events.listeners;
 
-import net.daboross.bukkitdev.skywars.events.GameStartInfo;
-import net.daboross.bukkitdev.skywars.events.PlayerRespawnAfterGameEndInfo;
+import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
+import net.daboross.bukkitdev.skywars.events.events.PlayerRespawnAfterGameEndInfo;
 import net.daboross.bukkitdev.skywars.util.CrossVersion;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;

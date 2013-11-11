@@ -26,10 +26,10 @@ import net.daboross.bukkitdev.skywars.api.game.SkyCurrentGameTracker;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.api.game.SkyGameHandler;
 import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
-import net.daboross.bukkitdev.skywars.events.GameEndInfo;
-import net.daboross.bukkitdev.skywars.events.GameStartInfo;
-import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameInfo;
-import net.daboross.bukkitdev.skywars.events.PlayerRespawnAfterGameEndInfo;
+import net.daboross.bukkitdev.skywars.events.events.GameEndInfo;
+import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
+import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveGameInfo;
+import net.daboross.bukkitdev.skywars.events.events.PlayerRespawnAfterGameEndInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

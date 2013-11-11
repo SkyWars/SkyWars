@@ -22,8 +22,8 @@ import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.economy.SkyEconomyAbstraction;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
-import net.daboross.bukkitdev.skywars.events.GameEndInfo;
-import net.daboross.bukkitdev.skywars.events.PlayerKillPlayerInfo;
+import net.daboross.bukkitdev.skywars.events.events.GameEndInfo;
+import net.daboross.bukkitdev.skywars.events.events.PlayerKillPlayerInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

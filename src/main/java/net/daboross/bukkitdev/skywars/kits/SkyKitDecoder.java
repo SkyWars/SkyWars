@@ -34,12 +34,12 @@ import org.bukkit.enchantments.Enchantment;
 
 public class SkyKitDecoder {
 
-    public static SkyKit decodeKit(ConfigurationSection section) throws SkyConfigurationException {
+    public static SkyKit decodeKit(ConfigurationSection section, String name) throws SkyConfigurationException {
         SkyKitItem[] armor = decodeArmor(section);
         List<SkyKitItem> items = decodeInventory(section);
         String permission = section.getString("permission");
         int cost = section.getInt("cost");
-        return new SkyKitConfig(items, Arrays.asList(armor), cost, permission);
+        return new SkyKitConfig(items, Arrays.asList(armor), name, cost, permission);
     }
 
     private static List<SkyKitItem> decodeInventory(ConfigurationSection section) throws SkyConfigurationException {

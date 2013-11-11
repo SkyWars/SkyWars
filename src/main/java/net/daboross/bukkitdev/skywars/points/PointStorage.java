@@ -29,9 +29,9 @@ import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.points.PointStorageBackend;
 import net.daboross.bukkitdev.skywars.api.points.SkyPoints;
-import net.daboross.bukkitdev.skywars.events.GameEndInfo;
-import net.daboross.bukkitdev.skywars.events.PlayerDeathInArenaInfo;
-import net.daboross.bukkitdev.skywars.events.PlayerKillPlayerInfo;
+import net.daboross.bukkitdev.skywars.events.events.GameEndInfo;
+import net.daboross.bukkitdev.skywars.events.events.PlayerDeathInArenaInfo;
+import net.daboross.bukkitdev.skywars.events.events.PlayerKillPlayerInfo;
 import org.bukkit.entity.Player;
 
 public class PointStorage extends SkyPoints {
@@ -83,7 +83,7 @@ public class PointStorage extends SkyPoints {
 
     @Override
     public synchronized void addScore(String name, int diff) {
-        SkyStatic.debug("Adding " + diff + " score to " + name);
+        SkyStatic.debug("Adding %s score to %s", diff, name);
         if (timer != null) {
             timer.dataChanged();
         }

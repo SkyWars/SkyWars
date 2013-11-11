@@ -26,7 +26,7 @@ import net.daboross.bukkitdev.skywars.api.Randomation;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.game.SkyGameQueue;
-import net.daboross.bukkitdev.skywars.events.GameStartInfo;
+import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 
 public class GameQueue implements SkyGameQueue {
 

@@ -21,8 +21,8 @@ import java.util.Locale;
 import java.util.Map;
 import net.daboross.bukkitdev.skywars.api.game.SkyCurrentGameTracker;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
-import net.daboross.bukkitdev.skywars.events.GameStartInfo;
-import net.daboross.bukkitdev.skywars.events.PlayerLeaveGameInfo;
+import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
+import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveGameInfo;
 
 public class CurrentGames implements SkyCurrentGameTracker {
 

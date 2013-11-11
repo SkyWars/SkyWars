@@ -24,8 +24,8 @@ import java.util.Map;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.game.SkyGameHandler;
 import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
-import net.daboross.bukkitdev.skywars.events.GameEndInfo;
-import net.daboross.bukkitdev.skywars.events.GameStartInfo;
+import net.daboross.bukkitdev.skywars.events.events.GameEndInfo;
+import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 
 public class GameIDHandler implements SkyIDHandler {
 

@@ -14,16 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.daboross.bukkitdev.skywars.events;
+package net.daboross.bukkitdev.skywars.events.events;
 
 import lombok.Data;
 import lombok.NonNull;
 import org.bukkit.entity.Player;
 
 @Data
-public class PlayerLeaveGameInfo {
+public class PlayerKillPlayerInfo {
 
-    private final int id;
+    private final int gameId;
+    private final String killerName;
     @NonNull
-    private final Player player;
+    private final Player killed;
 }

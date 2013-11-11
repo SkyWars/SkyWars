@@ -14,14 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.daboross.bukkitdev.skywars.events;
+package net.daboross.bukkitdev.skywars.events.events;
 
 import lombok.Data;
 import lombok.NonNull;
 import org.bukkit.entity.Player;
 
 @Data
-public class PlayerRespawnAfterGameEndInfo {
+public class PlayerJoinQueueInfo {
 
     @NonNull
     private final Player player;

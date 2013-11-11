@@ -27,8 +27,8 @@ import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
-import net.daboross.bukkitdev.skywars.events.GameEndInfo;
-import net.daboross.bukkitdev.skywars.events.GameStartInfo;
+import net.daboross.bukkitdev.skywars.events.events.GameEndInfo;
+import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.game.ArenaGame;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -97,9 +97,9 @@ public class SkyWorldHandler {
             int numTeams = game.getNumTeams();
             for (int i = 0, currentSpawn = 0; i < numTeams; i++) {
                 Location spawn = min.add(spawns.get(currentSpawn++)).toLocation();
-                SkyStatic.debug("Starting spawning team #" + i + " to spawn " + spawn);
+                SkyStatic.debug("Starting spawning team #%s to spawn %s", i, spawn);
                 for (String name : game.getAllPlayersInTeam(i)) {
-                    SkyStatic.debug("Sending " + name + " to that spawn");
+                    SkyStatic.debug("Sending %s to that spawn", name);
                     Player p = Bukkit.getPlayerExact(name);
                     if (p != null) {
                         p.teleport(spawn);
