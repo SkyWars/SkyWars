@@ -21,36 +21,36 @@ import java.lang.reflect.Method;
 import java.util.logging.Level;
 import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Damageable;
 
 public class CrossVersion {
 
-    public static void setHealth(@NonNull LivingEntity p, double health) {
+    public static void setHealth(@NonNull Damageable d, double health) {
         try {
-            p.setHealth(health);
+            d.setHealth(health);
         } catch (NoSuchMethodError ignored) {
-            Class<? extends LivingEntity> eClass = p.getClass();
+            Class<? extends Damageable> dClass = d.getClass();
             try {
-                Method healthMethod = eClass.getMethod("setHealth", Integer.TYPE);
-                healthMethod.invoke(p, Integer.valueOf((int) health));
+                Method healthMethod = dClass.getMethod("setHealth", Integer.TYPE);
+                healthMethod.invoke(d, Integer.valueOf((int) health));
             } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                 SkyStatic.getLogger().log(Level.WARNING, "Couldn't find / use .setHealth method of LivingEntity!", ex);
             }
         }
     }
 
-    public static void setMaxHealth(@NonNull LivingEntity p) {
-        setHealth(p, getMaxHealth(p));
+    public static void setMaxHealth(@NonNull Damageable d) {
+        setHealth(d, getMaxHealth(d));
     }
 
-    public static double getHealth(@NonNull LivingEntity p) {
+    public static double getHealth(@NonNull Damageable d) {
         try {
-            return p.getHealth();
+            return d.getHealth();
         } catch (NoSuchMethodError ignored) {
-            Class<? extends LivingEntity> eClass = p.getClass();
+            Class<? extends Damageable> dClass = d.getClass();
             try {
-                Method healthMethod = eClass.getMethod("getHealth");
-                Object obj = healthMethod.invoke(p);
+                Method healthMethod = dClass.getMethod("getHealth");
+                Object obj = healthMethod.invoke(d);
                 if (obj instanceof Number) {
                     return ((Number) obj).doubleValue();
                 } else {
@@ -63,14 +63,14 @@ public class CrossVersion {
         }
     }
 
-    public static double getMaxHealth(@NonNull LivingEntity p) {
+    public static double getMaxHealth(@NonNull Damageable d) {
         try {
-            return p.getMaxHealth();
+            return d.getMaxHealth();
         } catch (NoSuchMethodError ignored) {
-            Class<? extends LivingEntity> eClass = p.getClass();
+            Class<? extends Damageable> dClass = d.getClass();
             try {
-                Method healthMethod = eClass.getMethod("getMaxHealth");
-                Object obj = healthMethod.invoke(p);
+                Method healthMethod = dClass.getMethod("getMaxHealth");
+                Object obj = healthMethod.invoke(d);
                 if (obj instanceof Number) {
                     return ((Number) obj).doubleValue();
                 } else {
