@@ -16,12 +16,6 @@
  */
 package net.daboross.bukkitdev.skywars.events;
 
-import net.daboross.bukkitdev.skywars.events.events.GameEndInfo;
-import net.daboross.bukkitdev.skywars.events.events.PlayerKillPlayerInfo;
-import net.daboross.bukkitdev.skywars.events.events.PlayerDeathInArenaInfo;
-import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
-import net.daboross.bukkitdev.skywars.events.events.PlayerRespawnAfterGameEndInfo;
-import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveGameInfo;
 import java.util.logging.Level;
 import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
@@ -31,7 +25,17 @@ import net.daboross.bukkitdev.skywars.api.events.ArenaPlayerKillPlayerEvent;
 import net.daboross.bukkitdev.skywars.api.events.GameEndEvent;
 import net.daboross.bukkitdev.skywars.api.events.GameStartEvent;
 import net.daboross.bukkitdev.skywars.api.events.LeaveGameEvent;
+import net.daboross.bukkitdev.skywars.api.events.PlayerEnterQueueEvent;
+import net.daboross.bukkitdev.skywars.api.events.PlayerLeaveQueueEvent;
 import net.daboross.bukkitdev.skywars.api.events.RespawnAfterLeaveGameEvent;
+import net.daboross.bukkitdev.skywars.events.events.GameEndInfo;
+import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
+import net.daboross.bukkitdev.skywars.events.events.PlayerDeathInArenaInfo;
+import net.daboross.bukkitdev.skywars.events.events.PlayerJoinQueueInfo;
+import net.daboross.bukkitdev.skywars.events.events.PlayerKillPlayerInfo;
+import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveGameInfo;
+import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveQueueInfo;
+import net.daboross.bukkitdev.skywars.events.events.PlayerRespawnAfterGameEndInfo;
 
 public class GameEventDistributor {
 
@@ -137,6 +141,28 @@ public class GameEventDistributor {
             plugin.getServer().getPluginManager().callEvent(new ArenaPlayerDeathEvent(plugin, info.getGameId(), info.getKilled()));
         } catch (Throwable t) {
             plugin.getLogger().log(Level.SEVERE, "Couldn't broadcast PlayerDeathInArena in " + SkyStatic.getPluginName() + " version " + SkyStatic.getImplementationVersion(), t);
+        }
+    }
+
+    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
+    public void distribute(@NonNull PlayerJoinQueueInfo info) {
+        try {
+            // -- Normal --
+            plugin.getKitQueueNotifier().onQueueJoin(info);
+            // -- After --
+            plugin.getServer().getPluginManager().callEvent(new PlayerEnterQueueEvent(plugin, info.getPlayer()));
+        } catch (Throwable t) {
+            plugin.getLogger().log(Level.SEVERE, "Couldn't broadcast PlayerJoinQueueEvent in " + SkyStatic.getPluginName() + " version " + SkyStatic.getImplementationVersion(), t);
+        }
+    }
+
+    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
+    public void distribute(@NonNull PlayerLeaveQueueInfo info) {
+        try {
+            // -- After --
+            plugin.getServer().getPluginManager().callEvent(new PlayerLeaveQueueEvent(plugin, info.getPlayer()));
+        } catch (Throwable t) {
+            plugin.getLogger().log(Level.SEVERE, "Couldn't broadcast PlayerLeaveQueueEvent in " + SkyStatic.getPluginName() + " version " + SkyStatic.getImplementationVersion(), t);
         }
     }
 }

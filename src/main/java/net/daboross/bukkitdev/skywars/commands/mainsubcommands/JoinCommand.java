@@ -24,6 +24,7 @@ import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class JoinCommand extends SubCommand {
 
@@ -44,7 +45,7 @@ public class JoinCommand extends SubCommand {
             sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_ALREADY_QUEUED));
         } else {
             sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_CONFIRMATION));
-            plugin.getGameQueue().queuePlayer(name);
+            plugin.getGameQueue().queuePlayer((Player) sender);
         }
     }
 }

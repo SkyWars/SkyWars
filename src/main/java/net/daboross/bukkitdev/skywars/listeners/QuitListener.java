@@ -36,7 +36,7 @@ public class QuitListener implements Listener {
             plugin.getGameHandler().removePlayerFromGame(evt.getPlayer(), true, true);
         }
         if (plugin.getGameQueue().inQueue(name)) {
-            plugin.getGameQueue().removePlayer(name);
+            plugin.getGameQueue().removePlayer(evt.getPlayer());
         }
     }
 }

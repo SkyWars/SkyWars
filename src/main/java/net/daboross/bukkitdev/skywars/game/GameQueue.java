@@ -27,6 +27,10 @@ import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.game.SkyGameQueue;
 import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
+import net.daboross.bukkitdev.skywars.events.events.PlayerJoinQueueInfo;
+import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveQueueInfo;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 public class GameQueue implements SkyGameQueue {
 
@@ -46,19 +50,32 @@ public class GameQueue implements SkyGameQueue {
     }
 
     @Override
-    public void queuePlayer(String player) {
-        player = player.toLowerCase(Locale.ENGLISH);
-        if (!currentlyQueued.contains(player)) {
-            currentlyQueued.add(player);
+    public void queuePlayer(Player player) {
+
+        String playerName = player.getName().toLowerCase(Locale.ENGLISH);
+        if (!currentlyQueued.contains(playerName)) {
+            currentlyQueued.add(playerName);
         }
+        plugin.getDistributor().distribute(new PlayerJoinQueueInfo(player));
         if (currentlyQueued.size() >= nextArena.getNumPlayers()) {
             plugin.getDistributor().distribute(new GameStartInfo(getNextGame()));
         }
     }
 
     @Override
-    public void removePlayer(String player) {
-        currentlyQueued.remove(player.toLowerCase(Locale.ENGLISH));
+    public void queuePlayer(String playerName) {
+        queuePlayer(Bukkit.getPlayerExact(playerName));
+    }
+
+    @Override
+    public void removePlayer(String playerName) {
+        removePlayer(Bukkit.getPlayerExact(playerName));
+    }
+
+    @Override
+    public void removePlayer(Player player) {
+        currentlyQueued.remove(player.getName().toLowerCase(Locale.ENGLISH));
+        plugin.getDistributor().distribute(new PlayerLeaveQueueInfo(player));
     }
 
     public ArenaGame getNextGame() {

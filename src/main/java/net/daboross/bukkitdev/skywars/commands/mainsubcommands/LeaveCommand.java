@@ -38,7 +38,7 @@ public class LeaveCommand extends SubCommand {
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         if (plugin.getGameQueue().inQueue(sender.getName())) {
-            plugin.getGameQueue().removePlayer(sender.getName());
+            plugin.getGameQueue().removePlayer((Player) sender);
             sender.sendMessage(SkyTrans.get(TransKey.CMD_LEAVE_REMOVED_FROM_QUEUE));
         } else if (plugin.getCurrentGameTracker().isInGame(sender.getName())) {
             plugin.getGameHandler().removePlayerFromGame((Player) sender, true, true);

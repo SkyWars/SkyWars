@@ -44,7 +44,7 @@ public class PortalListener implements Listener {
                 String name = p.getName().toLowerCase(Locale.ENGLISH);
                 if (!plugin.getCurrentGameTracker().isInGame(name) && !plugin.getGameQueue().inQueue(name)) {
                     p.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_CONFIRMATION));
-                    plugin.getGameQueue().queuePlayer(name);
+                    plugin.getGameQueue().queuePlayer(p);
                 }
             }
         }

@@ -118,7 +118,7 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
             evt.setDeathMessage(KillMessages.getMessage(name, killer, causedVoid.contains(name.toLowerCase()) ? KillMessages.KillReason.VOID : KillMessages.KillReason.OTHER, game.getArena()));
             playersWhoDied.add(name.toLowerCase());
         } else if (plugin.getGameQueue().inQueue(name)) {
-            plugin.getGameQueue().removePlayer(name);
+            plugin.getGameQueue().removePlayer(evt.getEntity());
             evt.getEntity().sendMessage(SkyTrans.get(TransKey.QUEUE_DEATH));
         }
     }
