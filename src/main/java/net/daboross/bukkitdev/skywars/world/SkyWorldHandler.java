@@ -80,9 +80,7 @@ public class SkyWorldHandler {
             baseWorldCreator.createWorld();
             plugin.getLogger().log(Level.INFO, "Done loading world ''{0}''.", worldName);
         } else {
-            plugin.getLogger().log(Level.INFO, "The arena ''{1}'' requires the world ''{0}'' to be loaded. It is already loaded.", new Object[]{
-                worldName, arenaNameRequiring
-            });
+            plugin.getLogger().log(Level.INFO, "The arena ''{1}'' requires the world ''{0}'' to be loaded. It is already loaded.", new Object[]{worldName, arenaNameRequiring});
         }
     }
 
