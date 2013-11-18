@@ -26,6 +26,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
+import org.bukkit.block.Dispenser;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
@@ -78,15 +79,20 @@ public class WorldCopier {
                 for (int z = 0; z <= zLength; z++) {
                     Block from = fromWorld.getBlockAt(fromMin.x + x, fromMin.y + y, fromMin.z + z);
                     Block to = toWorld.getBlockAt(toMin.x + x, toMin.y + y, toMin.z + z);
-                    to.setType(from.getType());
-                    to.setData(from.getData());
+                    to.setTypeIdAndData(from.getTypeId(), from.getData(), false);
                     BlockState fromState = from.getState();
                     if (fromState instanceof Chest) {
                         Chest toChest = (Chest) to.getState();
                         Chest fromChest = (Chest) fromState;
                         ItemStack[] contents = fromChest.getBlockInventory().getContents();
                         toChest.getBlockInventory().setContents(Arrays.copyOf(contents, contents.length));
-                        toChest.update(true);
+                        toChest.update(true, false);
+                    } else if (fromState instanceof Dispenser) {
+                        Dispenser toDispenser = (Dispenser) to.getState();
+                        Dispenser fromDispenser = (Dispenser) fromState;
+                        ItemStack[] contents = fromDispenser.getInventory().getContents();
+                        toDispenser.getInventory().setContents(Arrays.copyOf(contents, contents.length));
+                        toDispenser.update(true, false);
                     }
                 }
             }
