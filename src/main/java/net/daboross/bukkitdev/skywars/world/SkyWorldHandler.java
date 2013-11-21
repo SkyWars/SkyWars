@@ -69,9 +69,7 @@ public class SkyWorldHandler {
 
     public void loadWorld(String worldName, String arenaNameRequiring) {
         if (plugin.getServer().getWorld(worldName) == null) {
-            plugin.getLogger().log(Level.INFO, "The arena ''{1}'' requires the world ''{0}'' to be loaded. Loading it now.", new Object[]{
-                worldName, arenaNameRequiring
-            });
+            plugin.getLogger().log(Level.INFO, "The arena ''{1}'' requires the world ''{0}'' to be loaded. Loading it now.", new Object[]{worldName, arenaNameRequiring});
             WorldCreator baseWorldCreator = new WorldCreator(worldName);
             baseWorldCreator.generateStructures(false);
             baseWorldCreator.generator(new VoidGenerator());
