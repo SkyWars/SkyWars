@@ -24,10 +24,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.daboross.bukkitdev.skywars.StartupFailedException;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
 
 @RequiredArgsConstructor
 public class SkyFileConfig {
@@ -39,16 +37,6 @@ public class SkyFileConfig {
     private final Logger logger;
     @Getter
     private YamlConfiguration config;
-
-    public void saveDefault(Plugin plugin, String path) throws StartupFailedException {
-        if (!configFile.exists()) {
-            try {
-                plugin.saveResource(path, false);
-            } catch (IllegalArgumentException ex) {
-                throw new StartupFailedException("Couldn't save resource " + path, ex);
-            }
-        }
-    }
 
     public void load() throws IOException, InvalidConfigurationException {
         File folder = configFile.getParentFile();
@@ -102,6 +90,7 @@ public class SkyFileConfig {
             return defaultInt;
         }
     }
+
     public long getSetLong(String path, long defaultInt) throws InvalidConfigurationException {
         if (config.isInt(path)) {
             return config.getLong(path);

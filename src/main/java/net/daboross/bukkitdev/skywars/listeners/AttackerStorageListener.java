@@ -18,7 +18,6 @@ package net.daboross.bukkitdev.skywars.listeners;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;

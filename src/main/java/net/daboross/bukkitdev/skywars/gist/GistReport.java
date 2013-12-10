@@ -29,12 +29,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import lombok.NonNull;
-import lombok.SneakyThrows;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
@@ -54,7 +52,6 @@ public class GistReport {
     private static final String ISGD_API = "http://is.gd/create.php?format=simple&url=%s";
 
     /**
-     *
      * @param plugin plugin
      * @return Raw report text
      */
@@ -106,7 +103,6 @@ public class GistReport {
     }
 
     /**
-     *
      * @param reportText The text generated at some point by generateReportText
      * @return A shortened URL for the report
      */
@@ -116,11 +112,10 @@ public class GistReport {
     }
 
     /**
-     *
      * @param gistDescription Description of the gist
-     * @param gistFileName File name for the gist
-     * @param gistText Test for the gist
-     * @return
+     * @param gistFileName    File name for the gist
+     * @param gistText        Test for the gist
+     * @return URL for the gist.
      */
     public static String gistText(String gistDescription, String gistFileName, String gistText) {
         if (!checkGistURL()) {
@@ -141,7 +136,7 @@ public class GistReport {
                     .key("description").value(gistDescription)
                     .key("public").value("false")
                     .key("files").object()
-                    .key("report.md").object()
+                    .key(gistFileName).object()
                     .key("content").value(gistText)
                     .endObject().endObject().endObject().toString();
         } catch (JSONException ex) {
@@ -165,20 +160,22 @@ public class GistReport {
             SkyStatic.getLogger().log(Level.FINE, "[SkyGistReport] Failed to read response from gist: {0}", ex.toString());
             return null;
         }
-        String resultUrl = inputJson.optString("html_url", null);
-        return resultUrl;
+        return inputJson.optString("html_url", null);
     }
 
     /**
-     *
      * @param url URL To shorten
      * @return Shortened URL
      */
-    @SneakyThrows(UnsupportedEncodingException.class) // Never going to be thrown for UTF-8
     public static String shortenURL(String url) {
         final Logger logger = SkyStatic.getLogger();
         URL requestUrl;
-        String requestUrlString = String.format(ISGD_API, URLEncoder.encode(url, "UTF-8"));
+        String requestUrlString;
+        try {
+            requestUrlString = String.format(ISGD_API, java.net.URLEncoder.encode(url, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            return url;
+        }
         try {
             requestUrl = new URL(requestUrlString);
         } catch (MalformedURLException ex) {

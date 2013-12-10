@@ -162,6 +162,7 @@ public class TranslationsConfiguration implements SkyTranslations {
     public String get(TransKey key) {
         return values.get(key);
     }
+
     private final String HEADER = "### messages.yml ###\n"
             + "Note! If you are editing this file, set auto-update to false. \n"
             + "If auto-update is left true, all changed values will be overwritten.\n"
