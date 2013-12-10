@@ -25,8 +25,8 @@ SkyWars - [![Build Status](https://travis-ci.org/SkyWars/SkyWars.png?branch=mast
 * [Common Issues](https://github.com/SkyWars/SkyWars/wiki/Common-Issues)
 * [GitHub](https://github.com/SkyWars/SkyWars)
 * [MCStats Statistics](http://mcstats.org/plugin/SkyWars)
-* [Development builds - CI Server](http://ci.nlmc.pw/project.html?guest=1&projectId=SkyWarsParent)
-* [Download latest snapshot](http://ci.nlmc.pw/guestAuth/repository/download/SkyWarsParent_SkyWars_MainBuild/.lastSuccessful/SkyWars.jar)
+* [TeamCity Development Builds - CI Server](http://ci.nlmc.pw/project.html?guest=1&projectId=SkyWarsParent)
+* [Download Latest Snapshot](http://ci.nlmc.pw/guestAuth/repository/download/SkyWarsParent_SkyWars_MainBuild/.lastSuccessful/SkyWars.jar)
 
 ### Bugs, Features, and Questions
 We use the github issue tracker for all bugs, features, and questions.
