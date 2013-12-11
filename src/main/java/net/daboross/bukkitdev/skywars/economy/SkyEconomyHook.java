@@ -55,7 +55,7 @@ public class SkyEconomyHook implements SkyEconomyAbstraction {
     }
 
     @Override
-    public String getCurrenctSymbol(double amount) {
+    public String getCurrencySymbol(double amount) {
         String name = amount == 1 || amount == -1 ? economy.currencyNameSingular() : economy.currencyNamePlural();
         switch (name.length()) {
             case 0:

@@ -60,7 +60,7 @@ public class SkyEconomyGameRewards {
     }
 
     public String getSymboledReward(int reward) {
-        String symbol = plugin.getEconomyHook().getCurrenctSymbol(reward);
+        String symbol = plugin.getEconomyHook().getCurrencySymbol(reward);
         if (symbol.equals("$")) {
             return symbol + reward;
         } else {
