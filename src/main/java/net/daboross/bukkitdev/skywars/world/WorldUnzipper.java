@@ -37,7 +37,6 @@ public class WorldUnzipper {
         boolean madeDir = output.mkdir();
         if (!madeDir) {
             throw new StartupFailedException("Couldn't make directory " + output.getAbsolutePath() + ". Please delete " + Statics.BASE_WORLD_NAME + " and restart server.");
-
         }
         InputStream fis = WorldUnzipper.class.getResourceAsStream(Statics.ZIP_FILE_PATH);
         if (fis == null) {
