@@ -45,7 +45,7 @@ public class SkyEconomyGameRewards {
     }
 
     public void onGameEnd(GameEndInfo info) {
-        int reward = plugin.getConfiguration().getEconomyKillReward();
+        int reward = plugin.getConfiguration().getEconomyWinReward();
         boolean enableMessages = plugin.getConfiguration().areEconomyRewardMessagesEnabled();
         SkyEconomyAbstraction eco = plugin.getEconomyHook();
         List<Player> alive = info.getAlivePlayers();
