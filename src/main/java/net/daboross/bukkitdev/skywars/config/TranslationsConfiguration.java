@@ -145,7 +145,7 @@ public class TranslationsConfiguration implements SkyTranslations {
         try (InputStream is = path.openStream()) {
             config.load(is);
         } catch (IOException | InvalidConfigurationException ex) {
-            throw new SkyConfigurationException("Couldn't load internal translation file " + file);
+            throw new SkyConfigurationException("Couldn't load internal translation file " + file, ex);
         }
         Map<TransKey, String> internal = new EnumMap<>(TransKey.class);
         for (TransKey key : TransKey.values()) {
