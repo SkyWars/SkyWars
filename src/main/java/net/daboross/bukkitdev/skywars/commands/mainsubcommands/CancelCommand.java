@@ -16,7 +16,6 @@
  */
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
-import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -33,8 +32,8 @@ public class CancelCommand extends SubCommand {
     public CancelCommand(SkyWars plugin) {
         super("cancel", true, "skywars.cancel", SkyTrans.get(TransKey.CMD_CANCEL_DESCRIPTION));
         addArgumentNames("ID");
-        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.LESS_THAN, 2, ColorList.ERR + "Too many arguments!"));
-        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.GREATER_THAN, 0, ColorList.ERR + "Not enough arguments!"));
+        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.LESS_THAN, 2, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
+        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.GREATER_THAN, 0, SkyTrans.get(TransKey.NOT_ENOUGH_PARAMS)));
         this.plugin = plugin;
     }
 
