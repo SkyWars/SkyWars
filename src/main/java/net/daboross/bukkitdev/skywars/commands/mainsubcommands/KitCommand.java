@@ -17,6 +17,7 @@
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
 import java.util.List;
+import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -44,6 +45,17 @@ public class KitCommand extends SubCommand {
             sendKitList(p);
         } else {
             SkyKit kit = plugin.getKits().getKit(subCommandArgs[0]);
+            if (kit == null) {
+                sender.sendMessage(SkyTrans.get(TransKey.CMD_KIT_UNKNOWN_KIT, subCommandArgs[0]));
+            }
+            int cost = kit.getCost();
+            if (plugin.getEconomyHook().canAfford(p.getName(), cost)) {
+                // TODO: Set kit for next game.
+                sender.sendMessage(ColorList.ERR + "Unimplemented");
+            } else {
+                double diff = cost - plugin.getEconomyHook().getAmount(p.getName());
+                sender.sendMessage(SkyTrans.get(TransKey.CMD_KIT_NOT_ENOUGH_MONEY, plugin.getEconomyHook().getCurrencySymbolWord(diff), kit.getName(), diff));
+            }
         }
     }
 
