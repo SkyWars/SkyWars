@@ -182,7 +182,7 @@
                                 </relocation>
                                 <relocation>
                                     <pattern>net.daboross.bukkitdev.commandexecutorbase</pattern>
-                                    <shadedPattern>net.daboross.bukkitdev.skywars.libraries.commandexecutorbase</shadedPattern>
+                                    <shadedPattern>net.daboross.bukkitdev.skywars.libraries.ceb</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.json</pattern>
