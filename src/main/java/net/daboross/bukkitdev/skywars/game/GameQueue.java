@@ -51,7 +51,6 @@ public class GameQueue implements SkyGameQueue {
 
     @Override
     public void queuePlayer(Player player) {
-
         String playerName = player.getName().toLowerCase(Locale.ENGLISH);
         if (!currentlyQueued.contains(playerName)) {
             currentlyQueued.add(playerName);
