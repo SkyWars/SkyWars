@@ -59,7 +59,7 @@ public class SkyKitConfiguration implements SkyKits {
                         plugin.getLogger().log(Level.WARNING, "Not enabling kit {0} due to it having a cost and economy support not being enabled.", key);
                         continue;
                     }
-                    kits.put(key, kit);
+                    kits.put(key.toLowerCase(), kit);
                     SkyStatic.debug("Loaded kit %s", kit);
                 } catch (SkyConfigurationException ex) {
                     plugin.getLogger().log(Level.SEVERE, "Couldn't decode kit with name " + key + " in file " + kitFile.getAbsolutePath() + "! You may encounter errors later on because of this. Error:", ex);
@@ -82,7 +82,7 @@ public class SkyKitConfiguration implements SkyKits {
 
     @Override
     public SkyKit getKit(String name) {
-        return kits.get(name);
+        return kits.get(name.toLowerCase());
     }
 
     @Override
@@ -92,6 +92,19 @@ public class SkyKitConfiguration implements SkyKits {
             String perm = kit.getPermission();
             int cost = kit.getCost();
             if ((perm == null || p.hasPermission(perm)) && (cost == 0 || plugin.getEconomyHook().canAfford(p.getName(), cost))) {
+                list.add(kit);
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public List<SkyKit> getUnavailableKits(Player p) {
+        List<SkyKit> list = new ArrayList<>(kits.size() > 10 ? kits.size() / 2 : kits.size());
+        for (SkyKit kit : kits.values()) {
+            String perm = kit.getPermission();
+            int cost = kit.getCost();
+            if ((perm != null && !p.hasPermission(perm)) || (cost != 0 && !plugin.getEconomyHook().canAfford(p.getName(), cost))) {
                 list.add(kit);
             }
         }
