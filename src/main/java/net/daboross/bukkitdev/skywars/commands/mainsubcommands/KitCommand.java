@@ -41,19 +41,51 @@ public class KitCommand extends SubCommand {
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         Player p = (Player) sender;
         if (subCommandArgs.length == 0) {
-            List<SkyKit> availableKits = plugin.getKits().getAvailableKits(p);
-
-            sender.sendMessage(formatKitList(availableKits));
+            sendKitList(p);
+        } else {
+            SkyKit kit = plugin.getKits().getKit(subCommandArgs[0]);
         }
     }
 
-    private String formatKitList(List<SkyKit> kits) {
-        if (kits.isEmpty()) {
-            // return SkyTrans.get(); TODO: Create NO KITS AVAILABLE translation.
+    private void sendKitList(Player p) {
+        List<SkyKit> availableKits = plugin.getKits().getAvailableKits(p);
+        List<SkyKit> unAvailableKits = plugin.getKits().getUnavailableKits(p);
+        if (availableKits.isEmpty()) {
+            p.sendMessage(SkyTrans.get(TransKey.CMD_KIT_NO_KITS_AVAILABLE));
+        } else {
+            p.sendMessage(SkyTrans.get(TransKey.KITS_CHOOSE_A_KIT));
+            p.sendMessage(getAvailableKitList(availableKits));
         }
+        if (!unAvailableKits.isEmpty()) {
+            p.sendMessage(getUnavailableKitList(unAvailableKits));
+        }
+    }
 
-        StringBuilder builder = new StringBuilder();
-        // TODO: Implement
-        return builder.toString();
+    private String getAvailableKitList(List<SkyKit> availableKits) {
+        String comma = SkyTrans.get(TransKey.KITS_KIT_LIST_COMMA);
+        StringBuilder result = new StringBuilder();
+        for (SkyKit kit : availableKits) {
+            if (kit.getCost() == 0) {
+                result.append(kit.getName());
+            } else {
+                result.append(SkyTrans.get(TransKey.KITS_KIT_LIST_COST_ITEM, kit.getName()));
+            }
+            result.append(comma);
+        }
+        return SkyTrans.get(TransKey.KITS_KIT_LIST, result);
+    }
+
+    private String getUnavailableKitList(List<SkyKit> unavailableKits) {
+        String comma = SkyTrans.get(TransKey.KITS_KIT_LIST_COMMA);
+        StringBuilder result = new StringBuilder();
+        for (SkyKit kit : unavailableKits) {
+            if (kit.getCost() == 0) {
+                result.append(kit.getName());
+            } else {
+                result.append(SkyTrans.get(TransKey.KITS_KIT_LIST_COST_ITEM, kit.getName()));
+            }
+            result.append(comma);
+        }
+        return SkyTrans.get(TransKey.CMD_KIT_UNAVAILABLE_KITS, result);
     }
 }
