@@ -55,6 +55,17 @@ public class SkyEconomyHook implements SkyEconomyAbstraction {
     }
 
     @Override
+    public String getCurrencySymbolWord(double amount) {
+        String name = amount == 1 || amount == -1 ? economy.currencyNameSingular() : economy.currencyNamePlural();
+        switch (name.length()) {
+            case 0:
+                return "dollars";
+            default:
+                return name;
+        }
+    }
+
+    @Override
     public String getCurrencySymbol(double amount) {
         String name = amount == 1 || amount == -1 ? economy.currencyNameSingular() : economy.currencyNamePlural();
         switch (name.length()) {
@@ -79,5 +90,10 @@ public class SkyEconomyHook implements SkyEconomyAbstraction {
             plugin.getLogger().log(Level.WARNING, "Vault-Implementing economy plugin {0} doesn''t support withdrawPlayer. This will cause players to not be able to buy anything.", economy.getName());
         }
         return response.type == EconomyResponse.ResponseType.SUCCESS;
+    }
+
+    @Override
+    public double getAmount(String player) {
+        return 0;
     }
 }
