@@ -17,7 +17,6 @@
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
 import java.util.ArrayList;
-import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -33,7 +32,7 @@ public class CancelAllCommand extends SubCommand {
 
     public CancelAllCommand(SkyWars plugin) {
         super("cancelall", true, "skywars.cancelall", SkyTrans.get(TransKey.CMD_CANCELALL_DESCRIPTION));
-        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "Too many arguments!"));
+        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
         this.plugin = plugin;
     }
 
