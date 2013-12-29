@@ -1,4 +1,4 @@
-SkyWars - [![Build Status](https://travis-ci.org/SkyWars/SkyWars.png?branch=master)](https://travis-ci.org/SkyWars/SkyWars)
+SkyWars
 ---
 ### Features
 * Automatically create new arenas every time enough people join the queue.
