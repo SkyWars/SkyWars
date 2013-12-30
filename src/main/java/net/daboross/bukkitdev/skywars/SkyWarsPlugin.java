@@ -215,7 +215,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
                     getLogger().log(Level.WARNING, "Failed to save points", ex);
                 }
             }
-            SkyStatic.setLogger(getServer().getLogger());
+            SkyStatic.setLogger(null);
             getLogger().log(Level.INFO, "SkyWars disabled successfully");
         }
     }
