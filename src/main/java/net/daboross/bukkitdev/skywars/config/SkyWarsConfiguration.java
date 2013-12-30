@@ -102,7 +102,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         }
 
         int version = mainConfig.getSetInt(MainConfigKeys.VERSION, MainConfigDefaults.VERSION);
-        if (version > 1) {
+        if (version > 2) {
             throw new SkyConfigurationException("Version '" + version + "' as listed under " + MainConfigKeys.VERSION + " in file " + mainConfigFile.getAbsolutePath() + " is unknown.");
         }
         mainConfig.getConfig().set(MainConfigKeys.VERSION, MainConfigDefaults.VERSION);
@@ -115,7 +115,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         }
 
         messagePrefix = ConfigColorCode.translateCodes(mainConfig.getSetString(MainConfigKeys.MESSAGE_PREFIX, MainConfigDefaults.MESSAGE_PREFIX));
-
+        mainConfig.setStringIfNot(MainConfigKeys.MESSAGE_PREFIX, messagePrefix);
         inventorySaveEnabled = mainConfig.getSetBoolean(MainConfigKeys.SAVE_INVENTORY, MainConfigDefaults.SAVE_INVENTORY);
 
         List<String> enabledArenaNames = mainConfig.getSetStringList(MainConfigKeys.ENABLED_ARENAS, MainConfigDefaults.ENABLED_ARENAS);

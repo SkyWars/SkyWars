@@ -22,7 +22,7 @@ import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 
 public class MainConfigDefaults {
 
-    public static final int VERSION = 1;
+    public static final int VERSION = 2;
     public static final String MESSAGE_PREFIX = "&8[&cSkyWars&8]&a ";
     public static final boolean DEBUG = false;
     public static final SkyConfiguration.ArenaOrder ARENA_ORDER = SkyConfiguration.ArenaOrder.RANDOM;

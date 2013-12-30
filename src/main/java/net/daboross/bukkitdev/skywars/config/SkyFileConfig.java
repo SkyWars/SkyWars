@@ -130,6 +130,14 @@ public class SkyFileConfig {
         }
     }
 
+    public void setStringIfNot(String path, String string) throws InvalidConfigurationException {
+        String str = getSetString(path, string);
+        if (!str.equals(string)) {
+            logger.log(Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, string, configFile});
+            config.set(path, string);
+        }
+    }
+
     public List<String> getSetStringList(String path, List<String> defaultList) throws InvalidConfigurationException {
         if (config.isList(path)) {
             List<?> unknownList = config.getList(path);
