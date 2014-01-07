@@ -25,8 +25,8 @@ SkyWars
 * [Common Issues](https://github.com/SkyWars/SkyWars/wiki/Common-Issues)
 * [GitHub](https://github.com/SkyWars/SkyWars)
 * [MCStats Statistics](http://mcstats.org/plugin/SkyWars)
-* [TeamCity Development Builds - CI Server](http://ci.nlmc.pw/project.html?guest=1&projectId=SkyWarsParent)
-* [Download Latest Snapshot](http://ci.nlmc.pw/guestAuth/repository/download/SkyWarsParent_SkyWars_MainBuild/.lastSuccessful/SkyWars.jar)
+* [TeamCity Development Builds - CI Server](http://d.nlmc.pw/SkyWarsParent)
+* [Download Latest Snapshot](http://d.nlmc.pw/SkyWarsParent_SkyWars_MainBuild/SkyWars.jar)
 
 ### Bugs, Features, and Questions
 We use the github issue tracker for all bugs, features, and questions.
