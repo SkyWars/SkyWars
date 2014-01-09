@@ -3,6 +3,7 @@ main: net.daboross.bukkitdev.skywars.SkyWarsPlugin
 version: ${project.version}
 author: Dabo Ross
 description: ${project.description}
+softdepend: [Vault]
 commands:
   skywars:
     aliases: [sw]
