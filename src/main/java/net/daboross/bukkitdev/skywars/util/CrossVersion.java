@@ -32,7 +32,7 @@ public class CrossVersion {
             Class<? extends Damageable> dClass = d.getClass();
             try {
                 Method healthMethod = dClass.getMethod("setHealth", Integer.TYPE);
-                healthMethod.invoke(d, Integer.valueOf((int) health));
+                healthMethod.invoke(d, (int) health);
             } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                 SkyStatic.getLogger().log(Level.WARNING, "Couldn't find / use .setHealth method of LivingEntity!", ex);
             }

@@ -57,11 +57,7 @@ public class SkyArenaConfigLoader {
             version0To1(config);
             version = 1;
         }
-        if (version == 1) {
-            // Current version
-            return true;
-        }
-        return false;
+        return version == 1;
     }
 
     private void version0To1(ConfigurationSection config) {

@@ -35,7 +35,7 @@ public class SetupData {
     private SkyBlockLocation originPos2;
     private SkyBlockLocation originMin;
     private SkyBlockLocation originMax;
-    private List<SkyPlayerLocation> spawns = new ArrayList<>();
+    private final List<SkyPlayerLocation> spawns = new ArrayList<>();
 
     public void setOriginPos1(SkyBlockLocation originPos1) {
         this.originPos1 = originPos1;

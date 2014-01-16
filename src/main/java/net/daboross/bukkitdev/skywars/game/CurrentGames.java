@@ -29,7 +29,7 @@ public class CurrentGames implements SkyCurrentGameTracker {
     private final Map<String, Integer> currentlyInGame = new HashMap<>();
 
     private void setGameID(String player, int gameID) {
-        currentlyInGame.put(player.toLowerCase(Locale.ENGLISH), Integer.valueOf(gameID));
+        currentlyInGame.put(player.toLowerCase(Locale.ENGLISH), gameID);
     }
 
     @Override

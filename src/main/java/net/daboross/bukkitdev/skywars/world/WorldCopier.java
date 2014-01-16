@@ -79,6 +79,7 @@ public class WorldCopier {
                 for (int z = 0; z <= zLength; z++) {
                     Block from = fromWorld.getBlockAt(fromMin.x + x, fromMin.y + y, fromMin.z + z);
                     Block to = toWorld.getBlockAt(toMin.x + x, toMin.y + y, toMin.z + z);
+                    //noinspection deprecation
                     to.setTypeIdAndData(from.getTypeId(), from.getData(), false);
                     BlockState fromState = from.getState();
                     if (fromState instanceof Chest) {

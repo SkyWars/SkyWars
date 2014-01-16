@@ -32,18 +32,12 @@ public class StartedArenaCondition implements CommandPreCondition, CommandFilter
 
     @Override
     public boolean canContinue(CommandSender sender, SubCommand subCommand) {
-        if ((states.getSetupState(sender.getName()) == null) == started) {
-            return false;
-        }
-        return true;
+        return (states.getSetupState(sender.getName()) == null) != started;
     }
 
     @Override
     public boolean canContinue(CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        if ((states.getSetupState(sender.getName()) == null) == started) {
-            return false;
-        }
-        return true;
+        return (states.getSetupState(sender.getName()) == null) != started;
     }
 
     @Override

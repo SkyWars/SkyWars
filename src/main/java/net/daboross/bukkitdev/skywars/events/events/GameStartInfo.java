@@ -39,10 +39,10 @@ public class GameStartInfo {
         this.game = game;
         List<String> playersList = game.getAlivePlayers();
         this.players = new ArrayList<>(playersList.size());
-        for (int i = 0; i < playersList.size(); i++) {
-            Player p = Bukkit.getPlayerExact(playersList.get(i));
+        for (String name : playersList) {
+            Player p = Bukkit.getPlayerExact(name);
             if (p == null) {
-                throw new IllegalArgumentException("Player " + playersList.get(i) + " not online");
+                throw new IllegalArgumentException("Player " + name + " not online");
             }
             players.add(p);
         }
