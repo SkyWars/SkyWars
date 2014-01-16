@@ -56,6 +56,7 @@ import net.daboross.bukkitdev.skywars.listeners.PointStorageChatListener;
 import net.daboross.bukkitdev.skywars.listeners.PortalListener;
 import net.daboross.bukkitdev.skywars.listeners.QuitListener;
 import net.daboross.bukkitdev.skywars.listeners.SpawnListener;
+import net.daboross.bukkitdev.skywars.player.CurrentlyInGame;
 import net.daboross.bukkitdev.skywars.points.PointStorage;
 import net.daboross.bukkitdev.skywars.scoreboards.TeamScoreboardListener;
 import net.daboross.bukkitdev.skywars.storage.LocationStore;
@@ -113,6 +114,8 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     private SkyKits kits;
     @Getter
     private KitQueueNotifier kitQueueNotifier;
+    @Getter
+    private CurrentlyInGame inGame;
     private boolean enabledCorrectly = false;
 
     @Override
@@ -166,6 +169,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         teamListener = new TeamScoreboardListener();
         kits = new SkyKitConfiguration(this);
         kitQueueNotifier = new KitQueueNotifier(this);
+        inGame = new CurrentlyInGame();
         if (configuration.isEnablePoints()) {
             points = new PointStorage(this);
             chatListener = new PointStorageChatListener(this);
