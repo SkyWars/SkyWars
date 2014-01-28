@@ -32,6 +32,8 @@ import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.game.ArenaGame;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
@@ -53,18 +55,27 @@ public class SkyWorldHandler {
     }
 
     public void create() {
-        if (plugin.getServer().getWorld(Statics.ARENA_WORLD_NAME) == null) {
+        World world = plugin.getServer().getWorld(Statics.ARENA_WORLD_NAME);
+        if (world == null) {
             plugin.getLogger().info("Loading world '" + Statics.ARENA_WORLD_NAME + "'.");
             WorldCreator arenaWorldCreator = new WorldCreator(Statics.ARENA_WORLD_NAME);
             arenaWorldCreator.generateStructures(false);
             arenaWorldCreator.generator(new VoidGenerator());
             arenaWorldCreator.type(WorldType.FLAT);
             arenaWorldCreator.seed(0);
-            arenaWorldCreator.createWorld();
+            world = arenaWorldCreator.createWorld();
             plugin.getLogger().info("Done loading world '" + Statics.ARENA_WORLD_NAME + "'.");
         } else {
             plugin.getLogger().info("The world '" + Statics.ARENA_WORLD_NAME + "' was already loaded.");
         }
+        world.setAutoSave(false);
+        world.getBlockAt(-5000, 45, -5000).setType(Material.STONE);
+        world.setSpawnLocation(-5000, 50, -5000);
+    }
+
+    public void destroyWorlds() {
+        World world = plugin.getServer().getWorld(Statics.ARENA_WORLD_NAME);
+        Bukkit.unloadWorld(world, false);
     }
 
     public void loadWorld(String worldName, String arenaNameRequiring) {
