@@ -20,6 +20,7 @@ import lombok.Data;
 import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayer;
 import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayerState;
+import net.daboross.bukkitdev.skywars.api.ingame.SkySavedInventory;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import org.bukkit.entity.Player;
 
@@ -32,6 +33,7 @@ public class PlayerInfo implements SkyPlayer {
     private SkyPlayerState state;
     @NonNull
     private SkyKit selectedKit;
+    private SkySavedInventory savedInventory;
 
     public PlayerInfo(@NonNull final Player player) {
         this(player, player.getName().toLowerCase());
@@ -39,6 +41,6 @@ public class PlayerInfo implements SkyPlayer {
 
     private PlayerInfo(@NonNull final Player player, @NonNull final String name) {
         this.player = player;
-        this.name = name;
+        this.name = name.toLowerCase();
     }
 }

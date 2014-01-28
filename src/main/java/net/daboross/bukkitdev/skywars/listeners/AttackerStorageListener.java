@@ -24,6 +24,8 @@ import lombok.RequiredArgsConstructor;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.game.SkyAttackerStorage;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
+import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayer;
+import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayerState;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.events.events.PlayerDeathInArenaInfo;
@@ -50,7 +52,6 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
     private final SkyWarsPlugin plugin;
     private final Map<String, String> lastHit = new HashMap<>();
     private final Set<String> causedVoid = new HashSet<>();
-    private final Set<String> playersWhoDied = new HashSet<>();
 
     @EventHandler
     public void onQuit(PlayerQuitEvent evt) {
@@ -115,7 +116,6 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
             }
             plugin.getGameHandler().removePlayerFromGame(evt.getEntity(), false, false);
             evt.setDeathMessage(KillMessages.getMessage(name, killer, causedVoid.contains(name.toLowerCase()) ? KillMessages.KillReason.VOID : KillMessages.KillReason.OTHER, game.getArena()));
-            playersWhoDied.add(name.toLowerCase());
         } else if (plugin.getGameQueue().inQueue(name)) {
             plugin.getGameQueue().removePlayer(evt.getEntity());
             evt.getEntity().sendMessage(SkyTrans.get(TransKey.QUEUE_DEATH));
@@ -133,7 +133,8 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onRespawn(PlayerRespawnEvent evt) {
-        if (playersWhoDied.remove(evt.getPlayer().getName().toLowerCase())) {
+        SkyPlayer skyPlayer = plugin.getInGame().getPlayer(evt.getPlayer());
+        if (skyPlayer != null && skyPlayer.getState() == SkyPlayerState.WAITING_FOR_RESPAWN) {
             evt.setRespawnLocation(plugin.getLocationStore().getLobbyPosition().toLocation());
             final Player p = evt.getPlayer();
             plugin.getServer().getScheduler().runTask(plugin, new Runnable() {

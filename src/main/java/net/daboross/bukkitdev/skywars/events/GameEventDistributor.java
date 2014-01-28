@@ -51,12 +51,16 @@ public class GameEventDistributor {
             // -- Normal --
             plugin.getIDHandler().onGameStart(info);
             plugin.getCurrentGameTracker().onGameStart(info);
-            plugin.getWorldHandler().onGameStart(info);
-            plugin.getResetHealth().onGameStart(info); // Should be after WorldHandler
-            plugin.getInventorySave().onGameStart(info);
             plugin.getBroadcaster().broadcastStart(info);
             plugin.getTeamListener().onGameStart(info);
-            // -- After --
+            plugin.getInventorySave().onGameStart(info);
+            // -- After InventorySave --
+            plugin.getWorldHandler().onGameStart(info);
+            // -- After InventorySave --
+            plugin.getInGame().onGameStart(info);
+            // -- After WorldHandler --
+            plugin.getResetHealth().onGameStart(info);
+            // -- After All --
             plugin.getServer().getPluginManager().callEvent(new GameStartEvent(plugin, info.getGame(), info.getPlayers()));
         } catch (Throwable t) {
             plugin.getLogger().log(Level.SEVERE, "Couldn't broadcast GameStart in " + SkyStatic.getPluginName() + " version " + SkyStatic.getImplementationVersion(), t);
@@ -90,6 +94,7 @@ public class GameEventDistributor {
     public void distribute(@NonNull PlayerLeaveGameInfo info) {
         try {
             // -- Normal --
+            plugin.getInGame().onLeaveGame(info);
             plugin.getCurrentGameTracker().onPlayerLeaveGame(info);
             plugin.getAttackerStorage().onPlayerLeaveGame(info);
             plugin.getTeamListener().onPlayerLeaveGame(info);
@@ -148,6 +153,7 @@ public class GameEventDistributor {
     public void distribute(@NonNull PlayerJoinQueueInfo info) {
         try {
             // -- Normal --
+            plugin.getInGame().onJoinQueue(info);
             plugin.getKitQueueNotifier().onQueueJoin(info);
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new PlayerEnterQueueEvent(plugin, info.getPlayer()));
@@ -159,6 +165,8 @@ public class GameEventDistributor {
     @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
     public void distribute(@NonNull PlayerLeaveQueueInfo info) {
         try {
+            // -- Normal --
+            plugin.getInGame().onLeaveQueue(info);
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new PlayerLeaveQueueEvent(plugin, info.getPlayer()));
         } catch (Throwable t) {

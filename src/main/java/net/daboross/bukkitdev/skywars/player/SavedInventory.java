@@ -14,17 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.daboross.bukkitdev.skywars.events.listeners;
+package net.daboross.bukkitdev.skywars.player;
 
+import net.daboross.bukkitdev.skywars.api.ingame.SkySavedInventory;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-public class InventorySaveInfo {
+public class SavedInventory implements SkySavedInventory {
 
     private final ItemStack[] items;
     private final ItemStack[] armor;
 
-    public InventorySaveInfo(PlayerInventory inv) {
+    public SavedInventory(Player p) {
+        PlayerInventory inv = p.getInventory();
         ItemStack[] contents = inv.getContents();
         items = new ItemStack[contents.length];
         ItemStack[] armorContents = inv.getArmorContents();
@@ -37,7 +40,9 @@ public class InventorySaveInfo {
         }
     }
 
-    public void apply(PlayerInventory inv) {
+    @Override
+    public void apply(final Player p) {
+        PlayerInventory inv = p.getInventory();
         inv.setContents(items);
         inv.setArmorContents(armor);
     }

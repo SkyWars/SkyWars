@@ -16,13 +16,13 @@
  */
 package net.daboross.bukkitdev.skywars.events.listeners;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayer;
+import net.daboross.bukkitdev.skywars.api.ingame.SkySavedInventory;
 import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerRespawnAfterGameEndInfo;
+import net.daboross.bukkitdev.skywars.player.SavedInventory;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -30,28 +30,33 @@ import org.bukkit.inventory.PlayerInventory;
 @RequiredArgsConstructor
 public class InventorySave {
 
-    private final Map<String, InventorySaveInfo> inventorySaveInfo = new HashMap<>();
-    private final SkyWars skywars;
+    private final SkyWars plugin;
 
     public void onGameStart(GameStartInfo info) {
-        boolean save = skywars.getConfiguration().isInventorySaveEnabled();
+        boolean save = plugin.getConfiguration().isInventorySaveEnabled();
         for (Player p : info.getPlayers()) {
-            PlayerInventory inv = p.getInventory();
             if (save) {
-                inventorySaveInfo.put(p.getName().toLowerCase(Locale.ENGLISH), new InventorySaveInfo(inv));
+                SkyPlayer skyPlayer = plugin.getInGame().getPlayerForce(p);
+                skyPlayer.setSavedInventory(new SavedInventory(p));
             }
+            PlayerInventory inv = p.getInventory();
             inv.clear();
             inv.setArmorContents(new ItemStack[inv.getArmorContents().length]);
         }
     }
 
     public void onPlayerRespawn(PlayerRespawnAfterGameEndInfo info) {
-        PlayerInventory inv = info.getPlayer().getInventory();
+        boolean save = plugin.getConfiguration().isInventorySaveEnabled();
+        Player player = info.getPlayer();
+        PlayerInventory inv = player.getInventory();
         inv.clear();
         inv.setArmorContents(new ItemStack[inv.getArmorContents().length]);
-        InventorySaveInfo save = inventorySaveInfo.remove(info.getPlayer().getName().toLowerCase(Locale.ENGLISH));
-        if (save != null) {
-            save.apply(inv);
+        if (save) {
+            SkyPlayer skyPlayer = plugin.getInGame().getPlayerForce(player);
+            SkySavedInventory savedInventory = skyPlayer.getSavedInventory();
+            if (savedInventory != null) {
+                savedInventory.apply(player);
+            }
         }
     }
 }

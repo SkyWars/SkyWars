@@ -17,10 +17,10 @@
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
 import java.util.List;
-import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayer;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
@@ -50,8 +50,9 @@ public class KitCommand extends SubCommand {
             }
             int cost = kit.getCost();
             if (plugin.getEconomyHook().canAfford(p.getName(), cost)) {
-                // TODO: Set kit for next game.
-                sender.sendMessage(ColorList.ERR + "Unimplemented");
+                SkyPlayer skyPlayer = plugin.getInGame().getPlayerForce(p);
+                skyPlayer.setSelectedKit(kit);
+                // TODO: Message
             } else {
                 double diff = cost - plugin.getEconomyHook().getAmount(p.getName());
                 sender.sendMessage(SkyTrans.get(TransKey.CMD_KIT_NOT_ENOUGH_MONEY, plugin.getEconomyHook().getCurrencySymbolWord(diff), kit.getName(), diff));

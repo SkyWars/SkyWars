@@ -19,11 +19,13 @@ package net.daboross.bukkitdev.skywars.player;
 import java.util.HashMap;
 import java.util.Map;
 import net.daboross.bukkitdev.skywars.api.ingame.SkyInGame;
+import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayer;
 import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayerState;
 import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerJoinQueueInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveGameInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveQueueInfo;
+import net.daboross.bukkitdev.skywars.events.events.PlayerRespawnAfterGameEndInfo;
 import org.bukkit.entity.Player;
 
 public class CurrentlyInGame implements SkyInGame {
@@ -35,24 +37,36 @@ public class CurrentlyInGame implements SkyInGame {
     }
 
     public void onJoinQueue(PlayerJoinQueueInfo info) {
-        PlayerInfo player = new PlayerInfo(info.getPlayer());
+        PlayerInfo player = getPlayer(info.getPlayer());
+        if (player == null) {
+            player = new PlayerInfo(info.getPlayer());
+            map.put(player.getName(), player);
+        }
         player.setState(SkyPlayerState.IN_QUEUE);
-        map.put(info.getPlayer().getName().toLowerCase(), player);
     }
 
     public void onLeaveQueue(PlayerLeaveQueueInfo info) {
-        map.remove(info.getPlayer().getName().toLowerCase());
+        PlayerInfo player = getPlayer(info.getPlayer());
+        player.setState(SkyPlayerState.NOT_IN_GAME);
+        player.setGameId(-1);
     }
 
     public void onGameStart(GameStartInfo info) {
         for (Player player : info.getPlayers()) {
             PlayerInfo playerInfo = getPlayer(player);
             playerInfo.setState(SkyPlayerState.IN_RUNNING_GAME);
+            playerInfo.setGameId(info.getGame().getId());
         }
     }
 
     public void onLeaveGame(PlayerLeaveGameInfo info) {
-        map.remove(info.getPlayer().getName().toLowerCase());
+        PlayerInfo playerInfo = getPlayer(info.getPlayer());
+        playerInfo.setState(SkyPlayerState.WAITING_FOR_RESPAWN);
+    }
+
+    public void onRespawn(PlayerRespawnAfterGameEndInfo info) {
+        PlayerInfo playerInfo = getPlayer(info.getPlayer());
+        playerInfo.setState(SkyPlayerState.NOT_IN_GAME);
     }
 
     @Override
@@ -66,7 +80,13 @@ public class CurrentlyInGame implements SkyInGame {
     }
 
     @Override
-    public boolean isInGame(String name) {
-        return map.containsKey(name.toLowerCase());
+    public SkyPlayer getPlayerForce(final Player player) {
+        PlayerInfo info = getPlayer(player);
+        if (info == null) {
+            info = new PlayerInfo(player);
+            map.put(info.getName(), info);
+        }
+        return info;
     }
+
 }
