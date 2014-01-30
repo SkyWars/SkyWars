@@ -41,18 +41,30 @@ public class KitCommand extends SubCommand {
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         Player p = (Player) sender;
+        SkyPlayer skyPlayer = plugin.getInGame().getPlayerForce(p);
         if (subCommandArgs.length == 0) {
-            sendKitList(p);
+            sendKitList(p, skyPlayer);
+        } else if (subCommandArgs[0].equals("remove")) {
+            SkyKit kit = skyPlayer.getSelectedKit();
+            if (kit != null) {
+                sender.sendMessage(SkyTrans.get(TransKey.CMD_KIT_REMOVED_KIT));
+                skyPlayer.setSelectedKit(null);
+            } else {
+                sender.sendMessage(SkyTrans.get(TransKey.CMD_KIT_NO_KIT_REMOVED));
+            }
         } else {
             SkyKit kit = plugin.getKits().getKit(subCommandArgs[0]);
             if (kit == null) {
                 sender.sendMessage(SkyTrans.get(TransKey.CMD_KIT_UNKNOWN_KIT, subCommandArgs[0]));
             }
             int cost = kit.getCost();
-            if (plugin.getEconomyHook().canAfford(p.getName(), cost)) {
-                SkyPlayer skyPlayer = plugin.getInGame().getPlayerForce(p);
+            if (cost == 0 || plugin.getEconomyHook().canAfford(p.getName(), cost)) {
                 skyPlayer.setSelectedKit(kit);
-                // TODO: Message
+                if (cost == 0) {
+                    p.sendMessage(SkyTrans.get(TransKey.CMD_KIT_CHOSE_KIT, kit.getName()));
+                } else {
+                    p.sendMessage(SkyTrans.get(TransKey.CMD_KIT_CHOSE_KIT_WITH_COST, kit.getName(), kit.getCost()));
+                }
             } else {
                 double diff = cost - plugin.getEconomyHook().getAmount(p.getName());
                 sender.sendMessage(SkyTrans.get(TransKey.CMD_KIT_NOT_ENOUGH_MONEY, plugin.getEconomyHook().getCurrencySymbolWord(diff), kit.getName(), diff));
@@ -60,12 +72,20 @@ public class KitCommand extends SubCommand {
         }
     }
 
-    private void sendKitList(Player p) {
+    private void sendKitList(Player p, SkyPlayer skyPlayer) {
         List<SkyKit> availableKits = plugin.getKits().getAvailableKits(p);
         List<SkyKit> unAvailableKits = plugin.getKits().getUnavailableKits(p);
         if (availableKits.isEmpty()) {
             p.sendMessage(SkyTrans.get(TransKey.CMD_KIT_NO_KITS_AVAILABLE));
         } else {
+            SkyKit currentKit = skyPlayer.getSelectedKit();
+            if (currentKit != null) {
+                if (currentKit.getCost() == 0) {
+                    p.sendMessage(SkyTrans.get(TransKey.CMD_KIT_CURRENT_KIT, currentKit.getName()));
+                } else {
+                    p.sendMessage(SkyTrans.get(TransKey.CMD_KIT_CURRENT_KIT_WITH_COST, currentKit.getName(), currentKit.getCost()));
+                }
+            }
             p.sendMessage(SkyTrans.get(TransKey.KITS_CHOOSE_A_KIT));
             p.sendMessage(getAvailableKitList(availableKits));
         }
