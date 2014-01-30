@@ -48,15 +48,6 @@ public class JoinCommand extends SubCommand {
         } else {
             sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_CONFIRMATION));
             plugin.getGameQueue().queuePlayer((Player) sender);
-            SkyPlayer skyPlayer = plugin.getInGame().getPlayer((Player) sender);
-            SkyKit currentKit = skyPlayer.getSelectedKit();
-            if (currentKit != null) {
-                if (currentKit.getCost() == 0) {
-                    sender.sendMessage(SkyTrans.get(TransKey.CMD_KIT_CURRENT_KIT, currentKit.getName()));
-                } else {
-                    sender.sendMessage(SkyTrans.get(TransKey.CMD_KIT_CURRENT_KIT_WITH_COST, currentKit.getName(), currentKit.getCost()));
-                }
-            }
         }
     }
 }

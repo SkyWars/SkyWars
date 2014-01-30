@@ -111,6 +111,7 @@ public class GameEventDistributor {
             // -- Normal --
             plugin.getResetHealth().onPlayerRespawn(info);
             plugin.getInventorySave().onPlayerRespawn(info);
+            plugin.getInGame().onRespawn(info);
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new RespawnAfterLeaveGameEvent(plugin, info.getPlayer()));
         } catch (Throwable t) {
