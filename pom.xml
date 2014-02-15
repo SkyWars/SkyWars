@@ -123,7 +123,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>0.12.0</version>
+            <version>1.12.4</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -214,11 +214,11 @@
     </build>
 
     <issueManagement>
-        <url>https://github.com/SkyWars/SkyWars/issues</url>
         <system>Github Issues</system>
+        <url>https://github.com/SkyWars/SkyWars/issues</url>
     </issueManagement>
     <ciManagement>
-        <system>jenkins</system>
-        <url>ci.aemservers.net/job/SkyWars</url>
+        <system>teamcity</system>
+        <url>http://dabo.guru/ci-p/SkyWarsParent_SkyWars</url>
     </ciManagement>
 </project>
