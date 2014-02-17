@@ -102,7 +102,7 @@ public class KitCommand extends SubCommand {
             if (kit.getCost() == 0) {
                 result.append(kit.getName());
             } else {
-                result.append(SkyTrans.get(TransKey.KITS_KIT_LIST_COST_ITEM, kit.getName()));
+                result.append(SkyTrans.get(TransKey.KITS_KIT_LIST_COST_ITEM, kit.getName(), kit.getCost()));
             }
             result.append(comma);
         }
@@ -116,7 +116,7 @@ public class KitCommand extends SubCommand {
             if (kit.getCost() == 0) {
                 result.append(kit.getName());
             } else {
-                result.append(SkyTrans.get(TransKey.KITS_KIT_LIST_COST_ITEM, kit.getName()));
+                result.append(SkyTrans.get(TransKey.KITS_KIT_LIST_COST_ITEM, kit.getName(), kit.getCost()));
             }
             result.append(comma);
         }

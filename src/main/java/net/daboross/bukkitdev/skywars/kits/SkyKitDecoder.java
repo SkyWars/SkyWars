@@ -35,8 +35,18 @@ import org.bukkit.enchantments.Enchantment;
 public class SkyKitDecoder {
 
     public static SkyKit decodeKit(ConfigurationSection section, String name) throws SkyConfigurationException {
-        SkyKitItem[] armor = decodeArmor(section);
-        List<SkyKitItem> items = decodeInventory(section);
+        SkyKitItem[] armor;
+        try {
+            armor = decodeArmor(section);
+        } catch (SkyConfigurationException ex) {
+            throw new SkyConfigurationException(String.format("Invalid armor for SkyKit %s: %s", name, ex.getMessage()));
+        }
+        List<SkyKitItem> items;
+        try {
+            items = decodeInventory(section);
+        } catch (SkyConfigurationException ex) {
+            throw new SkyConfigurationException(String.format("Invalid inventory for SkyKit %s: %s", name, ex.getMessage()));
+        }
         String permission = section.getString("permission");
         int cost = section.getInt("cost");
         return new SkyKitConfig(items, Arrays.asList(armor), name, cost, permission);
@@ -50,7 +60,7 @@ public class SkyKitDecoder {
                 if (o instanceof Map) {
                     result.add(decodeItemMap((Map<String, Object>) o));
                 } else {
-                    throw new SkyConfigurationException("Invalid thing in items list '" + o + "'.s");
+                    throw new SkyConfigurationException("Invalid thing in items list '" + o + "'.");
                 }
             }
             return result;
@@ -65,28 +75,44 @@ public class SkyKitDecoder {
             if (!section.isConfigurationSection("helmet")) {
                 throw new SkyConfigurationException("Invalid helmet");
             } else {
-                armor[3] = decodeItemConfig(section.getConfigurationSection("helmet"));
+                try {
+                    armor[3] = decodeItemConfig(section.getConfigurationSection("helmet"));
+                } catch (SkyConfigurationException ex) {
+                    throw new SkyConfigurationException("Invalid helmet: " + ex.getMessage());
+                }
             }
         }
         if (section.contains("chestplate")) {
             if (!section.isConfigurationSection("chestplate")) {
                 throw new SkyConfigurationException("Invalid chestplate");
             } else {
-                armor[2] = decodeItemConfig(section.getConfigurationSection("chestplate"));
+                try {
+                    armor[2] = decodeItemConfig(section.getConfigurationSection("chestplate"));
+                } catch (SkyConfigurationException ex) {
+                    throw new SkyConfigurationException("Invalid chestplate: " + ex.getMessage());
+                }
             }
         }
         if (section.contains("leggings")) {
             if (!section.isConfigurationSection("leggings")) {
                 throw new SkyConfigurationException("Invalid leggings");
             } else {
-                armor[1] = decodeItemConfig(section.getConfigurationSection("leggings"));
+                try {
+                    armor[1] = decodeItemConfig(section.getConfigurationSection("leggings"));
+                } catch (SkyConfigurationException ex) {
+                    throw new SkyConfigurationException("Invalid leggings: " + ex.getMessage());
+                }
             }
         }
         if (section.contains("boots")) {
             if (!section.isConfigurationSection("boots")) {
                 throw new SkyConfigurationException("Invalid boots");
             } else {
-                armor[0] = decodeItemConfig(section.getConfigurationSection("boots"));
+                try {
+                    armor[0] = decodeItemConfig(section.getConfigurationSection("boots"));
+                } catch (SkyConfigurationException ex) {
+                    throw new SkyConfigurationException("Invalid boots: " + ex.getMessage());
+                }
             }
         }
         return armor;
@@ -99,9 +125,8 @@ public class SkyKitDecoder {
         String typeString = section.getString("type");
         int amount = section.isInt("amount") ? section.getInt("amount") : 1;
         Material type;
-        try {
-            type = Material.getMaterial(typeString.toUpperCase());
-        } catch (Exception e) {
+        type = Material.getMaterial(typeString.toUpperCase());
+        if (type == null) {
             throw new SkyConfigurationException("The type string '" + typeString + "' is not valid. Check http://tiny.cc/BukkitMaterial for a list of valid material names.");
         }
         Map<Enchantment, Integer> enchantments = null;
@@ -146,9 +171,8 @@ public class SkyKitDecoder {
             throw new SkyConfigurationException("Amount in item is not an integer");
         }
         Material type;
-        try {
-            type = Material.getMaterial(typeString.toUpperCase());
-        } catch (Exception e) {
+        type = Material.getMaterial(typeString.toUpperCase());
+        if (type == null) {
             throw new SkyConfigurationException("The type string '" + typeString + "' is not valid. Check http://tiny.cc/BukkitMaterial for a list of valid material names.");
         }
         Map<Enchantment, Integer> enchantments = null;

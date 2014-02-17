@@ -170,15 +170,13 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         attackerStorage = new AttackerStorageListener(this);
         distributor = new GameEventDistributor(this);
         teamListener = new TeamScoreboardListener();
-        kits = new SkyKitConfiguration(this);
-        kitQueueNotifier = new KitQueueNotifier(this);
-        kitApplyListener = new KitApplyListener(this);
         inGame = new CurrentlyInGame();
         if (configuration.isEnablePoints()) {
             points = new PointStorage(this);
             chatListener = new PointStorageChatListener(this);
         }
         if (configuration.isEconomyEnabled()) {
+            SkyStatic.debug("Enabling economy support");
             try {
                 economyHook = new SkyEconomyHook(this);
                 ecoRewards = new SkyEconomyGameRewards(this);
@@ -186,6 +184,9 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
                 getLogger().log(Level.WARNING, "{0}. Couldn't enable economy hook.", ex.getMessage());
             }
         }
+        kits = new SkyKitConfiguration(this);
+        kitQueueNotifier = new KitQueueNotifier(this);
+        kitApplyListener = new KitApplyListener(this);
         new BukkitRunnable() {
             @Override
             public void run() {

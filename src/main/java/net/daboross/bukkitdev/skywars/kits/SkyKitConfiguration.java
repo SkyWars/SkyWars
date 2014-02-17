@@ -53,17 +53,19 @@ public class SkyKitConfiguration implements SkyKits {
         FileConfiguration config = YamlConfiguration.loadConfiguration(kitFile);
         for (String key : config.getKeys(false)) {
             if (config.isConfigurationSection(key)) {
+                SkyKit kit;
                 try {
-                    SkyKit kit = SkyKitDecoder.decodeKit(config.getConfigurationSection(key), key);
-                    if (kit.getCost() != 0 && plugin.getEconomyHook() == null) {
-                        plugin.getLogger().log(Level.WARNING, "Not enabling kit {0} due to it having a cost and economy support not being enabled.", key);
-                        continue;
-                    }
-                    kits.put(key.toLowerCase(), kit);
-                    SkyStatic.debug("Loaded kit %s", kit);
+                    kit = SkyKitDecoder.decodeKit(config.getConfigurationSection(key), key);
                 } catch (SkyConfigurationException ex) {
-                    plugin.getLogger().log(Level.SEVERE, "Couldn't decode kit with name " + key + " in file " + kitFile.getAbsolutePath() + "! You may encounter errors later on because of this. Error:", ex);
+                    plugin.getLogger().log(Level.SEVERE, ex.getMessage());
+                    continue;
                 }
+                if (kit.getCost() != 0 && plugin.getEconomyHook() == null) {
+                    plugin.getLogger().log(Level.WARNING, "Not enabling kit {0} due to it having a cost and economy support not being enabled.", key);
+                    continue;
+                }
+                kits.put(key.toLowerCase(), kit);
+                SkyStatic.debug("Loaded kit %s", kit);
             } else {
                 plugin.getLogger().log(Level.WARNING, "There is a non-kit value in the kits.yml file ''{0}''.", config.get(key));
             }
