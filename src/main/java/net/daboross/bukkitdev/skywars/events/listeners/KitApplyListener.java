@@ -46,7 +46,8 @@ public class KitApplyListener {
                     plugin.getEconomyHook().charge(p.getName(), cost);
                     kit.applyTo(p);
                 } else {
-                    p.sendMessage(SkyTrans.get(TransKey.KITS_NOT_ENOUGH_MONEY));
+                    skyPlayer.setSelectedKit(null);
+                    p.sendMessage(SkyTrans.get(TransKey.KITS_NOT_ENOUGH_MONEY, kit.getName()));
                 }
             }
         }

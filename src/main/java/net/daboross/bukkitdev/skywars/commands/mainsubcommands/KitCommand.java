@@ -21,6 +21,7 @@ import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayer;
+import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayerState;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
@@ -42,6 +43,10 @@ public class KitCommand extends SubCommand {
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         Player p = (Player) sender;
         SkyPlayer skyPlayer = plugin.getInGame().getPlayerForce(p);
+        if (skyPlayer.getState() == SkyPlayerState.IN_RUNNING_GAME) {
+            sender.sendMessage(SkyTrans.get(TransKey.GENERIC_IN_GAME));
+            return;
+        }
         if (subCommandArgs.length == 0) {
             sendKitList(p, skyPlayer);
         } else if (subCommandArgs[0].equals("remove")) {
