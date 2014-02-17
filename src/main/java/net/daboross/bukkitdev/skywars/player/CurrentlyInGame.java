@@ -88,5 +88,4 @@ public class CurrentlyInGame implements SkyInGame {
         }
         return info;
     }
-
 }
