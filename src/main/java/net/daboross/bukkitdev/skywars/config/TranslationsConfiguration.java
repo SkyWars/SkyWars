@@ -61,7 +61,7 @@ public class TranslationsConfiguration implements SkyTranslations {
         if (!config.contains("messages-version")) {
             config.set("messages-version", TransKey.VERSION);
         }
-        if (!config.contains("messages-language")) {
+        if (!config.contains("messages-locale")) {
             config.set("messages-locale", language);
         }
         int version = config.getInt("messages-version");
