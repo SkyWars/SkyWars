@@ -84,7 +84,7 @@ public class SkyKitDecoder {
         }
         if (section.contains("boots")) {
             if (!section.isConfigurationSection("boots")) {
-                throw new SkyConfigurationException("Invalid leggings");
+                throw new SkyConfigurationException("Invalid boots");
             } else {
                 armor[0] = decodeItemConfig(section.getConfigurationSection("boots"));
             }

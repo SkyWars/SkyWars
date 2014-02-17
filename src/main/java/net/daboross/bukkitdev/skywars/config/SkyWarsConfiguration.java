@@ -75,8 +75,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     @Getter
     private int economyKillReward;
     private boolean economyRewardMessages;
-    private boolean perArenaDeathMessagesEnabled;
-    private boolean perArenaWinMessagesEnabled;
+//    private boolean perArenaDeathMessagesEnabled;
+//    private boolean perArenaWinMessagesEnabled;
 
     public SkyWarsConfiguration(SkyWars plugin) throws IOException, InvalidConfigurationException, SkyConfigurationException {
         this.plugin = plugin;
@@ -144,8 +144,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         commandWhitelistCommandRegex = createCommandRegex(mainConfig.getSetStringList(MainConfigKeys.CommandWhitelist.COMMAND_WHITELIST, MainConfigDefaults.CommandWhitelist.COMMAND_WHITELIST));
 
         // per-arena messages
-        perArenaDeathMessagesEnabled = mainConfig.getSetBoolean(MainConfigKeys.PER_ARENA_DEATH_MESSAGES_ENABLED, MainConfigDefaults.PER_ARENA_DEATH_MESSAGES_ENABLED);
-        perArenaWinMessagesEnabled = mainConfig.getSetBoolean(MainConfigKeys.PER_ARENA_WIN_MESSAGES_ENABLED, MainConfigDefaults.PER_ARENA_WIN_MESSAGES_ENABLED);
+//        perArenaDeathMessagesEnabled = mainConfig.getSetBoolean(MainConfigKeys.PER_ARENA_DEATH_MESSAGES_ENABLED, MainConfigDefaults.PER_ARENA_DEATH_MESSAGES_ENABLED);
+//        perArenaWinMessagesEnabled = mainConfig.getSetBoolean(MainConfigKeys.PER_ARENA_WIN_MESSAGES_ENABLED, MainConfigDefaults.PER_ARENA_WIN_MESSAGES_ENABLED);
         // Remove deprecated values
         mainConfig.removeValues(MainConfigKeys.Deprecated.CHAT_PREFIX, MainConfigKeys.Deprecated.PREFIX_CHAT);
 
@@ -236,15 +236,15 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         saveArena(arena.getFile(), arena, String.format(Headers.ARENA, arena.getArenaName()));
     }
 
-    @Override
-    public boolean arePerArenaDeathMessagesEnabled() {
-        return perArenaDeathMessagesEnabled;
-    }
+//    @Override
+//    public boolean arePerArenaDeathMessagesEnabled() {
+//        return perArenaDeathMessagesEnabled;
+//    }
 
-    @Override
-    public boolean arePerArenaWinMessagesEnabled() {
-        return perArenaWinMessagesEnabled;
-    }
+//    @Override
+//    public boolean arePerArenaWinMessagesEnabled() {
+//        return perArenaWinMessagesEnabled;
+//    }
 
     @Override
     public boolean areEconomyRewardMessagesEnabled() {

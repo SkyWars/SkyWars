@@ -26,8 +26,8 @@ public class MainConfigKeys {
     public static final String DEBUG = "debug";
     public static final String SAVE_INVENTORY = "save-inventory";
     public static final String ARENA_DISTANCE_APART = "arena-distance-apart";
-    public static final String PER_ARENA_DEATH_MESSAGES_ENABLED = "per-arena-death-messages";
-    public static final String PER_ARENA_WIN_MESSAGES_ENABLED = "per-arena-win-messages-enabled";
+//    public static final String PER_ARENA_DEATH_MESSAGES_ENABLED = "enable-per-arena-death-messages";
+//    public static final String PER_ARENA_WIN_MESSAGES_ENABLED = "enable-per-arena-win-messages";
 
     public static class Points {
 
