@@ -69,7 +69,7 @@ public class TranslationsConfiguration implements SkyTranslations {
             config.set("auto-update", true);
         }
         boolean autoUpdate = config.getBoolean("auto-update");
-        boolean autoUpdating = autoUpdate && (version < TransKey.VERSION || !config.getString("messages-locale").equals(language));
+        boolean autoUpdating = autoUpdate && (version != TransKey.VERSION || !config.getString("messages-locale").equals(language));
         if (autoUpdating) {
             config.set("messages-version", TransKey.VERSION);
             config.set("messages-locale", language);
@@ -98,7 +98,7 @@ public class TranslationsConfiguration implements SkyTranslations {
         } catch (IOException ex) {
             plugin.getLogger().log(Level.WARNING, "Failed to save translations config file", ex);
         }
-        if (version < TransKey.VERSION && !autoUpdate) {
+        if ((version != TransKey.VERSION || !config.getString("messages-locale").equals(language)) && !autoUpdate) {
             FileConfiguration newConfig = new YamlConfiguration();
             newConfig.options().pathSeparator('%').header(String.format(NEW_HEADER, TransKey.VERSION));
             for (TransKey key : TransKey.values()) {
@@ -126,7 +126,7 @@ public class TranslationsConfiguration implements SkyTranslations {
     }
 
     private Map<TransKey, String> loadInternal() throws SkyConfigurationException {
-        locale = Locale.getDefault();
+        locale = new Locale(plugin.getConfiguration().getLocale());
         String file = "/messages-" + locale.getLanguage() + ".yml";
         URL path = getClass().getResource(file);
         if (path == null) {
@@ -173,7 +173,9 @@ public class TranslationsConfiguration implements SkyTranslations {
             + "you are free to copy from.\n"
             + "\n"
             + "The messages-version key is used to keep track of when updated messages are\n"
-            + "available, no matter what the setting of auto-update is.";
+            + "available, no matter what the setting of auto-update is. The messages-locale is\n"
+            + "also automatic, you should edit the locale in main-config.yml if you want to change\n"
+            + "it.";
     private final String NEW_HEADER = "### messages.new.yml ###\n"
             + "This file was generated because you have auto-update set to false in the\n"
             + "messages.yml file, and there are updated messages available.\n"

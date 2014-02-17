@@ -74,6 +74,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private int economyWinReward;
     @Getter
     private int economyKillReward;
+    @Getter
+    private String locale;
     private boolean economyRewardMessages;
 //    private boolean perArenaDeathMessagesEnabled;
 //    private boolean perArenaWinMessagesEnabled;
@@ -123,6 +125,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         if (enabledArenaNames.isEmpty()) {
             throw new SkyConfigurationException("No arenas enabled");
         }
+
+        locale = mainConfig.getSetString(MainConfigKeys.LOCALE, MainConfigDefaults.LOCALE);
 
         // Points
         enablePoints = mainConfig.getSetBoolean(MainConfigKeys.Points.ENABLE, MainConfigDefaults.Points.ENABLE);
