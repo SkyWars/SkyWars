@@ -33,11 +33,13 @@ public class KitQueueNotifier {
     private final SkyWars plugin;
 
     public void onQueueJoin(PlayerJoinQueueInfo info) {
-        SkyKits kits = plugin.getKits();
-        List<SkyKit> availableKits = kits.getAvailableKits(info.getPlayer());
-        if (!availableKits.isEmpty()) {
-            info.getPlayer().sendMessage(SkyTrans.get(TransKey.KITS_CHOOSE_A_KIT));
-            info.getPlayer().sendMessage(generateKitList(availableKits));
+        if (plugin.getInGame().getPlayer(info.getPlayer()).getSelectedKit() == null) {
+            SkyKits kits = plugin.getKits();
+            List<SkyKit> availableKits = kits.getAvailableKits(info.getPlayer());
+            if (!availableKits.isEmpty()) {
+                info.getPlayer().sendMessage(SkyTrans.get(TransKey.KITS_CHOOSE_A_KIT));
+                info.getPlayer().sendMessage(generateKitList(availableKits));
+            }
         }
     }
 

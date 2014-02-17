@@ -31,7 +31,6 @@ public class PlayerInfo implements SkyPlayer {
     private final String name;
     private int gameId;
     private SkyPlayerState state;
-    @NonNull
     private SkyKit selectedKit;
     private SkySavedInventory savedInventory;
 

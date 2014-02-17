@@ -40,9 +40,11 @@ public class KitApplyListener {
                 int cost = kit.getCost();
                 if (cost == 0) {
                     p.sendMessage(SkyTrans.get(TransKey.KITS_APPLIED_KIT, kit.getName()));
+                    kit.applyTo(p);
                 } else if (plugin.getEconomyHook().canAfford(p.getName(), cost)) {
                     p.sendMessage(SkyTrans.get(TransKey.CMD_KIT_CURRENT_KIT_WITH_COST, kit.getName(), kit.getCost()));
                     plugin.getEconomyHook().charge(p.getName(), cost);
+                    kit.applyTo(p);
                 } else {
                     p.sendMessage(SkyTrans.get(TransKey.KITS_NOT_ENOUGH_MONEY));
                 }

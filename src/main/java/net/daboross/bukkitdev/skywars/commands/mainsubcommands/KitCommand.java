@@ -56,6 +56,7 @@ public class KitCommand extends SubCommand {
             SkyKit kit = plugin.getKits().getKit(subCommandArgs[0]);
             if (kit == null) {
                 sender.sendMessage(SkyTrans.get(TransKey.CMD_KIT_UNKNOWN_KIT, subCommandArgs[0]));
+                return;
             }
             int cost = kit.getCost();
             if (cost == 0 || plugin.getEconomyHook().canAfford(p.getName(), cost)) {

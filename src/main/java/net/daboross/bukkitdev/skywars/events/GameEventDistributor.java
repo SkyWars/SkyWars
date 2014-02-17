@@ -58,6 +58,7 @@ public class GameEventDistributor {
             plugin.getWorldHandler().onGameStart(info);
             // -- After InventorySave --
             plugin.getInGame().onGameStart(info);
+            plugin.getKitApplyListener().onGameStart(info);
             // -- After WorldHandler --
             plugin.getResetHealth().onGameStart(info);
             // -- After All --

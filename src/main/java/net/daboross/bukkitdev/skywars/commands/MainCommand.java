@@ -26,6 +26,7 @@ import net.daboross.bukkitdev.skywars.commands.mainsubcommands.CancelCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.ConfigurationDebugCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.ForceStartCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.JoinCommand;
+import net.daboross.bukkitdev.skywars.commands.mainsubcommands.KitCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.LeaveCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.LobbyCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.RemoveLastPortalCommand;
@@ -59,6 +60,7 @@ public class MainCommand {
         base.addSubCommand(new CancelAllCommand(plugin));
         base.addSubCommand(new ConfigurationDebugCommand(plugin));
         base.addSubCommand(new ForceStartCommand(plugin));
+        base.addSubCommand(new KitCommand(plugin));
     }
 
     public void latchOnto(PluginCommand command) {

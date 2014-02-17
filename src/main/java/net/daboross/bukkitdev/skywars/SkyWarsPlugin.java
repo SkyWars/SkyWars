@@ -41,6 +41,7 @@ import net.daboross.bukkitdev.skywars.economy.SkyEconomyHook;
 import net.daboross.bukkitdev.skywars.events.GameEventDistributor;
 import net.daboross.bukkitdev.skywars.events.listeners.GameBroadcaster;
 import net.daboross.bukkitdev.skywars.events.listeners.InventorySave;
+import net.daboross.bukkitdev.skywars.events.listeners.KitApplyListener;
 import net.daboross.bukkitdev.skywars.events.listeners.KitQueueNotifier;
 import net.daboross.bukkitdev.skywars.events.listeners.ResetHealth;
 import net.daboross.bukkitdev.skywars.game.CurrentGames;
@@ -115,6 +116,8 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     @Getter
     private KitQueueNotifier kitQueueNotifier;
     @Getter
+    private KitApplyListener kitApplyListener;
+    @Getter
     private CurrentlyInGame inGame;
     private boolean enabledCorrectly = false;
 
@@ -169,6 +172,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         teamListener = new TeamScoreboardListener();
         kits = new SkyKitConfiguration(this);
         kitQueueNotifier = new KitQueueNotifier(this);
+        kitApplyListener = new KitApplyListener(this);
         inGame = new CurrentlyInGame();
         if (configuration.isEnablePoints()) {
             points = new PointStorage(this);
