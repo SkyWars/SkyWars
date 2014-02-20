@@ -1,13 +1,13 @@
 1.4.1
 -----
 
-SkyWars:
+### SkyWars:
 * Add a configuration option to disable the report command
 
 1.4.0
 -----
 
-SkyWars:
+### SkyWars:
 * Add support for hooking into vault.
  * Add optional rewards for winning a game and killing someone in a game
 * Add a `/sw forcestart` command to start a game with less than the maximum number of players
@@ -21,14 +21,14 @@ SkyWars:
 * Change spawn location of arena world from 0,0 to -5000,-5000
 * Copy contents from Dispensers as well as Chests
 
-SkyWars-API:
+### SkyWars-API:
 * Add events for joining and leaving the queue
 * Add SkyEconomyAbstraction vault api
 * Fix ArenaPlayerDeathEvent
 * Add SkyInGame state storage
 * Add Kit storage classes and kits api
 
-SkyWars-Translations:
+### SkyWars-Translations:
 * Add more untranslated strings to all message files
 * Add Czech translation (cz)
 * Add Spanish translation (es)
