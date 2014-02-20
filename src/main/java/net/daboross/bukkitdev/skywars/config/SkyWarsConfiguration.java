@@ -76,6 +76,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private int economyKillReward;
     @Getter
     private String locale;
+    @Getter
+    private boolean disableReport;
     private boolean economyRewardMessages;
 //    private boolean perArenaDeathMessagesEnabled;
 //    private boolean perArenaWinMessagesEnabled;
@@ -146,6 +148,9 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         commandWhitelistEnabled = mainConfig.getSetBoolean(MainConfigKeys.CommandWhitelist.WHITELIST_ENABLED, MainConfigDefaults.CommandWhitelist.WHITELIST_ENABLED);
         commandWhitelistABlacklist = mainConfig.getSetBoolean(MainConfigKeys.CommandWhitelist.IS_BLACKLIST, MainConfigDefaults.CommandWhitelist.IS_BLACKLIST);
         commandWhitelistCommandRegex = createCommandRegex(mainConfig.getSetStringList(MainConfigKeys.CommandWhitelist.COMMAND_WHITELIST, MainConfigDefaults.CommandWhitelist.COMMAND_WHITELIST));
+
+        // Report disable
+        disableReport = mainConfig.getConfig().getBoolean("disable-report", false);
 
         // per-arena messages
 //        perArenaDeathMessagesEnabled = mainConfig.getSetBoolean(MainConfigKeys.PER_ARENA_DEATH_MESSAGES_ENABLED, MainConfigDefaults.PER_ARENA_DEATH_MESSAGES_ENABLED);

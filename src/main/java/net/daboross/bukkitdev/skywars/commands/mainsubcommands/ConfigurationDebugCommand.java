@@ -40,9 +40,13 @@ public class ConfigurationDebugCommand extends SubCommand {
 
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        sender.sendMessage(SkyTrans.get(TransKey.CMD_REPORT_START));
-        String data = GistReport.generateReportText(plugin);
-        new GistReportRunnable(plugin, sender.getName(), data).runMe();
+        if (plugin.getConfiguration().isDisableReport()) {
+            sender.sendMessage(SkyTrans.get(TransKey.REPORT_DISABLED));
+        } else {
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_REPORT_START));
+            String data = GistReport.generateReportText(plugin);
+            new GistReportRunnable(plugin, sender.getName(), data).runMe();
+        }
     }
 
     @AllArgsConstructor
