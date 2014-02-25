@@ -36,5 +36,5 @@ See [submitting a ticket](https://github.com/SkyWars/SkyWars/wiki/Submitting-a-t
 * Full credit for the default map, Skyblock Warriors, goes to [SwipeShot](http://www.youtube.com/user/SwipeShot).
 
 ### Sponsors/other
-* This may be an almost empty section, but we would like to thank JetBrain's support of this project.
-![JetBrains](http://www.jetbrains.com/img/logos/logo_intellij_idea.png)
+* This may be an almost empty section, but we would like to thank JetBrains' support of this project.
+[![JetBrains](http://www.jetbrains.com/img/logos/logo_intellij_idea.png)](http://www.jetbrains.com/idea/)
