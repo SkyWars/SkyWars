@@ -18,16 +18,8 @@ package net.daboross.bukkitdev.skywars;
 
 public class StartupFailedException extends Exception {
 
-    public StartupFailedException() {
-        super();
-    }
-
     public StartupFailedException(String message) {
         super(message);
-    }
-
-    public StartupFailedException(Throwable cause) {
-        super(cause);
     }
 
     public StartupFailedException(String message, Throwable cause) {

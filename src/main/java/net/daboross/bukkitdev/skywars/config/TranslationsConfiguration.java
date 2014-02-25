@@ -38,7 +38,6 @@ public class TranslationsConfiguration implements SkyTranslations {
     private final SkyWars plugin;
     private final File configFile;
     private final File newConfigFile;
-    private Locale locale;
     private String language;
     private Map<TransKey, String> values;
 
@@ -52,7 +51,10 @@ public class TranslationsConfiguration implements SkyTranslations {
 
     private void load() throws SkyConfigurationException {
         try {
-            configFile.createNewFile();
+            boolean success = configFile.createNewFile();
+            if (!success) {
+                throw new SkyConfigurationException("Failed to create file " + configFile.getAbsolutePath());
+            }
         } catch (IOException ex) {
             throw new SkyConfigurationException("IOException creating new file " + configFile.getAbsolutePath(), ex);
         }
@@ -126,7 +128,7 @@ public class TranslationsConfiguration implements SkyTranslations {
     }
 
     private Map<TransKey, String> loadInternal() throws SkyConfigurationException {
-        locale = new Locale(plugin.getConfiguration().getLocale());
+        Locale locale = new Locale(plugin.getConfiguration().getLocale());
         String file = "/messages-" + locale.getLanguage() + ".yml";
         URL path = getClass().getResource(file);
         if (path == null) {

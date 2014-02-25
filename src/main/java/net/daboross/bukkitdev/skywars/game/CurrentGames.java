@@ -40,7 +40,7 @@ public class CurrentGames implements SkyCurrentGameTracker {
     @Override
     public int getGameID(String player) {
         Integer val = currentlyInGame.get(player.toLowerCase(Locale.ENGLISH));
-        return val == null ? -1 : val.intValue();
+        return (val == null) ? -1 : val;
     }
 
     public void onPlayerLeaveGame(PlayerLeaveGameInfo info) {

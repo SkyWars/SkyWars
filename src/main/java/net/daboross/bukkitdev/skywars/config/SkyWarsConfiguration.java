@@ -113,9 +113,10 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
         SkyStatic.setDebug(mainConfig.getSetBoolean(MainConfigKeys.DEBUG, MainConfigDefaults.DEBUG));
 
-        arenaOrder = ArenaOrder.getOrder(mainConfig.getSetString(MainConfigKeys.ARENA_ORDER, MainConfigDefaults.ARENA_ORDER.toString()));
+        String arenaOrderString = mainConfig.getSetString(MainConfigKeys.ARENA_ORDER, MainConfigDefaults.ARENA_ORDER.toString());
+        arenaOrder = ArenaOrder.getOrder(arenaOrderString);
         if (arenaOrder == null) {
-            throw new SkyConfigurationException("Invalid ArenaOrder '" + arenaOrder + "' found under " + MainConfigKeys.ARENA_ORDER + " in file " + mainConfigFile.getAbsolutePath() + ". Valid values: " + Arrays.toString(ArenaOrder.values()));
+            throw new SkyConfigurationException("Invalid ArenaOrder '" + arenaOrderString + "' found under " + MainConfigKeys.ARENA_ORDER + " in file " + mainConfigFile.getAbsolutePath() + ". Valid values: " + Arrays.toString(ArenaOrder.values()));
         }
 
         messagePrefix = ConfigColorCode.translateCodes(mainConfig.getSetString(MainConfigKeys.MESSAGE_PREFIX, MainConfigDefaults.MESSAGE_PREFIX));
