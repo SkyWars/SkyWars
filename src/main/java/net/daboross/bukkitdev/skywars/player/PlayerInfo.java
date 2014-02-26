@@ -16,15 +16,17 @@
  */
 package net.daboross.bukkitdev.skywars.player;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
+import lombok.ToString;
 import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayer;
 import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayerState;
 import net.daboross.bukkitdev.skywars.api.ingame.SkySavedInventory;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import org.bukkit.entity.Player;
 
-@Data
+@ToString
+@EqualsAndHashCode
 public class PlayerInfo implements SkyPlayer {
 
     private final Player player;
@@ -41,5 +43,45 @@ public class PlayerInfo implements SkyPlayer {
     private PlayerInfo(@NonNull final Player player, @NonNull final String name) {
         this.player = player;
         this.name = name.toLowerCase();
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(final int gameId) {
+        this.gameId = gameId;
+    }
+
+    public SkyPlayerState getState() {
+        return state;
+    }
+
+    public void setState(final SkyPlayerState state) {
+        this.state = state;
+    }
+
+    public SkyKit getSelectedKit() {
+        return selectedKit;
+    }
+
+    public void setSelectedKit(final SkyKit selectedKit) {
+        this.selectedKit = selectedKit;
+    }
+
+    public SkySavedInventory getSavedInventory() {
+        return savedInventory;
+    }
+
+    public void setSavedInventory(final SkySavedInventory savedInventory) {
+        this.savedInventory = savedInventory;
     }
 }

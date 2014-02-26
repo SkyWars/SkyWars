@@ -19,7 +19,6 @@ package net.daboross.bukkitdev.skywars.events.events;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.game.ArenaGame;
 import org.bukkit.Bukkit;
@@ -28,11 +27,8 @@ import org.bukkit.entity.Player;
 @EqualsAndHashCode
 public class GameEndInfo {
 
-    @Getter
     private final ArenaGame game;
-    @Getter
     private final List<Player> alivePlayers;
-    @Getter
     private final boolean broadcast;
 
     public GameEndInfo(@NonNull ArenaGame game, boolean broadcast) {
@@ -47,5 +43,17 @@ public class GameEndInfo {
             }
             alivePlayers.add(p);
         }
+    }
+
+    public ArenaGame getGame() {
+        return game;
+    }
+
+    public List<Player> getAlivePlayers() {
+        return alivePlayers;
+    }
+
+    public boolean isBroadcast() {
+        return broadcast;
     }
 }

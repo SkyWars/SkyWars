@@ -19,7 +19,6 @@ package net.daboross.bukkitdev.skywars.events.events;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import net.daboross.bukkitdev.skywars.game.ArenaGame;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -27,9 +26,7 @@ import org.bukkit.entity.Player;
 @EqualsAndHashCode
 public class GameStartInfo {
 
-    @Getter
     private final List<Player> players;
-    @Getter
     private final ArenaGame game;
 
     public GameStartInfo(ArenaGame game) {
@@ -46,5 +43,13 @@ public class GameStartInfo {
             }
             players.add(p);
         }
+    }
+
+    public ArenaGame getGame() {
+        return game;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
     }
 }

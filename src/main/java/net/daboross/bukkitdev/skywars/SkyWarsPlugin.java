@@ -19,7 +19,6 @@ package net.daboross.bukkitdev.skywars;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.logging.Level;
-import lombok.Getter;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
@@ -75,49 +74,27 @@ import org.mcstats.MetricsLite;
 
 public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
 
-    @Getter
     private SkyTranslations translations;
-    @Getter
     private SkyConfiguration configuration;
-    @Getter
     private SkyLocationStore locationStore;
-    @Getter
     private GameQueue gameQueue;
-    @Getter
     private CurrentGames currentGameTracker;
-    @Getter
     private SkyGameHandler gameHandler;
-    @Getter
-    private GameIDHandler iDHandler;
-    @Getter
+    private GameIDHandler idHandler;
     private SkyWorldHandler worldHandler;
-    @Getter
     private AttackerStorageListener attackerStorage;
-    @Getter
     private GameBroadcaster broadcaster;
-    @Getter
     private ResetHealth resetHealth;
-    @Getter
     private GameEventDistributor distributor;
-    @Getter
     private InventorySave inventorySave;
-    @Getter
     private PointStorage points;
-    @Getter
     private PointStorageChatListener chatListener;
-    @Getter
     private SkyEconomyHook economyHook;
-    @Getter
     private SkyEconomyGameRewards ecoRewards;
-    @Getter
     private TeamScoreboardListener teamListener;
-    @Getter
     private SkyKits kits;
-    @Getter
     private KitQueueNotifier kitQueueNotifier;
-    @Getter
     private KitApplyListener kitApplyListener;
-    @Getter
     private CurrentlyInGame inGame;
     private boolean enabledCorrectly = false;
 
@@ -159,7 +136,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         }
         SkyTrans.setInstance(translations);
         currentGameTracker = new CurrentGames();
-        iDHandler = new GameIDHandler();
+        idHandler = new GameIDHandler();
         broadcaster = new GameBroadcaster();
         worldHandler = new SkyWorldHandler(this);
         inventorySave = new InventorySave(this);
@@ -216,7 +193,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     public void onDisable() {
         if (enabledCorrectly) {
             locationStore.save();
-            iDHandler.saveAndUnload(this);
+            idHandler.saveAndUnload(this);
             if (points != null) {
                 try {
                     points.save();
@@ -260,7 +237,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
                 return;
             }
             metrics.start();
-        } catch (Throwable t) {
+        } catch (Throwable ignored) {
             // We just won't do metrics now
         }
     }
@@ -277,5 +254,101 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         translations = tempTrans;
         SkyTrans.setInstance(tempTrans);
         return true;
+    }
+
+    @Override
+    public SkyTranslations getTranslations() {
+        return translations;
+    }
+
+    @Override
+    public SkyConfiguration getConfiguration() {
+        return configuration;
+    }
+
+    @Override
+    public SkyLocationStore getLocationStore() {
+        return locationStore;
+    }
+
+    @Override
+    public GameQueue getGameQueue() {
+        return gameQueue;
+    }
+
+    @Override
+    public CurrentGames getCurrentGameTracker() {
+        return currentGameTracker;
+    }
+
+    @Override
+    public SkyGameHandler getGameHandler() {
+        return gameHandler;
+    }
+
+    @Override
+    public GameIDHandler getIDHandler() {
+        return idHandler;
+    }
+
+    @Override
+    public AttackerStorageListener getAttackerStorage() {
+        return attackerStorage;
+    }
+
+    @Override
+    public PointStorage getPoints() {
+        return points;
+    }
+
+    @Override
+    public SkyEconomyHook getEconomyHook() {
+        return economyHook;
+    }
+
+    @Override
+    public SkyKits getKits() {
+        return kits;
+    }
+
+    @Override
+    public CurrentlyInGame getInGame() {
+        return inGame;
+    }
+
+    public SkyWorldHandler getWorldHandler() {
+        return worldHandler;
+    }
+
+    public GameBroadcaster getBroadcaster() {
+        return broadcaster;
+    }
+
+    public ResetHealth getResetHealth() {
+        return resetHealth;
+    }
+
+    public GameEventDistributor getDistributor() {
+        return distributor;
+    }
+
+    public InventorySave getInventorySave() {
+        return inventorySave;
+    }
+
+    public SkyEconomyGameRewards getEcoRewards() {
+        return ecoRewards;
+    }
+
+    public TeamScoreboardListener getTeamListener() {
+        return teamListener;
+    }
+
+    public KitQueueNotifier getKitQueueNotifier() {
+        return kitQueueNotifier;
+    }
+
+    public KitApplyListener getKitApplyListener() {
+        return kitApplyListener;
     }
 }

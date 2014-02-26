@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -30,12 +29,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 @RequiredArgsConstructor
 public class SkyFileConfig {
 
-    @Getter
     private final File configFile;
-    @Getter
     @SuppressWarnings("NonConstantLogger")
     private final Logger logger;
-    @Getter
     private YamlConfiguration config;
 
     public void load() throws IOException, InvalidConfigurationException {
@@ -172,5 +168,13 @@ public class SkyFileConfig {
             logger.log(Level.INFO, "Removing deprecated value {0} in file {1}", new Object[]{path, configFile});
             config.set(path, null);
         }
+    }
+
+    public Logger getLogger() {
+        return logger;
+    }
+
+    public YamlConfiguration getConfig() {
+        return config;
     }
 }

@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import lombok.Getter;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
@@ -40,43 +39,24 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private final SkyArenaConfigLoader arenaLoader = new SkyArenaConfigLoader();
     private List<SkyArenaConfig> enabledArenas;
     private final SkyWars plugin;
-    @Getter
     private File arenaFolder;
-    @Getter
     private SkyArenaConfig parentArena;
-    @Getter
     private ArenaOrder arenaOrder;
-    @Getter
     private String messagePrefix;
-    @Getter
     private boolean inventorySaveEnabled;
-    @Getter
     private boolean enablePoints;
-    @Getter
     private int deathPointDiff;
-    @Getter
     private int winPointDiff;
-    @Getter
     private int killPointDiff;
-    @Getter
     private long pointsSaveInterval;
-    @Getter
     private int arenaDistanceApart;
-    @Getter
     private boolean commandWhitelistEnabled;
-    @Getter
     private boolean commandWhitelistABlacklist;
-    @Getter
     private Pattern commandWhitelistCommandRegex;
-    @Getter
     private boolean economyEnabled;
-    @Getter
     private int economyWinReward;
-    @Getter
     private int economyKillReward;
-    @Getter
     private String locale;
-    @Getter
     private boolean disableReport;
     private boolean economyRewardMessages;
 //    private boolean perArenaDeathMessagesEnabled;
@@ -223,11 +203,6 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         saveArena(file, arenaConfig, String.format(Headers.PARENT));
     }
 
-    @Override
-    public List<SkyArenaConfig> getEnabledArenas() {
-        return Collections.unmodifiableList(enabledArenas);
-    }
-
     public void saveArena(File file, SkyArenaConfig arenaConfig, String header) {
         YamlConfiguration newConfig = new YamlConfiguration();
         newConfig.options().header(header).indent(2);
@@ -257,8 +232,108 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 //    }
 
     @Override
+    public List<SkyArenaConfig> getEnabledArenas() {
+        return Collections.unmodifiableList(enabledArenas);
+    }
+
+    @Override
     public boolean areEconomyRewardMessagesEnabled() {
         return economyRewardMessages;
+    }
+
+    @Override
+    public File getArenaFolder() {
+        return arenaFolder;
+    }
+
+    @Override
+    public SkyArenaConfig getParentArena() {
+        return parentArena;
+    }
+
+    @Override
+    public ArenaOrder getArenaOrder() {
+        return arenaOrder;
+    }
+
+    @Override
+    public String getMessagePrefix() {
+        return messagePrefix;
+    }
+
+    @Override
+    public boolean isInventorySaveEnabled() {
+        return inventorySaveEnabled;
+    }
+
+    @Override
+    public boolean isEnablePoints() {
+        return enablePoints;
+    }
+
+    @Override
+    public int getDeathPointDiff() {
+        return deathPointDiff;
+    }
+
+    @Override
+    public int getWinPointDiff() {
+        return winPointDiff;
+    }
+
+    @Override
+    public int getKillPointDiff() {
+        return killPointDiff;
+    }
+
+    @Override
+    public long getPointsSaveInterval() {
+        return pointsSaveInterval;
+    }
+
+    @Override
+    public int getArenaDistanceApart() {
+        return arenaDistanceApart;
+    }
+
+    @Override
+    public boolean isCommandWhitelistEnabled() {
+        return commandWhitelistEnabled;
+    }
+
+    @Override
+    public boolean isCommandWhitelistABlacklist() {
+        return commandWhitelistABlacklist;
+    }
+
+    @Override
+    public Pattern getCommandWhitelistCommandRegex() {
+        return commandWhitelistCommandRegex;
+    }
+
+    @Override
+    public boolean isEconomyEnabled() {
+        return economyEnabled;
+    }
+
+    @Override
+    public int getEconomyWinReward() {
+        return economyWinReward;
+    }
+
+    @Override
+    public int getEconomyKillReward() {
+        return economyKillReward;
+    }
+
+    @Override
+    public String getLocale() {
+        return locale;
+    }
+
+    @Override
+    public boolean isDisableReport() {
+        return disableReport;
     }
 
     private static class Names {

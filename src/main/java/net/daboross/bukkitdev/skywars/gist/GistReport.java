@@ -74,13 +74,10 @@ public class GistReport {
         return build.toString();
     }
 
-    private static StringBuilder appendArena(StringBuilder builder, SkyArena arena) {
+    private static void appendArena(StringBuilder builder, SkyArena arena) {
         YamlConfiguration arenaYaml = new YamlConfiguration();
         arena.serialize(arenaYaml);
-        builder.append("\n```\n")
-                .append(arenaYaml.saveToString())
-                .append("\n```\n");
-        return builder;
+        builder.append("\n```\n").append(arenaYaml.saveToString()).append("\n```\n");
     }
 
     private static String getRawConfig(SkyWars plugin) {

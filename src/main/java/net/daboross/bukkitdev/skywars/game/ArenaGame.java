@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import lombok.Getter;
 import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
@@ -41,7 +40,6 @@ public class ArenaGame implements SkyGame {
     private final boolean teamsEnabled;
     private final Map<String, Integer> playerTeams;
     private final Map<Integer, List<String>> teamPlayers;
-    @Getter
     private final int numTeams;
 
     public ArenaGame(@NonNull SkyArena arena, int id, @NonNull String[] originalPlayers) {
@@ -161,5 +159,10 @@ public class ArenaGame implements SkyGame {
         }
         List<String> alive = teamPlayers.get(teamNumber);
         return alive == null ? null : Collections.unmodifiableList(alive);
+    }
+
+    @Override
+    public int getNumTeams() {
+        return numTeams;
     }
 }
