@@ -18,18 +18,7 @@ package net.daboross.bukkitdev.skywars.economy;
 
 public class EconomyFailedException extends Exception {
 
-    public EconomyFailedException() {
-    }
-
     public EconomyFailedException(String message) {
         super(message);
-    }
-
-    public EconomyFailedException(Throwable cause) {
-        super(cause);
-    }
-
-    public EconomyFailedException(String message, Throwable cause) {
-        super(message, cause);
     }
 }

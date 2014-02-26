@@ -171,7 +171,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
                 worldHandler.findAndLoadRequiredWorlds();
             }
         }.runTask(this);
-        new PermissionHandler("skywars").setupPermissions();
+        new PermissionHandler().setupPermissions();
         setupCommand();
         PluginManager pm = getServer().getPluginManager();
         registerListeners(pm, new SpawnListener(), attackerStorage,
@@ -201,6 +201,8 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
                     getLogger().log(Level.WARNING, "Failed to save points", ex);
                 }
             }
+            getLogger().log(Level.INFO, "Unloading arena world - without saving");
+            worldHandler.destroyArenaWorld();
             SkyStatic.setLogger(null);
             getLogger().log(Level.INFO, "SkyWars disabled successfully");
         }

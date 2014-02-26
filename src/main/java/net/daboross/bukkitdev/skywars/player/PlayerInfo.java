@@ -45,14 +45,17 @@ public class PlayerInfo implements SkyPlayer {
         this.name = name.toLowerCase();
     }
 
+    @Override
     public Player getPlayer() {
         return player;
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public int getGameId() {
         return gameId;
     }
@@ -61,6 +64,7 @@ public class PlayerInfo implements SkyPlayer {
         this.gameId = gameId;
     }
 
+    @Override
     public SkyPlayerState getState() {
         return state;
     }
@@ -69,18 +73,22 @@ public class PlayerInfo implements SkyPlayer {
         this.state = state;
     }
 
+    @Override
     public SkyKit getSelectedKit() {
         return selectedKit;
     }
 
+    @Override
     public void setSelectedKit(final SkyKit selectedKit) {
         this.selectedKit = selectedKit;
     }
 
+    @Override
     public SkySavedInventory getSavedInventory() {
         return savedInventory;
     }
 
+    @Override
     public void setSavedInventory(final SkySavedInventory savedInventory) {
         this.savedInventory = savedInventory;
     }

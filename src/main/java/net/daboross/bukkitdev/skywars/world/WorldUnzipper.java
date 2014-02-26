@@ -90,9 +90,4 @@ public class WorldUnzipper {
             throw new StartupFailedException("\nError unzipping world. Please delete " + Statics.BASE_WORLD_NAME + " and restart server.", ex);
         }
     }
-
-    public static enum WorldUnzipResult {
-
-        ERROR, CREATED, ALREADY_THERE
-    }
 }

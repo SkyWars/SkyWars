@@ -82,7 +82,7 @@ public class SetupData {
         return config;
     }
 
-    public static SkyBlockLocationRange calculateClearing(SkyBlockLocationRange origin) {
+    private static SkyBlockLocationRange calculateClearing(SkyBlockLocationRange origin) {
         SkyBlockLocation min = new SkyBlockLocation(-1, -20, -1, null);
         SkyBlockLocation max = new SkyBlockLocation(origin.max.x - origin.min.x + 1,
                 origin.max.y - origin.min.y + 1,
@@ -90,7 +90,7 @@ public class SetupData {
         return new SkyBlockLocationRange(min, max, null);
     }
 
-    public static SkyBlockLocationRange calculateBuilding(SkyBlockLocationRange clearing) {
+    private static SkyBlockLocationRange calculateBuilding(SkyBlockLocationRange clearing) {
         SkyBlockLocation min = clearing.min.add(-1, 0, -1);
         SkyBlockLocation max = clearing.max.add(1, 1, 1);
         return new SkyBlockLocationRange(min, max, null);

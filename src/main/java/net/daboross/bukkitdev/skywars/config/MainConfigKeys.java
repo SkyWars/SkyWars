@@ -17,7 +17,7 @@
  */
 package net.daboross.bukkitdev.skywars.config;
 
-public class MainConfigKeys {
+class MainConfigKeys {
 
     public static final String VERSION = "config-version";
     public static final String ENABLED_ARENAS = "enabled-arenas";

@@ -16,7 +16,6 @@
  */
 package net.daboross.bukkitdev.skywars.events.listeners;
 
-import lombok.RequiredArgsConstructor;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayer;
 import net.daboross.bukkitdev.skywars.api.ingame.SkySavedInventory;
@@ -27,10 +26,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-@RequiredArgsConstructor
 public class InventorySave {
 
     private final SkyWars plugin;
+
+    public InventorySave(final SkyWars plugin) {
+        this.plugin = plugin;
+    }
 
     public void onGameStart(GameStartInfo info) {
         boolean save = plugin.getConfiguration().isInventorySaveEnabled();

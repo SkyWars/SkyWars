@@ -16,7 +16,6 @@
  */
 package net.daboross.bukkitdev.skywars.listeners;
 
-import lombok.RequiredArgsConstructor;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
@@ -27,14 +26,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-@RequiredArgsConstructor
 public class BuildingLimiter implements Listener {
 
     private final SkyWars plugin;
 
+    public BuildingLimiter(final SkyWars plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onPlace(BlockPlaceEvent evt) {
-        if (!isValid(evt.getPlayer(), evt.getBlock())) {
+        if (shouldCancel(evt.getPlayer(), evt.getBlock())) {
             evt.setBuild(false);
             evt.setCancelled(true);
         }
@@ -42,17 +44,17 @@ public class BuildingLimiter implements Listener {
 
     @EventHandler
     public void onBreak(BlockBreakEvent evt) {
-        if (!isValid(evt.getPlayer(), evt.getBlock())) {
+        if (shouldCancel(evt.getPlayer(), evt.getBlock())) {
             evt.setCancelled(true);
         }
     }
 
-    private boolean isValid(Player p, Block block) {
+    private boolean shouldCancel(Player p, Block block) {
         SkyGame game = plugin.getIDHandler().getGame(plugin.getCurrentGameTracker().getGameID(p.getName()));
         if (game == null) {
-            return true;
+            return false;
         }
         SkyBlockLocationRange range = game.getBuildingBoundaries();
-        return range.isWithin(block);
+        return !range.isWithin(block);
     }
 }

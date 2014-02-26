@@ -18,17 +18,19 @@ package net.daboross.bukkitdev.skywars.listeners;
 
 import java.util.logging.Level;
 import java.util.regex.Pattern;
-import lombok.RequiredArgsConstructor;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
-@RequiredArgsConstructor
 public class CommandWhitelistListener implements Listener {
 
     private final SkyWarsPlugin plugin;
+
+    public CommandWhitelistListener(final SkyWarsPlugin plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent evt) {

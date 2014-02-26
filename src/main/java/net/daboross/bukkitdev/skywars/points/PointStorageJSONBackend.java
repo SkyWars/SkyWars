@@ -18,6 +18,7 @@ package net.daboross.bukkitdev.skywars.points;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -34,13 +35,13 @@ public class PointStorageJSONBackend extends PointStorageBackend {
     private final File saveFile;
     private final JSONObject scores;
 
-    public PointStorageJSONBackend(SkyWars plugin) throws IOException {
+    public PointStorageJSONBackend(SkyWars plugin) throws IOException, FileNotFoundException {
         super(plugin);
         this.saveFile = new File(plugin.getDataFolder(), "score.json");
         this.scores = load();
     }
 
-    private JSONObject load() throws IOException {
+    private JSONObject load() throws IOException, FileNotFoundException {
         if (!saveFile.exists()) {
             if (saveFile.createNewFile()) {
                 return new JSONObject();

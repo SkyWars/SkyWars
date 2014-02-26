@@ -28,12 +28,8 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Dispenser;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 
 public class WorldCopier {
-
-    public WorldCopier(Plugin unused) {
-    }
 
     public void copyArena(@NonNull SkyBlockLocation toMin, @NonNull SkyBlockLocationRange from) {
         copy(from.min, from.max, toMin);

@@ -19,17 +19,12 @@ package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
-import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 public class VersionCommand extends SubCommand {
-
-    public VersionCommand(SkyWars plugin) {
-        this();
-    }
 
     public VersionCommand() {
         super("version", true, "skywars.version", SkyTrans.get(TransKey.CMD_VERSION_DESCRIPTION));

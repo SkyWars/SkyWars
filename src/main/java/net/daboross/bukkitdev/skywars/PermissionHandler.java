@@ -23,13 +23,8 @@ import org.bukkit.plugin.PluginManager;
 
 public class PermissionHandler {
 
-    private final String permissionBase;
-    private final Permission basePermission;
-
-    public PermissionHandler(String permissionBase) {
-        this.permissionBase = permissionBase;
-        basePermission = this.getPermission(Bukkit.getPluginManager(), permissionBase + ".*");
-    }
+    private final String permissionBase = "skywars";
+    private final Permission basePermission = getPermission(Bukkit.getPluginManager(), permissionBase + ".*");
 
     public void setupPermissions() {
         PluginManager pm = Bukkit.getPluginManager();

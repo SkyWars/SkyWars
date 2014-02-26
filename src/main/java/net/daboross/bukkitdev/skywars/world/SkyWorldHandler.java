@@ -45,7 +45,7 @@ public class SkyWorldHandler {
 
     public SkyWorldHandler(@NonNull SkyWars plugin) {
         this.plugin = plugin;
-        this.copier = new WorldCopier(plugin);
+        this.copier = new WorldCopier();
     }
 
     public void findAndLoadRequiredWorlds() {
@@ -73,7 +73,7 @@ public class SkyWorldHandler {
         world.setSpawnLocation(-5000, 50, -5000);
     }
 
-    public void destroyWorlds() {
+    public void destroyArenaWorld() {
         World world = plugin.getServer().getWorld(Statics.ARENA_WORLD_NAME);
         Bukkit.unloadWorld(world, false);
     }

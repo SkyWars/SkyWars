@@ -94,7 +94,7 @@ public class TranslationsConfiguration implements SkyTranslations {
             config.set(entry.getKey().key, entry.getValue());
             entry.setValue(ChatColor.translateAlternateColorCodes('&', entry.getValue()));
         }
-        config.options().header(HEADER);
+        config.options().header(MESSAGES_FILE_HEADER);
         try {
             config.save(configFile);
         } catch (IOException ex) {
@@ -102,7 +102,7 @@ public class TranslationsConfiguration implements SkyTranslations {
         }
         if ((version != TransKey.VERSION || !config.getString("messages-locale").equals(language)) && !autoUpdate) {
             FileConfiguration newConfig = new YamlConfiguration();
-            newConfig.options().pathSeparator('%').header(String.format(NEW_HEADER, TransKey.VERSION));
+            newConfig.options().pathSeparator('%').header(String.format(NEW_MESSAGES_FILE_HEADER, TransKey.VERSION));
             for (TransKey key : TransKey.values()) {
                 newConfig.set(key.key, internal.get(key));
             }
@@ -165,7 +165,7 @@ public class TranslationsConfiguration implements SkyTranslations {
         return values.get(key);
     }
 
-    private final String HEADER = "### messages.yml ###\n"
+    private static final String MESSAGES_FILE_HEADER = "### messages.yml ###\n"
             + "Note! If you are editing this file, set auto-update to false. \n"
             + "If auto-update is left true, all changed values will be overwritten.\n"
             + "\n"
@@ -178,7 +178,7 @@ public class TranslationsConfiguration implements SkyTranslations {
             + "available, no matter what the setting of auto-update is. The messages-locale is\n"
             + "also automatic, you should edit the locale in main-config.yml if you want to change\n"
             + "it.";
-    private final String NEW_HEADER = "### messages.new.yml ###\n"
+    private static final String NEW_MESSAGES_FILE_HEADER = "### messages.new.yml ###\n"
             + "This file was generated because you have auto-update set to false in the\n"
             + "messages.yml file, and there are updated messages available.\n"
             + "\n"

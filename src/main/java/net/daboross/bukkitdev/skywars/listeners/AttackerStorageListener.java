@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import lombok.RequiredArgsConstructor;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.game.SkyAttackerStorage;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
@@ -46,12 +45,15 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-@RequiredArgsConstructor
 public class AttackerStorageListener implements Listener, SkyAttackerStorage {
 
-    private final SkyWarsPlugin plugin;
     private final Map<String, String> lastHit = new HashMap<>();
     private final Set<String> causedVoid = new HashSet<>();
+    private final SkyWarsPlugin plugin;
+
+    public AttackerStorageListener(final SkyWarsPlugin plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent evt) {

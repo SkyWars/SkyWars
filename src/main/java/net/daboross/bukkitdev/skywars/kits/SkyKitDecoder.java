@@ -58,7 +58,7 @@ public class SkyKitDecoder {
             List<SkyKitItem> result = new ArrayList<>(items.size());
             for (Object o : items) {
                 if (o instanceof Map) {
-                    result.add(decodeItemMap((Map<String, Object>) o));
+                    result.add(decodeItemMap((Map) o));
                 } else {
                     throw new SkyConfigurationException("Invalid thing in items list '" + o + "'.");
                 }

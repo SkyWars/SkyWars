@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Locale;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 
-public class MainConfigDefaults {
+class MainConfigDefaults {
 
     public static final int VERSION = 2;
     public static final String MESSAGE_PREFIX = "&8[&cSkyWars&8]&a ";

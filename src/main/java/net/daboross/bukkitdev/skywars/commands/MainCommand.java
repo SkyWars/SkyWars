@@ -55,7 +55,7 @@ public class MainCommand {
         base.addSubCommand(new RemoveLastPortalCommand(plugin));
         base.addSubCommand(new CancelCommand(plugin));
         base.addSubCommand(new StatusCommand(plugin));
-        base.addSubCommand(new VersionCommand(plugin));
+        base.addSubCommand(new VersionCommand());
         base.addSubCommand(new LobbyCommand(plugin));
         base.addSubCommand(new CancelAllCommand(plugin));
         base.addSubCommand(new ConfigurationDebugCommand(plugin));

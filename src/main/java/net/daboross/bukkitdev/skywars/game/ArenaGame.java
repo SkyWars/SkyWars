@@ -63,6 +63,8 @@ public class ArenaGame implements SkyGame {
                 }
                 String name = alivePlayers.get(i);
                 playerTeams.put(name, team);
+                // This won't produce an NPE, because team!=lastTeam at the start of this loop.
+                //noinspection ConstantConditions
                 currentTeamList.add(name);
             }
             numTeams = team + 1;

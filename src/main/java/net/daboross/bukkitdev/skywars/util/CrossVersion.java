@@ -39,26 +39,6 @@ public class CrossVersion {
         }
     }
 
-    public static double getHealth(@NonNull Damageable d) {
-        try {
-            return d.getHealth();
-        } catch (NoSuchMethodError ignored) {
-            Class<? extends Damageable> dClass = d.getClass();
-            try {
-                Method healthMethod = dClass.getMethod("getHealth");
-                Object obj = healthMethod.invoke(d);
-                if (obj instanceof Number) {
-                    return ((Number) obj).doubleValue();
-                } else {
-                    SkyStatic.getLogger().log(Level.WARNING, "LivingEntity.getHealth returned {0}, which is not a Number!", obj);
-                }
-            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                SkyStatic.getLogger().log(Level.WARNING, "Couldn't find / use .getHealth method of LivingEntity!", ex);
-            }
-            return 10;
-        }
-    }
-
     public static double getMaxHealth(@NonNull Damageable d) {
         try {
             return d.getMaxHealth();

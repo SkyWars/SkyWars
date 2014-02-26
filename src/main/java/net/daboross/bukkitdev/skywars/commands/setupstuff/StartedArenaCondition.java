@@ -16,7 +16,6 @@
  */
 package net.daboross.bukkitdev.skywars.commands.setupstuff;
 
-import lombok.AllArgsConstructor;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.CommandFilter;
 import net.daboross.bukkitdev.commandexecutorbase.CommandPreCondition;
@@ -24,11 +23,15 @@ import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-@AllArgsConstructor
 public class StartedArenaCondition implements CommandPreCondition, CommandFilter {
 
     private final SetupStates states;
     private final boolean started;
+
+    public StartedArenaCondition(final SetupStates states, final boolean started) {
+        this.states = states;
+        this.started = started;
+    }
 
     @Override
     public boolean canContinue(CommandSender sender, SubCommand subCommand) {

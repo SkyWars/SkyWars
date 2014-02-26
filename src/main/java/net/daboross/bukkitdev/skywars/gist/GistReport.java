@@ -114,7 +114,7 @@ public class GistReport {
      * @param gistText        Test for the gist
      * @return URL for the gist.
      */
-    public static String gistText(String gistDescription, String gistFileName, String gistText) {
+    private static String gistText(String gistDescription, String gistFileName, String gistText) {
         if (!checkGistURL()) {
             return null;
         }
@@ -164,7 +164,7 @@ public class GistReport {
      * @param url URL To shorten
      * @return Shortened URL
      */
-    public static String shortenURL(String url) {
+    private static String shortenURL(String url) {
         final Logger logger = SkyStatic.getLogger();
         URL requestUrl;
         String requestUrlString;
@@ -189,7 +189,7 @@ public class GistReport {
         }
     }
 
-    public static String readConnection(URLConnection connection) throws IOException {
+    private static String readConnection(URLConnection connection) throws IOException, UnsupportedEncodingException {
         try (InputStream inputStream = connection.getInputStream()) {
             try (Reader reader = new InputStreamReader(inputStream, "UTF-8")) {
                 StringBuilder result = new StringBuilder();

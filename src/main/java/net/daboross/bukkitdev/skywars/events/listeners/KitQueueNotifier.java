@@ -18,7 +18,6 @@ package net.daboross.bukkitdev.skywars.events.listeners;
 
 import java.util.List;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKits;
@@ -26,11 +25,13 @@ import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.events.events.PlayerJoinQueueInfo;
 
-@RequiredArgsConstructor
 public class KitQueueNotifier {
 
-    @NonNull
     private final SkyWars plugin;
+
+    public KitQueueNotifier(@NonNull final SkyWars plugin) {
+        this.plugin = plugin;
+    }
 
     public void onQueueJoin(PlayerJoinQueueInfo info) {
         if (plugin.getInGame().getPlayer(info.getPlayer()).getSelectedKit() == null) {
