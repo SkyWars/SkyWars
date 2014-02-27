@@ -40,9 +40,17 @@ import net.daboross.bukkitdev.skywars.events.events.PlayerRespawnAfterGameEndInf
 public class GameEventDistributor {
 
     private final SkyWarsPlugin plugin;
+    private final String errorFormat;
 
     public GameEventDistributor(@NonNull SkyWarsPlugin plugin) {
         this.plugin = plugin;
+        String version = SkyStatic.getImplementationVersion();
+        if (version.equals("git-unknown")) {
+            version = SkyStatic.getVersion();
+        } else {
+            version += " - " + SkyStatic.getVersion();
+        }
+        this.errorFormat = "Couldn't broadcast %s in " + SkyStatic.getPluginName() + " version " + version + ":";
     }
 
     @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
@@ -64,7 +72,7 @@ public class GameEventDistributor {
             // -- After All --
             plugin.getServer().getPluginManager().callEvent(new GameStartEvent(plugin, info.getGame(), info.getPlayers()));
         } catch (Throwable t) {
-            plugin.getLogger().log(Level.SEVERE, "Couldn't broadcast GameStart in " + SkyStatic.getPluginName() + " version " + SkyStatic.getImplementationVersion(), t);
+            plugin.getLogger().log(Level.SEVERE, String.format(errorFormat, "GameStart"), t);
         }
     }
 
@@ -87,7 +95,7 @@ public class GameEventDistributor {
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new GameEndEvent(plugin, info.getGame(), info.getAlivePlayers()));
         } catch (Throwable t) {
-            plugin.getLogger().log(Level.SEVERE, "Couldn't broadcast GameEnd in " + SkyStatic.getPluginName() + " version " + SkyStatic.getImplementationVersion(), t);
+            plugin.getLogger().log(Level.SEVERE, String.format(errorFormat, "GameEnd"), t);
         }
     }
 
@@ -102,7 +110,7 @@ public class GameEventDistributor {
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new LeaveGameEvent(plugin, info.getId(), info.getPlayer()));
         } catch (Throwable t) {
-            plugin.getLogger().log(Level.SEVERE, "Couldn't broadcast PlayerLeaveGame in " + SkyStatic.getPluginName() + " version " + SkyStatic.getImplementationVersion(), t);
+            plugin.getLogger().log(Level.SEVERE, String.format(errorFormat, "PlayerLeaveGame"), t);
         }
     }
 
@@ -116,7 +124,7 @@ public class GameEventDistributor {
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new RespawnAfterLeaveGameEvent(plugin, info.getPlayer()));
         } catch (Throwable t) {
-            plugin.getLogger().log(Level.SEVERE, "Couldn't broadcast PlayerRespawnAfterGameEnd in " + SkyStatic.getPluginName() + " version " + SkyStatic.getImplementationVersion(), t);
+            plugin.getLogger().log(Level.SEVERE, String.format(errorFormat, "PlayerRespawnAfterGameEnd"), t);
         }
     }
 
@@ -133,7 +141,7 @@ public class GameEventDistributor {
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new ArenaPlayerKillPlayerEvent(plugin, info.getGameId(), info.getKillerName(), info.getKilled()));
         } catch (Throwable t) {
-            plugin.getLogger().log(Level.SEVERE, "Couldn't broadcast PlayerKillPlayer in " + SkyStatic.getPluginName() + " version " + SkyStatic.getImplementationVersion(), t);
+            plugin.getLogger().log(Level.SEVERE, String.format(errorFormat, "PlayerKillPlayer"), t);
         }
     }
 
@@ -147,7 +155,7 @@ public class GameEventDistributor {
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new ArenaPlayerDeathEvent(plugin, info.getGameId(), info.getKilled()));
         } catch (Throwable t) {
-            plugin.getLogger().log(Level.SEVERE, "Couldn't broadcast PlayerDeathInArena in " + SkyStatic.getPluginName() + " version " + SkyStatic.getImplementationVersion(), t);
+            plugin.getLogger().log(Level.SEVERE, String.format(errorFormat, "PlayerDeathInArena"), t);
         }
     }
 
@@ -160,7 +168,7 @@ public class GameEventDistributor {
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new PlayerEnterQueueEvent(plugin, info.getPlayer()));
         } catch (Throwable t) {
-            plugin.getLogger().log(Level.SEVERE, "Couldn't broadcast PlayerJoinQueueEvent in " + SkyStatic.getPluginName() + " version " + SkyStatic.getImplementationVersion(), t);
+            plugin.getLogger().log(Level.SEVERE, String.format(errorFormat, "PlayerJoinQueue"), t);
         }
     }
 
@@ -172,7 +180,7 @@ public class GameEventDistributor {
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new PlayerLeaveQueueEvent(plugin, info.getPlayer()));
         } catch (Throwable t) {
-            plugin.getLogger().log(Level.SEVERE, "Couldn't broadcast PlayerLeaveQueueEvent in " + SkyStatic.getPluginName() + " version " + SkyStatic.getImplementationVersion(), t);
+            plugin.getLogger().log(Level.SEVERE, String.format(errorFormat, "PlayerLeaveQueue"), t);
         }
     }
 }
