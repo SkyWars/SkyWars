@@ -51,7 +51,7 @@ public class KitQueueNotifier {
             if (kit.getCost() == 0) {
                 kitString.append(kit.getName());
             } else {
-                kitString.append(SkyTrans.get(TransKey.KITS_KIT_LIST_COST_ITEM, kit.getName()));
+                kitString.append(SkyTrans.get(TransKey.KITS_KIT_LIST_COST_ITEM, kit.getName(), kit.getCost()));
             }
             kitString.append(comma);
         }
