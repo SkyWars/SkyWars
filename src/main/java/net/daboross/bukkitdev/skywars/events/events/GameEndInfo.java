@@ -37,9 +37,7 @@ public class GameEndInfo {
         alivePlayers = new ArrayList<>();
         for (String name : alive) {
             Player p = Bukkit.getPlayerExact(name);
-            if (p == null) {
-                throw new IllegalArgumentException();
-            }
+            Validate.isTrue(p != null, "Player %s not online", name);
             alivePlayers.add(p);
         }
     }

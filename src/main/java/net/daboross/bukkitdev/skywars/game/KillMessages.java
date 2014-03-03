@@ -43,7 +43,7 @@ public class KillMessages {
                     return String.format(arena.getMessages().getMessage(SkyMessageKeys.KILLED_DAMAGED), damager, player);
             }
         }
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException("Unknown reason");
     }
 
     public enum KillReason {

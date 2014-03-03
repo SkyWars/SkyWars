@@ -80,9 +80,7 @@ public class ArenaGame implements SkyGame {
 
     public void removePlayer(String playerName) {
         playerName = playerName.toLowerCase(Locale.ENGLISH);
-        if (!alivePlayers.remove(playerName)) {
-            throw new IllegalArgumentException("Player not alive in game.");
-        }
+        Validate.isTrue(alivePlayers.remove(playerName), "Player %s not alive in game", playerName);
         deadPlayers.add(playerName);
     }
 
@@ -132,9 +130,7 @@ public class ArenaGame implements SkyGame {
             throw new IllegalStateException("Teams aren't enabled");
         }
         Integer team = playerTeams.get(player.toLowerCase());
-        if (team == null) {
-            throw new IllegalArgumentException("Player not in game.");
-        }
+        Validate.isTrue(team != null, "Player %s not in game", player);
         return team;
     }
 

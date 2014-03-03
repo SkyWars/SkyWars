@@ -41,9 +41,7 @@ public class WorldCopier {
         Validate.notNull(arenaMin, "ArenaMin cannot be null");
         Validate.notNull(area, "Area cannot be null");
         World world = Bukkit.getWorld(arenaMin.world);
-        if (world == null) {
-            throw new IllegalArgumentException("No world applicable.");
-        }
+        Validate.isTrue(world != null, "World not found");
         SkyBlockLocation clearingMin = new SkyBlockLocation(arenaMin.x + area.min.x, arenaMin.y + area.min.y, arenaMin.z + area.min.z, null);
         SkyBlockLocation clearingMax = new SkyBlockLocation(arenaMin.x + area.max.x, arenaMin.y + area.max.y, arenaMin.z + area.max.z, null);
         destroyArena(clearingMin, clearingMax, world);
