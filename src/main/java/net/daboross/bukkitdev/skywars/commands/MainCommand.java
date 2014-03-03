@@ -16,7 +16,6 @@
  */
 package net.daboross.bukkitdev.skywars.commands;
 
-import lombok.NonNull;
 import net.daboross.bukkitdev.commandexecutorbase.CommandExecutorBase;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
@@ -41,7 +40,7 @@ public class MainCommand {
     private final SkyWars plugin;
     private final CommandExecutorBase base;
 
-    public MainCommand(@NonNull SkyWars plugin) {
+    public MainCommand(SkyWars plugin) {
         this.plugin = plugin;
         this.base = new CommandExecutorBase(null);
         this.initCommands();

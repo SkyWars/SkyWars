@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.game.SkyCurrentGameTracker;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
@@ -30,6 +29,7 @@ import net.daboross.bukkitdev.skywars.events.events.GameEndInfo;
 import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveGameInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerRespawnAfterGameEndInfo;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -38,7 +38,7 @@ public class GameHandler implements SkyGameHandler {
     private final Set<Integer> gamesCurrentlyEnding = new HashSet<>();
     private final SkyWarsPlugin plugin;
 
-    public GameHandler(@NonNull SkyWarsPlugin plugin) {
+    public GameHandler(SkyWarsPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -65,7 +65,8 @@ public class GameHandler implements SkyGameHandler {
     }
 
     @Override
-    public void removePlayerFromGame(@NonNull String playerName, boolean respawn, boolean broadcast) {
+    public void removePlayerFromGame(String playerName, boolean respawn, boolean broadcast) {
+        Validate.notNull(playerName, "Player name cannot be nuller");
         Player p = plugin.getServer().getPlayerExact(playerName);
         if (p == null) {
             throw new IllegalArgumentException("Player " + playerName + " isn't online");
@@ -74,7 +75,8 @@ public class GameHandler implements SkyGameHandler {
     }
 
     @Override
-    public void removePlayerFromGame(@NonNull Player player, boolean respawn, boolean broadcast) {
+    public void removePlayerFromGame(Player player, boolean respawn, boolean broadcast) {
+        Validate.notNull(player, "Player cannot be null");
         String playerName = player.getName().toLowerCase(Locale.ENGLISH);
         SkyCurrentGameTracker cg = plugin.getCurrentGameTracker();
         final int id = cg.getGameID(playerName);
@@ -125,16 +127,16 @@ public class GameHandler implements SkyGameHandler {
     }
 
     @Override
-    public void respawnPlayer(@NonNull String playerName) {
+    public void respawnPlayer(String playerName) {
+        Validate.notNull(playerName, "Player name cannot be null");
         Player p = plugin.getServer().getPlayerExact(playerName);
-        if (p == null) {
-            throw new IllegalArgumentException("Player " + playerName + " isn't online");
-        }
+        Validate.isTrue(p != null, "Player %s isn't online", playerName);
         this.respawnPlayer(p);
     }
 
     @Override
-    public void respawnPlayer(@NonNull Player p) {
+    public void respawnPlayer(Player p) {
+        Validate.notNull(p, "Player cannot be null");
         p.teleport(plugin.getLocationStore().getLobbyPosition().toLocation());
         plugin.getDistributor().distribute(new PlayerRespawnAfterGameEndInfo(p));
     }

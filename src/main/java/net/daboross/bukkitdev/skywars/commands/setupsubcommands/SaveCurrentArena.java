@@ -16,7 +16,6 @@
  */
 package net.daboross.bukkitdev.skywars.commands.setupsubcommands;
 
-import lombok.NonNull;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -25,6 +24,7 @@ import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.BoundariesSetCondition;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
+import org.apache.commons.lang.Validate;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -33,8 +33,9 @@ public class SaveCurrentArena extends SubCommand {
     private final SkyWars plugin;
     private final SetupStates states;
 
-    public SaveCurrentArena(@NonNull SkyWars plugin, @NonNull SetupStates states) {
+    public SaveCurrentArena(SkyWars plugin, SetupStates states) {
         super("save", false, null, SkyTrans.get(TransKey.SWS_SAVE_DESCRIPTION));
+        Validate.notNull(states, "SetupStates cannot be null");
         BoundariesSetCondition condition = new BoundariesSetCondition(states);
         addCommandFilter(condition);
         addCommandPreCondition(condition);

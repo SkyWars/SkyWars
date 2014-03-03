@@ -16,7 +16,6 @@
  */
 package net.daboross.bukkitdev.skywars.commands;
 
-import lombok.NonNull;
 import net.daboross.bukkitdev.commandexecutorbase.CommandExecutorBase;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
@@ -35,7 +34,7 @@ public class SetupCommand {
     private final CommandExecutorBase base;
     private final SetupStates states;
 
-    public SetupCommand(@NonNull SkyWars plugin) {
+    public SetupCommand(SkyWars plugin) {
         this.plugin = plugin;
         this.base = new CommandExecutorBase("skywars.setup");
         this.states = new SetupStates();

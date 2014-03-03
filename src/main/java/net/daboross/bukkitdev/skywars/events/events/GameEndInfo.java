@@ -19,8 +19,8 @@ package net.daboross.bukkitdev.skywars.events.events;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.game.ArenaGame;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -31,7 +31,8 @@ public class GameEndInfo {
     private final List<Player> alivePlayers;
     private final boolean broadcast;
 
-    public GameEndInfo(@NonNull ArenaGame game, boolean broadcast) {
+    public GameEndInfo(ArenaGame game, boolean broadcast) {
+        Validate.notNull(game, "Game cannot be null");
         this.game = game;
         this.broadcast = broadcast;
         List<String> alive = game.getAlivePlayers();

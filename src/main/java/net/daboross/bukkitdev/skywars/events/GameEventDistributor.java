@@ -17,7 +17,6 @@
 package net.daboross.bukkitdev.skywars.events;
 
 import java.util.logging.Level;
-import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.events.ArenaPlayerDeathEvent;
@@ -36,13 +35,14 @@ import net.daboross.bukkitdev.skywars.events.events.PlayerKillPlayerInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveGameInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveQueueInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerRespawnAfterGameEndInfo;
+import org.apache.commons.lang.Validate;
 
 public class GameEventDistributor {
 
     private final SkyWarsPlugin plugin;
     private final String errorFormat;
 
-    public GameEventDistributor(@NonNull SkyWarsPlugin plugin) {
+    public GameEventDistributor(SkyWarsPlugin plugin) {
         this.plugin = plugin;
         String version = SkyStatic.getImplementationVersion();
         if (version.equals("git-unknown")) {
@@ -54,7 +54,8 @@ public class GameEventDistributor {
     }
 
     @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
-    public void distribute(@NonNull GameStartInfo info) {
+    public void distribute(GameStartInfo info) {
+        Validate.notNull(info, "Info cannot be null");
         try {
             // -- Normal --
             plugin.getIDHandler().onGameStart(info);
@@ -77,7 +78,8 @@ public class GameEventDistributor {
     }
 
     @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
-    public void distribute(@NonNull GameEndInfo info) {
+    public void distribute(GameEndInfo info) {
+        Validate.notNull(info, "Info cannot be null");
         try {
             // -- Initial --
             plugin.getIDHandler().onGameEnd(info);
@@ -100,7 +102,8 @@ public class GameEventDistributor {
     }
 
     @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
-    public void distribute(@NonNull PlayerLeaveGameInfo info) {
+    public void distribute(PlayerLeaveGameInfo info) {
+        Validate.notNull(info, "Info cannot be null");
         try {
             // -- Normal --
             plugin.getInGame().onLeaveGame(info);
@@ -115,7 +118,8 @@ public class GameEventDistributor {
     }
 
     @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
-    public void distribute(@NonNull PlayerRespawnAfterGameEndInfo info) {
+    public void distribute(PlayerRespawnAfterGameEndInfo info) {
+        Validate.notNull(info, "Info cannot be null");
         try {
             // -- Normal --
             plugin.getResetHealth().onPlayerRespawn(info);
@@ -129,7 +133,8 @@ public class GameEventDistributor {
     }
 
     @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
-    public void distribute(@NonNull PlayerKillPlayerInfo info) {
+    public void distribute(PlayerKillPlayerInfo info) {
+        Validate.notNull(info, "Info cannot be null");
         try {
             // -- Normal --
             if (plugin.getPoints() != null) {
@@ -146,7 +151,8 @@ public class GameEventDistributor {
     }
 
     @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
-    public void distribute(@NonNull PlayerDeathInArenaInfo info) {
+    public void distribute(PlayerDeathInArenaInfo info) {
+        Validate.notNull(info, "Info cannot be null");
         try {
             // -- Normal --
             if (plugin.getPoints() != null) {
@@ -160,7 +166,8 @@ public class GameEventDistributor {
     }
 
     @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
-    public void distribute(@NonNull PlayerJoinQueueInfo info) {
+    public void distribute(PlayerJoinQueueInfo info) {
+        Validate.notNull(info, "Info cannot be null");
         try {
             // -- Normal --
             plugin.getInGame().onJoinQueue(info);
@@ -173,7 +180,8 @@ public class GameEventDistributor {
     }
 
     @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
-    public void distribute(@NonNull PlayerLeaveQueueInfo info) {
+    public void distribute(PlayerLeaveQueueInfo info) {
+        Validate.notNull(info, "Info cannot be null");
         try {
             // -- Normal --
             plugin.getInGame().onLeaveQueue(info);

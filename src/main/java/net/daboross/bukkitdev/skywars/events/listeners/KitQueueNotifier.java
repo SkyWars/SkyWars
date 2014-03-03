@@ -17,7 +17,6 @@
 package net.daboross.bukkitdev.skywars.events.listeners;
 
 import java.util.List;
-import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKits;
@@ -29,7 +28,7 @@ public class KitQueueNotifier {
 
     private final SkyWars plugin;
 
-    public KitQueueNotifier(@NonNull final SkyWars plugin) {
+    public KitQueueNotifier(final SkyWars plugin) {
         this.plugin = plugin;
     }
 

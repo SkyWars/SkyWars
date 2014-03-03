@@ -32,12 +32,12 @@ import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.json.JSONException;
@@ -55,7 +55,8 @@ public class GistReport {
      * @param plugin plugin
      * @return Raw report text
      */
-    public static String generateReportText(@NonNull SkyWars plugin) {
+    public static String generateReportText(SkyWars plugin) {
+        Validate.notNull(plugin, "Plugin cannot be null");
         SkyConfiguration configuration = plugin.getConfiguration();
         StringBuilder build = new StringBuilder();
         build.append("####Server information\n* Plugin Name: ").append(SkyStatic.getPluginName())

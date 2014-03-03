@@ -16,14 +16,25 @@
  */
 package net.daboross.bukkitdev.skywars.events.events;
 
-import lombok.Data;
-import lombok.NonNull;
+import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 
-@Data
 public class PlayerLeaveGameInfo {
 
     private final int id;
-    @NonNull
     private final Player player;
+
+    public PlayerLeaveGameInfo(final int id, final Player player) {
+        Validate.notNull(player, "Player cannot be null");
+        this.id = id;
+        this.player = player;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
 }

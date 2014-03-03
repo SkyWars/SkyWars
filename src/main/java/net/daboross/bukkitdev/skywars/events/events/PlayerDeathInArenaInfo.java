@@ -16,14 +16,29 @@
  */
 package net.daboross.bukkitdev.skywars.events.events;
 
-import lombok.Data;
-import lombok.NonNull;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 
-@Data
+@ToString
+@EqualsAndHashCode
 public class PlayerDeathInArenaInfo {
 
     private final int gameId;
-    @NonNull
     private final Player killed;
+
+    public PlayerDeathInArenaInfo(final int gameId, final Player killed) {
+        Validate.notNull(killed, "Killed cannot be null");
+        this.gameId = gameId;
+        this.killed = killed;
+    }
+
+    public int getGameId() {
+        return gameId;
+    }
+
+    public Player getKilled() {
+        return killed;
+    }
 }

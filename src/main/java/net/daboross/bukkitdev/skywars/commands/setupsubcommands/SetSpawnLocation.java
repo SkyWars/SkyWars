@@ -16,7 +16,6 @@
  */
 package net.daboross.bukkitdev.skywars.commands.setupsubcommands;
 
-import lombok.NonNull;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
@@ -24,6 +23,7 @@ import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.BoundariesSetCondition;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupData;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
+import org.apache.commons.lang.Validate;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -32,8 +32,9 @@ public class SetSpawnLocation extends SubCommand {
 
     private final SetupStates states;
 
-    public SetSpawnLocation(@NonNull SetupStates states) {
+    public SetSpawnLocation(SetupStates states) {
         super("addspawn", false, null, SkyTrans.get(TransKey.SWS_ADDSPAWN_DESCRIPTION));
+        Validate.notNull(states, "SetupStates cannot be null");
         BoundariesSetCondition condition = new BoundariesSetCondition(states);
         addCommandFilter(condition);
         addCommandPreCondition(condition);

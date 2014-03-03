@@ -16,7 +16,6 @@
  */
 package net.daboross.bukkitdev.skywars.commands.setupsubcommands;
 
-import lombok.NonNull;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
@@ -26,6 +25,7 @@ import net.daboross.bukkitdev.skywars.commands.setupstuff.NoSpawnSetCondition;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupData;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.StartedArenaCondition;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -35,8 +35,9 @@ public class SetPos2 extends SubCommand {
 
     private final SetupStates states;
 
-    public SetPos2(@NonNull SetupStates states) {
+    public SetPos2(SetupStates states) {
         super("setpos2", false, null, SkyTrans.get(TransKey.SWS_SETPOS2_DESCRIPTION));
+        Validate.notNull(states, "SetupStates cannot be null");
         StartedArenaCondition condition = new StartedArenaCondition(states, true);
         addCommandFilter(condition);
         addCommandPreCondition(condition);

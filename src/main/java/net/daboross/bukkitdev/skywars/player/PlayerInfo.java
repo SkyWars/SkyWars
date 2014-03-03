@@ -17,12 +17,12 @@
 package net.daboross.bukkitdev.skywars.player;
 
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
 import lombok.ToString;
 import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayer;
 import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayerState;
 import net.daboross.bukkitdev.skywars.api.ingame.SkySavedInventory;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
+import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 
 @ToString
@@ -36,13 +36,10 @@ public class PlayerInfo implements SkyPlayer {
     private SkyKit selectedKit;
     private SkySavedInventory savedInventory;
 
-    public PlayerInfo(@NonNull final Player player) {
-        this(player, player.getName().toLowerCase());
-    }
-
-    private PlayerInfo(@NonNull final Player player, @NonNull final String name) {
+    public PlayerInfo(final Player player) {
+        Validate.notNull(player, "Player cannot be null");
         this.player = player;
-        this.name = name.toLowerCase();
+        this.name = player.getName().toLowerCase();
     }
 
     @Override

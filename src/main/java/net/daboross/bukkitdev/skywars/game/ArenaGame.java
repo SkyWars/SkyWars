@@ -23,11 +23,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
+import org.apache.commons.lang.Validate;
 
 public class ArenaGame implements SkyGame {
 
@@ -42,7 +42,9 @@ public class ArenaGame implements SkyGame {
     private final Map<Integer, List<String>> teamPlayers;
     private final int numTeams;
 
-    public ArenaGame(@NonNull SkyArena arena, int id, @NonNull String[] originalPlayers) {
+    public ArenaGame(SkyArena arena, int id, String[] originalPlayers) {
+        Validate.notNull(arena, "Arena cannot be null");
+        Validate.noNullElements(originalPlayers, "No players can be null");
         this.arena = arena;
         this.id = id;
         this.alivePlayers = new ArrayList<>(Arrays.asList(originalPlayers));
