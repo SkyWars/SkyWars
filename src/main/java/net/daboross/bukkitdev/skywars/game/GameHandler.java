@@ -50,9 +50,7 @@ public class GameHandler implements SkyGameHandler {
     @Override
     public void endGame(int id, boolean broadcast) {
         SkyIDHandler idHandler = plugin.getIDHandler();
-        if (!idHandler.gameRunning(id)) {
-            throw new IllegalArgumentException("Invalid id " + id);
-        }
+        Validate.isTrue(idHandler.gameRunning(id), "Invalid id %s", id);
         ArenaGame game = plugin.getIDHandler().getGame(id);
         GameEndInfo gameEndInfo = new GameEndInfo(game, broadcast);
         for (Player player : gameEndInfo.getAlivePlayers()) {

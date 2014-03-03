@@ -99,6 +99,7 @@ public class PlayerInfo implements SkyPlayer {
     }
 
     @Override
+    @SuppressWarnings("RedundantIfStatement")
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (!(o instanceof PlayerInfo)) return false;

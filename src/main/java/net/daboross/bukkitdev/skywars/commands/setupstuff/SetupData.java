@@ -152,6 +152,7 @@ public class SetupData {
     }
 
     @Override
+    @SuppressWarnings("RedundantIfStatement")
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (!(o instanceof SetupData)) return false;
