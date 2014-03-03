@@ -56,10 +56,6 @@
 
     <repositories>
         <repository>
-            <id>bukkit-repo</id>
-            <url>http://repo.bukkit.org/content/groups/public</url>
-        </repository>
-        <repository>
             <id>repo-daboross-net</id>
             <url>http://repo.daboross.net/</url>
         </repository>
