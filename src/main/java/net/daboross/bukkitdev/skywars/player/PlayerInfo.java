@@ -17,7 +17,6 @@
 package net.daboross.bukkitdev.skywars.player;
 
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayer;
 import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayerState;
 import net.daboross.bukkitdev.skywars.api.ingame.SkySavedInventory;
@@ -25,7 +24,6 @@ import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 
-@ToString
 @EqualsAndHashCode
 public class PlayerInfo implements SkyPlayer {
 
@@ -88,5 +86,17 @@ public class PlayerInfo implements SkyPlayer {
     @Override
     public void setSavedInventory(final SkySavedInventory savedInventory) {
         this.savedInventory = savedInventory;
+    }
+
+    @Override
+    public String toString() {
+        return "PlayerInfo{" +
+                "player=" + player +
+                ", name='" + name + '\'' +
+                ", gameId=" + gameId +
+                ", state=" + state +
+                ", selectedKit=" + selectedKit +
+                ", savedInventory=" + savedInventory +
+                '}';
     }
 }

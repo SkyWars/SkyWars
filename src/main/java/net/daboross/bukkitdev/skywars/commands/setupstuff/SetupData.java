@@ -19,16 +19,12 @@ package net.daboross.bukkitdev.skywars.commands.setupstuff;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyBoundaries;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
 import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
 
-@ToString
-@EqualsAndHashCode
 public class SetupData {
 
     private String arenaName;
@@ -140,5 +136,48 @@ public class SetupData {
 
     public void setOriginMax(final SkyBlockLocation originMax) {
         this.originMax = originMax;
+    }
+
+    @Override
+    public String toString() {
+        return "SetupData{" +
+                "arenaName='" + arenaName + '\'' +
+                ", saveFile=" + saveFile +
+                ", originPos1=" + originPos1 +
+                ", originPos2=" + originPos2 +
+                ", originMin=" + originMin +
+                ", originMax=" + originMax +
+                ", spawns=" + spawns +
+                '}';
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SetupData)) return false;
+
+        SetupData data = (SetupData) o;
+
+        if (arenaName != null ? !arenaName.equals(data.arenaName) : data.arenaName != null) return false;
+        if (originMax != null ? !originMax.equals(data.originMax) : data.originMax != null) return false;
+        if (originMin != null ? !originMin.equals(data.originMin) : data.originMin != null) return false;
+        if (originPos1 != null ? !originPos1.equals(data.originPos1) : data.originPos1 != null) return false;
+        if (originPos2 != null ? !originPos2.equals(data.originPos2) : data.originPos2 != null) return false;
+        if (saveFile != null ? !saveFile.equals(data.saveFile) : data.saveFile != null) return false;
+        if (!spawns.equals(data.spawns)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = arenaName != null ? arenaName.hashCode() : 0;
+        result = 31 * result + (saveFile != null ? saveFile.hashCode() : 0);
+        result = 31 * result + (originPos1 != null ? originPos1.hashCode() : 0);
+        result = 31 * result + (originPos2 != null ? originPos2.hashCode() : 0);
+        result = 31 * result + (originMin != null ? originMin.hashCode() : 0);
+        result = 31 * result + (originMax != null ? originMax.hashCode() : 0);
+        result = 31 * result + spawns.hashCode();
+        return result;
     }
 }

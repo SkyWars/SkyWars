@@ -179,7 +179,7 @@ public class SkyKitDecoder {
         Object enchantmentO = map.get("enchantments");
         if (enchantmentO != null) {
             if (enchantmentO instanceof Map) {
-                Map<String, Object> enchantmentMap = (Map<String, Object>) enchantmentO;
+                Map<String, Object> enchantmentMap = (Map) enchantmentO;
                 enchantments = new HashMap<>(enchantmentMap.size());
                 for (String key : enchantmentMap.keySet()) {
                     Object val = enchantmentMap.get(key);

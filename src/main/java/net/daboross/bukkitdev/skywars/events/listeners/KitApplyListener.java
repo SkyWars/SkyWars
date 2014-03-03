@@ -43,8 +43,12 @@ public class KitApplyListener {
                     kit.applyTo(p);
                 } else if (plugin.getEconomyHook().canAfford(p.getName(), cost)) {
                     p.sendMessage(SkyTrans.get(TransKey.CMD_KIT_CURRENT_KIT_WITH_COST, kit.getName(), kit.getCost()));
-                    plugin.getEconomyHook().charge(p.getName(), cost);
-                    kit.applyTo(p);
+                    if (plugin.getEconomyHook().charge(p.getName(), cost)) {
+                        kit.applyTo(p);
+                    } else {
+                        skyPlayer.setSelectedKit(null);
+                        p.sendMessage(SkyTrans.get(TransKey.KITS_NOT_ENOUGH_MONEY, kit.getName()));
+                    }
                 } else {
                     skyPlayer.setSelectedKit(null);
                     p.sendMessage(SkyTrans.get(TransKey.KITS_NOT_ENOUGH_MONEY, kit.getName()));

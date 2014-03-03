@@ -17,11 +17,9 @@
 package net.daboross.bukkitdev.skywars.events.events;
 
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 
-@ToString
 @EqualsAndHashCode
 public class PlayerJoinQueueInfo {
 
@@ -34,5 +32,12 @@ public class PlayerJoinQueueInfo {
 
     public Player getPlayer() {
         return player;
+    }
+
+    @Override
+    public String toString() {
+        return "PlayerJoinQueueInfo{" +
+                "player=" + player +
+                '}';
     }
 }

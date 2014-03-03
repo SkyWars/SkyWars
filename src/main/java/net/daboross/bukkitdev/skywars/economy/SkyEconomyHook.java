@@ -94,6 +94,6 @@ public class SkyEconomyHook implements SkyEconomyAbstraction {
 
     @Override
     public double getAmount(String player) {
-        return 0;
+        return economy.getBalance(player);
     }
 }

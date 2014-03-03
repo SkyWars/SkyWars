@@ -17,11 +17,9 @@
 package net.daboross.bukkitdev.skywars.events.events;
 
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 
-@ToString
 @EqualsAndHashCode
 public class PlayerDeathInArenaInfo {
 
@@ -40,5 +38,13 @@ public class PlayerDeathInArenaInfo {
 
     public Player getKilled() {
         return killed;
+    }
+
+    @Override
+    public String toString() {
+        return "PlayerDeathInArenaInfo{" +
+                "gameId=" + gameId +
+                ", killed=" + killed +
+                '}';
     }
 }
