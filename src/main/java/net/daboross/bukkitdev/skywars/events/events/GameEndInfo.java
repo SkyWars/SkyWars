@@ -18,13 +18,11 @@ package net.daboross.bukkitdev.skywars.events.events;
 
 import java.util.ArrayList;
 import java.util.List;
-import lombok.EqualsAndHashCode;
 import net.daboross.bukkitdev.skywars.game.ArenaGame;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-@EqualsAndHashCode
 public class GameEndInfo {
 
     private final ArenaGame game;

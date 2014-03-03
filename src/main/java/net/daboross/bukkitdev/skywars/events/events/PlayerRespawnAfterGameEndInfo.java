@@ -16,11 +16,9 @@
  */
 package net.daboross.bukkitdev.skywars.events.events;
 
-import lombok.EqualsAndHashCode;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 
-@EqualsAndHashCode
 public class PlayerRespawnAfterGameEndInfo {
 
     private final Player player;

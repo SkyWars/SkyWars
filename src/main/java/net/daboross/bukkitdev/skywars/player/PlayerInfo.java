@@ -16,7 +16,6 @@
  */
 package net.daboross.bukkitdev.skywars.player;
 
-import lombok.EqualsAndHashCode;
 import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayer;
 import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayerState;
 import net.daboross.bukkitdev.skywars.api.ingame.SkySavedInventory;
@@ -24,7 +23,6 @@ import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 
-@EqualsAndHashCode
 public class PlayerInfo implements SkyPlayer {
 
     private final Player player;
@@ -98,5 +96,34 @@ public class PlayerInfo implements SkyPlayer {
                 ", selectedKit=" + selectedKit +
                 ", savedInventory=" + savedInventory +
                 '}';
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PlayerInfo)) return false;
+
+        PlayerInfo info = (PlayerInfo) o;
+
+        if (gameId != info.gameId) return false;
+        if (!name.equals(info.name)) return false;
+        if (!player.equals(info.player)) return false;
+        if (savedInventory != null ? !savedInventory.equals(info.savedInventory) : info.savedInventory != null)
+            return false;
+        if (selectedKit != null ? !selectedKit.equals(info.selectedKit) : info.selectedKit != null) return false;
+        if (state != info.state) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = player.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + gameId;
+        result = 31 * result + (state != null ? state.hashCode() : 0);
+        result = 31 * result + (selectedKit != null ? selectedKit.hashCode() : 0);
+        result = 31 * result + (savedInventory != null ? savedInventory.hashCode() : 0);
+        return result;
     }
 }
