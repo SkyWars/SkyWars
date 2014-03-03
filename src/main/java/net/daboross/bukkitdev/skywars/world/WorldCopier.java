@@ -17,9 +17,9 @@
 package net.daboross.bukkitdev.skywars.world;
 
 import java.util.Arrays;
-import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -31,11 +31,15 @@ import org.bukkit.inventory.ItemStack;
 
 public class WorldCopier {
 
-    public void copyArena(@NonNull SkyBlockLocation toMin, @NonNull SkyBlockLocationRange from) {
+    public void copyArena(SkyBlockLocation toMin, SkyBlockLocationRange from) {
+        Validate.notNull(toMin, "ToMin cannot be null");
+        Validate.notNull(from, "From cannot be null");
         copy(from.min, from.max, toMin);
     }
 
-    public void destroyArena(@NonNull SkyBlockLocation arenaMin, @NonNull SkyBlockLocationRange area) {
+    public void destroyArena(SkyBlockLocation arenaMin, SkyBlockLocationRange area) {
+        Validate.notNull(arenaMin, "ArenaMin cannot be null");
+        Validate.notNull(area, "Area cannot be null");
         World world = Bukkit.getWorld(arenaMin.world);
         if (world == null) {
             throw new IllegalArgumentException("No world applicable.");
@@ -45,7 +49,10 @@ public class WorldCopier {
         destroyArena(clearingMin, clearingMax, world);
     }
 
-    public void destroyArena(@NonNull SkyBlockLocation min, @NonNull SkyBlockLocation max, @NonNull World world) {
+    public void destroyArena(SkyBlockLocation min, SkyBlockLocation max, World world) {
+        Validate.notNull(min, "Min cannot be null");
+        Validate.notNull(max, "Max cannot be null");
+        Validate.notNull(world, "World cannot be null");
         for (int x = min.x; x <= max.x; x++) {
             for (int y = min.y; y <= max.y; y++) {
                 for (int z = min.z; z <= max.z; z++) {
@@ -55,18 +62,15 @@ public class WorldCopier {
         }
     }
 
-    public void copy(@NonNull SkyBlockLocation fromMin, @NonNull SkyBlockLocation fromMax, @NonNull SkyBlockLocation toMin) {
-        if (!fromMin.world.equals(fromMax.world)) {
-            throw new IllegalArgumentException("From min and from max are not in same world");
-        }
+    public void copy(SkyBlockLocation fromMin, SkyBlockLocation fromMax, SkyBlockLocation toMin) {
+        Validate.notNull(fromMin, "FromMin cannot be null");
+        Validate.notNull(fromMax, "FromMax cannot be null");
+        Validate.notNull(toMin, "ToMin cannot be null");
+        Validate.isTrue(fromMin.world.equals(fromMax.world), "From min and from max must be in the same world");
         World fromWorld = Bukkit.getWorld(fromMin.world);
-        if (fromWorld == null) {
-            throw new IllegalArgumentException("From world doesn't exist");
-        }
         World toWorld = Bukkit.getWorld(toMin.world);
-        if (toWorld == null) {
-            throw new IllegalArgumentException("To world doesn't exist");
-        }
+        Validate.notNull(fromWorld, "From world doesn't exist");
+        Validate.notNull(toWorld, "To world doesn't exist");
         int xLength = fromMax.x - fromMin.x;
         int yLength = fromMax.y - fromMin.y;
         int zLength = fromMax.z - fromMin.z;

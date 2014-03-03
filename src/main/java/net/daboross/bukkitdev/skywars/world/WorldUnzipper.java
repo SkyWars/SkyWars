@@ -24,12 +24,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.StartupFailedException;
+import org.apache.commons.lang.Validate;
 
 public class WorldUnzipper {
 
-    public void doWorldUnzip(@NonNull Logger logger) throws StartupFailedException {
+    public void doWorldUnzip(Logger logger) throws StartupFailedException {
+        Validate.notNull(logger, "Logger cannot be null");
         File output = new File(Statics.BASE_WORLD_NAME);
         if (output.exists()) {
             return;

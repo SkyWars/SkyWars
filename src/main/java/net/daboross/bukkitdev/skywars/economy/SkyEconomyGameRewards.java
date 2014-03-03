@@ -17,7 +17,6 @@
 package net.daboross.bukkitdev.skywars.economy;
 
 import java.util.List;
-import lombok.AllArgsConstructor;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.economy.SkyEconomyAbstraction;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
@@ -27,10 +26,13 @@ import net.daboross.bukkitdev.skywars.events.events.PlayerKillPlayerInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-@AllArgsConstructor
 public class SkyEconomyGameRewards {
 
     private final SkyWars plugin;
+
+    public SkyEconomyGameRewards(final SkyWars plugin) {
+        this.plugin = plugin;
+    }
 
     public void onPlayerKillPlayer(PlayerKillPlayerInfo info) {
         int reward = plugin.getConfiguration().getEconomyKillReward();

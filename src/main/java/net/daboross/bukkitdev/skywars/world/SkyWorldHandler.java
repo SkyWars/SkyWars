@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
-import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
@@ -43,7 +42,7 @@ public class SkyWorldHandler {
     private final SkyWars plugin;
     private final WorldCopier copier;
 
-    public SkyWorldHandler(@NonNull SkyWars plugin) {
+    public SkyWorldHandler(SkyWars plugin) {
         this.plugin = plugin;
         this.copier = new WorldCopier();
     }

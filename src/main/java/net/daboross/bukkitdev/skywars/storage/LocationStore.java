@@ -21,12 +21,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
 import net.daboross.bukkitdev.skywars.api.location.SkyLocationStore;
 import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
 import net.daboross.bukkitdev.skywars.world.Statics;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -110,7 +110,8 @@ public class LocationStore implements Listener, SkyLocationStore {
     }
 
     @Override
-    public void setLobbyPosition(@NonNull SkyPlayerLocation lobbyPosition) {
+    public void setLobbyPosition(SkyPlayerLocation lobbyPosition) {
+        Validate.notNull(lobbyPosition, "Lobby position cannot be null");
         this.lobbyPosition = lobbyPosition;
     }
 

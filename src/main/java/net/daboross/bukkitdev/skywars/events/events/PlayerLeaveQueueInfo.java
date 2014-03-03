@@ -16,13 +16,23 @@
  */
 package net.daboross.bukkitdev.skywars.events.events;
 
-import lombok.Data;
-import lombok.NonNull;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 
-@Data
+@ToString
+@EqualsAndHashCode
 public class PlayerLeaveQueueInfo {
 
-    @NonNull
     private final Player player;
+
+    public PlayerLeaveQueueInfo(final Player player) {
+        Validate.notNull(player, "Player cannot be null");
+        this.player = player;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
 }

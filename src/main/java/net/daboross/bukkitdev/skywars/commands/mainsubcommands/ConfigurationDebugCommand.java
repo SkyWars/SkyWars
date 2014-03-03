@@ -16,7 +16,6 @@
  */
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
-import lombok.AllArgsConstructor;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -49,12 +48,17 @@ public class ConfigurationDebugCommand extends SubCommand {
         }
     }
 
-    @AllArgsConstructor
     private static class GistReportRunnable implements Runnable {
 
         private final Plugin plugin;
         private final String playerName;
         private final String report;
+
+        private GistReportRunnable(final Plugin plugin, final String name, final String report) {
+            this.plugin = plugin;
+            playerName = name;
+            this.report = report;
+        }
 
         public void runMe() {
             plugin.getServer().getScheduler().runTaskAsynchronously(plugin, this);

@@ -19,14 +19,16 @@ package net.daboross.bukkitdev.skywars.commands.setupstuff;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyBoundaries;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
 import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
 
-@Data
+@ToString
+@EqualsAndHashCode
 public class SetupData {
 
     private String arenaName;
@@ -94,5 +96,49 @@ public class SetupData {
         SkyBlockLocation min = clearing.min.add(-1, 0, -1);
         SkyBlockLocation max = clearing.max.add(1, 1, 1);
         return new SkyBlockLocationRange(min, max, null);
+    }
+
+    public String getArenaName() {
+        return arenaName;
+    }
+
+    public File getSaveFile() {
+        return saveFile;
+    }
+
+    public SkyBlockLocation getOriginPos1() {
+        return originPos1;
+    }
+
+    public SkyBlockLocation getOriginPos2() {
+        return originPos2;
+    }
+
+    public SkyBlockLocation getOriginMin() {
+        return originMin;
+    }
+
+    public SkyBlockLocation getOriginMax() {
+        return originMax;
+    }
+
+    public List<SkyPlayerLocation> getSpawns() {
+        return spawns;
+    }
+
+    public void setArenaName(final String arenaName) {
+        this.arenaName = arenaName;
+    }
+
+    public void setSaveFile(final File saveFile) {
+        this.saveFile = saveFile;
+    }
+
+    public void setOriginMin(final SkyBlockLocation originMin) {
+        this.originMin = originMin;
+    }
+
+    public void setOriginMax(final SkyBlockLocation originMax) {
+        this.originMax = originMax;
     }
 }

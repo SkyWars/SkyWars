@@ -19,13 +19,14 @@ package net.daboross.bukkitdev.skywars.util;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
-import lombok.NonNull;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
+import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Damageable;
 
 public class CrossVersion {
 
-    public static void setHealth(@NonNull Damageable d, double health) {
+    public static void setHealth(Damageable d, double health) {
+        Validate.notNull(d, "Damageable cannot be null");
         try {
             d.setHealth(health);
         } catch (NoSuchMethodError ignored) {
@@ -39,7 +40,8 @@ public class CrossVersion {
         }
     }
 
-    public static double getMaxHealth(@NonNull Damageable d) {
+    public static double getMaxHealth(Damageable d) {
+        Validate.notNull(d, "Damageable cannot be null");
         try {
             return d.getMaxHealth();
         } catch (NoSuchMethodError ignored) {
