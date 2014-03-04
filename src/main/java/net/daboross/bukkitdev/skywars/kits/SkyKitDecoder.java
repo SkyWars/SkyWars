@@ -58,14 +58,14 @@ public class SkyKitDecoder {
             List<SkyKitItem> result = new ArrayList<>(items.size());
             for (Object o : items) {
                 if (o instanceof Map) {
-                    result.add(decodeItemMap((Map) o));
+                    result.add(decodeItemMap((Map<String, Object>) o));
                 } else {
                     throw new SkyConfigurationException("Invalid thing in items list '" + o + "'.");
                 }
             }
             return result;
         } else {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
     }
 
@@ -150,7 +150,7 @@ public class SkyKitDecoder {
                 throw new SkyConfigurationException("Enchantments invalid!");
             }
         }
-        return new SkyKitItemConfig(type, amount, enchantments == null ? Collections.EMPTY_MAP : enchantments);
+        return new SkyKitItemConfig(type, amount, enchantments == null ? Collections.<Enchantment, Integer>emptyMap() : enchantments);
     }
 
     public static SkyKitItem decodeItemMap(Map<String, Object> map) throws SkyConfigurationException {
@@ -197,6 +197,6 @@ public class SkyKitDecoder {
                 throw new SkyConfigurationException("Enchantments invalid!");
             }
         }
-        return new SkyKitItemConfig(type, amount, enchantments == null ? Collections.EMPTY_MAP : enchantments);
+        return new SkyKitItemConfig(type, amount, enchantments == null ? Collections.<Enchantment, Integer>emptyMap() : enchantments);
     }
 }

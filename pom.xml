@@ -49,7 +49,7 @@
         <tag>HEAD</tag>
     </scm>
     <properties>
-        <build.number>unknown</build.number>
+        <describe>unknown-revision</describe>
         <netbeans.hint.license>gpl30</netbeans.hint.license>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -143,6 +143,7 @@
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
+                     <compilerArgument>-Xlint:unchecked</compilerArgument>
                 </configuration>
             </plugin>
             <plugin>
