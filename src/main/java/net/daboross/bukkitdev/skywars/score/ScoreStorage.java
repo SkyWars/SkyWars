@@ -34,24 +34,24 @@ import net.daboross.bukkitdev.skywars.events.events.PlayerDeathInArenaInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerKillPlayerInfo;
 import org.bukkit.entity.Player;
 
-public class PointStorage extends SkyPoints {
+public class ScoreStorage extends SkyPoints {
 
     private final SkyWarsPlugin plugin;
     private final PointStorageBackend backend;
     private final SaveTimer timer;
 
     @SuppressWarnings("UseSpecificCatch")
-    public PointStorage(SkyWarsPlugin plugin) throws StartupFailedException {
+    public ScoreStorage(SkyWarsPlugin plugin) throws StartupFailedException {
         this.plugin = plugin;
         Class<? extends PointStorageBackend> backendClass = getBackend();
         if (backendClass == null) {
-            backendClass = PointStorageJSONBackend.class;
+            backendClass = JSONScoreStorage.class;
         }
         try {
             Constructor<? extends PointStorageBackend> constructor = backendClass.getConstructor(SkyWars.class);
             this.backend = constructor.newInstance(plugin);
         } catch (Throwable ex) {
-            throw new StartupFailedException("Unable to initialize storage backend", ex);
+            throw new StartupFailedException("Failed to initialize storage backend", ex);
         }
         long saveInterval = plugin.getConfiguration().getPointsSaveInterval();
         if (saveInterval > 0) {
@@ -103,13 +103,13 @@ public class PointStorage extends SkyPoints {
 
         @Override
         public void run() {
-            SkyStatic.debug("AutoSaving points");
+            SkyStatic.debug("AutoSaving score");
             try {
                 save();
             } catch (IOException ex) {
-                plugin.getLogger().log(Level.SEVERE, "Failed to save point storage backend:", ex);
+                plugin.getLogger().log(Level.SEVERE, "Failed to save score storage backend", ex);
             }
-            SkyStatic.debug("Done AutoSaving points");
+            SkyStatic.debug("Done AutoSaving score");
         }
     }
 }

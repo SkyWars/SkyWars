@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.daboross.bukkitdev.skywars.points;
+package net.daboross.bukkitdev.skywars.score;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,21 +23,27 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Locale;
+import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.points.PointStorageBackend;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-public class PointStorageJSONBackend extends PointStorageBackend {
+public class JSONScoreStorage extends PointStorageBackend {
 
+    private final File saveFileBuffer;
     private final File saveFile;
     private final JSONObject scores;
 
-    public PointStorageJSONBackend(SkyWars plugin) throws IOException, FileNotFoundException {
+    public JSONScoreStorage(SkyWars plugin) throws IOException, FileNotFoundException {
         super(plugin);
         this.saveFile = new File(plugin.getDataFolder(), "score.json");
+        this.saveFileBuffer = new File(plugin.getDataFolder(), "score.json~");
         this.scores = load();
     }
 
@@ -49,21 +55,44 @@ public class PointStorageJSONBackend extends PointStorageBackend {
                 throw new IOException("Couldn't create file " + saveFile.getAbsolutePath());
             }
         }
+        if (!saveFile.isFile()) {
+            throw new IOException("File '" + saveFile.getAbsolutePath() + "' is not a file (perhaps a directory?).");
+        }
+
         try (FileInputStream fis = new FileInputStream(saveFile)) {
             return new JSONObject(new JSONTokener(fis));
         } catch (JSONException ex) {
+            try (FileInputStream fis = new FileInputStream(saveFile)) {
+                byte[] buffer = new byte[10];
+                int read = fis.read(buffer);
+                String str = new String(buffer, 0, read, Charset.forName("UTF-8"));
+                if (StringUtils.isBlank(str)) {
+                    skywars.getLogger().log(Level.WARNING, "Score json file is empty, perhaps it was corrupted? Ignoring it and starting new score database. If you haven't recorded any scores, this won't matter.");
+                    return new JSONObject();
+                }
+            }
             throw new IOException("JSONException loading " + saveFile.getAbsolutePath(), ex);
         }
     }
 
     @Override
     public void save() throws IOException {
-        try (FileOutputStream fos = new FileOutputStream(saveFile)) {
+        if (!saveFileBuffer.exists()) {
+            if (!saveFileBuffer.createNewFile()) {
+                throw new IOException("Failed to create file '" + saveFileBuffer + "'.");
+            }
+        }
+        try (FileOutputStream fos = new FileOutputStream(saveFileBuffer)) {
             try (OutputStreamWriter writer = new OutputStreamWriter(fos, Charset.forName("UTF-8"))) {
                 scores.write(writer);
             }
         } catch (IOException | JSONException ex) {
-            throw new IOException("Couldn't write to " + saveFile.getAbsolutePath(), ex);
+            throw new IOException("Couldn't write to " + saveFileBuffer.getAbsolutePath(), ex);
+        }
+        try {
+            Files.move(saveFileBuffer.toPath(), saveFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException ex) {
+            throw new IOException("Failed to move buffer file '" + saveFileBuffer.getAbsolutePath() + "' to actual save location '" + saveFile + "'", ex);
         }
     }
 

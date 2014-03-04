@@ -57,7 +57,7 @@ import net.daboross.bukkitdev.skywars.listeners.PortalListener;
 import net.daboross.bukkitdev.skywars.listeners.QuitListener;
 import net.daboross.bukkitdev.skywars.listeners.SpawnListener;
 import net.daboross.bukkitdev.skywars.player.CurrentlyInGame;
-import net.daboross.bukkitdev.skywars.points.PointStorage;
+import net.daboross.bukkitdev.skywars.score.ScoreStorage;
 import net.daboross.bukkitdev.skywars.scoreboards.TeamScoreboardListener;
 import net.daboross.bukkitdev.skywars.storage.LocationStore;
 import net.daboross.bukkitdev.skywars.world.SkyWorldHandler;
@@ -87,7 +87,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     private ResetHealth resetHealth;
     private GameEventDistributor distributor;
     private InventorySave inventorySave;
-    private PointStorage points;
+    private ScoreStorage points;
     private PointStorageChatListener chatListener;
     private SkyEconomyHook economyHook;
     private SkyEconomyGameRewards ecoRewards;
@@ -149,7 +149,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         teamListener = new TeamScoreboardListener();
         inGame = new CurrentlyInGame();
         if (configuration.isEnablePoints()) {
-            points = new PointStorage(this);
+            points = new ScoreStorage(this);
             chatListener = new PointStorageChatListener(this);
         }
         if (configuration.isEconomyEnabled()) {
@@ -299,7 +299,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     }
 
     @Override
-    public PointStorage getPoints() {
+    public ScoreStorage getPoints() {
         return points;
     }
 
