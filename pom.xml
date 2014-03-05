@@ -49,7 +49,6 @@
         <tag>HEAD</tag>
     </scm>
     <properties>
-        <describe>unknown-revision</describe>
         <netbeans.hint.license>gpl30</netbeans.hint.license>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
