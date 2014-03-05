@@ -19,7 +19,7 @@
 
     <groupId>net.daboross.bukkitdev</groupId>
     <artifactId>skywars</artifactId>
-    <version>1.4.2-SNAPSHOT</version>
+    <version>1.4.2</version>
     <packaging>jar</packaging>
 
     <name>SkyWars</name>
@@ -46,7 +46,7 @@
         <url>https://github.com/SkyWars/SkyWars.git</url>
         <connection>scm:git:https://github.com/SkyWars/SkyWars.git</connection>
         <developerConnection>scm:git:git@github.com:SkyWars/SkyWars.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>skywars-1.4.2</tag>
     </scm>
     <properties>
         <netbeans.hint.license>gpl30</netbeans.hint.license>
@@ -81,13 +81,13 @@
         <dependency>
             <groupId>net.daboross.bukkitdev</groupId>
             <artifactId>skywars-api</artifactId>
-            <version>1.4.2-SNAPSHOT</version>
+            <version>1.4.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.daboross.bukkitdev</groupId>
             <artifactId>skywars-translations</artifactId>
-            <version>1.4.2-SNAPSHOT</version>
+            <version>1.4.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
