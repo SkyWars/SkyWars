@@ -51,7 +51,8 @@ public class TranslationsConfiguration implements SkyTranslations {
 
     private void load() throws SkyConfigurationException {
         try {
-            boolean success = configFile.createNewFile();
+            // The or statement makes it so that configFile.createNewFile() isn't called if it exists
+            boolean success = configFile.exists() || configFile.createNewFile();
             if (!success) {
                 throw new SkyConfigurationException("Failed to create file " + configFile.getAbsolutePath());
             }
