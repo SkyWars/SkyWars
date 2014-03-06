@@ -54,7 +54,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private String scoreSqlDatabase;
     private String scoreSqlUsername;
     private String scoreSqlPassword;
-    private long pointsSaveInterval;
+    private long scoreSaveInterval;
     private int arenaDistanceApart;
     private boolean commandWhitelistEnabled;
     private boolean commandWhitelistABlacklist;
@@ -122,7 +122,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         winScoreDiff = mainConfig.getSetInt(MainConfigKeys.Score.WIN_DIFF, MainConfigDefaults.Score.WIN_DIFF);
         deathScoreDiff = mainConfig.getSetInt(MainConfigKeys.Score.DEATH_DIFF, MainConfigDefaults.Score.DEATH_DIFF);
         killScoreDiff = mainConfig.getSetInt(MainConfigKeys.Score.KILL_DIFF, MainConfigDefaults.Score.KILL_DIFF);
-        pointsSaveInterval = mainConfig.getSetLong(MainConfigKeys.Score.SAVE_INTERVAL, MainConfigDefaults.Score.SAVE_INTERVAL);
+        scoreSaveInterval = mainConfig.getSetLong(MainConfigKeys.Score.SAVE_INTERVAL, MainConfigDefaults.Score.SAVE_INTERVAL);
         // Score.SQL
         scoreUseSql = mainConfig.getSetBoolean(MainConfigKeys.Score.USE_SQL, MainConfigDefaults.Score.USE_SQL);
         scoreSqlHost = mainConfig.getSetString(MainConfigKeys.Score.SQL_HOST, MainConfigDefaults.Score.SQL_HOST);
@@ -299,8 +299,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     }
 
     @Override
-    public long getPointsSaveInterval() {
-        return pointsSaveInterval;
+    public long getScoreSaveInterval() {
+        return scoreSaveInterval;
     }
 
     @Override
