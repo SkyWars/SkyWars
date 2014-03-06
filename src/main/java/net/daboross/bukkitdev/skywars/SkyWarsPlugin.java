@@ -148,7 +148,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         distributor = new GameEventDistributor(this);
         teamListener = new TeamScoreboardListener();
         inGame = new CurrentlyInGame();
-        if (configuration.isEnablePoints()) {
+        if (configuration.isEnableScore()) {
             points = new ScoreStorage(this);
             chatListener = new PointStorageChatListener(this);
         }

@@ -34,13 +34,19 @@ class MainConfigDefaults {
 //    public static final boolean PER_ARENA_DEATH_MESSAGES_ENABLED = true;
 //    public static final boolean PER_ARENA_WIN_MESSAGES_ENABLED = false;
 
-    public static class Points {
+    public static class Score {
 
         public static final boolean ENABLE = true;
         public static final int DEATH_DIFF = -2;
         public static final int WIN_DIFF = 7;
         public static final int KILL_DIFF = 1;
         public static final long SAVE_INTERVAL = 300;
+        public static final boolean USE_SQL = false;
+        public static final String SQL_HOST = "127.0.0.1";
+        public static final int SQL_PORT = 3306;
+        public static final String SQL_DATABASE = "minecraft";
+        public static final String SQL_USERNAME = "root";
+        public static final String SQL_PASSWORD = "aComplexPassword";
     }
 
     public static class Economy {

@@ -45,13 +45,21 @@ public class ScoreStorage extends SkyPoints {
         this.plugin = plugin;
         Class<? extends PointStorageBackend> backendClass = getBackend();
         if (backendClass == null) {
-            backendClass = JSONScoreStorage.class;
+            if (plugin.getConfiguration().isScoreUseSql()) {
+                backendClass = SQLScoreStorage.class;
+                plugin.getLogger().log(Level.INFO, "[Score] Using SQL backend - Warning: SQL Score backend is incomplete, and may completely fail"); // TODO: Remove warning (when done with class)
+            } else {
+                backendClass = JSONScoreStorage.class;
+                plugin.getLogger().log(Level.INFO, "[Score] Using JSON backend");
+            }
+        } else {
+            plugin.getLogger().log(Level.INFO, "[Score] Using custom backend: '" + backendClass.getName() + "'");
         }
         try {
             Constructor<? extends PointStorageBackend> constructor = backendClass.getConstructor(SkyWars.class);
             this.backend = constructor.newInstance(plugin);
         } catch (Throwable ex) {
-            throw new StartupFailedException("Failed to initialize storage backend", ex);
+            throw new StartupFailedException("[Score] Failed to initialize storage backend", ex);
         }
         long saveInterval = plugin.getConfiguration().getPointsSaveInterval();
         if (saveInterval > 0) {
@@ -63,12 +71,12 @@ public class ScoreStorage extends SkyPoints {
 
     public void onKill(PlayerKillPlayerInfo info) {
         SkyConfiguration config = plugin.getConfiguration();
-        addScore(info.getKillerName(), config.getKillPointDiff());
+        addScore(info.getKillerName(), config.getKillScoreDiff());
     }
 
     public void onDeath(PlayerDeathInArenaInfo info) {
         SkyConfiguration config = plugin.getConfiguration();
-        addScore(info.getKilled().getName(), config.getDeathPointDiff());
+        addScore(info.getKilled().getName(), config.getDeathScoreDiff());
     }
 
     public void onGameEnd(GameEndInfo info) {
@@ -76,7 +84,7 @@ public class ScoreStorage extends SkyPoints {
         List<Player> alive = info.getAlivePlayers();
         if (!alive.isEmpty() && alive.size() <= info.getGame().getArena().getTeamSize()) {
             for (Player p : alive) {
-                addScore(p.getName(), config.getWinPointDiff());
+                addScore(p.getName(), config.getWinScoreDiff());
             }
         }
     }
