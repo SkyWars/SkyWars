@@ -1,5 +1,3 @@
-SkyWars
----
 ### Features
 * Automatically create new arenas every time enough people join the queue.
 * Have *as many arenas* going at the same time as you want!
@@ -22,8 +20,7 @@ SkyWars
 * [Worlds Created](https://github.com/SkyWars/SkyWars/wiki/Worlds)
 * [Common Issues](https://github.com/SkyWars/SkyWars/wiki/Common-Issues)
 * [GitHub](https://github.com/SkyWars/SkyWars)
-* [MCStats Statistics](http://mcstats.org/plugin/SkyWars)
-* [Portuguese Tutorial - Liga����o para tutorial AbsintoJ feito](http://www.youtube.com/watch?v=hYTq39Iomz0)
+* [MCStats Statistics](http://mcstats.org/plugin/SkyWars)* [Portuguese Tutorial - Liga����o para tutorial AbsintoJ feito](http://www.youtube.com/watch?v=hYTq39Iomz0)
 * [TeamCity Development Builds - CI Server](http://ci.dabo.guru/p/SkyWarsParent)
 * [Download Latest Snapshot](http://ci.dabo.guru/d/SkyWarsParent_SkyWars_MainBuild/SkyWars.jar)
 
