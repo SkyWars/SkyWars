@@ -71,12 +71,32 @@ public class SQLScoreStorage extends ScoreStorageBackend {
                 statement.setString(1, name);
                 statement.setInt(2, diff);
                 statement.setInt(3, diff);
+                try {
+                    statement.execute();
+                } finally {
+                    statement.close();
+                }
             }
         });
     }
 
     @Override
     public void setScore(final String playerName, final int score) {
+        final String name = playerName.toLowerCase(Locale.ENGLISH);
+        sql.run("set " + name + "'s score to " + score, new SQLRunnable() {
+            @Override
+            public void run(final Connection connection) throws SQLException {
+                PreparedStatement statement = connection.prepareStatement("INSERT INTO `" + tableName + "` (username, user_score) VALUES (?, ?) ON DUPLICATE KEY UPDATE `user_score` = ?;");
+                statement.setString(1, name);
+                statement.setInt(2, score);
+                statement.setInt(3, score);
+                try {
+                    statement.execute();
+                } finally {
+                    statement.close();
+                }
+            }
+        });
     }
 
     @Override
