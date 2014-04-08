@@ -63,6 +63,10 @@ public class KitCommand extends SubCommand {
                 sender.sendMessage(SkyTrans.get(TransKey.CMD_KIT_UNKNOWN_KIT, subCommandArgs[0]));
                 return;
             }
+            if (!p.hasPermission(kit.getPermission())) {
+                p.sendMessage(SkyTrans.get(TransKey.CMD_KIT_NO_ACCESS, kit.getName()));
+                return;
+            }
             int cost = kit.getCost();
             if (cost == 0 || plugin.getEconomyHook().canAfford(p.getName(), cost)) {
                 skyPlayer.setSelectedKit(kit);
