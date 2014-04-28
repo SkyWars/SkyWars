@@ -19,6 +19,7 @@ package net.daboross.bukkitdev.skywars.score;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.bukkitsavetimer.SaveTimer;
@@ -72,12 +73,12 @@ public class ScoreStorage extends SkyScore {
 
     public void onKill(PlayerKillPlayerInfo info) {
         SkyConfiguration config = plugin.getConfiguration();
-        addScore(info.getKillerName(), config.getKillScoreDiff());
+        addScore(info.getKillerUuid(), config.getKillScoreDiff());
     }
 
     public void onDeath(PlayerDeathInArenaInfo info) {
         SkyConfiguration config = plugin.getConfiguration();
-        addScore(info.getKilled().getName(), config.getDeathScoreDiff());
+        addScore(info.getKilled().getUniqueId(), config.getDeathScoreDiff());
     }
 
     public void onGameEnd(GameEndInfo info) {
@@ -85,33 +86,33 @@ public class ScoreStorage extends SkyScore {
         List<Player> alive = info.getAlivePlayers();
         if (!alive.isEmpty() && alive.size() <= info.getGame().getArena().getTeamSize()) {
             for (Player p : alive) {
-                addScore(p.getName(), config.getWinScoreDiff());
+                addScore(p.getUniqueId(), config.getWinScoreDiff());
             }
         }
     }
 
     @Override
-    public synchronized void addScore(String name, int diff) {
-        SkyStatic.debug("Adding %s score to %s", diff, name);
+    public synchronized void addScore(UUID playerUuid, int diff) {
+        SkyStatic.debug("Adding %s score to %s", playerUuid);
         if (timer != null) {
             timer.dataChanged();
         }
-        backend.addScore(name, diff);
+        backend.addScore(playerUuid, diff);
     }
 
     @Override
-    public synchronized void getScore(String name, ScoreCallback callback) {
-        backend.getScore(name, callback);
+    public synchronized void getScore(UUID playerUuid, ScoreCallback callback) {
+        backend.getScore(playerUuid, callback);
     }
 
     @Override
-    public int getCachedOnlineScore(final String name) {
-        return backend.getCachedOnlineScore(name);
+    public int getCachedOnlineScore(final UUID playerUuid) {
+        return backend.getCachedOnlineScore(playerUuid);
     }
 
     @Override
-    public void loadCachedScore(final String name) {
-        backend.loadCachedScore(name);
+    public void loadCachedScore(final Player player) {
+        backend.loadCachedScore(player);
     }
 
     public synchronized void save() throws IOException {

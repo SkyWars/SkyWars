@@ -31,6 +31,6 @@ public class ScoreCacheOnJoinListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent evt) {
-        plugin.getScore().loadCachedScore(evt.getPlayer().getName());
+        plugin.getScore().loadCachedScore(evt.getPlayer());
     }
 }

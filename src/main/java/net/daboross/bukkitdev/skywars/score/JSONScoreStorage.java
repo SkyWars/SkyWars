@@ -26,11 +26,13 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.score.ScoreCallback;
 import net.daboross.bukkitdev.skywars.api.score.ScoreStorageBackend;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.entity.Player;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -39,40 +41,56 @@ public class JSONScoreStorage extends ScoreStorageBackend {
 
     private final File saveFileBuffer;
     private final File saveFile;
-    private final JSONObject scores;
+    private final File oldSaveFile;
+    private final JSONObject baseJson;
+    private JSONObject nameToScore;
+    private JSONObject uuidToSkyPlayer;
 
     public JSONScoreStorage(SkyWars plugin) throws IOException, FileNotFoundException {
         super(plugin);
-        this.saveFile = new File(plugin.getDataFolder(), "score.json");
-        this.saveFileBuffer = new File(plugin.getDataFolder(), "score.json~");
-        this.scores = load();
+        this.oldSaveFile = new File(plugin.getDataFolder(), "score.json");
+        this.saveFile = new File(plugin.getDataFolder(), "score-v1.json");
+        this.saveFileBuffer = new File(plugin.getDataFolder(), "score-v1.json~");
+        this.baseJson = load();
+        this.nameToScore = this.baseJson.getJSONObject("name-score");
+        this.uuidToSkyPlayer = this.baseJson.getJSONObject("uuid-score");
     }
 
     private JSONObject load() throws IOException, FileNotFoundException {
         if (!saveFile.exists()) {
-            if (saveFile.createNewFile()) {
-                return new JSONObject();
+            JSONObject newStorage = new JSONObject();
+            newStorage.put("uuid-score", new JSONObject());
+            if (oldSaveFile.exists()) {
+                skywars.getLogger().log(Level.INFO, "Found old score storage file, attempting to import data");
+                JSONObject oldStorage = loadFile(oldSaveFile);
+                newStorage.put("name-score", oldStorage); // Be lazy and just copy the whole JSONObject.
             } else {
-                throw new IOException("Couldn't create file " + saveFile.getAbsolutePath());
+                newStorage.put("name-score", new JSONObject());
             }
+            return newStorage;
+        } else {
+            return loadFile(saveFile);
         }
-        if (!saveFile.isFile()) {
-            throw new IOException("File '" + saveFile.getAbsolutePath() + "' is not a file (perhaps a directory?).");
+    }
+
+    private JSONObject loadFile(File file) throws IOException {
+        if (!file.isFile()) {
+            throw new IOException("File '" + file.getAbsolutePath() + "' is not a file (perhaps a directory?).");
         }
 
-        try (FileInputStream fis = new FileInputStream(saveFile)) {
+        try (FileInputStream fis = new FileInputStream(file)) {
             return new JSONObject(new JSONTokener(fis));
         } catch (JSONException ex) {
-            try (FileInputStream fis = new FileInputStream(saveFile)) {
+            try (FileInputStream fis = new FileInputStream(file)) {
                 byte[] buffer = new byte[10];
                 int read = fis.read(buffer);
                 String str = new String(buffer, 0, read, Charset.forName("UTF-8"));
                 if (StringUtils.isBlank(str)) {
-                    skywars.getLogger().log(Level.WARNING, "Score json file is empty, perhaps it was corrupted? Ignoring it and starting new score database. If you haven't recorded any scores, this won't matter.");
+                    skywars.getLogger().log(Level.WARNING, "File {} is empty, perhaps it was corrupted? Ignoring it and starting new score database. If you haven't recorded any baseJson, this won't matter.", file.getAbsolutePath());
                     return new JSONObject();
                 }
             }
-            throw new IOException("JSONException loading " + saveFile.getAbsolutePath(), ex);
+            throw new IOException("JSONException loading " + file.getAbsolutePath(), ex);
         }
     }
 
@@ -85,7 +103,7 @@ public class JSONScoreStorage extends ScoreStorageBackend {
         }
         try (FileOutputStream fos = new FileOutputStream(saveFileBuffer)) {
             try (OutputStreamWriter writer = new OutputStreamWriter(fos, Charset.forName("UTF-8"))) {
-                scores.write(writer);
+                baseJson.write(writer);
             }
         } catch (IOException | JSONException ex) {
             throw new IOException("Couldn't write to " + saveFileBuffer.getAbsolutePath(), ex);
@@ -98,38 +116,49 @@ public class JSONScoreStorage extends ScoreStorageBackend {
     }
 
     @Override
-    public void loadCachedScore(final String playerName) {
-
+    public void loadCachedScore(final Player player) {
     }
 
-    @Override
     public void addScore(String playerName, int diff) {
         playerName = playerName.toLowerCase(Locale.ENGLISH);
         try {
-            scores.put(playerName, scores.getInt(playerName) + diff);
+            baseJson.put(playerName, baseJson.getInt(playerName) + diff);
         } catch (JSONException unused) {
-            scores.put(playerName, diff);
+            baseJson.put(playerName, diff);
         }
     }
 
     @Override
+    public void addScore(final UUID playerUuid, final int diff) {
+
+    }
+
     public void setScore(String playerName, int score) {
         playerName = playerName.toLowerCase(Locale.ENGLISH);
-        scores.put(playerName, score);
+        baseJson.put(playerName, score);
     }
 
     @Override
+    public void setScore(final UUID playerUuid, final int score) {
+
+    }
+
     public int getCachedOnlineScore(String playerName) {
         playerName = playerName.toLowerCase(Locale.ENGLISH);
         try {
-            return scores.getInt(playerName);
+            return baseJson.getInt(playerName);
         } catch (JSONException unused) {
             return 0;
         }
     }
 
     @Override
-    public void getScore(String playerName, ScoreCallback callback) {
-        callback.scoreGetCallback(getCachedOnlineScore(playerName));
+    public int getCachedOnlineScore(final UUID playerUuid) {
+        return 0;
+    }
+
+    @Override
+    public void getScore(final UUID playerUuid, final ScoreCallback callback) {
+        callback.scoreGetCallback(getCachedOnlineScore(playerUuid));
     }
 }

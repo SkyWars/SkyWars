@@ -16,25 +16,32 @@
  */
 package net.daboross.bukkitdev.skywars.events.events;
 
+import java.util.UUID;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 
 public class PlayerKillPlayerInfo {
 
     private final int gameId;
+    private final UUID killerUuid;
     private final String killerName;
     private final Player killed;
 
-    public PlayerKillPlayerInfo(final int gameId, final String killerName, final Player killed) {
+    public PlayerKillPlayerInfo(final int gameId, final UUID killerUuid, final String killerName, final Player killed) {
         Validate.notNull(killerName, "Killer name cannot be null");
         Validate.notNull(killed, "Killed cannot be null");
         this.gameId = gameId;
+        this.killerUuid = killerUuid;
         this.killerName = killerName;
         this.killed = killed;
     }
 
     public int getGameId() {
         return gameId;
+    }
+
+    public UUID getKillerUuid() {
+        return killerUuid;
     }
 
     public String getKillerName() {

@@ -123,6 +123,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     }
 
     private void startPlugin() throws StartupFailedException {
+        SkyStatic.initializeSupportsUuids();
         try {
             configuration = new SkyWarsConfiguration(this);
         } catch (IOException | InvalidConfigurationException | SkyConfigurationException ex) {

@@ -21,20 +21,24 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 import net.daboross.bukkitdev.asyncsql.AsyncSQL;
+import net.daboross.bukkitdev.asyncsql.ResultHolder;
+import net.daboross.bukkitdev.asyncsql.ResultRunnable;
+import net.daboross.bukkitdev.asyncsql.ResultSQLRunnable;
 import net.daboross.bukkitdev.asyncsql.SQLConnectionInfo;
 import net.daboross.bukkitdev.asyncsql.SQLRunnable;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.score.ScoreCallback;
 import net.daboross.bukkitdev.skywars.api.score.ScoreStorageBackend;
+import org.bukkit.entity.Player;
 
 // TODO: Implement
 public class SQLScoreStorage extends ScoreStorageBackend {
 
-    private final Map<String, Integer> scoreCache = new HashMap<>();
+    private final Map<UUID, Integer> scoreCache = new HashMap<>();
     private final AsyncSQL sql;
     private final String tableName = "skywars_user";
 
@@ -51,57 +55,63 @@ public class SQLScoreStorage extends ScoreStorageBackend {
         sql.run("create user table", new SQLRunnable() {
             @Override
             public void run(Connection connection) throws SQLException {
-                PreparedStatement statement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `" + tableName + "` (`username` VARCHAR(32), `user_score` INT, PRIMARY KEY (`username`));");
-                try {
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "CREATE TABLE IF NOT EXISTS `" + tableName + "` (`uuid` VARCHAR(32), `username` VARCHAR(32), `user_score` INT, PRIMARY KEY (`uuid`));"
+                )) {
                     statement.execute();
-                } finally {
-                    statement.close();
                 }
             }
         });
     }
 
     @Override
-    public void addScore(final String playerName, final int diff) {
-        final String name = playerName.toLowerCase(Locale.ENGLISH);
-        sql.run("add " + diff + " score to " + name, new SQLRunnable() {
+    public void addScore(final UUID uuid, final int diff) {
+        sql.run("add " + diff + " score to " + uuid, new SQLRunnable() {
             @Override
             public void run(final Connection connection) throws SQLException {
-                PreparedStatement statement = connection.prepareStatement("INSERT INTO `" + tableName + "` (username, user_score) VALUES (?, ?) ON DUPLICATE KEY UPDATE `user_score` = `user_score` + ?;");
-                statement.setString(1, name);
-                statement.setInt(2, diff);
-                statement.setInt(3, diff);
-                try {
-                    statement.execute();
-                } finally {
-                    statement.close();
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "INSERT INTO `" + tableName + "` (username, user_score) VALUES (?, ?) ON DUPLICATE KEY UPDATE `user_score` = `user_score` + ?;"
+                )) {
+                    statement.setString(1, uuid.toString());
+                    statement.setInt(2, diff);
+                    statement.setInt(3, diff);
+                    statement.executeQuery().getString("parent");
                 }
             }
         });
     }
 
     @Override
-    public void setScore(final String playerName, final int score) {
-        final String name = playerName.toLowerCase(Locale.ENGLISH);
-        sql.run("set " + name + "'s score to " + score, new SQLRunnable() {
+    public void setScore(final UUID uuid, final int score) {
+        sql.run("set " + uuid + "'s score to " + score, new SQLRunnable() {
             @Override
             public void run(final Connection connection) throws SQLException {
-                PreparedStatement statement = connection.prepareStatement("INSERT INTO `" + tableName + "` (username, user_score) VALUES (?, ?) ON DUPLICATE KEY UPDATE `user_score` = ?;");
-                statement.setString(1, name);
-                statement.setInt(2, score);
-                statement.setInt(3, score);
-                try {
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "INSERT INTO `" + tableName + "` (uuid, user_score) VALUES (?, ?) ON DUPLICATE KEY UPDATE `user_score` = ?;"
+                )) {
+                    statement.setString(1, uuid.toString());
+                    statement.setInt(2, score);
+                    statement.setInt(3, score);
                     statement.execute();
-                } finally {
-                    statement.close();
                 }
             }
         });
     }
 
     @Override
-    public void getScore(final String playerName, final ScoreCallback callback) {
+    public void getScore(final UUID uuid, final ScoreCallback callback) {
         callback.scoreGetCallback(0);
+        sql.run("get score for " + uuid, new ResultSQLRunnable<Integer>() {
+            @Override
+            public void run(final Connection connection, final ResultHolder<Integer> result) throws SQLException {
+
+            }
+        }, new ResultRunnable<Integer>() {
+            @Override
+            public void runWithResult(final Integer value) {
+                callback.scoreGetCallback(value);
+            }
+        });
     }
 
     @Override
@@ -109,30 +119,31 @@ public class SQLScoreStorage extends ScoreStorageBackend {
     }
 
     @Override
-    public int getCachedOnlineScore(final String playerName) {
-        Integer score = cacheGet(playerName);
+    public int getCachedOnlineScore(final UUID uuid) {
+        Integer score = cacheGet(uuid);
         return score == null ? 0 : score;
     }
 
     @Override
-    public void loadCachedScore(final String playerName) {
-        getScore(playerName, new ScoreCallback() {
+    public void loadCachedScore(final Player player) {
+        final UUID uuid = player.getUniqueId();
+        getScore(uuid, new ScoreCallback() {
             @Override
             public void scoreGetCallback(final int score) {
-                cacheSet(playerName, score);
+                cacheSet(uuid, score);
             }
         });
     }
 
-    private Integer cacheGet(final String name) {
+    private Integer cacheGet(final UUID uuid) {
         synchronized (scoreCache) {
-            return scoreCache.get(name.toLowerCase(Locale.ENGLISH));
+            return scoreCache.get(uuid);
         }
     }
 
-    private void cacheSet(final String name, final int value) {
+    private void cacheSet(final UUID uuid, final int value) {
         synchronized (scoreCache) {
-            scoreCache.put(name.toLowerCase(Locale.ENGLISH), value);
+            scoreCache.put(uuid, value);
         }
     }
 }
