@@ -28,24 +28,26 @@ import net.daboross.bukkitdev.skywars.StartupFailedException;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
-import net.daboross.bukkitdev.skywars.api.score.ScoreCallback;
-import net.daboross.bukkitdev.skywars.api.score.ScoreStorageBackend;
-import net.daboross.bukkitdev.skywars.api.score.SkyScore;
+import net.daboross.bukkitdev.skywars.api.players.SkyPlayer;
+import net.daboross.bukkitdev.skywars.api.storage.ScoreCallback;
+import net.daboross.bukkitdev.skywars.api.storage.SkyInternalPlayer;
+import net.daboross.bukkitdev.skywars.api.storage.SkyStorage;
+import net.daboross.bukkitdev.skywars.api.storage.SkyStorageBackend;
 import net.daboross.bukkitdev.skywars.events.events.GameEndInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerDeathInArenaInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerKillPlayerInfo;
 import org.bukkit.entity.Player;
 
-public class ScoreStorage extends SkyScore {
+public class ScoreStorage extends SkyStorage {
 
     private final SkyWarsPlugin plugin;
-    private final ScoreStorageBackend backend;
+    private final SkyStorageBackend backend;
     private final SaveTimer timer;
 
     @SuppressWarnings("UseSpecificCatch")
     public ScoreStorage(SkyWarsPlugin plugin) throws StartupFailedException {
         this.plugin = plugin;
-        Class<? extends ScoreStorageBackend> backendClass = getBackend();
+        Class<? extends SkyStorageBackend> backendClass = getBackend();
         if (backendClass == null) {
             if (plugin.getConfiguration().isScoreUseSql()) {
                 backendClass = SQLScoreStorage.class;
@@ -58,7 +60,7 @@ public class ScoreStorage extends SkyScore {
             plugin.getLogger().log(Level.INFO, "[Score] Using custom backend: '" + backendClass.getName() + "'");
         }
         try {
-            Constructor<? extends ScoreStorageBackend> constructor = backendClass.getConstructor(SkyWars.class);
+            Constructor<? extends SkyStorageBackend> constructor = backendClass.getConstructor(SkyWars.class);
             this.backend = constructor.newInstance(plugin);
         } catch (Throwable ex) {
             throw new StartupFailedException("[Score] Failed to initialize storage backend", ex);
@@ -92,27 +94,44 @@ public class ScoreStorage extends SkyScore {
     }
 
     @Override
-    public synchronized void addScore(UUID playerUuid, int diff) {
-        SkyStatic.debug("Adding %s score to %s", playerUuid);
+    public void addScore(UUID uuid, int diff) {
         if (timer != null) {
             timer.dataChanged();
         }
-        backend.addScore(playerUuid, diff);
+        backend.addScore(uuid, diff);
     }
 
     @Override
-    public synchronized void getScore(UUID playerUuid, ScoreCallback callback) {
-        backend.getScore(playerUuid, callback);
+    public void getScore(final UUID uuid, final ScoreCallback callback) {
+        SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(uuid);
+        if (skyPlayer != null) {
+            callback.scoreGetCallback(skyPlayer.getScore());
+        } else {
+            backend.getScore(uuid, callback);
+        }
     }
 
     @Override
-    public int getCachedOnlineScore(final UUID playerUuid) {
-        return backend.getCachedOnlineScore(playerUuid);
+    public void setScore(final UUID uuid, final int score) {
+        SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(uuid);
+        if (skyPlayer != null) {
+            skyPlayer.setScore(score);
+        } else {
+            // Player is offline, use backend method directly.
+            backend.setScore(uuid, score);
+        }
     }
 
     @Override
-    public void loadCachedScore(final Player player) {
-        backend.loadCachedScore(player);
+    public SkyInternalPlayer loadPlayer(final Player player) {
+        return backend.loadPlayer(player);
+    }
+
+    @Override
+    public void dataChanged() {
+        if (timer != null) {
+            timer.dataChanged();
+        }
     }
 
     public synchronized void save() throws IOException {

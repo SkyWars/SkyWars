@@ -16,26 +16,29 @@
  */
 package net.daboross.bukkitdev.skywars.player;
 
-import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayer;
-import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayerState;
-import net.daboross.bukkitdev.skywars.api.ingame.SkySavedInventory;
+import java.util.UUID;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
+import net.daboross.bukkitdev.skywars.api.players.SkyPlayerState;
+import net.daboross.bukkitdev.skywars.api.players.SkySavedInventory;
+import net.daboross.bukkitdev.skywars.api.storage.SkyInternalPlayer;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 
-public class PlayerInfo implements SkyPlayer {
+public abstract class AbstractSkyPlayer implements SkyInternalPlayer {
 
-    private final Player player;
-    private final String name;
+    protected final Player player;
+    protected final String name;
+    protected final UUID uuid;
     private int gameId;
     private SkyPlayerState state;
     private SkyKit selectedKit;
     private SkySavedInventory savedInventory;
 
-    public PlayerInfo(final Player player) {
+    public AbstractSkyPlayer(final Player player) {
         Validate.notNull(player, "Player cannot be null");
         this.player = player;
         this.name = player.getName().toLowerCase();
+        this.uuid = player.getUniqueId();
     }
 
     @Override
@@ -49,10 +52,16 @@ public class PlayerInfo implements SkyPlayer {
     }
 
     @Override
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    @Override
     public int getGameId() {
         return gameId;
     }
 
+    @Override
     public void setGameId(final int gameId) {
         this.gameId = gameId;
     }
@@ -62,6 +71,7 @@ public class PlayerInfo implements SkyPlayer {
         return state;
     }
 
+    @Override
     public void setState(final SkyPlayerState state) {
         this.state = state;
     }
@@ -102,9 +112,9 @@ public class PlayerInfo implements SkyPlayer {
     @SuppressWarnings("RedundantIfStatement")
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (!(o instanceof PlayerInfo)) return false;
+        if (!(o instanceof AbstractSkyPlayer)) return false;
 
-        PlayerInfo info = (PlayerInfo) o;
+        AbstractSkyPlayer info = (AbstractSkyPlayer) o;
 
         if (gameId != info.gameId) return false;
         if (!name.equals(info.name)) return false;

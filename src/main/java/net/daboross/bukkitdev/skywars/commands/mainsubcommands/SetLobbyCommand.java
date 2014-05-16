@@ -39,7 +39,7 @@ public class SetLobbyCommand extends SubCommand {
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         Player player = (Player) sender;
-        if (plugin.getCurrentGameTracker().isInGame(player.getName())) {
+        if (plugin.getCurrentGameTracker().isInGame(player.getUniqueId())) {
             sender.sendMessage(SkyTrans.get(TransKey.CMD_SETLOBBY_IN_GAME));
         } else {
             plugin.getLocationStore().setLobbyPosition(new SkyPlayerLocation(player));

@@ -36,7 +36,7 @@ public class CommandWhitelistListener implements Listener {
     public void onCommand(PlayerCommandPreprocessEvent evt) {
         SkyConfiguration config = plugin.getConfiguration();
         if (config.isCommandWhitelistEnabled()) {
-            if (plugin.getCurrentGameTracker().isInGame(evt.getPlayer().getName())) {
+            if (plugin.getCurrentGameTracker().isInGame(evt.getPlayer().getUniqueId())) {
                 Pattern pattern = config.getCommandWhitelistCommandRegex();
                 if (pattern != null) {
                     if (config.isCommandWhitelistABlacklist() == pattern.matcher(evt.getMessage()).find()) {

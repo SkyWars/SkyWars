@@ -17,8 +17,8 @@
 package net.daboross.bukkitdev.skywars.game;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 import net.daboross.bukkitdev.skywars.api.game.SkyCurrentGameTracker;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
@@ -26,32 +26,32 @@ import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveGameInfo;
 
 public class CurrentGames implements SkyCurrentGameTracker {
 
-    private final Map<String, Integer> currentlyInGame = new HashMap<>();
+    private final Map<UUID, Integer> currentlyInGame = new HashMap<>();
 
-    private void setGameID(String player, int gameID) {
-        currentlyInGame.put(player.toLowerCase(Locale.ENGLISH), gameID);
+    private void setGameId(UUID uuid, int gameId) {
+        currentlyInGame.put(uuid, gameId);
     }
 
     @Override
-    public boolean isInGame(String player) {
-        return currentlyInGame.containsKey(player.toLowerCase(Locale.ENGLISH));
+    public boolean isInGame(UUID uuid) {
+        return currentlyInGame.containsKey(uuid);
     }
 
     @Override
-    public int getGameID(String player) {
-        Integer val = currentlyInGame.get(player.toLowerCase(Locale.ENGLISH));
+    public int getGameId(UUID uuid) {
+        Integer val = currentlyInGame.get(uuid);
         return (val == null) ? -1 : val;
     }
 
     public void onPlayerLeaveGame(PlayerLeaveGameInfo info) {
-        currentlyInGame.remove(info.getPlayer().getName().toLowerCase(Locale.ENGLISH));
+        currentlyInGame.remove(info.getPlayer().getUniqueId());
     }
 
     public void onGameStart(GameStartInfo info) {
         SkyGame game = info.getGame();
         int id = game.getId();
-        for (String name : game.getAlivePlayers()) {
-            setGameID(name, id);
+        for (UUID uuid : game.getAlivePlayers()) {
+            setGameId(uuid, id);
         }
     }
 }

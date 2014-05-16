@@ -373,6 +373,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         return scoreSqlPassword;
     }
 
+    @Override
     public String getScoreSqlDatabase() {
         return scoreSqlDatabase;
     }

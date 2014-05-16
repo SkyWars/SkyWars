@@ -17,8 +17,8 @@
 package net.daboross.bukkitdev.skywars.events.listeners;
 
 import net.daboross.bukkitdev.skywars.api.SkyWars;
-import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayer;
-import net.daboross.bukkitdev.skywars.api.ingame.SkySavedInventory;
+import net.daboross.bukkitdev.skywars.api.players.SkyPlayer;
+import net.daboross.bukkitdev.skywars.api.players.SkySavedInventory;
 import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerRespawnAfterGameEndInfo;
 import net.daboross.bukkitdev.skywars.player.SavedInventory;
@@ -38,7 +38,7 @@ public class InventorySaveListener {
         boolean save = plugin.getConfiguration().isInventorySaveEnabled();
         for (Player p : info.getPlayers()) {
             if (save) {
-                SkyPlayer skyPlayer = plugin.getInGame().getPlayerForce(p);
+                SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(p);
                 skyPlayer.setSavedInventory(new SavedInventory(p));
             }
             PlayerInventory inv = p.getInventory();
@@ -54,7 +54,7 @@ public class InventorySaveListener {
         inv.clear();
         inv.setArmorContents(new ItemStack[inv.getArmorContents().length]);
         if (save) {
-            SkyPlayer skyPlayer = plugin.getInGame().getPlayerForce(player);
+            SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(player);
             SkySavedInventory savedInventory = skyPlayer.getSavedInventory();
             if (savedInventory != null) {
                 savedInventory.apply(player);

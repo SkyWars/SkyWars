@@ -17,6 +17,7 @@
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
 import java.util.List;
+import java.util.UUID;
 import net.daboross.bukkitdev.commandexecutorbase.ArrayHelpers;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
@@ -26,6 +27,7 @@ import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -56,7 +58,7 @@ public class StatusCommand extends SubCommand {
     private String getPlayerString(SkyGame game) {
         StringBuilder b = new StringBuilder();
         b.append(ColorList.DATA).append(game.getId()).append(ColorList.REG).append(":");
-        List<String> alive = game.getAlivePlayers();
+        List<UUID> alive = game.getAlivePlayers();
         switch (alive.size()) {
             case 0:
                 b.append(ColorList.DATA).append(" -- ");
@@ -67,11 +69,12 @@ public class StatusCommand extends SubCommand {
             default:
                 if (game.areTeamsEnabled()) {
                     for (int team = 0; team < game.getNumTeams(); team++) {
-                        List<String> players = game.getAlivePlayersInTeam(team);
+                        List<UUID> players = game.getAlivePlayersInTeam(team);
                         if (!players.isEmpty()) {
                             b.append("\n  ").append(ColorList.REG).append("Team ").append(ColorList.DATA).append(team).append(ColorList.REG).append(": ").append(ColorList.DATA).append(players.get(0));
                             for (int i = 1; i < players.size(); i++) {
-                                b.append(ColorList.REG).append(", ").append(ColorList.DATA).append(players.get(i));
+                                // TODO: Make this more efficient, not having to use Bukkit.getPlayer()?
+                                b.append(ColorList.REG).append(", ").append(ColorList.DATA).append(Bukkit.getPlayer(players.get(i)).getName());
                             }
                         }
                     }

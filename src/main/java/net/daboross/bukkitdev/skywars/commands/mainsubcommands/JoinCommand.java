@@ -16,7 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
-import java.util.Locale;
+import java.util.UUID;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -38,10 +38,10 @@ public class JoinCommand extends SubCommand {
 
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        String name = sender.getName().toLowerCase(Locale.ENGLISH);
-        if (plugin.getCurrentGameTracker().isInGame(name)) {
+        UUID uuid = ((Player) sender).getUniqueId();
+        if (plugin.getCurrentGameTracker().isInGame(uuid)) {
             sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_IN_GAME));
-        } else if (plugin.getGameQueue().inQueue(name)) {
+        } else if (plugin.getGameQueue().inQueue(uuid)) {
             sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_ALREADY_QUEUED));
         } else {
             sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_CONFIRMATION));

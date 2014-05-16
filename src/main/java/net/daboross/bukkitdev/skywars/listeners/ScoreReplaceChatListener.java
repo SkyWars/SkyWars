@@ -17,7 +17,7 @@
 package net.daboross.bukkitdev.skywars.listeners;
 
 import net.daboross.bukkitdev.skywars.api.SkyWars;
-import net.daboross.bukkitdev.skywars.api.score.SkyScore;
+import net.daboross.bukkitdev.skywars.api.players.SkyPlayers;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -34,9 +34,9 @@ public class ScoreReplaceChatListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onChat(AsyncPlayerChatEvent evt) {
-        SkyScore score = plugin.getScore();
-        if (score != null) {
-            evt.setFormat(evt.getFormat().replaceAll(REPLACEMENT, String.valueOf(score.getCachedOnlineScore(evt.getPlayer().getName()))));
+        SkyPlayers players = plugin.getPlayers();
+        if (players.storageEnabled()) {
+            evt.setFormat(evt.getFormat().replaceAll(REPLACEMENT, String.valueOf(players.getPlayer(evt.getPlayer()).getScore())));
         }
     }
 }

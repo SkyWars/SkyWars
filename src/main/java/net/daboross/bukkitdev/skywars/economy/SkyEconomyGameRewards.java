@@ -17,6 +17,7 @@
 package net.daboross.bukkitdev.skywars.economy;
 
 import java.util.List;
+import java.util.UUID;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.economy.SkyEconomyAbstraction;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
@@ -36,14 +37,14 @@ public class SkyEconomyGameRewards {
 
     public void onPlayerKillPlayer(PlayerKillPlayerInfo info) {
         int reward = plugin.getConfiguration().getEconomyKillReward();
-        String killer = info.getKillerName();
+        UUID killerUuid = info.getKillerUuid();
         if (plugin.getConfiguration().areEconomyRewardMessagesEnabled()) {
-            Player p = Bukkit.getPlayerExact(killer);
+            Player p = Bukkit.getPlayer(killerUuid);
             if (p != null) {
                 p.sendMessage(SkyTrans.get(TransKey.ECO_REWARD_KILL, getSymboledReward(reward), info.getKilled().getName()));
             }
         }
-        plugin.getEconomyHook().addReward(killer, reward);
+        plugin.getEconomyHook().addReward(killerUuid, reward);
     }
 
     public void onGameEnd(GameEndInfo info) {
@@ -56,7 +57,7 @@ public class SkyEconomyGameRewards {
                 if (enableMessages) {
                     p.sendMessage(SkyTrans.get(TransKey.ECO_REWARD_WIN, getSymboledReward(reward)));
                 }
-                eco.addReward(p.getName(), reward);
+                eco.addReward(p, reward);
             }
         }
     }

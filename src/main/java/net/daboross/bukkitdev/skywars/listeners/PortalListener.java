@@ -16,7 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.listeners;
 
-import java.util.Locale;
+import java.util.UUID;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
@@ -41,8 +41,8 @@ public class PortalListener implements Listener {
         for (SkyBlockLocation loc : plugin.getLocationStore().getPortals()) {
             if (loc.isNear(location)) {
                 Player p = evt.getPlayer();
-                String name = p.getName().toLowerCase(Locale.ENGLISH);
-                if (!plugin.getCurrentGameTracker().isInGame(name) && !plugin.getGameQueue().inQueue(name)) {
+                UUID uuid = p.getUniqueId();
+                if (!plugin.getCurrentGameTracker().isInGame(uuid) && !plugin.getGameQueue().inQueue(uuid)) {
                     p.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_CONFIRMATION));
                     plugin.getGameQueue().queuePlayer(p);
                 }

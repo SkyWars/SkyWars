@@ -25,26 +25,28 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.Locale;
 import java.util.UUID;
 import java.util.logging.Level;
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
-import net.daboross.bukkitdev.skywars.api.score.ScoreCallback;
-import net.daboross.bukkitdev.skywars.api.score.ScoreStorageBackend;
+import net.daboross.bukkitdev.skywars.api.storage.ScoreCallback;
+import net.daboross.bukkitdev.skywars.api.storage.SkyInternalPlayer;
+import net.daboross.bukkitdev.skywars.api.storage.SkyStorageBackend;
+import net.daboross.bukkitdev.skywars.player.AbstractSkyPlayer;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.entity.Player;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-public class JSONScoreStorage extends ScoreStorageBackend {
+public class JSONScoreStorage extends SkyStorageBackend {
 
     private final File saveFileBuffer;
     private final File saveFile;
     private final File oldSaveFile;
     private final JSONObject baseJson;
     private JSONObject nameToScore;
-    private JSONObject uuidToSkyPlayer;
+    private JSONObject uuidToStoredPlayer;
 
     public JSONScoreStorage(SkyWars plugin) throws IOException, FileNotFoundException {
         super(plugin);
@@ -52,8 +54,8 @@ public class JSONScoreStorage extends ScoreStorageBackend {
         this.saveFile = new File(plugin.getDataFolder(), "score-v1.json");
         this.saveFileBuffer = new File(plugin.getDataFolder(), "score-v1.json~");
         this.baseJson = load();
-        this.nameToScore = this.baseJson.getJSONObject("name-score");
-        this.uuidToSkyPlayer = this.baseJson.getJSONObject("uuid-score");
+        this.nameToScore = this.baseJson.getJSONObject("legacy-name-score");
+        this.uuidToStoredPlayer = this.baseJson.getJSONObject("uuid-players-v1");
     }
 
     private JSONObject load() throws IOException, FileNotFoundException {
@@ -116,49 +118,78 @@ public class JSONScoreStorage extends ScoreStorageBackend {
     }
 
     @Override
-    public void loadCachedScore(final Player player) {
+    public SkyInternalPlayer loadPlayer(final Player player) {
+        String uuid = player.getUniqueId().toString();
+        JSONObject playerObj = uuidToStoredPlayer.optJSONObject(uuid);
+        if (playerObj == null) {
+            playerObj = new JSONObject();
+            if (nameToScore.has(player.getName().toLowerCase())) {
+                SkyStatic.debug("Migrated score for %s to UUID (uuid: %s)", player.getName(), uuid);
+                playerObj.put("score", nameToScore.get(player.getName().toLowerCase()));
+            } else {
+                playerObj.put("score", 0);
+            }
+        }
+        return new JSONSkyPlayer(player, playerObj);
     }
 
-    public void addScore(String playerName, int diff) {
-        playerName = playerName.toLowerCase(Locale.ENGLISH);
-        try {
-            baseJson.put(playerName, baseJson.getInt(playerName) + diff);
-        } catch (JSONException unused) {
-            baseJson.put(playerName, diff);
+    @Override
+    public void addScore(final UUID uuid, final int diff) {
+        JSONObject playerObj = uuidToStoredPlayer.optJSONObject(uuid.toString());
+        if (playerObj == null) {
+            playerObj = new JSONObject();
+            playerObj.put("score", diff); // assume the default score is 0
+        } else {
+            playerObj.put("score", playerObj.getInt("score") + diff);
         }
     }
 
     @Override
-    public void addScore(final UUID playerUuid, final int diff) {
-
-    }
-
-    public void setScore(String playerName, int score) {
-        playerName = playerName.toLowerCase(Locale.ENGLISH);
-        baseJson.put(playerName, score);
-    }
-
-    @Override
-    public void setScore(final UUID playerUuid, final int score) {
-
-    }
-
-    public int getCachedOnlineScore(String playerName) {
-        playerName = playerName.toLowerCase(Locale.ENGLISH);
-        try {
-            return baseJson.getInt(playerName);
-        } catch (JSONException unused) {
-            return 0;
+    public void setScore(final UUID uuid, final int score) {
+        JSONObject playerObj = uuidToStoredPlayer.optJSONObject(uuid.toString());
+        if (playerObj == null) {
+            playerObj = new JSONObject();
         }
+        playerObj.put("score", score);
+    }
+
+    private int getScore(final UUID uuid) {
+        JSONObject playerObj = uuidToStoredPlayer.optJSONObject(uuid.toString());
+        return playerObj == null ? 0 : playerObj.getInt("score");
     }
 
     @Override
-    public int getCachedOnlineScore(final UUID playerUuid) {
-        return 0;
+    public void getScore(final UUID uuid, final ScoreCallback callback) {
+        callback.scoreGetCallback(getScore(uuid));
     }
 
-    @Override
-    public void getScore(final UUID playerUuid, final ScoreCallback callback) {
-        callback.scoreGetCallback(getCachedOnlineScore(playerUuid));
+    public class JSONSkyPlayer extends AbstractSkyPlayer {
+
+        private final JSONObject playerObj;
+
+        public JSONSkyPlayer(final Player player, final JSONObject obj) {
+            super(player);
+            playerObj = obj;
+        }
+
+        @Override
+        public void loggedOut() {
+        }
+
+        @Override
+        public int getScore() {
+            return playerObj.getInt("score");
+        }
+
+        @Override
+        public void setScore(final int score) {
+            playerObj.put("score", score)
+            ;
+        }
+
+        @Override
+        public void addScore(final int diff) {
+            playerObj.put("score", getScore() + diff);
+        }
     }
 }

@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
+import java.util.UUID;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -25,6 +26,7 @@ import net.daboross.bukkitdev.skywars.gist.GistReport;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 public class ConfigurationDebugCommand extends SubCommand {
@@ -44,19 +46,23 @@ public class ConfigurationDebugCommand extends SubCommand {
         } else {
             sender.sendMessage(SkyTrans.get(TransKey.CMD_REPORT_START));
             String data = GistReport.generateReportText(plugin);
-            new GistReportRunnable(plugin, sender.getName(), data).runMe();
+            if (sender instanceof Player) {
+                new GistReportRunnable(plugin, ((Player) sender).getUniqueId(), data).runMe();
+            } else {
+                new GistReportRunnable(plugin, null, data).runMe();
+            }
         }
     }
 
     private static class GistReportRunnable implements Runnable {
 
         private final Plugin plugin;
-        private final String playerName;
+        private final UUID playerUuid;
         private final String report;
 
-        private GistReportRunnable(final Plugin plugin, final String name, final String report) {
+        private GistReportRunnable(final Plugin plugin, final UUID playerUuid, final String report) {
             this.plugin = plugin;
-            playerName = name;
+            this.playerUuid = playerUuid;
             this.report = report;
         }
 
@@ -67,22 +73,23 @@ public class ConfigurationDebugCommand extends SubCommand {
         @Override
         public void run() {
             String url = GistReport.reportReport(report);
-            plugin.getServer().getScheduler().runTask(plugin, new SendResult(playerName, SkyTrans.get(TransKey.CMD_REPORT_OUTPUT, url)));
+            plugin.getServer().getScheduler().runTask(plugin, new SendResult(playerUuid, SkyTrans.get(TransKey.CMD_REPORT_OUTPUT, url)));
         }
 
         private static class SendResult implements Runnable {
 
-            private final String playerName;
+            private final UUID playerUuid;
             private final String result;
 
-            public SendResult(String playerName, String result) {
-                this.playerName = playerName;
+            public SendResult(UUID playerUuid, String result) {
+                this.playerUuid = playerUuid;
                 this.result = result;
             }
 
             @Override
             public void run() {
-                CommandSender sender = playerName.equalsIgnoreCase("CONSOLE") ? Bukkit.getConsoleSender() : Bukkit.getPlayerExact(playerName);
+                // null playerUuid signifies that it isn't a player - rather it's the console.
+                CommandSender sender = playerUuid == null ? Bukkit.getConsoleSender() : Bukkit.getPlayer(playerUuid);
                 if (sender != null) {
                     sender.sendMessage(result);
                 }

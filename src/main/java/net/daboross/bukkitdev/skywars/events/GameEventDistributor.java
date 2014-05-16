@@ -66,7 +66,7 @@ public class GameEventDistributor {
             // -- After InventorySaveListener --
             plugin.getWorldHandler().onGameStart(info);
             // -- After InventorySaveListener --
-            plugin.getInGame().onGameStart(info);
+            plugin.getPlayers().onGameStart(info);
             plugin.getKitApplyListener().onGameStart(info);
             // -- After WorldHandler --
             plugin.getResetHealth().onGameStart(info);
@@ -106,7 +106,7 @@ public class GameEventDistributor {
         Validate.notNull(info, "Info cannot be null");
         try {
             // -- Normal --
-            plugin.getInGame().onLeaveGame(info);
+            plugin.getPlayers().onLeaveGame(info);
             plugin.getCurrentGameTracker().onPlayerLeaveGame(info);
             plugin.getAttackerStorage().onPlayerLeaveGame(info);
             plugin.getTeamListener().onPlayerLeaveGame(info);
@@ -124,7 +124,7 @@ public class GameEventDistributor {
             // -- Normal --
             plugin.getResetHealth().onPlayerRespawn(info);
             plugin.getInventorySaveListener().onPlayerRespawn(info);
-            plugin.getInGame().onRespawn(info);
+            plugin.getPlayers().onRespawn(info);
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new RespawnAfterLeaveGameEvent(plugin, info.getPlayer()));
         } catch (Throwable t) {
@@ -170,7 +170,7 @@ public class GameEventDistributor {
         Validate.notNull(info, "Info cannot be null");
         try {
             // -- Normal --
-            plugin.getInGame().onJoinQueue(info);
+            plugin.getPlayers().onJoinQueue(info);
             plugin.getKitQueueNotifier().onQueueJoin(info);
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new PlayerEnterQueueEvent(plugin, info.getPlayer()));
@@ -184,7 +184,7 @@ public class GameEventDistributor {
         Validate.notNull(info, "Info cannot be null");
         try {
             // -- Normal --
-            plugin.getInGame().onLeaveQueue(info);
+            plugin.getPlayers().onLeaveQueue(info);
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new PlayerLeaveQueueEvent(plugin, info.getPlayer()));
         } catch (Throwable t) {

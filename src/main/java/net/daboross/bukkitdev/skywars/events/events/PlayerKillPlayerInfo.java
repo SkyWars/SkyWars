@@ -29,6 +29,7 @@ public class PlayerKillPlayerInfo {
 
     public PlayerKillPlayerInfo(final int gameId, final UUID killerUuid, final String killerName, final Player killed) {
         Validate.notNull(killerName, "Killer name cannot be null");
+        Validate.notNull(killerUuid, "Killer UUID cannot be null");
         Validate.notNull(killed, "Killed cannot be null");
         this.gameId = gameId;
         this.killerUuid = killerUuid;

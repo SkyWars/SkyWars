@@ -57,7 +57,7 @@ import net.daboross.bukkitdev.skywars.listeners.QuitListener;
 import net.daboross.bukkitdev.skywars.listeners.ScoreCacheOnJoinListener;
 import net.daboross.bukkitdev.skywars.listeners.ScoreReplaceChatListener;
 import net.daboross.bukkitdev.skywars.listeners.SpawnListener;
-import net.daboross.bukkitdev.skywars.player.CurrentlyInGame;
+import net.daboross.bukkitdev.skywars.player.OnlineSkyPlayers;
 import net.daboross.bukkitdev.skywars.score.ScoreStorage;
 import net.daboross.bukkitdev.skywars.scoreboards.TeamScoreboardListener;
 import net.daboross.bukkitdev.skywars.storage.LocationStore;
@@ -91,7 +91,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     private ScoreStorage score;
     private KitQueueNotifier kitQueueNotifier;
 
-    private CurrentlyInGame inGame;
+    private OnlineSkyPlayers inGame;
     private TeamScoreboardListener teamListener;
     private AttackerStorageListener attackerStorage;
     // Info listeners
@@ -153,7 +153,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         attackerStorage = new AttackerStorageListener(this);
         distributor = new GameEventDistributor(this);
         teamListener = new TeamScoreboardListener();
-        inGame = new CurrentlyInGame();
+        inGame = new OnlineSkyPlayers(this);
         if (configuration.isEnableScore()) {
             score = new ScoreStorage(this);
             chatListener = new ScoreReplaceChatListener(this);
@@ -321,7 +321,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     }
 
     @Override
-    public CurrentlyInGame getInGame() {
+    public OnlineSkyPlayers getPlayers() {
         return inGame;
     }
 

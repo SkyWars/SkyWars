@@ -16,12 +16,15 @@
  */
 package net.daboross.bukkitdev.skywars.economy;
 
+import java.util.UUID;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.economy.SkyEconomyAbstraction;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 public class SkyEconomyHook implements SkyEconomyAbstraction {
@@ -45,13 +48,18 @@ public class SkyEconomyHook implements SkyEconomyAbstraction {
     }
 
     @Override
-    public void addReward(String player, double reward) {
+    public void addReward(OfflinePlayer player, double reward) {
         if (reward > 0) {
             economy.depositPlayer(player, reward);
         } else if (reward < 0) {
             economy.withdrawPlayer(player, -reward);
         }
-        SkyStatic.debug("Gave %s an economy reward of %s", player, reward);
+        SkyStatic.debug("Gave %s an economy reward of %s", player.getName(), reward);
+    }
+
+    @Override
+    public void addReward(UUID uuid, double reward) {
+        addReward(Bukkit.getOfflinePlayer(uuid), reward);
     }
 
     @Override
@@ -79,12 +87,17 @@ public class SkyEconomyHook implements SkyEconomyAbstraction {
     }
 
     @Override
-    public boolean canAfford(String player, double amount) {
+    public boolean canAfford(OfflinePlayer player, double amount) {
         return economy.has(player, amount);
     }
 
     @Override
-    public boolean charge(String player, double amount) {
+    public boolean canAfford(UUID uuid, double amount) {
+        return canAfford(Bukkit.getOfflinePlayer(uuid), amount);
+    }
+
+    @Override
+    public boolean charge(OfflinePlayer player, double amount) {
         EconomyResponse response = economy.withdrawPlayer(player, amount);
         if (response.type == EconomyResponse.ResponseType.NOT_IMPLEMENTED) {
             plugin.getLogger().log(Level.WARNING, "Vault-Implementing economy plugin {0} doesn''t support withdrawPlayer. This will cause players to not be able to buy anything.", economy.getName());
@@ -93,7 +106,17 @@ public class SkyEconomyHook implements SkyEconomyAbstraction {
     }
 
     @Override
-    public double getAmount(String player) {
+    public boolean charge(UUID uuid, double amount) {
+        return charge(Bukkit.getOfflinePlayer(uuid), amount);
+    }
+
+    @Override
+    public double getAmount(OfflinePlayer player) {
         return economy.getBalance(player);
+    }
+
+    @Override
+    public double getAmount(UUID uuid) {
+        return getAmount(Bukkit.getOfflinePlayer(uuid));
     }
 }

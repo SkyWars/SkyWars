@@ -93,7 +93,7 @@ public class SkyKitConfiguration implements SkyKits {
         for (SkyKit kit : kits.values()) {
             String perm = kit.getPermission();
             int cost = kit.getCost();
-            if ((perm == null || p.hasPermission(perm)) && (cost == 0 || plugin.getEconomyHook().canAfford(p.getName(), cost))) {
+            if ((perm == null || p.hasPermission(perm)) && (cost == 0 || plugin.getEconomyHook().canAfford(p, cost))) {
                 list.add(kit);
             }
         }
@@ -106,7 +106,7 @@ public class SkyKitConfiguration implements SkyKits {
         for (SkyKit kit : kits.values()) {
             String perm = kit.getPermission();
             int cost = kit.getCost();
-            if ((perm != null && !p.hasPermission(perm)) || (cost != 0 && !plugin.getEconomyHook().canAfford(p.getName(), cost))) {
+            if ((perm != null && !p.hasPermission(perm)) || (cost != 0 && !plugin.getEconomyHook().canAfford(p, cost))) {
                 list.add(kit);
             }
         }

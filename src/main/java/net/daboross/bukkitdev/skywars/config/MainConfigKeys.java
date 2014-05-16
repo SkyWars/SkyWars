@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2013-2014 Dabo Ross <http://www.daboross.net/>
  *

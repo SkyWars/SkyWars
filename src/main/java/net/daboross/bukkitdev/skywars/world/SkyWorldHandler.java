@@ -19,6 +19,7 @@ package net.daboross.bukkitdev.skywars.world;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -104,10 +105,10 @@ public class SkyWorldHandler {
             for (int i = 0, currentSpawn = 0; i < numTeams; i++) {
                 Location spawn = min.add(spawns.get(currentSpawn++)).toLocation();
                 SkyStatic.debug("Starting spawning team #%s to spawn %s", i, spawn);
-                for (String name : game.getAllPlayersInTeam(i)) {
-                    SkyStatic.debug("Sending %s to that spawn", name);
-                    Player p = Bukkit.getPlayerExact(name);
+                for (UUID uuid : game.getAllPlayersInTeam(i)) {
+                    Player p = Bukkit.getPlayer(uuid);
                     if (p != null) {
+                        SkyStatic.debug("Sending %s (uuid: %s) to that spawn", p.getName(), uuid);
                         p.teleport(spawn);
                     }
                 }

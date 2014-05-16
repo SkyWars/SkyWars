@@ -17,7 +17,7 @@
 package net.daboross.bukkitdev.skywars.listeners;
 
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
-import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayer;
+import net.daboross.bukkitdev.skywars.api.players.SkyPlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -32,7 +32,7 @@ public class QuitListener implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent evt) {
-        SkyPlayer skyPlayer = plugin.getInGame().getPlayer(evt.getPlayer());
+        SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(evt.getPlayer());
         if (skyPlayer != null) {
             switch (skyPlayer.getState()) {
                 case IN_QUEUE:

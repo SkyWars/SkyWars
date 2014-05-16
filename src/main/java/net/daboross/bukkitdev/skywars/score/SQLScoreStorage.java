@@ -21,6 +21,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
 import net.daboross.bukkitdev.asyncsql.AsyncSQL;
@@ -31,14 +32,16 @@ import net.daboross.bukkitdev.asyncsql.SQLConnectionInfo;
 import net.daboross.bukkitdev.asyncsql.SQLRunnable;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
-import net.daboross.bukkitdev.skywars.api.score.ScoreCallback;
-import net.daboross.bukkitdev.skywars.api.score.ScoreStorageBackend;
+import net.daboross.bukkitdev.skywars.api.storage.ScoreCallback;
+import net.daboross.bukkitdev.skywars.api.storage.SkyStorageBackend;
+import net.daboross.bukkitdev.skywars.player.AbstractSkyPlayer;
 import org.bukkit.entity.Player;
 
 // TODO: Implement
-public class SQLScoreStorage extends ScoreStorageBackend {
+public class SQLScoreStorage extends SkyStorageBackend {
 
     private final Map<UUID, Integer> scoreCache = new HashMap<>();
+    private final HashSet<UUID> unsavedValues = new HashSet<>();
     private final AsyncSQL sql;
     private final String tableName = "skywars_user";
 
@@ -66,6 +69,7 @@ public class SQLScoreStorage extends ScoreStorageBackend {
 
     @Override
     public void addScore(final UUID uuid, final int diff) {
+        cacheAdd(uuid, diff, true);
         sql.run("add " + diff + " score to " + uuid, new SQLRunnable() {
             @Override
             public void run(final Connection connection) throws SQLException {
@@ -83,6 +87,7 @@ public class SQLScoreStorage extends ScoreStorageBackend {
 
     @Override
     public void setScore(final UUID uuid, final int score) {
+        cacheSet(uuid, score, true);
         sql.run("set " + uuid + "'s score to " + score, new SQLRunnable() {
             @Override
             public void run(final Connection connection) throws SQLException {
@@ -116,23 +121,21 @@ public class SQLScoreStorage extends ScoreStorageBackend {
 
     @Override
     public void save() throws IOException {
+        for (UUID unsavedUuid : unsavedValues) {
+            setScore(unsavedUuid, cacheGet(unsavedUuid));
+        }
     }
 
     @Override
-    public int getCachedOnlineScore(final UUID uuid) {
-        Integer score = cacheGet(uuid);
-        return score == null ? 0 : score;
-    }
-
-    @Override
-    public void loadCachedScore(final Player player) {
+    public SQLSkyPlayer loadPlayer(final Player player) {
         final UUID uuid = player.getUniqueId();
         getScore(uuid, new ScoreCallback() {
             @Override
             public void scoreGetCallback(final int score) {
-                cacheSet(uuid, score);
+                cacheSet(uuid, score, true); // true because this score is saved.
             }
         });
+        return new SQLSkyPlayer(player);
     }
 
     private Integer cacheGet(final UUID uuid) {
@@ -141,9 +144,56 @@ public class SQLScoreStorage extends ScoreStorageBackend {
         }
     }
 
-    private void cacheSet(final UUID uuid, final int value) {
+    private void cacheSet(final UUID uuid, final int value, boolean saving) {
         synchronized (scoreCache) {
             scoreCache.put(uuid, value);
+            if (saving) {
+                // this is just a shortcut, so the remove is inside the synchronized block
+                unsavedValues.remove(uuid);
+            } else {
+                unsavedValues.add(uuid);
+            }
+        }
+    }
+
+    private void cacheAdd(final UUID uuid, final int value, boolean saving) {
+        synchronized (scoreCache) {
+            if (scoreCache.containsKey(uuid)) {
+                scoreCache.put(uuid, scoreCache.get(uuid) + value);
+            }
+            if (saving) {
+                // this is just a shortcut, so the remove is inside the synchronized block
+                unsavedValues.remove(uuid);
+            } else {
+                unsavedValues.add(uuid);
+            }
+        }
+    }
+
+    private class SQLSkyPlayer extends AbstractSkyPlayer {
+
+        public SQLSkyPlayer(final Player player) {
+            super(player);
+        }
+
+        @Override
+        public void loggedOut() {
+            SQLScoreStorage.this.setScore(uuid, cacheGet(uuid));
+        }
+
+        @Override
+        public int getScore() {
+            return cacheGet(uuid);
+        }
+
+        @Override
+        public void setScore(final int score) {
+            cacheSet(uuid, score, false);
+        }
+
+        @Override
+        public void addScore(final int diff) {
+            cacheAdd(uuid, diff, false);
         }
     }
 }
