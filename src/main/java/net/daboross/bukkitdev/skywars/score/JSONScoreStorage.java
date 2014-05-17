@@ -28,13 +28,14 @@ import java.nio.file.StandardCopyOption;
 import java.util.Locale;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
-import net.daboross.bukkitdev.skywars.api.points.PointStorageBackend;
+import net.daboross.bukkitdev.skywars.api.score.ScoreCallback;
+import net.daboross.bukkitdev.skywars.api.score.ScoreStorageBackend;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-public class JSONScoreStorage extends PointStorageBackend {
+public class JSONScoreStorage extends ScoreStorageBackend {
 
     private final File saveFileBuffer;
     private final File saveFile;
@@ -97,28 +98,38 @@ public class JSONScoreStorage extends PointStorageBackend {
     }
 
     @Override
-    public void addScore(String player, int diff) {
-        player = player.toLowerCase(Locale.ENGLISH);
+    public void loadCachedScore(final String playerName) {
+
+    }
+
+    @Override
+    public void addScore(String playerName, int diff) {
+        playerName = playerName.toLowerCase(Locale.ENGLISH);
         try {
-            scores.put(player, scores.getInt(player) + diff);
+            scores.put(playerName, scores.getInt(playerName) + diff);
         } catch (JSONException unused) {
-            scores.put(player, diff);
+            scores.put(playerName, diff);
         }
     }
 
     @Override
-    public void setScore(String player, int score) {
-        player = player.toLowerCase(Locale.ENGLISH);
-        scores.put(player, score);
+    public void setScore(String playerName, int score) {
+        playerName = playerName.toLowerCase(Locale.ENGLISH);
+        scores.put(playerName, score);
     }
 
     @Override
-    public int getScore(String player) {
-        player = player.toLowerCase(Locale.ENGLISH);
+    public int getCachedOnlineScore(String playerName) {
+        playerName = playerName.toLowerCase(Locale.ENGLISH);
         try {
-            return scores.getInt(player);
+            return scores.getInt(playerName);
         } catch (JSONException unused) {
             return 0;
         }
+    }
+
+    @Override
+    public void getScore(String playerName, ScoreCallback callback) {
+        callback.scoreGetCallback(getCachedOnlineScore(playerName));
     }
 }

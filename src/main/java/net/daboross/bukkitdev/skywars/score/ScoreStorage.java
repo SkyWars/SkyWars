@@ -27,35 +27,44 @@ import net.daboross.bukkitdev.skywars.StartupFailedException;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
-import net.daboross.bukkitdev.skywars.api.points.PointStorageBackend;
-import net.daboross.bukkitdev.skywars.api.points.SkyPoints;
+import net.daboross.bukkitdev.skywars.api.score.ScoreCallback;
+import net.daboross.bukkitdev.skywars.api.score.ScoreStorageBackend;
+import net.daboross.bukkitdev.skywars.api.score.SkyScore;
 import net.daboross.bukkitdev.skywars.events.events.GameEndInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerDeathInArenaInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerKillPlayerInfo;
 import org.bukkit.entity.Player;
 
-public class ScoreStorage extends SkyPoints {
+public class ScoreStorage extends SkyScore {
 
     private final SkyWarsPlugin plugin;
-    private final PointStorageBackend backend;
+    private final ScoreStorageBackend backend;
     private final SaveTimer timer;
 
     @SuppressWarnings("UseSpecificCatch")
     public ScoreStorage(SkyWarsPlugin plugin) throws StartupFailedException {
         this.plugin = plugin;
-        Class<? extends PointStorageBackend> backendClass = getBackend();
+        Class<? extends ScoreStorageBackend> backendClass = getBackend();
         if (backendClass == null) {
-            backendClass = JSONScoreStorage.class;
+            if (plugin.getConfiguration().isScoreUseSql()) {
+                backendClass = SQLScoreStorage.class;
+                plugin.getLogger().log(Level.INFO, "[Score] Using SQL backend - Warning: SQL Score backend is incomplete, and may completely fail"); // TODO: Remove warning (when done with class)
+            } else {
+                backendClass = JSONScoreStorage.class;
+                plugin.getLogger().log(Level.INFO, "[Score] Using JSON backend");
+            }
+        } else {
+            plugin.getLogger().log(Level.INFO, "[Score] Using custom backend: '" + backendClass.getName() + "'");
         }
         try {
-            Constructor<? extends PointStorageBackend> constructor = backendClass.getConstructor(SkyWars.class);
+            Constructor<? extends ScoreStorageBackend> constructor = backendClass.getConstructor(SkyWars.class);
             this.backend = constructor.newInstance(plugin);
         } catch (Throwable ex) {
-            throw new StartupFailedException("Failed to initialize storage backend", ex);
+            throw new StartupFailedException("[Score] Failed to initialize storage backend", ex);
         }
-        long saveInterval = plugin.getConfiguration().getPointsSaveInterval();
+        long saveInterval = plugin.getConfiguration().getScoreSaveInterval();
         if (saveInterval > 0) {
-            timer = new SaveTimer(plugin, new SaveRunnable(), TimeUnit.SECONDS, plugin.getConfiguration().getPointsSaveInterval(), true);
+            timer = new SaveTimer(plugin, new SaveRunnable(), TimeUnit.SECONDS, plugin.getConfiguration().getScoreSaveInterval(), true);
         } else {
             timer = null;
         }
@@ -63,12 +72,12 @@ public class ScoreStorage extends SkyPoints {
 
     public void onKill(PlayerKillPlayerInfo info) {
         SkyConfiguration config = plugin.getConfiguration();
-        addScore(info.getKillerName(), config.getKillPointDiff());
+        addScore(info.getKillerName(), config.getKillScoreDiff());
     }
 
     public void onDeath(PlayerDeathInArenaInfo info) {
         SkyConfiguration config = plugin.getConfiguration();
-        addScore(info.getKilled().getName(), config.getDeathPointDiff());
+        addScore(info.getKilled().getName(), config.getDeathScoreDiff());
     }
 
     public void onGameEnd(GameEndInfo info) {
@@ -76,7 +85,7 @@ public class ScoreStorage extends SkyPoints {
         List<Player> alive = info.getAlivePlayers();
         if (!alive.isEmpty() && alive.size() <= info.getGame().getArena().getTeamSize()) {
             for (Player p : alive) {
-                addScore(p.getName(), config.getWinPointDiff());
+                addScore(p.getName(), config.getWinScoreDiff());
             }
         }
     }
@@ -91,8 +100,18 @@ public class ScoreStorage extends SkyPoints {
     }
 
     @Override
-    public synchronized int getScore(String name) {
-        return backend.getScore(name);
+    public synchronized void getScore(String name, ScoreCallback callback) {
+        backend.getScore(name, callback);
+    }
+
+    @Override
+    public int getCachedOnlineScore(final String name) {
+        return backend.getCachedOnlineScore(name);
+    }
+
+    @Override
+    public void loadCachedScore(final String name) {
+        backend.loadCachedScore(name);
     }
 
     public synchronized void save() throws IOException {
