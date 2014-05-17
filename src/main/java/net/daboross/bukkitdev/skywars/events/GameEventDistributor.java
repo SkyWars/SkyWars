@@ -62,10 +62,10 @@ public class GameEventDistributor {
             plugin.getCurrentGameTracker().onGameStart(info);
             plugin.getBroadcaster().broadcastStart(info);
             plugin.getTeamListener().onGameStart(info);
-            plugin.getInventorySaveListener().onGameStart(info);
-            // -- After InventorySaveListener --
+            plugin.getInventorySave().onGameStart(info);
+            // -- After InventorySave --
             plugin.getWorldHandler().onGameStart(info);
-            // -- After InventorySaveListener --
+            // -- After InventorySave --
             plugin.getInGame().onGameStart(info);
             plugin.getKitApplyListener().onGameStart(info);
             // -- After WorldHandler --
@@ -86,8 +86,8 @@ public class GameEventDistributor {
             // -- Normal --
             plugin.getBroadcaster().broadcastEnd(info);
             plugin.getTeamListener().onGameEnd(info);
-            if (plugin.getScore() != null) {
-                plugin.getScore().onGameEnd(info);
+            if (plugin.getPoints() != null) {
+                plugin.getPoints().onGameEnd(info);
             }
             if (plugin.getEcoRewards() != null) {
                 plugin.getEcoRewards().onGameEnd(info);
@@ -123,7 +123,7 @@ public class GameEventDistributor {
         try {
             // -- Normal --
             plugin.getResetHealth().onPlayerRespawn(info);
-            plugin.getInventorySaveListener().onPlayerRespawn(info);
+            plugin.getInventorySave().onPlayerRespawn(info);
             plugin.getInGame().onRespawn(info);
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new RespawnAfterLeaveGameEvent(plugin, info.getPlayer()));
@@ -137,8 +137,8 @@ public class GameEventDistributor {
         Validate.notNull(info, "Info cannot be null");
         try {
             // -- Normal --
-            if (plugin.getScore() != null) {
-                plugin.getScore().onKill(info);
+            if (plugin.getPoints() != null) {
+                plugin.getPoints().onKill(info);
             }
             if (plugin.getEcoRewards() != null) {
                 plugin.getEcoRewards().onPlayerKillPlayer(info);
@@ -155,8 +155,8 @@ public class GameEventDistributor {
         Validate.notNull(info, "Info cannot be null");
         try {
             // -- Normal --
-            if (plugin.getScore() != null) {
-                plugin.getScore().onDeath(info);
+            if (plugin.getPoints() != null) {
+                plugin.getPoints().onDeath(info);
             }
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new ArenaPlayerDeathEvent(plugin, info.getGameId(), info.getKilled()));

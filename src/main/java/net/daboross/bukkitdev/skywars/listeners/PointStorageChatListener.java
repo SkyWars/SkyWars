@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Dabo Ross <http://www.daboross.net/>
+ * Copyright (C) 2013-2014 Dabo Ross <http://www.daboross.net/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,20 +17,26 @@
 package net.daboross.bukkitdev.skywars.listeners;
 
 import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.points.SkyPoints;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-public class ScoreCacheOnJoinListener implements Listener {
+public class PointStorageChatListener implements Listener {
 
+    private static final String REPLACEMENT = "(?i)\\{SKYWARS\\.USER(SCORE|POINTS)\\}";
     private final SkyWars plugin;
 
-    public ScoreCacheOnJoinListener(final SkyWars plugin) {
+    public PointStorageChatListener(final SkyWars plugin) {
         this.plugin = plugin;
     }
 
-    @EventHandler
-    public void onJoin(PlayerJoinEvent evt) {
-        plugin.getScore().loadCachedScore(evt.getPlayer().getName());
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onChat(AsyncPlayerChatEvent evt) {
+        SkyPoints points = plugin.getPoints();
+        if (points != null) {
+            evt.setFormat(evt.getFormat().replaceAll(REPLACEMENT, String.valueOf(points.getScore(evt.getPlayer().getName()))));
+        }
     }
 }

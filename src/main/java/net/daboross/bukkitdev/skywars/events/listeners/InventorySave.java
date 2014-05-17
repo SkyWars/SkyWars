@@ -26,11 +26,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-public class InventorySaveListener {
+public class InventorySave {
 
     private final SkyWars plugin;
 
-    public InventorySaveListener(final SkyWars plugin) {
+    public InventorySave(final SkyWars plugin) {
         this.plugin = plugin;
     }
 

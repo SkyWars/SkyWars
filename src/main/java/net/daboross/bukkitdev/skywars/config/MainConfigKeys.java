@@ -30,19 +30,13 @@ class MainConfigKeys {
 //    public static final String PER_ARENA_DEATH_MESSAGES_ENABLED = "enable-per-arena-death-messages";
 //    public static final String PER_ARENA_WIN_MESSAGES_ENABLED = "enable-per-arena-win-messages";
 
-    public static class Score {
+    public static class Points {
 
         public static final String ENABLE = "points.enable-points";
         public static final String DEATH_DIFF = "points.death-point-diff";
         public static final String WIN_DIFF = "points.win-point-diff";
         public static final String KILL_DIFF = "points.kill-point-diff";
         public static final String SAVE_INTERVAL = "points.max-save-interval";
-        public static final String USE_SQL = "points.use-sql";
-        public static final String SQL_HOST = "points.sql.host";
-        public static final String SQL_PORT = "points.sql.port";
-        public static final String SQL_DATABASE = "points.sql.database";
-        public static final String SQL_USERNAME = "points.sql.username";
-        public static final String SQL_PASSWORD = "points.sql.password";
     }
 
     public static class Economy {

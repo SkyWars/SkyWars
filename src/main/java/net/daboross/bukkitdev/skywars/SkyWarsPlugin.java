@@ -39,10 +39,10 @@ import net.daboross.bukkitdev.skywars.economy.SkyEconomyGameRewards;
 import net.daboross.bukkitdev.skywars.economy.SkyEconomyHook;
 import net.daboross.bukkitdev.skywars.events.GameEventDistributor;
 import net.daboross.bukkitdev.skywars.events.listeners.GameBroadcaster;
-import net.daboross.bukkitdev.skywars.events.listeners.InventorySaveListener;
+import net.daboross.bukkitdev.skywars.events.listeners.InventorySave;
 import net.daboross.bukkitdev.skywars.events.listeners.KitApplyListener;
 import net.daboross.bukkitdev.skywars.events.listeners.KitQueueNotifier;
-import net.daboross.bukkitdev.skywars.events.listeners.ResetHealthListener;
+import net.daboross.bukkitdev.skywars.events.listeners.ResetHealth;
 import net.daboross.bukkitdev.skywars.game.CurrentGames;
 import net.daboross.bukkitdev.skywars.game.GameHandler;
 import net.daboross.bukkitdev.skywars.game.GameIDHandler;
@@ -52,10 +52,9 @@ import net.daboross.bukkitdev.skywars.listeners.AttackerStorageListener;
 import net.daboross.bukkitdev.skywars.listeners.BuildingLimiter;
 import net.daboross.bukkitdev.skywars.listeners.CommandWhitelistListener;
 import net.daboross.bukkitdev.skywars.listeners.MobSpawnDisable;
+import net.daboross.bukkitdev.skywars.listeners.PointStorageChatListener;
 import net.daboross.bukkitdev.skywars.listeners.PortalListener;
 import net.daboross.bukkitdev.skywars.listeners.QuitListener;
-import net.daboross.bukkitdev.skywars.listeners.ScoreCacheOnJoinListener;
-import net.daboross.bukkitdev.skywars.listeners.ScoreReplaceChatListener;
 import net.daboross.bukkitdev.skywars.listeners.SpawnListener;
 import net.daboross.bukkitdev.skywars.player.CurrentlyInGame;
 import net.daboross.bukkitdev.skywars.score.ScoreStorage;
@@ -78,29 +77,25 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     private SkyTranslations translations;
     private SkyConfiguration configuration;
     private SkyLocationStore locationStore;
-    private SkyGameHandler gameHandler;
-    private SkyWorldHandler worldHandler;
-    private SkyEconomyHook economyHook;
-    private SkyEconomyGameRewards ecoRewards;
-    private SkyKits kits;
     private GameQueue gameQueue;
     private CurrentGames currentGameTracker;
+    private SkyGameHandler gameHandler;
     private GameIDHandler idHandler;
-    private GameBroadcaster broadcaster;
-    private GameEventDistributor distributor;
-    private ScoreStorage score;
-    private KitQueueNotifier kitQueueNotifier;
-
-    private CurrentlyInGame inGame;
-    private TeamScoreboardListener teamListener;
+    private SkyWorldHandler worldHandler;
     private AttackerStorageListener attackerStorage;
-    // Info listeners
-    private ResetHealthListener resetHealth;
+    private GameBroadcaster broadcaster;
+    private ResetHealth resetHealth;
+    private GameEventDistributor distributor;
+    private InventorySave inventorySave;
+    private ScoreStorage points;
+    private PointStorageChatListener chatListener;
+    private SkyEconomyHook economyHook;
+    private SkyEconomyGameRewards ecoRewards;
+    private TeamScoreboardListener teamListener;
+    private SkyKits kits;
+    private KitQueueNotifier kitQueueNotifier;
     private KitApplyListener kitApplyListener;
-    private InventorySaveListener inventorySaveListener;
-    // Bukkit listeners
-    private ScoreReplaceChatListener chatListener;
-    private ScoreCacheOnJoinListener joinListener;
+    private CurrentlyInGame inGame;
     private boolean enabledCorrectly = false;
 
     @Override
@@ -144,8 +139,8 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         idHandler = new GameIDHandler();
         broadcaster = new GameBroadcaster();
         worldHandler = new SkyWorldHandler(this);
-        inventorySaveListener = new InventorySaveListener(this);
-        resetHealth = new ResetHealthListener();
+        inventorySave = new InventorySave(this);
+        resetHealth = new ResetHealth();
         locationStore = new LocationStore(this);
         gameQueue = new GameQueue(this);
         gameHandler = new GameHandler(this);
@@ -153,10 +148,9 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         distributor = new GameEventDistributor(this);
         teamListener = new TeamScoreboardListener();
         inGame = new CurrentlyInGame();
-        if (configuration.isEnableScore()) {
-            score = new ScoreStorage(this);
-            chatListener = new ScoreReplaceChatListener(this);
-            joinListener = new ScoreCacheOnJoinListener(this);
+        if (configuration.isEnablePoints()) {
+            points = new ScoreStorage(this);
+            chatListener = new PointStorageChatListener(this);
         }
         if (configuration.isEconomyEnabled()) {
             SkyStatic.debug("Enabling economy support");
@@ -183,7 +177,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         registerListeners(pm, new SpawnListener(), attackerStorage,
                 new QuitListener(this), new PortalListener(this),
                 new CommandWhitelistListener(this), new BuildingLimiter(this),
-                new MobSpawnDisable(), chatListener, joinListener);
+                new MobSpawnDisable(), chatListener);
         enabledCorrectly = true;
     }
 
@@ -200,11 +194,11 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         if (enabledCorrectly) {
             locationStore.save();
             idHandler.saveAndUnload(this);
-            if (score != null) {
+            if (points != null) {
                 try {
-                    score.save();
+                    points.save();
                 } catch (IOException ex) {
-                    getLogger().log(Level.WARNING, "Failed to save score", ex);
+                    getLogger().log(Level.WARNING, "Failed to save points", ex);
                 }
             }
             getLogger().log(Level.INFO, "Unloading arena world - without saving");
@@ -305,8 +299,8 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     }
 
     @Override
-    public ScoreStorage getScore() {
-        return score;
+    public ScoreStorage getPoints() {
+        return points;
     }
 
     @Override
@@ -332,7 +326,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         return broadcaster;
     }
 
-    public ResetHealthListener getResetHealth() {
+    public ResetHealth getResetHealth() {
         return resetHealth;
     }
 
@@ -340,8 +334,8 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         return distributor;
     }
 
-    public InventorySaveListener getInventorySaveListener() {
-        return inventorySaveListener;
+    public InventorySave getInventorySave() {
+        return inventorySave;
     }
 
     public SkyEconomyGameRewards getEcoRewards() {
