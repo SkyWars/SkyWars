@@ -63,7 +63,7 @@ public class KitCommand extends SubCommand {
                 sender.sendMessage(SkyTrans.get(TransKey.CMD_KIT_UNKNOWN_KIT, subCommandArgs[0]));
                 return;
             }
-            if (!p.hasPermission(kit.getPermission())) {
+            if (kit.getPermission() != null && !p.hasPermission(kit.getPermission())) {
                 p.sendMessage(SkyTrans.get(TransKey.CMD_KIT_NO_ACCESS, kit.getName()));
                 return;
             }
