@@ -1,7 +1,9 @@
 #### Index
 
+* [Home](http://dabo.guru/skywars/)
 * [GitHub/SkyWars](https://github.com/SkyWars/SkyWars)
-* [Index](http://dabo.guru/skywars/)
+* [BukkitDev/SkyWars](http://dev.bukkit.org/bukkit-plugins/skywars/)
+* [SpigotMC/SkyWars](http://www.spigotmc.org/resources/skywars.167/)
 * [Commands and Permissions](http://dabo.guru/skywars/commands-and-permissions)
 * [Configuring SkyWars](http://dabo.guru/skywars/configuring-skywars)
 * [Configuring Kits](http://dabo.guru/skywars/configuring-kits)
