@@ -1,4 +1,4 @@
-## SkyWars - Automated minigames!
+![SkyWars](http://dabo.guru/logo/SkyWars.png)
 
 ## Features
 * Automatically create new arenas every time enough people join the queue.
@@ -11,18 +11,19 @@
 
 ## Basic Installation
 * Make sure your server is running Java 7. SkyWars **will not function** with Java 6.
-* Download the SkyWars jar file, and put it in your plugins/ directory. SkyWars 1.4.3 supports minecraft 1.5.2, 1.6.4 and 1.7.2.
+* Download the SkyWars.jar file, and put it in your plugins/ directory. SkyWars v1.4.4 supports minecraft 1.5.2, 1.6.4 and 1.7.2.
 * Restart your server. SkyWars will automatically create 2 new worlds. SkyWarsBaseWorld and SkyWarsArenaWorld.
 * Go to where you want the lobby to be and use **/sw setlobby**.
 
 ## Useful links
-* [Commands and Permissions](https://github.com/SkyWars/SkyWars/wiki/Commands-and-Permissions)
-* [Configuration Guide](https://github.com/SkyWars/SkyWars/wiki/Configuration)
-* [Setting up a new Arena](https://github.com/SkyWars/SkyWars/wiki/Setting-up-a-new-arena)
-* [Worlds Created](https://github.com/SkyWars/SkyWars/wiki/Worlds)
-* [Common Issues](https://github.com/SkyWars/SkyWars/wiki/Common-Issues)
+* [Commands and Permissions](http://dabo.guru/skywars/commands-and-permissions)
+* [Configuration Guide](http://dabo.guru/skywars/configuring-skywars)
+* [Setting up a new Arena](http://dabo.guru/skywars/creating-an-arena)
+* [Worlds Created](http://dabo.guru/skywars/skywars-worlds)
+* [Common Issues / Troubleshooting](http://dabo.guru/skywars/troubleshooting)
 * [GitHub](https://github.com/SkyWars/SkyWars)
 * [MCStats Statistics](http://mcstats.org/plugin/SkyWars)
+
 ## Development builds
 Development builds of this project can be acquired at the provided continuous integration server.
 These builds have not been approved by the BukkitDev staff. Use them at your own risk.
@@ -40,7 +41,7 @@ SkyWars has the ability to use gist.github.com to generate a debug report for yo
 ## Bug Reports, Feature Requests and General Questions
 Please use the SkyWars issue tracker for all bug reports, feature requests and general questions.
 
-See [submitting a ticket](https://github.com/SkyWars/SkyWars/wiki/Submitting-a-ticket) for instructions on how to do this.
+See [submitting a ticket](http://dabo.guru/skywars/submitting-a-ticket) for instructions on how to do this.
 
 ## Map Credit
 Full credit for the default map, Skyblock Warriors, goes to [SwipeShot](http://www.youtube.com/user/SwipeShot)

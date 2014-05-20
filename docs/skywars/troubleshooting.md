@@ -9,7 +9,7 @@ If this solves your problem, then great! If it doesn't continue on to 1).
 1. Try starting the server with no plugins besides SkyWars.  This is easily done by moving all of the plugin jar files
    outside of the plugins/ folder. If removing all of the plugins works, continue on to step 2.
 
-- If that doesn't work, then [submit a ticket](https://github.com/skywars/submitting-a-ticket).
+- If that doesn't work, then [submit a ticket](https://dabo.guru/skywars/submitting-a-ticket).
 
 2. If removing all plugins works, you can use a [binary search](https://en.wikipedia.org/wiki/Binary_search_algorithm)
    method to find which plugin is causing the problem. This basically means putting back half the plugins, start the
@@ -38,5 +38,5 @@ debian-based systems) and see if java 6 is installed. Java 6 sometimes overrides
 
 You might have found an error in SkyWars!
 
-[Submit a ticket](https://github.com/skywars/submitting-a-ticket) with your issue.
+[Submit a ticket](https://dabo.guru/skywars/submitting-a-ticket) with your issue.
 Explain what is happening, and include any errors that show in console.

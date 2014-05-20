@@ -9,3 +9,4 @@
 * [SkyWars Worlds](http://dabo.guru/skywars/skywars-worlds)
 * [Troubleshooting SkyWars](http://dabo.guru/skywars/troubleshooting)
 * [Submitting a ticket](http://dabo.guru/skywars/submitting-a-ticket)
+* [Version Changes](http://dabo.guru/skywars/changelog)
