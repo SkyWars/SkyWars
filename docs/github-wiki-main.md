@@ -9,7 +9,7 @@
 
 ### Basic Installation
 * Make sure your server is running Java 7. SkyWars **will not function** with Java 6.
-* Download SkyWars jar file, and put it in your plugins/ directory. SkyWars supports minecraft 1.5.2, 1.6.4 and 1.7.2.
+* Download the SkyWars.jar file, and put it in your plugins/ directory. SkyWars v1.4.4 supports minecraft 1.5.2, 1.6.4 and 1.7.2.
 * Restart your server. SkyWars will automatically create 2 new worlds. SkyWarsBaseWorld and SkyWarsArenaWorld.
 * Go to where you want the lobby to be and use **/sw setlobby**.
 
@@ -20,7 +20,7 @@
 * [Worlds Created](https://github.com/SkyWars/SkyWars/wiki/Worlds)
 * [Common Issues](https://github.com/SkyWars/SkyWars/wiki/Common-Issues)
 * [GitHub](https://github.com/SkyWars/SkyWars)
-* [MCStats Statistics](http://mcstats.org/plugin/SkyWars)* [Portuguese Tutorial - Liga����o para tutorial AbsintoJ feito](http://www.youtube.com/watch?v=hYTq39Iomz0)
+* [MCStats Statistics](http://mcstats.org/plugin/SkyWars)
 * [TeamCity Development Builds - CI Server](http://ci.dabo.guru/p/SkyWarsParent)
 * [Download Latest Snapshot](http://ci.dabo.guru/d/SkyWarsParent_SkyWars_MainBuild/SkyWars.jar)
 
@@ -30,7 +30,11 @@ All gathered data can be viewed at [http://mcstats.org/plugin/SkyWars](http://mc
 To opt out, change **opt-out: false** to **opt-out: true** in **plugins/PluginMetrics/config.yml**
 
 #### SkyWars Report
-SkyWars has the ability to use gist.github.com to generate a debug report for your server. When you use the **/sw report** command, SkyWars will gather information about your server, post it to gist.github.com, and give you a URL. SkyWars does not communicate with gist.github.com unless an admin uses the **/sw report** command. If you want to make it so that no one can use the **/sw report** command, add the following line to your **main-config.yml** file: **disable-report: true**
+SkyWars has the ability to use gist.github.com to generate a debug report for your server. When you use the
+**/sw report** command, SkyWars will gather information about your server, post it to gist.github.com, and give you a
+URL. SkyWars does not communicate with gist.github.com unless an admin uses the **/sw report** command. If you want to
+make it so that no one can use the **/sw report** command, add the following line to your **main-config.yml** file:
+**disable-report: true**
 
 
 ### Bug reports, Feature requests and other Questions

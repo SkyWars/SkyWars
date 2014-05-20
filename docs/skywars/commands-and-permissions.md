@@ -27,7 +27,7 @@ Commands and Permissions
 | **/sws** **setpos1**  | skywars.setup      | Sets the first position for where to copy the arena from. |
 | **/sws** **setpos2**  | skywars.setup      | Sets the position opposite from the first position to copy the arena from. |
 | **/sws** **addspawn** | skywars.setup      | Adds a spawn position to the arena at your current location. |
-| **/sws** **save** | skywars.setup      | Saves the configuration to file under the name you started with. |
+| **/sws** **save**     | skywars.setup      | Saves the configuration to file under the name you started with. |
 
 * Note: The /sws command descriptions are brief. If you want a guide on how to use them, check out [Setting up a new arena](http://dabo.guru/skywars/creating-an-arena).
 
