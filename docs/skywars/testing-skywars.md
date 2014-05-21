@@ -1,5 +1,11 @@
-This file overviews all the features of SkyWars that need to be tested manually for each release.
----
+SkyWars Function Testing
+------------------------
+
+This file overviews all the features of SkyWars that need to be tested manually.
+
+This is for use if you want to submit a Pull Request to SkyWars and confirm that it doesn't break anything, or you want to test a development build for yourself.
+
+This basically just lists all the things that are required to consider a SkyWars build "working".
 
 * Start two arenas, confirm `/sw cancelall` works
 * Start two arenas, confirm `/sw cancel` works on each
