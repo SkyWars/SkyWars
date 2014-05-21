@@ -54,7 +54,7 @@ import net.daboross.bukkitdev.skywars.listeners.CommandWhitelistListener;
 import net.daboross.bukkitdev.skywars.listeners.MobSpawnDisable;
 import net.daboross.bukkitdev.skywars.listeners.PortalListener;
 import net.daboross.bukkitdev.skywars.listeners.QuitListener;
-import net.daboross.bukkitdev.skywars.listeners.ScoreCacheOnJoinListener;
+import net.daboross.bukkitdev.skywars.listeners.StorageLoadListener;
 import net.daboross.bukkitdev.skywars.listeners.ScoreReplaceChatListener;
 import net.daboross.bukkitdev.skywars.listeners.SpawnListener;
 import net.daboross.bukkitdev.skywars.player.OnlineSkyPlayers;
@@ -100,7 +100,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     private InventorySaveListener inventorySaveListener;
     // Bukkit listeners
     private ScoreReplaceChatListener chatListener;
-    private ScoreCacheOnJoinListener joinListener;
+    private StorageLoadListener joinListener;
     private boolean enabledCorrectly = false;
 
     @Override
@@ -157,7 +157,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         if (configuration.isEnableScore()) {
             score = new ScoreStorage(this);
             chatListener = new ScoreReplaceChatListener(this);
-            joinListener = new ScoreCacheOnJoinListener(this);
+            joinListener = new StorageLoadListener(this);
         }
         if (configuration.isEconomyEnabled()) {
             SkyStatic.debug("Enabling economy support");

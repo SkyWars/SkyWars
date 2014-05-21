@@ -20,17 +20,23 @@ import net.daboross.bukkitdev.skywars.api.SkyWars;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
-public class ScoreCacheOnJoinListener implements Listener {
+public class StorageLoadListener implements Listener {
 
     private final SkyWars plugin;
 
-    public ScoreCacheOnJoinListener(final SkyWars plugin) {
+    public StorageLoadListener(final SkyWars plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent evt) {
-        plugin.getScore().loadPlayer(evt.getPlayer());
+        plugin.getPlayers().loadPlayer(evt.getPlayer());
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent evt) {
+        plugin.getPlayers().unloadPlayer(evt.getPlayer().getUniqueId());
     }
 }
