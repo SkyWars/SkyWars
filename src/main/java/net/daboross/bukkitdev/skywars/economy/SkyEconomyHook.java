@@ -49,10 +49,19 @@ public class SkyEconomyHook implements SkyEconomyAbstraction {
 
     @Override
     public void addReward(OfflinePlayer player, double reward) {
-        if (reward > 0) {
-            economy.depositPlayer(player, reward);
-        } else if (reward < 0) {
-            economy.withdrawPlayer(player, -reward);
+        try {
+            if (reward > 0) {
+                economy.depositPlayer(player, reward);
+            } else if (reward < 0) {
+                economy.withdrawPlayer(player, -reward);
+            }
+        } catch (NoSuchMethodError ignored) {
+            // Remain compatible with older versions of Vault
+            if (reward > 0) {
+                economy.depositPlayer(player.getName(), reward);
+            } else if (reward < 0) {
+                economy.withdrawPlayer(player.getName(), -reward);
+            }
         }
         SkyStatic.debug("Gave %s an economy reward of %s", player.getName(), reward);
     }
@@ -88,7 +97,12 @@ public class SkyEconomyHook implements SkyEconomyAbstraction {
 
     @Override
     public boolean canAfford(OfflinePlayer player, double amount) {
-        return economy.has(player, amount);
+        try {
+            return economy.has(player, amount);
+        } catch (NoSuchMethodError ignored) {
+            // Remain compatible with older versions of Vault
+            return economy.has(player.getName(), amount);
+        }
     }
 
     @Override
@@ -98,7 +112,13 @@ public class SkyEconomyHook implements SkyEconomyAbstraction {
 
     @Override
     public boolean charge(OfflinePlayer player, double amount) {
-        EconomyResponse response = economy.withdrawPlayer(player, amount);
+        EconomyResponse response;
+        try {
+            response = economy.withdrawPlayer(player, amount);
+        } catch (NoSuchMethodError ignored) {
+            // Remain compatible with older versions of Vault
+            response = economy.withdrawPlayer(player.getName(), amount);
+        }
         if (response.type == EconomyResponse.ResponseType.NOT_IMPLEMENTED) {
             plugin.getLogger().log(Level.WARNING, "Vault-Implementing economy plugin {0} doesn''t support withdrawPlayer. This will cause players to not be able to buy anything.", economy.getName());
         }
@@ -112,7 +132,12 @@ public class SkyEconomyHook implements SkyEconomyAbstraction {
 
     @Override
     public double getAmount(OfflinePlayer player) {
-        return economy.getBalance(player);
+        try {
+            return economy.getBalance(player);
+        } catch (NoSuchMethodError ignored) {
+            // Remain compatible with older versions of Vault
+            return economy.getBalance(player.getName());
+        }
     }
 
     @Override
