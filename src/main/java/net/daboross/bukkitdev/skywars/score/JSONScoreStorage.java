@@ -61,13 +61,13 @@ public class JSONScoreStorage extends SkyStorageBackend {
     private JSONObject load() throws IOException, FileNotFoundException {
         if (!saveFile.exists()) {
             JSONObject newStorage = new JSONObject();
-            newStorage.put("uuid-score", new JSONObject());
+            newStorage.put("uuid-players-v1", new JSONObject());
             if (oldSaveFile.exists()) {
                 skywars.getLogger().log(Level.INFO, "Found old score storage file, attempting to import data");
                 JSONObject oldStorage = loadFile(oldSaveFile);
-                newStorage.put("name-score", oldStorage); // Be lazy and just copy the whole JSONObject.
+                newStorage.put("legacy-name-score", oldStorage); // Be lazy and just copy the whole JSONObject.
             } else {
-                newStorage.put("name-score", new JSONObject());
+                newStorage.put("legacy-name-score", new JSONObject());
             }
             return newStorage;
         } else {
@@ -120,13 +120,27 @@ public class JSONScoreStorage extends SkyStorageBackend {
     @Override
     public SkyInternalPlayer loadPlayer(final Player player) {
         String uuid = player.getUniqueId().toString();
+        String name = player.getName();
         JSONObject playerObj = uuidToStoredPlayer.optJSONObject(uuid);
         if (playerObj == null) {
             playerObj = new JSONObject();
-            if (nameToScore.has(player.getName().toLowerCase())) {
-                SkyStatic.debug("Migrated score for %s to UUID (uuid: %s)", player.getName(), uuid);
-                playerObj.put("score", nameToScore.get(player.getName().toLowerCase()));
+            uuidToStoredPlayer.put(uuid, playerObj);
+            playerObj.put("username", name);
+            if (nameToScore.has(name.toLowerCase())) {
+                SkyStatic.debug("Migrated score for %s to UUID (uuid: %s)", name, uuid);
+                playerObj.put("score", nameToScore.get(name.toLowerCase()));
+                nameToScore.remove(name.toLowerCase());
             } else {
+                playerObj.put("score", 0);
+            }
+        } else {
+            if (!playerObj.has("username")) {
+                playerObj.put("username", name);
+            } else if (!playerObj.get("username").equals(name)) {
+                SkyStatic.log("Username of (uuid: %s) changed from %s to %s", uuid, playerObj.get("username"), name);
+                playerObj.put("username", name);
+            }
+            if (!playerObj.has("score")) {
                 playerObj.put("score", 0);
             }
         }
@@ -183,8 +197,7 @@ public class JSONScoreStorage extends SkyStorageBackend {
 
         @Override
         public void setScore(final int score) {
-            playerObj.put("score", score)
-            ;
+            playerObj.put("score", score);
         }
 
         @Override
