@@ -212,6 +212,6 @@
     </issueManagement>
     <ciManagement>
         <system>teamcity</system>
-        <url>http://dabo.guru/ci-p/SkyWarsParent_SkyWars</url>
+        <url>http://ci.dabo.guru/p/SkyWarsParent_SkyWars</url>
     </ciManagement>
 </project>
