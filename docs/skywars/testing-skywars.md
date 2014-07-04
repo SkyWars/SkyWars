@@ -7,9 +7,10 @@ This is for use if you want to submit a Pull Request to SkyWars and confirm that
 
 This basically just lists all the things that are required to consider a SkyWars build "working".
 
-Some things here aren't listed, but are implied by other steps. For instance, there is no reason to test "Confirm you win a game after killing everyone"
-if you're already testing "Confirm your score is increased when you win a game"- at least currently. I may add explicit test for things already implied
-by other tests in the future, but it seems a bit redundant.
+Some things here aren't listed, but are implied by other steps. For instance, there is no reason to test `Confirm you win a game after killing everyone`
+if you're already testing `Confirm your score is increased when you win a game`
+
+I may do this differently in the future, but it seems a bit redundant for now.
 
 Before testing:
 
@@ -25,6 +26,7 @@ Before testing:
  - BOSEconomy is the most simple economy plugin I've found to test with. If someone else has a better suggestion, I'm open to it!
 - Set `economy.enabled` to `true` in `plugins/SkyWars/main-config.yml`
  - This is for testing economy features
+
 
 * Start two arenas, confirm `/sw cancelall` works
 * Start two arenas, confirm `/sw cancel` works on each
