@@ -14,19 +14,20 @@ I may do this differently in the future, but it seems a bit redundant for now.
 
 Before testing:
 
-- Completely wipe all configuration files and worlds
-- Install craftbukkit build you're testing for
-- Run server once, then stop
-- Set online-mode to false in server.properties
-- Set allow-nether to false in server.properties
-- Set allow-end to false in bukkit.yml
-- Delete world_nether and world_the_end
-- Install Vault of the version you're testing for
-- Install BOSEconomy to test economy
- - BOSEconomy is the most simple economy plugin I've found to test with. If someone else has a better suggestion, I'm open to it!
-- Set `economy.enabled` to `true` in `plugins/SkyWars/main-config.yml`
- - This is for testing economy features
+* Completely wipe all configuration files and worlds
+* Install craftbukkit build you're testing for
+* Run server once, then stop
+* Set online-mode to false in server.properties
+* Set allow-nether to false in server.properties
+* Set allow-end to false in bukkit.yml
+* Delete world_nether and world_the_end
+* Install Vault of the version you're testing for
+* Install BOSEconomy to test economy
+ * BOSEconomy is the most simple economy plugin I've found to test with. If someone else has a better suggestion, I'm open to it!
+* Set `economy.enabled` to `true` in `plugins/SkyWars/main-config.yml`
+ * This is for testing economy features
 
+And now, testing!
 
 * Start two arenas, confirm `/sw cancelall` works
 * Start two arenas, confirm `/sw cancel` works on each
