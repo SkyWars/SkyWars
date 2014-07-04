@@ -65,3 +65,7 @@ This may be an almost empty section, but we would like to thank JetBrains for th
 
 ### Translating!
 We need help translating SkyWars! To help out, see [SkyWars-Translations/Translating](https://github.com/SkyWars/SkyWars-Translations/wiki/Translating).
+
+##### Core team
+- daboross
+- lukeroge
