@@ -25,7 +25,7 @@ Before testing:
 * Install BOSEconomy to test economy
  * BOSEconomy is the most simple economy plugin I've found to test with. If someone else has a better suggestion, I'm open to it!
 * Set `economy.enabled` to `true` in `plugins/SkyWars/main-config.yml`
- * This is for testing economy features
+* Add `skywars.kit:\n    default: true` to `permissions.yml` to enable usage of `/sw kit` by non-ops
 
 And now, testing!
 
