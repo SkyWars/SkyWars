@@ -12,6 +12,7 @@ if you're already testing "Confirm your score is increased when you win a game"-
 by other tests in the future, but it seems a bit redundant.
 
 Before testing:
+
 - Completely wipe all configuration files and worlds
 - Install craftbukkit build you're testing for
 - Run server once, then stop
