@@ -37,7 +37,7 @@
             <id>daboross</id>
             <name>Dabo Ross</name>
             <email>daboross@daboross.net</email>
-            <url>http://www.daboross.net</url>
+            <url>http://daboross.net</url>
             <timezone>-8</timezone>
         </developer>
     </developers>
@@ -62,7 +62,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.7.9-R0.1</version>
+            <version>1.7.9-R0.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -98,7 +98,7 @@
         <dependency>
             <groupId>net.daboross.json</groupId>
             <artifactId>json</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.3</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
