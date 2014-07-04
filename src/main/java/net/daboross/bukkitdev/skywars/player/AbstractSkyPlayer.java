@@ -30,7 +30,7 @@ public abstract class AbstractSkyPlayer implements SkyInternalPlayer {
     protected final String name;
     protected final UUID uuid;
     private int gameId;
-    private SkyPlayerState state;
+    private SkyPlayerState state = SkyPlayerState.NOT_IN_GAME;
     private SkyKit selectedKit;
     private SkySavedInventory savedInventory;
 
