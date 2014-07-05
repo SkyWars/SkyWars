@@ -46,6 +46,7 @@ And now, testing!
 * Confirm `/sw kit` will apply a kit that doesn't require permissions or money
 * Confirm `/sw kit` will apply a kit that costs money, and that your money decreases
 * Confirm kit is removed after you run out of money
+* Confirm permission kit isn't applied if you loose the permission
 * Confirm `/me` isn't blocked in-game
 * Confirm `/gamemode` is blocked in-game
 * Confirm `/sw leave` works from the queue
