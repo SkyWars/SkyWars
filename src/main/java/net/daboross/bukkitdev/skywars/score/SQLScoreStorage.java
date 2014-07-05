@@ -45,7 +45,7 @@ public class SQLScoreStorage extends SkyStorageBackend {
     private final AsyncSQL sql;
     private final String tableName = "skywars_user";
 
-    protected SQLScoreStorage(final SkyWars skywars) throws SQLException {
+    public SQLScoreStorage(final SkyWars skywars) throws SQLException {
         super(skywars);
         SkyConfiguration config = skywars.getConfiguration();
         SQLConnectionInfo connectionInfo = new SQLConnectionInfo(config.getScoreSqlHost(), config.getScoreSqlPort(),
@@ -59,7 +59,7 @@ public class SQLScoreStorage extends SkyStorageBackend {
             @Override
             public void run(Connection connection) throws SQLException {
                 try (PreparedStatement statement = connection.prepareStatement(
-                        "CREATE TABLE IF NOT EXISTS `" + tableName + "` (`uuid` VARCHAR(32), `username` VARCHAR(32), `user_score` INT, PRIMARY KEY (`uuid`));"
+                        "CREATE TABLE IF NOT EXISTS `" + tableName + "` (`uuid` VARCHAR(36), `username` VARCHAR(32), `user_score` INT, PRIMARY KEY (`uuid`));"
                 )) {
                     statement.execute();
                 }
@@ -74,12 +74,12 @@ public class SQLScoreStorage extends SkyStorageBackend {
             @Override
             public void run(final Connection connection) throws SQLException {
                 try (PreparedStatement statement = connection.prepareStatement(
-                        "INSERT INTO `" + tableName + "` (username, user_score) VALUES (?, ?) ON DUPLICATE KEY UPDATE `user_score` = `user_score` + ?;"
+                        "INSERT INTO `" + tableName + "` (uuid, user_score) VALUES (?, ?) ON DUPLICATE KEY UPDATE `user_score` = `user_score` + ?;"
                 )) {
                     statement.setString(1, uuid.toString());
                     statement.setInt(2, diff);
                     statement.setInt(3, diff);
-                    statement.executeQuery().getString("parent");
+                    statement.execute();
                 }
             }
         });
@@ -105,7 +105,6 @@ public class SQLScoreStorage extends SkyStorageBackend {
 
     @Override
     public void getScore(final UUID uuid, final ScoreCallback callback) {
-        callback.scoreGetCallback(0);
         sql.run("get score for " + uuid, new ResultSQLRunnable<Integer>() {
             @Override
             public void run(final Connection connection, final ResultHolder<Integer> result) throws SQLException {
@@ -114,7 +113,7 @@ public class SQLScoreStorage extends SkyStorageBackend {
                     statement.setString(1, uuid.toString());
                     try (ResultSet set = statement.executeQuery()) {
                         if (!set.first()) {
-                            result.set(null);
+                            result.set(0); // I'm assuming that scores should be 0 by default here
                             return;
                         }
                         result.set(set.getInt("user_score"));
@@ -125,6 +124,23 @@ public class SQLScoreStorage extends SkyStorageBackend {
             @Override
             public void runWithResult(final Integer value) {
                 callback.scoreGetCallback(value);
+            }
+        });
+    }
+
+    public void initUsername(final UUID uuid, final String username) {
+        sql.run("set " + uuid + "'s username to" + username, new SQLRunnable() {
+            @Override
+            public void run(final Connection connection) throws SQLException {
+                try (PreparedStatement statement = connection.prepareStatement(
+                        // I'm assuming that the default value should be 0 here
+                        "INSERT INTO `" + tableName + "` (uuid, username, user_score) VALUES (?, ?, 0) ON DUPLICATE KEY UPDATE `username` = ?;"
+                )) {
+                    statement.setString(1, uuid.toString());
+                    statement.setString(2, username);
+                    statement.setString(3, username);
+                    statement.execute();
+                }
             }
         });
     }
@@ -145,6 +161,7 @@ public class SQLScoreStorage extends SkyStorageBackend {
                 cacheSet(uuid, score, true); // true because this score is saved.
             }
         });
+        initUsername(uuid, player.getName()); // be sure to set their name
         return new SQLSkyPlayer(player);
     }
 
