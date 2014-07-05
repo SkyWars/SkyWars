@@ -37,6 +37,11 @@ public class KitApplyListener {
             SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(p);
             SkyKit kit = skyPlayer.getSelectedKit();
             if (kit != null) {
+                if (!p.hasPermission(kit.getPermission())) {
+                    p.sendMessage(SkyTrans.get(TransKey.KITS_NO_PERMISSION, kit.getName()));
+                    skyPlayer.setSelectedKit(null);
+                    continue;
+                }
                 int cost = kit.getCost();
                 if (cost == 0) {
                     p.sendMessage(SkyTrans.get(TransKey.KITS_APPLIED_KIT, kit.getName()));
