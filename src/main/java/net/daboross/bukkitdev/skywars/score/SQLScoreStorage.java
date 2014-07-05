@@ -19,6 +19,7 @@ package net.daboross.bukkitdev.skywars.score;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,7 +38,6 @@ import net.daboross.bukkitdev.skywars.api.storage.SkyStorageBackend;
 import net.daboross.bukkitdev.skywars.player.AbstractSkyPlayer;
 import org.bukkit.entity.Player;
 
-// TODO: Implement
 public class SQLScoreStorage extends SkyStorageBackend {
 
     private final Map<UUID, Integer> scoreCache = new HashMap<>();
@@ -109,7 +109,17 @@ public class SQLScoreStorage extends SkyStorageBackend {
         sql.run("get score for " + uuid, new ResultSQLRunnable<Integer>() {
             @Override
             public void run(final Connection connection, final ResultHolder<Integer> result) throws SQLException {
-
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "SELECT `user_score` FROM `" + tableName + "` WHERE `uuid` = ?")) {
+                    statement.setString(1, uuid.toString());
+                    try (ResultSet set = statement.executeQuery()) {
+                        if (!set.first()) {
+                            result.set(null);
+                            return;
+                        }
+                        result.set(set.getInt("user_score"));
+                    }
+                }
             }
         }, new ResultRunnable<Integer>() {
             @Override
