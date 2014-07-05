@@ -26,12 +26,13 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import net.daboross.bukkitdev.skywars.StartupFailedException;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 
 public class WorldUnzipper {
 
     public void doWorldUnzip(Logger logger) throws StartupFailedException {
         Validate.notNull(logger, "Logger cannot be null");
-        File output = new File(Statics.BASE_WORLD_NAME);
+        File output = new File(Bukkit.getWorldContainer(), Statics.BASE_WORLD_NAME);
         if (output.exists()) {
             return;
         }
