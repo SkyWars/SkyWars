@@ -42,7 +42,7 @@ public class KitApplyListener {
                     p.sendMessage(SkyTrans.get(TransKey.KITS_APPLIED_KIT, kit.getName()));
                     kit.applyTo(p);
                 } else if (plugin.getEconomyHook().canAfford(p, cost)) {
-                    p.sendMessage(SkyTrans.get(TransKey.CMD_KIT_CURRENT_KIT_WITH_COST, kit.getName(), kit.getCost()));
+                    p.sendMessage(SkyTrans.get(TransKey.KITS_APPLIED_KIT_WITH_COST, kit.getName(), kit.getCost()));
                     if (plugin.getEconomyHook().charge(p, cost)) {
                         kit.applyTo(p);
                     } else {
