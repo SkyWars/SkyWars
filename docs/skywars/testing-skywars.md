@@ -39,6 +39,7 @@ And now, testing!
 * Confirm `/sw kit` lists both available and unavailable kits.
 * Apply a kit using `/sw kit`, and confirm it's applied
 * Confirm the kit is still applied next game
+* Confirm `/sw kit` shows you've applied a kit
 * Confirm `/sw kit remove` removes your kit
 * Confirm `/sw kit` won't let you apply a kit you don't have permission for
 * Confirm `/sw kit` won't let you apply a kit you don't have money for
