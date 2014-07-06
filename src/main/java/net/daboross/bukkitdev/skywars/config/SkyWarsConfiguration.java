@@ -65,8 +65,11 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private String locale;
     private boolean disableReport;
     private boolean economyRewardMessages;
-//    private boolean perArenaDeathMessagesEnabled;
+    //    private boolean perArenaDeathMessagesEnabled;
 //    private boolean perArenaWinMessagesEnabled;
+    private boolean multiverseCoreHookEnabled;
+    private boolean multiverseInventoriesHookEnabled;
+    private boolean worldeditHookEnabled;
 
     public SkyWarsConfiguration(SkyWars plugin) throws IOException, InvalidConfigurationException, SkyConfigurationException {
         this.plugin = plugin;
@@ -148,6 +151,12 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         // per-arena messages
 //        perArenaDeathMessagesEnabled = mainConfig.getSetBoolean(MainConfigKeys.PER_ARENA_DEATH_MESSAGES_ENABLED, MainConfigDefaults.PER_ARENA_DEATH_MESSAGES_ENABLED);
 //        perArenaWinMessagesEnabled = mainConfig.getSetBoolean(MainConfigKeys.PER_ARENA_WIN_MESSAGES_ENABLED, MainConfigDefaults.PER_ARENA_WIN_MESSAGES_ENABLED);
+
+        // Hooks
+        multiverseCoreHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.MULTIVERSE_CORE, MainConfigDefaults.Hooks.MULTIVERSE_CORE);
+        multiverseInventoriesHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.MULTIVERSE_INVENTORIES, MainConfigDefaults.Hooks.MULTIVERSE_INVENTORIES);
+        worldeditHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.WORLDEDIT, MainConfigDefaults.Hooks.WORLDEDIT);
+
         // Remove deprecated values
         mainConfig.removeValues(MainConfigKeys.Deprecated.CHAT_PREFIX, MainConfigKeys.Deprecated.PREFIX_CHAT);
 
@@ -378,6 +387,21 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         return scoreSqlDatabase;
     }
 
+    @Override
+    public boolean isMultiverseCoreHookEnabled() {
+        return multiverseCoreHookEnabled;
+    }
+
+    @Override
+    public boolean isMultiverseInventoriesHookEnabled() {
+        return multiverseInventoriesHookEnabled;
+    }
+
+    @Override
+    public boolean isWorldeditHookEnabled() {
+        return worldeditHookEnabled;
+    }
+
     private static class Names {
 
         private static final String MAIN = "main-config.yml";
@@ -391,7 +415,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
                 + "All comment changes will be removed.%n"
                 + "%n"
                 + "For documentation, please visit %n"
-                + "https://github.com/daboross/SkyWars/wiki/Configuration-main-config%n"
+                + "http://dabo.guru/skywars/configuring-skywars%n"
                 + "#########";
         private static final String ARENA = "####### %s.yml ###%n"
                 + "This is the Skyblock Warriors arena config.%n"

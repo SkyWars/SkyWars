@@ -59,6 +59,13 @@ class MainConfigKeys {
         public static final String COMMAND_WHITELIST = "command-whitelist.whitelist";
     }
 
+    public static class Hooks {
+
+        public static final String MULTIVERSE_CORE = "hooks.multiverse-core-hook";
+        public static final String MULTIVERSE_INVENTORIES = "hooks.multiverse-inventories-hook";
+        public static final String WORLDEDIT = "hooks.worldedit-hook";
+    }
+
     public static class Deprecated {
 
         public static final String PREFIX_CHAT = "points.should-prefix-chat";

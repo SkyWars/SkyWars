@@ -63,4 +63,11 @@ class MainConfigDefaults {
         public static final boolean IS_BLACKLIST = false;
         public static final List<String> COMMAND_WHITELIST = Arrays.asList("/skywars", "/sw", "/me");
     }
+
+    public static class Hooks {
+
+        public static final boolean MULTIVERSE_CORE = true;
+        public static final boolean MULTIVERSE_INVENTORIES = true;
+        public static final boolean WORLDEDIT = true;
+    }
 }
