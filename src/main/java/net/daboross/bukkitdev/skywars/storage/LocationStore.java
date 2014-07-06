@@ -16,8 +16,8 @@
  */
 package net.daboross.bukkitdev.skywars.storage;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -42,7 +42,7 @@ public class LocationStore implements Listener, SkyLocationStore {
     private final List<SkyBlockLocation> portals = new ArrayList<>();
     private SkyPlayerLocation lobbyPosition;
     private FileConfiguration storage;
-    private File configFile;
+    private Path configFile;
 
     public LocationStore(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -54,9 +54,9 @@ public class LocationStore implements Listener, SkyLocationStore {
 
     private void load() {
         if (configFile == null) {
-            configFile = new File(plugin.getDataFolder(), "locations.yml");
+            configFile = plugin.getDataFolder().toPath().resolve("locations.yml");
         }
-        storage = YamlConfiguration.loadConfiguration(configFile);
+        storage = YamlConfiguration.loadConfiguration(configFile.toFile());
         Object lobbyO = storage.get("lobby");
         if (lobbyO != null) {
             if (lobbyO instanceof SkyBlockLocation) {
@@ -95,7 +95,7 @@ public class LocationStore implements Listener, SkyLocationStore {
             storage.set("portals", portals);
             storage.set("lobby", lobbyPosition);
             try {
-                storage.save(configFile);
+                storage.save(configFile.toFile());
             } catch (IOException ex) {
                 plugin.getLogger().log(Level.WARNING, "Failed to save to location store", ex);
             }

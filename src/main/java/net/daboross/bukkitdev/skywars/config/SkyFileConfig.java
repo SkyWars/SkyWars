@@ -16,8 +16,9 @@
  */
 package net.daboross.bukkitdev.skywars.config;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -27,54 +28,48 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class SkyFileConfig {
 
-    private final File configFile;
+    private final Path configFile;
     @SuppressWarnings("NonConstantLogger")
     private final Logger logger;
     private YamlConfiguration config;
 
-    public SkyFileConfig(final File file, final Logger logger) {
+    public SkyFileConfig(final Path file, final Logger logger) {
         configFile = file;
         this.logger = logger;
     }
 
     public void load() throws IOException, InvalidConfigurationException {
-        File folder = configFile.getParentFile();
-        if (!folder.exists()) {
-            boolean mkdirs = folder.mkdirs();
-            if (!mkdirs) {
-                throw new IOException("Couldn't make directory " + folder.getAbsolutePath());
-            }
-        } else if (!folder.isDirectory()) {
-            throw new IOException("File " + folder.getAbsolutePath() + " is not a directory.");
+        Path folder = configFile.getParent();
+        if (!Files.exists(folder)) {
+            Files.createDirectories(folder);
+        } else if (!Files.isDirectory(folder)) {
+            throw new IOException("File " + folder.toAbsolutePath() + " is not a directory.");
         }
-        if (!configFile.exists()) {
+        if (!Files.exists(configFile)) {
             try {
-                boolean createNewFile = configFile.createNewFile();
-                if (!createNewFile) {
-                    throw new IOException("Couldn't make file " + configFile.getAbsolutePath());
-                }
+                Files.createFile(configFile);
             } catch (IOException ex) {
-                throw new IOException("Couldn't make file " + configFile.getAbsolutePath(), ex);
+                throw new IOException("Couldn't create file " + configFile.toAbsolutePath(), ex);
             }
-        } else if (!configFile.isFile()) {
-            throw new IOException("File or directory " + configFile.getAbsolutePath() + " is not a file");
+        } else if (!Files.isRegularFile(configFile)) {
+            throw new IOException("File or directory " + configFile.toAbsolutePath() + " is not a file");
         }
         config = new YamlConfiguration();
         try {
-            config.load(configFile);
+            config.load(configFile.toFile());
         } catch (IOException ex) {
-            throw new IOException("Failed to load " + configFile.getAbsolutePath() + " as a YAML configuration", ex);
+            throw new IOException("Failed to load " + configFile.toAbsolutePath() + " as a YAML configuration", ex);
         } catch (InvalidConfigurationException ex) {
-            throw new InvalidConfigurationException("Failed to load " + configFile.getAbsolutePath() + " as a YAML configuration", ex);
+            throw new InvalidConfigurationException("Failed to load " + configFile.toAbsolutePath() + " as a YAML configuration", ex);
         }
     }
 
     public void save(String header) throws IOException {
         config.options().header(header).indent(2);
         try {
-            config.save(configFile);
+            config.save(configFile.toFile());
         } catch (IOException ex) {
-            throw new IOException("Failed to save to " + configFile.getAbsolutePath(), ex);
+            throw new IOException("Failed to save to " + configFile.toAbsolutePath(), ex);
         }
     }
 
@@ -82,7 +77,7 @@ public class SkyFileConfig {
         if (config.isInt(path)) {
             return config.getInt(path);
         } else if (config.contains(path)) {
-            throw new InvalidConfigurationException("Object " + config.get(path) + " found under " + path + " in file " + configFile.getAbsolutePath() + " is not an integer");
+            throw new InvalidConfigurationException("Object " + config.get(path) + " found under " + path + " in file " + configFile.toAbsolutePath() + " is not an integer");
         } else {
             logger.log(Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, defaultInt, configFile});
             config.set(path, defaultInt);
@@ -94,7 +89,7 @@ public class SkyFileConfig {
         if (config.isInt(path)) {
             return config.getLong(path);
         } else if (config.contains(path)) {
-            throw new InvalidConfigurationException("Object " + config.get(path) + " found under " + path + " in file " + configFile.getAbsolutePath() + " is not a long");
+            throw new InvalidConfigurationException("Object " + config.get(path) + " found under " + path + " in file " + configFile.toAbsolutePath() + " is not a long");
         } else {
             logger.log(Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, defaultInt, configFile});
             config.set(path, defaultInt);
@@ -106,7 +101,7 @@ public class SkyFileConfig {
         if (config.isBoolean(path)) {
             return config.getBoolean(path);
         } else if (config.contains(path)) {
-            throw new InvalidConfigurationException("Object " + config.get(path) + " found under " + path + " in file " + configFile.getAbsolutePath() + " is not a boolean (true/false)");
+            throw new InvalidConfigurationException("Object " + config.get(path) + " found under " + path + " in file " + configFile.toAbsolutePath() + " is not a boolean (true/false)");
         } else {
             logger.log(Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, defaultBoolean, configFile});
             config.set(path, defaultBoolean);
@@ -121,7 +116,7 @@ public class SkyFileConfig {
         } else if (obj instanceof Integer || obj instanceof Double) {
             return obj.toString();
         } else if (obj != null) {
-            throw new InvalidConfigurationException("Object " + config.get(path) + " found under " + path + " in file " + configFile.getAbsolutePath() + " is not a boolean (true/false)");
+            throw new InvalidConfigurationException("Object " + config.get(path) + " found under " + path + " in file " + configFile.toAbsolutePath() + " is not a boolean (true/false)");
         } else {
             logger.log(Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, defaultString, configFile});
             config.set(path, defaultString);
@@ -147,7 +142,7 @@ public class SkyFileConfig {
                 } else if (obj instanceof Double || obj instanceof Integer || obj instanceof Boolean) {
                     stringList.add(obj.toString());
                 } else {
-                    throw new InvalidConfigurationException("Object " + obj + " found in list " + path + " in file " + configFile.getAbsolutePath() + " is not an integerr");
+                    throw new InvalidConfigurationException("Object " + obj + " found in list " + path + " in file " + configFile.toAbsolutePath() + " is not an integerr");
                 }
             }
             return stringList;

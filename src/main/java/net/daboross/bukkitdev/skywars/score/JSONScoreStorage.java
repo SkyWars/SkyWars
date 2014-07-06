@@ -16,7 +16,6 @@
  */
 package net.daboross.bukkitdev.skywars.score;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -24,6 +23,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -41,28 +41,28 @@ import org.json.JSONTokener;
 
 public class JSONScoreStorage extends SkyStorageBackend {
 
-    private final File saveFileBuffer;
-    private final File saveFile;
-    private final File oldSaveFile;
+    private final Path saveFileBuffer;
+    private final Path saveFile;
+    private final Path oldSaveFile;
     private final JSONObject baseJson;
     private JSONObject nameToScore;
     private JSONObject uuidToStoredPlayer;
 
     public JSONScoreStorage(SkyWars plugin) throws IOException, FileNotFoundException {
         super(plugin);
-        this.oldSaveFile = new File(plugin.getDataFolder(), "score.json");
-        this.saveFile = new File(plugin.getDataFolder(), "score-v1.json");
-        this.saveFileBuffer = new File(plugin.getDataFolder(), "score-v1.json~");
+        this.oldSaveFile = plugin.getDataFolder().toPath().resolve("score.json");
+        this.saveFile = plugin.getDataFolder().toPath().resolve("score-v1.json");
+        this.saveFileBuffer = plugin.getDataFolder().toPath().resolve("score-v1.json~");
         this.baseJson = load();
         this.nameToScore = this.baseJson.getJSONObject("legacy-name-score");
         this.uuidToStoredPlayer = this.baseJson.getJSONObject("uuid-players-v1");
     }
 
     private JSONObject load() throws IOException, FileNotFoundException {
-        if (!saveFile.exists()) {
+        if (!Files.exists(saveFile)) {
             JSONObject newStorage = new JSONObject();
             newStorage.put("uuid-players-v1", new JSONObject());
-            if (oldSaveFile.exists()) {
+            if (Files.exists(oldSaveFile)) {
                 skywars.getLogger().log(Level.INFO, "Found old score storage file, attempting to import data");
                 JSONObject oldStorage = loadFile(oldSaveFile);
                 newStorage.put("legacy-name-score", oldStorage); // Be lazy and just copy the whole JSONObject.
@@ -75,45 +75,43 @@ public class JSONScoreStorage extends SkyStorageBackend {
         }
     }
 
-    private JSONObject loadFile(File file) throws IOException {
-        if (!file.isFile()) {
-            throw new IOException("File '" + file.getAbsolutePath() + "' is not a file (perhaps a directory?).");
+    private JSONObject loadFile(Path file) throws IOException {
+        if (!Files.isRegularFile(file)) {
+            throw new IOException("File '" + file.toAbsolutePath() + "' is not a file (perhaps a directory?).");
         }
 
-        try (FileInputStream fis = new FileInputStream(file)) {
+        try (FileInputStream fis = new FileInputStream(file.toFile())) {
             return new JSONObject(new JSONTokener(fis));
         } catch (JSONException ex) {
-            try (FileInputStream fis = new FileInputStream(file)) {
+            try (FileInputStream fis = new FileInputStream(file.toFile())) {
                 byte[] buffer = new byte[10];
                 int read = fis.read(buffer);
                 String str = new String(buffer, 0, read, Charset.forName("UTF-8"));
                 if (StringUtils.isBlank(str)) {
-                    skywars.getLogger().log(Level.WARNING, "File {} is empty, perhaps it was corrupted? Ignoring it and starting new score database. If you haven't recorded any baseJson, this won't matter.", file.getAbsolutePath());
+                    skywars.getLogger().log(Level.WARNING, "File {} is empty, perhaps it was corrupted? Ignoring it and starting new score database. If you haven't recorded any baseJson, this won't matter.", file.toAbsolutePath());
                     return new JSONObject();
                 }
             }
-            throw new IOException("JSONException loading " + file.getAbsolutePath(), ex);
+            throw new IOException("JSONException loading " + file.toAbsolutePath(), ex);
         }
     }
 
     @Override
     public void save() throws IOException {
-        if (!saveFileBuffer.exists()) {
-            if (!saveFileBuffer.createNewFile()) {
-                throw new IOException("Failed to create file '" + saveFileBuffer + "'.");
-            }
+        if (!Files.exists(saveFileBuffer)) {
+            Files.createFile(saveFileBuffer);
         }
-        try (FileOutputStream fos = new FileOutputStream(saveFileBuffer)) {
+        try (FileOutputStream fos = new FileOutputStream(saveFileBuffer.toFile())) {
             try (OutputStreamWriter writer = new OutputStreamWriter(fos, Charset.forName("UTF-8"))) {
                 baseJson.write(writer);
             }
         } catch (IOException | JSONException ex) {
-            throw new IOException("Couldn't write to " + saveFileBuffer.getAbsolutePath(), ex);
+            throw new IOException("Couldn't write to " + saveFileBuffer.toAbsolutePath(), ex);
         }
         try {
-            Files.move(saveFileBuffer.toPath(), saveFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.move(saveFileBuffer, saveFile, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
         } catch (IOException ex) {
-            throw new IOException("Failed to move buffer file '" + saveFileBuffer.getAbsolutePath() + "' to actual save location '" + saveFile + "'", ex);
+            throw new IOException("Failed to move buffer file '" + saveFileBuffer.toAbsolutePath() + "' to actual save location '" + saveFile + "'", ex);
         }
     }
 

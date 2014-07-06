@@ -16,7 +16,8 @@
  */
 package net.daboross.bukkitdev.skywars.kits;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -46,11 +47,11 @@ public class SkyKitConfiguration implements SkyKits {
 
     private void load() {
         SkyStatic.debug("Loading kits");
-        File kitFile = new File(plugin.getDataFolder(), "kits.yml");
-        if (!kitFile.exists()) {
+        Path kitFile = plugin.getDataFolder().toPath().resolve("kits.yml");
+        if (!Files.exists(kitFile)) {
             plugin.saveResource("kits.yml", true);
         }
-        FileConfiguration config = YamlConfiguration.loadConfiguration(kitFile);
+        FileConfiguration config = YamlConfiguration.loadConfiguration(kitFile.toFile());
         for (String key : config.getKeys(false)) {
             if (config.isConfigurationSection(key)) {
                 SkyKit kit;

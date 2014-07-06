@@ -16,10 +16,11 @@
  */
 package net.daboross.bukkitdev.skywars.world;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -32,14 +33,16 @@ public class WorldUnzipper {
 
     public void doWorldUnzip(Logger logger) throws StartupFailedException {
         Validate.notNull(logger, "Logger cannot be null");
-        File output = new File(Bukkit.getWorldContainer(), Statics.BASE_WORLD_NAME);
-        if (output.exists()) {
+        Path outputDir = Bukkit.getWorldContainer().toPath().resolve(Statics.BASE_WORLD_NAME);
+        if (Files.exists(outputDir)) {
             return;
         }
-        boolean madeDir = output.mkdir();
-        if (!madeDir) {
-            throw new StartupFailedException("Couldn't make directory " + output.getAbsolutePath() + ". Please delete " + Statics.BASE_WORLD_NAME + " and restart server.");
+        try {
+            Files.createDirectories(outputDir);
+        } catch (IOException e) {
+            throw new StartupFailedException("Couldn't create directory " + outputDir.toAbsolutePath() + ".");
         }
+
         InputStream fis = WorldUnzipper.class.getResourceAsStream(Statics.ZIP_FILE_PATH);
         if (fis == null) {
             throw new StartupFailedException("Couldn't get resource.\nError creating world. Please delete " + Statics.BASE_WORLD_NAME + " and restart server.");
@@ -49,25 +52,19 @@ public class WorldUnzipper {
                 ZipEntry ze = zis.getNextEntry();
                 while (ze != null) {
                     String fileName = ze.getName();
-                    File newFile = new File(output, fileName);
-                    File parent = newFile.getParentFile();
+                    Path newFile = outputDir.resolve(fileName);
+                    Path parent = newFile.getParent();
                     if (parent != null) {
-                        boolean madeParent = parent.mkdirs();
-                        if (!madeParent) {
-                            logger.log(Level.FINER, "Couldn''t make directory {0}", parent.getAbsolutePath());
-                        }
+                        Files.createDirectories(parent);
                     }
                     if (ze.isDirectory()) {
                         logger.log(Level.FINER, "Making dir {0}", newFile);
-                        boolean made = newFile.mkdirs();
-                        if (!made) {
-                            logger.log(Level.FINER, "Couldn''t make directory {0}", newFile.getAbsolutePath());
-                        }
-                    } else if (newFile.exists()) {
+                        Files.createDirectories(newFile);
+                    } else if (Files.exists(newFile)) {
                         logger.log(Level.FINER, "Already exists {0}", newFile);
                     } else {
                         logger.log(Level.FINER, "Copying {0}", newFile);
-                        try (FileOutputStream fos = new FileOutputStream(newFile)) {
+                        try (FileOutputStream fos = new FileOutputStream(newFile.toFile())) {
                             try {
                                 int next;
                                 while ((next = zis.read()) != -1) {
