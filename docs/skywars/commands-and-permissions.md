@@ -17,7 +17,7 @@ Commands and Permissions
 | **/sw** **forcestart**| skywars.forcestart | Force starts a game with the people in the queue.    |
 | **/sw** **kit**       | skywars.kit        | Lists kits, and lets you choose one                  |
 
-* Note: /sw report will submit Server Software, Server Version, plugin information and all configuration information to gist.github.com, then give you a URL link to the data. This is usually useful for debug information.
+* Note: /sw report will submit Server Software, Server Version, plugin information and all configuration information to gist.github.com, then give you a URL link to the data. This is useful when debugging.
 
 ### Setup Commands
 | Command               | Permission         | Description                                          |
@@ -45,4 +45,4 @@ Commands and Permissions
 | skywars.cancel    | OP Only           |
 | skywars.report    | OP Only           |
 | skywars.setup     | OP Only           |
-| skywars.forcestart| OP Obnly          |
+| skywars.forcestart| OP Only           |
