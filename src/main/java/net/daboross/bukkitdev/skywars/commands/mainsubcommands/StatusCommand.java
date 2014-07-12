@@ -25,9 +25,9 @@ import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
+import net.daboross.bukkitdev.skywars.api.players.SkyPlayers;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -59,29 +59,30 @@ public class StatusCommand extends SubCommand {
         StringBuilder b = new StringBuilder();
         b.append(ColorList.DATA).append(game.getId()).append(ColorList.REG).append(":");
         List<UUID> alive = game.getAlivePlayers();
+        SkyPlayers skyPlayers = plugin.getPlayers(); // so we don't call this method once per player
         switch (alive.size()) {
             case 0:
                 b.append(ColorList.DATA).append(" -- ");
                 break;
             case 1:
-                b.append(ChatColor.GREEN).append(alive.get(0));
+                b.append(ChatColor.GREEN).append(skyPlayers.getPlayer(alive.get(0)).getName());
                 break;
             default:
                 if (game.areTeamsEnabled()) {
                     for (int team = 0; team < game.getNumTeams(); team++) {
                         List<UUID> players = game.getAlivePlayersInTeam(team);
                         if (!players.isEmpty()) {
-                            b.append("\n  ").append(ColorList.REG).append("Team ").append(ColorList.DATA).append(team).append(ColorList.REG).append(": ").append(ColorList.DATA).append(players.get(0));
+                            b.append("\n  ").append(ColorList.REG).append("Team ").append(ColorList.DATA).append(team).append(ColorList.REG).append(": ").append(ColorList.DATA).append(skyPlayers.getPlayer(players.get(0)).getName());
                             for (int i = 1; i < players.size(); i++) {
-                                // TODO: Make this more efficient, not having to use Bukkit.getPlayer()?
-                                b.append(ColorList.REG).append(", ").append(ColorList.DATA).append(Bukkit.getPlayer(players.get(i)).getName());
+                                // I would use Bukkit.getPlayer(), but this uses a hashmap lookup, which is more efficient.
+                                b.append(ColorList.REG).append(", ").append(ColorList.DATA).append(skyPlayers.getPlayer(players.get(i)).getName());
                             }
                         }
                     }
                 } else {
-                    b.append(" ").append(ChatColor.GREEN).append(alive.get(0));
+                    b.append(" ").append(ChatColor.GREEN).append(skyPlayers.getPlayer(alive.get(0)).getName());
                     for (int i = 1; i < alive.size(); i++) {
-                        b.append(ColorList.REG).append(", ").append(ChatColor.GREEN).append(alive.get(i));
+                        b.append(ColorList.REG).append(", ").append(ChatColor.GREEN).append(skyPlayers.getPlayer(alive.get(i)).getName());
                     }
                 }
         }
