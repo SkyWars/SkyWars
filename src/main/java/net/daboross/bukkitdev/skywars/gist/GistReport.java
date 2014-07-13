@@ -59,19 +59,33 @@ public class GistReport {
         Validate.notNull(plugin, "Plugin cannot be null");
         SkyConfiguration configuration = plugin.getConfiguration();
         StringBuilder build = new StringBuilder();
-        build.append("####Server information\n* Plugin Name: ").append(SkyStatic.getPluginName())
-                .append("\n* Plugin Version: ").append(plugin.getDescription().getVersion())
-                .append("\n* Implementation Version: ").append(SkyStatic.getImplementationVersion())
-                .append("\n* Server Software: ").append(Bukkit.getName())
-                .append("\n* Server Version: ").append(Bukkit.getVersion())
-                .append("\n\n####Configuration\n```\n")
-                .append(getRawConfig(plugin))
-                .append("\n```\n");
+
+        build.append("|SkyWars server information||\n|---|---|\n|Plugin name|").append(SkyStatic.getPluginName())
+                .append("|\n|Plugin version|").append(plugin.getDescription().getVersion())
+                .append("|\n|Implementation version|").append(SkyStatic.getImplementationVersion())
+                .append("|\n|Server software|").append(Bukkit.getName())
+                .append("|\n|Server version|").append(Bukkit.getVersion())
+                .append("|\n\n#### main-config.yml\n```\n");
+        appendRawConfig(build, plugin);
+
+        build.append("\n```\n\n#### kits.yml\n```\n");
+        appendFile(build, plugin.getDataFolder().toPath().resolve("kits.yml"));
+
+        build.append("\n```\n\n#### messages.yml\n```\n");
+        appendFile(build, plugin.getDataFolder().toPath().resolve("messages.yml"));
+
+        build.append("\n```\n\n#### locations.yml\n```\n");
+        appendFile(build, plugin.getDataFolder().toPath().resolve("locations.yml"));
+        build.append("\n```\n");
+
         for (SkyArenaConfig arena : configuration.getEnabledArenas()) {
-            appendArena(build.append("\n####").append(arena.getArenaName())
-                    .append(" - ").append(arena.getFile() == null ? "No file" : arena.getFile().toAbsolutePath()), arena);
+            build.append("\n#### ").append(arena.getArenaName());
+            if (arena.getFile() != null) {
+                build.append("\n\n#####").append(arena.getFile().toAbsolutePath());
+            }
+            appendArena(build, arena);
         }
-        appendArena(build.append("\n####Parent"), configuration.getParentArena());
+        appendArena(build.append("\n#### arena-parent.yml"), configuration.getParentArena());
         return build.toString();
     }
 
@@ -81,23 +95,41 @@ public class GistReport {
         builder.append("\n```\n").append(arenaYaml.saveToString()).append("\n```\n");
     }
 
-    private static String getRawConfig(SkyWars plugin) {
+    private static StringBuilder appendRawConfig(StringBuilder build, SkyWars plugin) {
+        String databasePassword = plugin.getConfiguration().getScoreSqlPassword();
         Path path = plugin.getDataFolder().toPath().resolve("main-config.yml");
-        StringBuilder build = new StringBuilder();
         try (FileInputStream fis = new FileInputStream(path.toFile())) {
             try (InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"))) {
                 try (BufferedReader buff = new BufferedReader(isr)) {
                     String line;
                     while ((line = buff.readLine()) != null) {
-                        build.append(line);
-                        build.append('\n');
+                        if (line.contains(databasePassword)) {
+                            line = line.replace(databasePassword, "DATABASE_PASSWORD_CENSORED");
+                        }
+                        build.append(line).append('\n');
                     }
                 }
             }
         } catch (IOException ex) {
-            return null;
+            build.append("\nIOException occurred reading ").append(path.toAbsolutePath()).append("\n");;
         }
-        return build.toString();
+        return build;
+    }
+
+    private static StringBuilder appendFile(StringBuilder build, Path path) {
+        try (FileInputStream fis = new FileInputStream(path.toFile())) {
+            try (InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"))) {
+                try (BufferedReader buff = new BufferedReader(isr)) {
+                    String line;
+                    while ((line = buff.readLine()) != null) {
+                        build.append(line).append('\n');
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            build.append("\nIOException occurred reading ").append(path.toAbsolutePath()).append("\n");
+        }
+        return build;
     }
 
     /**
@@ -105,7 +137,7 @@ public class GistReport {
      * @return A shortened URL for the report
      */
     public static String reportReport(String reportText) {
-        String reportURL = gistText("SkyWars gist report", "report.md", reportText);
+        String reportURL = gistText("SkyWars Report", "report.md", reportText);
         return shortenURL(reportURL);
     }
 
