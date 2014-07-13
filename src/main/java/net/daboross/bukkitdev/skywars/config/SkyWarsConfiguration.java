@@ -44,6 +44,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private Path arenaFolder;
     private SkyArenaConfig parentArena;
     private ArenaOrder arenaOrder;
+    private boolean skipUuidCheck;
     private String messagePrefix;
     private boolean inventorySaveEnabled;
     private boolean enableScore;
@@ -100,7 +101,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         mainConfig.getConfig().set(MainConfigKeys.VERSION, MainConfigDefaults.VERSION);
 
         SkyStatic.setDebug(mainConfig.getSetBoolean(MainConfigKeys.DEBUG, MainConfigDefaults.DEBUG));
-
+        skipUuidCheck = mainConfig.getSetBoolean(MainConfigKeys.SKIP_UUID_CHECK, MainConfigDefaults.SKIP_UUID_CHECK);
         String arenaOrderString = mainConfig.getSetString(MainConfigKeys.ARENA_ORDER, MainConfigDefaults.ARENA_ORDER.toString());
         arenaOrder = ArenaOrder.getOrder(arenaOrderString);
         if (arenaOrder == null) {
@@ -399,6 +400,10 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     @Override
     public boolean isWorldeditHookEnabled() {
         return worldeditHookEnabled;
+    }
+
+    public boolean isSkipUuidCheck() {
+        return skipUuidCheck;
     }
 
     private static class Names {

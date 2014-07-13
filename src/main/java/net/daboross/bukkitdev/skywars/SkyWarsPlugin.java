@@ -54,9 +54,9 @@ import net.daboross.bukkitdev.skywars.listeners.CommandWhitelistListener;
 import net.daboross.bukkitdev.skywars.listeners.MobSpawnDisable;
 import net.daboross.bukkitdev.skywars.listeners.PortalListener;
 import net.daboross.bukkitdev.skywars.listeners.QuitListener;
-import net.daboross.bukkitdev.skywars.listeners.StorageLoadListener;
 import net.daboross.bukkitdev.skywars.listeners.ScoreReplaceChatListener;
 import net.daboross.bukkitdev.skywars.listeners.SpawnListener;
+import net.daboross.bukkitdev.skywars.listeners.StorageLoadListener;
 import net.daboross.bukkitdev.skywars.player.OnlineSkyPlayers;
 import net.daboross.bukkitdev.skywars.score.ScoreStorage;
 import net.daboross.bukkitdev.skywars.scoreboards.TeamScoreboardListener;
@@ -64,6 +64,7 @@ import net.daboross.bukkitdev.skywars.storage.LocationStore;
 import net.daboross.bukkitdev.skywars.world.SkyWorldHandler;
 import net.daboross.bukkitdev.skywars.world.Statics;
 import net.daboross.bukkitdev.skywars.world.WorldUnzipper;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -123,11 +124,17 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     }
 
     private void startPlugin() throws StartupFailedException {
-        SkyStatic.initializeSupportsUuids();
         try {
             configuration = new SkyWarsConfiguration(this);
         } catch (IOException | InvalidConfigurationException | SkyConfigurationException ex) {
             throw new StartupFailedException("Failed to load configuration", ex);
+        }
+        if (!configuration.isSkipUuidCheck() && !supportsUuids()) {
+            getLogger().log(Level.SEVERE, "Warning! You are running a CraftBukkit version that is not supported by SkyWars v" + SkyStatic.getVersion());
+            getLogger().log(Level.SEVERE, "Please update to at least CraftBukkit version 1.7.8, or the equivilant for your server software.");
+            getLogger().log(Level.SEVERE, "If you wish to ignore this, and run SkyWars anyways, set 'skip-uuid-version-check' to true in plugins/SkyWars/main-config.yml");
+            getLogger().log(Level.SEVERE, "Download SkyWars v1.4.4 if you want to run on an older version of Minecraft.");
+            throw new StartupFailedException("See above");
         }
         for (SkyArena arena : configuration.getEnabledArenas()) {
             if (arena.getBoundaries().getOrigin().world.equalsIgnoreCase(Statics.BASE_WORLD_NAME)) {
@@ -186,6 +193,36 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
                 new CommandWhitelistListener(this), new BuildingLimiter(this),
                 new MobSpawnDisable(), chatListener, joinListener);
         enabledCorrectly = true;
+    }
+
+    private boolean supportsUuids() {
+        String packageName = Bukkit.getServer().getClass().getPackage().getName();
+        // Get full package string of CraftServer.
+        // org.bukkit.craftbukkit.versionstring (or for pre-refactor, just org.bukkit.craftbukkit
+        String version = packageName.substring(packageName.lastIndexOf('.') + 1);
+        if (version.equals("craftbukkit")) {
+            return false;
+        }
+        String[] split = version.split("_");
+        if (split.length != 3) {
+            getLogger().log(Level.SEVERE, "Package version specifier of unknown format found: '" + version + "' - this will prevent SkyWars from confirming server version.");
+            getLogger().log(Level.SEVERE, "Please confirm you are running CraftBukkit version 1.7.8 or newer, or the equivilant for your server software. If you have already done so, you can ignore this message.");
+            getLogger().log(Level.SEVERE, "Proceed with caution! SkyWars v" + SkyStatic.getVersion() + " will not function on minecraft versions below 1.7.8!");
+            return true;
+        }
+        int first, second, third;
+        try {
+            first = Integer.parseInt(split[0].substring(1)); // substring for v1 -> 1
+            second = Integer.parseInt(split[1]);
+            third = Integer.parseInt(split[2].substring(1)); // substring for R1 -> 1
+        } catch (NumberFormatException ignored) {
+            getLogger().log(Level.SEVERE, "Package version specifier of unknown format found: '" + version + "' - this will prevent SkyWars from confirming server version.");
+            getLogger().log(Level.SEVERE, "Please confirm you are running CraftBukkit version 1.7.8 or newer, or the equivilant for your server software. If you have already done so, you can ignore this message.");
+            getLogger().log(Level.SEVERE, "Proceed with caution! SkyWars v" + SkyStatic.getVersion() + " will not function on minecraft versions below 1.7.8!");
+            return true;
+        }
+        // if we're on minecraft v2.X, the other version parts don't matter
+        return first > 1 || second > 7 || (second == 7 && third >= 3);
     }
 
     private void registerListeners(PluginManager pm, Listener... listeners) {
