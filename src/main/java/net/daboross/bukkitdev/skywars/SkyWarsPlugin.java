@@ -39,10 +39,10 @@ import net.daboross.bukkitdev.skywars.economy.SkyEconomyGameRewards;
 import net.daboross.bukkitdev.skywars.economy.SkyEconomyHook;
 import net.daboross.bukkitdev.skywars.events.GameEventDistributor;
 import net.daboross.bukkitdev.skywars.events.listeners.GameBroadcaster;
-import net.daboross.bukkitdev.skywars.events.listeners.InventorySave;
+import net.daboross.bukkitdev.skywars.events.listeners.InventorySaveListener;
 import net.daboross.bukkitdev.skywars.events.listeners.KitApplyListener;
 import net.daboross.bukkitdev.skywars.events.listeners.KitQueueNotifier;
-import net.daboross.bukkitdev.skywars.events.listeners.ResetHealth;
+import net.daboross.bukkitdev.skywars.events.listeners.ResetHealthListener;
 import net.daboross.bukkitdev.skywars.game.CurrentGames;
 import net.daboross.bukkitdev.skywars.game.GameHandler;
 import net.daboross.bukkitdev.skywars.game.GameIDHandler;
@@ -52,17 +52,19 @@ import net.daboross.bukkitdev.skywars.listeners.AttackerStorageListener;
 import net.daboross.bukkitdev.skywars.listeners.BuildingLimiter;
 import net.daboross.bukkitdev.skywars.listeners.CommandWhitelistListener;
 import net.daboross.bukkitdev.skywars.listeners.MobSpawnDisable;
-import net.daboross.bukkitdev.skywars.listeners.PointStorageChatListener;
 import net.daboross.bukkitdev.skywars.listeners.PortalListener;
 import net.daboross.bukkitdev.skywars.listeners.QuitListener;
+import net.daboross.bukkitdev.skywars.listeners.ScoreReplaceChatListener;
 import net.daboross.bukkitdev.skywars.listeners.SpawnListener;
-import net.daboross.bukkitdev.skywars.player.CurrentlyInGame;
+import net.daboross.bukkitdev.skywars.listeners.StorageLoadListener;
+import net.daboross.bukkitdev.skywars.player.OnlineSkyPlayers;
 import net.daboross.bukkitdev.skywars.score.ScoreStorage;
 import net.daboross.bukkitdev.skywars.scoreboards.TeamScoreboardListener;
 import net.daboross.bukkitdev.skywars.storage.LocationStore;
 import net.daboross.bukkitdev.skywars.world.SkyWorldHandler;
 import net.daboross.bukkitdev.skywars.world.Statics;
 import net.daboross.bukkitdev.skywars.world.WorldUnzipper;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -77,25 +79,29 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     private SkyTranslations translations;
     private SkyConfiguration configuration;
     private SkyLocationStore locationStore;
-    private GameQueue gameQueue;
-    private CurrentGames currentGameTracker;
     private SkyGameHandler gameHandler;
-    private GameIDHandler idHandler;
     private SkyWorldHandler worldHandler;
-    private AttackerStorageListener attackerStorage;
-    private GameBroadcaster broadcaster;
-    private ResetHealth resetHealth;
-    private GameEventDistributor distributor;
-    private InventorySave inventorySave;
-    private ScoreStorage points;
-    private PointStorageChatListener chatListener;
     private SkyEconomyHook economyHook;
     private SkyEconomyGameRewards ecoRewards;
-    private TeamScoreboardListener teamListener;
     private SkyKits kits;
+    private GameQueue gameQueue;
+    private CurrentGames currentGameTracker;
+    private GameIDHandler idHandler;
+    private GameBroadcaster broadcaster;
+    private GameEventDistributor distributor;
+    private ScoreStorage score;
     private KitQueueNotifier kitQueueNotifier;
+
+    private OnlineSkyPlayers inGame;
+    private TeamScoreboardListener teamListener;
+    private AttackerStorageListener attackerStorage;
+    // Info listeners
+    private ResetHealthListener resetHealth;
     private KitApplyListener kitApplyListener;
-    private CurrentlyInGame inGame;
+    private InventorySaveListener inventorySaveListener;
+    // Bukkit listeners
+    private ScoreReplaceChatListener chatListener;
+    private StorageLoadListener joinListener;
     private boolean enabledCorrectly = false;
 
     @Override
@@ -123,6 +129,13 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         } catch (IOException | InvalidConfigurationException | SkyConfigurationException ex) {
             throw new StartupFailedException("Failed to load configuration", ex);
         }
+        if (!configuration.isSkipUuidCheck() && !supportsUuids()) {
+            getLogger().log(Level.SEVERE, "Warning! You are running a CraftBukkit version that is not supported by SkyWars v" + SkyStatic.getVersion());
+            getLogger().log(Level.SEVERE, "Please update to at least CraftBukkit version 1.7.8, or the equivilant for your server software.");
+            getLogger().log(Level.SEVERE, "If you wish to ignore this, and run SkyWars anyways, set 'skip-uuid-version-check' to true in plugins/SkyWars/main-config.yml");
+            getLogger().log(Level.SEVERE, "Download SkyWars v1.4.4 if you want to run on an older version of Minecraft.");
+            throw new StartupFailedException("See above");
+        }
         for (SkyArena arena : configuration.getEnabledArenas()) {
             if (arena.getBoundaries().getOrigin().world.equalsIgnoreCase(Statics.BASE_WORLD_NAME)) {
                 new WorldUnzipper().doWorldUnzip(getLogger());
@@ -139,18 +152,19 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         idHandler = new GameIDHandler();
         broadcaster = new GameBroadcaster();
         worldHandler = new SkyWorldHandler(this);
-        inventorySave = new InventorySave(this);
-        resetHealth = new ResetHealth();
+        inventorySaveListener = new InventorySaveListener(this);
+        resetHealth = new ResetHealthListener();
         locationStore = new LocationStore(this);
         gameQueue = new GameQueue(this);
         gameHandler = new GameHandler(this);
         attackerStorage = new AttackerStorageListener(this);
         distributor = new GameEventDistributor(this);
         teamListener = new TeamScoreboardListener();
-        inGame = new CurrentlyInGame();
-        if (configuration.isEnablePoints()) {
-            points = new ScoreStorage(this);
-            chatListener = new PointStorageChatListener(this);
+        inGame = new OnlineSkyPlayers(this);
+        if (configuration.isEnableScore()) {
+            score = new ScoreStorage(this);
+            chatListener = new ScoreReplaceChatListener(this);
+            joinListener = new StorageLoadListener(this);
         }
         if (configuration.isEconomyEnabled()) {
             SkyStatic.debug("Enabling economy support");
@@ -177,8 +191,38 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         registerListeners(pm, new SpawnListener(), attackerStorage,
                 new QuitListener(this), new PortalListener(this),
                 new CommandWhitelistListener(this), new BuildingLimiter(this),
-                new MobSpawnDisable(), chatListener);
+                new MobSpawnDisable(), chatListener, joinListener);
         enabledCorrectly = true;
+    }
+
+    private boolean supportsUuids() {
+        String packageName = Bukkit.getServer().getClass().getPackage().getName();
+        // Get full package string of CraftServer.
+        // org.bukkit.craftbukkit.versionstring (or for pre-refactor, just org.bukkit.craftbukkit
+        String version = packageName.substring(packageName.lastIndexOf('.') + 1);
+        if (version.equals("craftbukkit")) {
+            return false;
+        }
+        String[] split = version.split("_");
+        if (split.length != 3) {
+            getLogger().log(Level.SEVERE, "Package version specifier of unknown format found: '" + version + "' - this will prevent SkyWars from confirming server version.");
+            getLogger().log(Level.SEVERE, "Please confirm you are running CraftBukkit version 1.7.8 or newer, or the equivilant for your server software. If you have already done so, you can ignore this message.");
+            getLogger().log(Level.SEVERE, "Proceed with caution! SkyWars v" + SkyStatic.getVersion() + " will not function on minecraft versions below 1.7.8!");
+            return true;
+        }
+        int first, second, third;
+        try {
+            first = Integer.parseInt(split[0].substring(1)); // substring for v1 -> 1
+            second = Integer.parseInt(split[1]);
+            third = Integer.parseInt(split[2].substring(1)); // substring for R1 -> 1
+        } catch (NumberFormatException ignored) {
+            getLogger().log(Level.SEVERE, "Package version specifier of unknown format found: '" + version + "' - this will prevent SkyWars from confirming server version.");
+            getLogger().log(Level.SEVERE, "Please confirm you are running CraftBukkit version 1.7.8 or newer, or the equivilant for your server software. If you have already done so, you can ignore this message.");
+            getLogger().log(Level.SEVERE, "Proceed with caution! SkyWars v" + SkyStatic.getVersion() + " will not function on minecraft versions below 1.7.8!");
+            return true;
+        }
+        // if we're on minecraft v2.X, the other version parts don't matter
+        return first > 1 || second > 7 || (second == 7 && third >= 3);
     }
 
     private void registerListeners(PluginManager pm, Listener... listeners) {
@@ -194,11 +238,11 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         if (enabledCorrectly) {
             locationStore.save();
             idHandler.saveAndUnload(this);
-            if (points != null) {
+            if (score != null) {
                 try {
-                    points.save();
+                    score.save();
                 } catch (IOException ex) {
-                    getLogger().log(Level.WARNING, "Failed to save points", ex);
+                    getLogger().log(Level.WARNING, "Failed to save score", ex);
                 }
             }
             getLogger().log(Level.INFO, "Unloading arena world - without saving");
@@ -299,8 +343,8 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     }
 
     @Override
-    public ScoreStorage getPoints() {
-        return points;
+    public ScoreStorage getScore() {
+        return score;
     }
 
     @Override
@@ -314,7 +358,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     }
 
     @Override
-    public CurrentlyInGame getInGame() {
+    public OnlineSkyPlayers getPlayers() {
         return inGame;
     }
 
@@ -326,7 +370,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         return broadcaster;
     }
 
-    public ResetHealth getResetHealth() {
+    public ResetHealthListener getResetHealth() {
         return resetHealth;
     }
 
@@ -334,8 +378,8 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         return distributor;
     }
 
-    public InventorySave getInventorySave() {
-        return inventorySave;
+    public InventorySaveListener getInventorySaveListener() {
+        return inventorySaveListener;
     }
 
     public SkyEconomyGameRewards getEcoRewards() {

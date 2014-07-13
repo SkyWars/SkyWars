@@ -21,8 +21,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
@@ -32,17 +32,17 @@ import org.apache.commons.lang.Validate;
 public class ArenaGame implements SkyGame {
 
     private final int id;
-    private final List<String> alivePlayers;
-    private final List<String> deadPlayers;
+    private final List<UUID> alivePlayers;
+    private final List<UUID> deadPlayers;
     private final SkyArena arena;
     private SkyBlockLocation min;
     private SkyBlockLocationRange boundaries;
     private final boolean teamsEnabled;
-    private final Map<String, Integer> playerTeams;
-    private final Map<Integer, List<String>> teamPlayers;
+    private final Map<UUID, Integer> playerTeams;
+    private final Map<Integer, List<UUID>> teamPlayers;
     private final int numTeams;
 
-    public ArenaGame(SkyArena arena, int id, String[] originalPlayers) {
+    public ArenaGame(SkyArena arena, int id, UUID[] originalPlayers) {
         Validate.notNull(arena, "Arena cannot be null");
         Validate.noNullElements(originalPlayers, "No players can be null");
         this.arena = arena;
@@ -55,7 +55,7 @@ public class ArenaGame implements SkyGame {
             this.playerTeams = new HashMap<>(alivePlayers.size());
             this.teamPlayers = new HashMap<>(alivePlayers.size() / teamSize);
             int team = 0;
-            List<String> currentTeamList = null;
+            List<UUID> currentTeamList = null;
             for (int i = 0, lastTeam = -1; i < alivePlayers.size(); i++) {
                 team = i / teamSize;
                 if (team != lastTeam) {
@@ -63,11 +63,11 @@ public class ArenaGame implements SkyGame {
                     teamPlayers.put(team, currentTeamList);
                     lastTeam = team;
                 }
-                String name = alivePlayers.get(i);
-                playerTeams.put(name, team);
+                UUID uuid = alivePlayers.get(i);
+                playerTeams.put(uuid, team);
                 // This won't produce an NPE, because team!=lastTeam at the start of this loop.
                 //noinspection ConstantConditions
-                currentTeamList.add(name);
+                currentTeamList.add(uuid);
             }
             numTeams = team + 1;
         } else {
@@ -78,10 +78,9 @@ public class ArenaGame implements SkyGame {
         }
     }
 
-    public void removePlayer(String playerName) {
-        playerName = playerName.toLowerCase(Locale.ENGLISH);
-        Validate.isTrue(alivePlayers.remove(playerName), "Player %s not alive in game", playerName);
-        deadPlayers.add(playerName);
+    public void removePlayer(UUID uuid) {
+        Validate.isTrue(alivePlayers.remove(uuid), "Player (uuid: %s) not alive in game", uuid);
+        deadPlayers.add(uuid);
     }
 
     public void setMin(SkyBlockLocation min) {
@@ -100,12 +99,12 @@ public class ArenaGame implements SkyGame {
     }
 
     @Override
-    public List<String> getAlivePlayers() {
+    public List<UUID> getAlivePlayers() {
         return Collections.unmodifiableList(alivePlayers);
     }
 
     @Override
-    public List<String> getDeadPlayers() {
+    public List<UUID> getDeadPlayers() {
         return Collections.unmodifiableList(deadPlayers);
     }
 
@@ -125,39 +124,39 @@ public class ArenaGame implements SkyGame {
     }
 
     @Override
-    public int getTeamNumber(String player) {
+    public int getTeamNumber(UUID uuid) {
         if (!teamsEnabled) {
             throw new IllegalStateException("Teams aren't enabled");
         }
-        Integer team = playerTeams.get(player.toLowerCase());
-        Validate.isTrue(team != null, "Player %s not in game", player);
+        Integer team = playerTeams.get(uuid);
+        Validate.isTrue(team != null, "Player (uuid: %s) not in game", uuid);
         return team;
     }
 
     @Override
-    public List<String> getAlivePlayersInTeam(int teamNumber) {
+    public List<UUID> getAlivePlayersInTeam(int teamNumber) {
         if (!teamsEnabled) {
             throw new IllegalStateException("Teams aren't enabled");
         }
-        List<String> alive = new ArrayList<>(arena.getTeamSize());
-        List<String> all = teamPlayers.get(teamNumber);
+        List<UUID> alive = new ArrayList<>(arena.getTeamSize());
+        List<UUID> all = teamPlayers.get(teamNumber);
         if (all == null) {
             return null;
         }
-        for (String name : all) {
-            if (alivePlayers.contains(name)) {
-                alive.add(name);
+        for (UUID uuid : all) {
+            if (alivePlayers.contains(uuid)) {
+                alive.add(uuid);
             }
         }
         return Collections.unmodifiableList(alive);
     }
 
     @Override
-    public List<String> getAllPlayersInTeam(int teamNumber) {
+    public List<UUID> getAllPlayersInTeam(int teamNumber) {
         if (!teamsEnabled) {
             throw new IllegalStateException("Teams aren't enabled");
         }
-        List<String> alive = teamPlayers.get(teamNumber);
+        List<UUID> alive = teamPlayers.get(teamNumber);
         return alive == null ? null : Collections.unmodifiableList(alive);
     }
 

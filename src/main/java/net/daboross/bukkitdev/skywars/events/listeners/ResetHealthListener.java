@@ -22,7 +22,7 @@ import net.daboross.bukkitdev.skywars.util.CrossVersion;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
-public class ResetHealth {
+public class ResetHealthListener {
 
     public void onGameStart(GameStartInfo info) {
         for (Player p : info.getPlayers()) {

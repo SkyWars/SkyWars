@@ -16,8 +16,10 @@
  */
 package net.daboross.bukkitdev.skywars.config;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,16 +41,23 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private final SkyArenaConfigLoader arenaLoader = new SkyArenaConfigLoader();
     private List<SkyArenaConfig> enabledArenas;
     private final SkyWars plugin;
-    private File arenaFolder;
+    private Path arenaFolder;
     private SkyArenaConfig parentArena;
     private ArenaOrder arenaOrder;
+    private boolean skipUuidCheck;
     private String messagePrefix;
     private boolean inventorySaveEnabled;
-    private boolean enablePoints;
-    private int deathPointDiff;
-    private int winPointDiff;
-    private int killPointDiff;
-    private long pointsSaveInterval;
+    private boolean enableScore;
+    private int deathScoreDiff;
+    private int winScoreDiff;
+    private int killScoreDiff;
+    private boolean scoreUseSql;
+    private String scoreSqlHost;
+    private int scoreSqlPort;
+    private String scoreSqlDatabase;
+    private String scoreSqlUsername;
+    private String scoreSqlPassword;
+    private long scoreSaveInterval;
     private int arenaDistanceApart;
     private boolean commandWhitelistEnabled;
     private boolean commandWhitelistABlacklist;
@@ -59,8 +68,11 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private String locale;
     private boolean disableReport;
     private boolean economyRewardMessages;
-//    private boolean perArenaDeathMessagesEnabled;
+    //    private boolean perArenaDeathMessagesEnabled;
 //    private boolean perArenaWinMessagesEnabled;
+    private boolean multiverseCoreHookEnabled;
+    private boolean multiverseInventoriesHookEnabled;
+    private boolean worldeditHookEnabled;
 
     public SkyWarsConfiguration(SkyWars plugin) throws IOException, InvalidConfigurationException, SkyConfigurationException {
         this.plugin = plugin;
@@ -69,34 +81,31 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
     private void load() throws IOException, InvalidConfigurationException, SkyConfigurationException {
         // This is expected to be only done once, so it is OK to not store some values
-        File mainConfigFile = new File(plugin.getDataFolder(), Names.MAIN);
+        Path mainConfigFile = plugin.getDataFolder().toPath().resolve(Names.MAIN);
         SkyFileConfig mainConfig = new SkyFileConfig(mainConfigFile, plugin.getLogger());
         mainConfig.load();
 
         if (arenaFolder == null) {
-            arenaFolder = new File(plugin.getDataFolder(), Names.ARENAS);
+            arenaFolder = plugin.getDataFolder().toPath().resolve(Names.ARENAS);
         }
-        if (!arenaFolder.exists()) {
-            boolean mkdirs = arenaFolder.mkdirs();
-            if (!mkdirs) {
-                throw new SkyConfigurationException("Making directory " + arenaFolder.getAbsolutePath() + " failed");
-            }
-        } else if (!arenaFolder.isDirectory()) {
-            throw new SkyConfigurationException("File " + arenaFolder.getAbsolutePath() + " exists but is not a directory");
+        if (!Files.exists(arenaFolder)) {
+            Files.createDirectories(arenaFolder);
+        } else if (!Files.isDirectory(arenaFolder)) {
+            throw new SkyConfigurationException("File " + arenaFolder.toAbsolutePath() + " exists but is not a directory");
         }
 
         int version = mainConfig.getSetInt(MainConfigKeys.VERSION, MainConfigDefaults.VERSION);
         if (version > 2) {
-            throw new SkyConfigurationException("Version '" + version + "' as listed under " + MainConfigKeys.VERSION + " in file " + mainConfigFile.getAbsolutePath() + " is unknown.");
+            throw new SkyConfigurationException("Version '" + version + "' as listed under " + MainConfigKeys.VERSION + " in file " + mainConfigFile.toAbsolutePath() + " is unknown.");
         }
         mainConfig.getConfig().set(MainConfigKeys.VERSION, MainConfigDefaults.VERSION);
 
         SkyStatic.setDebug(mainConfig.getSetBoolean(MainConfigKeys.DEBUG, MainConfigDefaults.DEBUG));
-
+        skipUuidCheck = mainConfig.getSetBoolean(MainConfigKeys.SKIP_UUID_CHECK, MainConfigDefaults.SKIP_UUID_CHECK);
         String arenaOrderString = mainConfig.getSetString(MainConfigKeys.ARENA_ORDER, MainConfigDefaults.ARENA_ORDER.toString());
         arenaOrder = ArenaOrder.getOrder(arenaOrderString);
         if (arenaOrder == null) {
-            throw new SkyConfigurationException("Invalid ArenaOrder '" + arenaOrderString + "' found under " + MainConfigKeys.ARENA_ORDER + " in file " + mainConfigFile.getAbsolutePath() + ". Valid values: " + Arrays.toString(ArenaOrder.values()));
+            throw new SkyConfigurationException("Invalid ArenaOrder '" + arenaOrderString + "' found under " + MainConfigKeys.ARENA_ORDER + " in file " + mainConfigFile.toAbsolutePath() + ". Valid values: " + Arrays.toString(ArenaOrder.values()));
         }
 
         messagePrefix = ConfigColorCode.translateCodes(mainConfig.getSetString(MainConfigKeys.MESSAGE_PREFIX, MainConfigDefaults.MESSAGE_PREFIX));
@@ -111,13 +120,19 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
         locale = mainConfig.getSetString(MainConfigKeys.LOCALE, MainConfigDefaults.LOCALE);
 
-        // Points
-        enablePoints = mainConfig.getSetBoolean(MainConfigKeys.Points.ENABLE, MainConfigDefaults.Points.ENABLE);
-        winPointDiff = mainConfig.getSetInt(MainConfigKeys.Points.WIN_DIFF, MainConfigDefaults.Points.WIN_DIFF);
-        deathPointDiff = mainConfig.getSetInt(MainConfigKeys.Points.DEATH_DIFF, MainConfigDefaults.Points.DEATH_DIFF);
-        killPointDiff = mainConfig.getSetInt(MainConfigKeys.Points.KILL_DIFF, MainConfigDefaults.Points.KILL_DIFF);
-        pointsSaveInterval = mainConfig.getSetLong(MainConfigKeys.Points.SAVE_INTERVAL, MainConfigDefaults.Points.SAVE_INTERVAL);
-
+        // Score
+        enableScore = mainConfig.getSetBoolean(MainConfigKeys.Score.ENABLE, MainConfigDefaults.Score.ENABLE);
+        winScoreDiff = mainConfig.getSetInt(MainConfigKeys.Score.WIN_DIFF, MainConfigDefaults.Score.WIN_DIFF);
+        deathScoreDiff = mainConfig.getSetInt(MainConfigKeys.Score.DEATH_DIFF, MainConfigDefaults.Score.DEATH_DIFF);
+        killScoreDiff = mainConfig.getSetInt(MainConfigKeys.Score.KILL_DIFF, MainConfigDefaults.Score.KILL_DIFF);
+        scoreSaveInterval = mainConfig.getSetLong(MainConfigKeys.Score.SAVE_INTERVAL, MainConfigDefaults.Score.SAVE_INTERVAL);
+        // Score.SQL
+        scoreUseSql = mainConfig.getSetBoolean(MainConfigKeys.Score.USE_SQL, MainConfigDefaults.Score.USE_SQL);
+        scoreSqlHost = mainConfig.getSetString(MainConfigKeys.Score.SQL_HOST, MainConfigDefaults.Score.SQL_HOST);
+        scoreSqlPort = mainConfig.getSetInt(MainConfigKeys.Score.SQL_PORT, MainConfigDefaults.Score.SQL_PORT);
+        scoreSqlDatabase = mainConfig.getSetString(MainConfigKeys.Score.SQL_DATABASE, MainConfigDefaults.Score.SQL_DATABASE);
+        scoreSqlUsername = mainConfig.getSetString(MainConfigKeys.Score.SQL_USERNAME, MainConfigDefaults.Score.SQL_USERNAME);
+        scoreSqlPassword = mainConfig.getSetString(MainConfigKeys.Score.SQL_PASSWORD, MainConfigDefaults.Score.SQL_PASSWORD);
         // Economy
         economyEnabled = mainConfig.getSetBoolean(MainConfigKeys.Economy.ENABLE, MainConfigDefaults.Economy.ENABLE);
         economyKillReward = mainConfig.getSetInt(MainConfigKeys.Economy.KILL_REWARD, MainConfigDefaults.Economy.KILL_REWARD);
@@ -136,6 +151,12 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         // per-arena messages
 //        perArenaDeathMessagesEnabled = mainConfig.getSetBoolean(MainConfigKeys.PER_ARENA_DEATH_MESSAGES_ENABLED, MainConfigDefaults.PER_ARENA_DEATH_MESSAGES_ENABLED);
 //        perArenaWinMessagesEnabled = mainConfig.getSetBoolean(MainConfigKeys.PER_ARENA_WIN_MESSAGES_ENABLED, MainConfigDefaults.PER_ARENA_WIN_MESSAGES_ENABLED);
+
+        // Hooks
+        multiverseCoreHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.MULTIVERSE_CORE, MainConfigDefaults.Hooks.MULTIVERSE_CORE);
+        multiverseInventoriesHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.MULTIVERSE_INVENTORIES, MainConfigDefaults.Hooks.MULTIVERSE_INVENTORIES);
+        worldeditHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.WORLDEDIT, MainConfigDefaults.Hooks.WORLDEDIT);
+
         // Remove deprecated values
         mainConfig.removeValues(MainConfigKeys.Deprecated.CHAT_PREFIX, MainConfigKeys.Deprecated.PREFIX_CHAT);
 
@@ -171,13 +192,13 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         if (enabledArenas == null) {
             throw new IllegalStateException("Enabled arenas null");
         }
-        File file = new File(arenaFolder, name + ".yml");
-        if (!file.exists()) {
-            String fileName = Names.ARENAS + File.separatorChar + name + ".yml";
+        Path file = arenaFolder.resolve(name + ".yml");
+        if (!Files.exists(file)) {
+            String fileName = Paths.get(Names.ARENAS, name + ".yml").toString();
             try {
                 plugin.saveResource(fileName, false);
             } catch (IllegalArgumentException ex) {
-                throw new SkyConfigurationException(name + " is in " + MainConfigKeys.ENABLED_ARENAS + " but file " + file.getAbsolutePath() + " could not be found.");
+                throw new SkyConfigurationException(name + " is in " + MainConfigKeys.ENABLED_ARENAS + " but file " + file.toAbsolutePath() + " could not be found.");
             }
         }
         SkyArenaConfig arenaConfig = arenaLoader.loadArena(file, name, messagePrefix);
@@ -188,8 +209,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     }
 
     private void loadParent() throws SkyConfigurationException {
-        File file = new File(plugin.getDataFolder(), "arena-parent.yml");
-        if (!file.exists()) {
+        Path path = plugin.getDataFolder().toPath().resolve("arena-parent.yml");
+        if (!Files.exists(path)) {
             String fileName = "arena-parent.yml";
             try {
                 plugin.saveResource(fileName, false);
@@ -197,20 +218,20 @@ public class SkyWarsConfiguration implements SkyConfiguration {
                 throw new SkyConfigurationException("arena-parent.yml could not be found in plugin jar.", ex);
             }
         }
-        SkyArenaConfig arenaConfig = arenaLoader.loadArena(file, "parent-arena", messagePrefix);
+        SkyArenaConfig arenaConfig = arenaLoader.loadArena(path, "parent-arena", messagePrefix);
         parentArena = arenaConfig;
         parentArena.confirmAllValuesExist();
-        saveArena(file, arenaConfig, String.format(Headers.PARENT));
+        saveArena(path, arenaConfig, String.format(Headers.PARENT));
     }
 
-    public void saveArena(File file, SkyArenaConfig arenaConfig, String header) {
+    public void saveArena(Path path, SkyArenaConfig arenaConfig, String header) {
         YamlConfiguration newConfig = new YamlConfiguration();
         newConfig.options().header(header).indent(2);
         arenaConfig.serialize(newConfig);
         try {
-            newConfig.save(file);
+            newConfig.save(path.toFile());
         } catch (IOException ex) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to save arena config to file " + file.getAbsolutePath(), ex);
+            plugin.getLogger().log(Level.SEVERE, "Failed to save arena config to file " + path.toAbsolutePath(), ex);
         }
     }
 
@@ -242,7 +263,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     }
 
     @Override
-    public File getArenaFolder() {
+    public Path getArenaFolder() {
         return arenaFolder;
     }
 
@@ -267,28 +288,28 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     }
 
     @Override
-    public boolean isEnablePoints() {
-        return enablePoints;
+    public boolean isEnableScore() {
+        return enableScore;
     }
 
     @Override
-    public int getDeathPointDiff() {
-        return deathPointDiff;
+    public int getDeathScoreDiff() {
+        return deathScoreDiff;
     }
 
     @Override
-    public int getWinPointDiff() {
-        return winPointDiff;
+    public int getWinScoreDiff() {
+        return winScoreDiff;
     }
 
     @Override
-    public int getKillPointDiff() {
-        return killPointDiff;
+    public int getKillScoreDiff() {
+        return killScoreDiff;
     }
 
     @Override
-    public long getPointsSaveInterval() {
-        return pointsSaveInterval;
+    public long getScoreSaveInterval() {
+        return scoreSaveInterval;
     }
 
     @Override
@@ -336,6 +357,55 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         return disableReport;
     }
 
+    @Override
+    public boolean isScoreUseSql() {
+        return scoreUseSql;
+    }
+
+    @Override
+    public String getScoreSqlHost() {
+        return scoreSqlHost;
+    }
+
+    @Override
+    public int getScoreSqlPort() {
+        return scoreSqlPort;
+    }
+
+    @Override
+    public String getScoreSqlUsername() {
+        return scoreSqlUsername;
+    }
+
+    @Override
+    public String getScoreSqlPassword() {
+        return scoreSqlPassword;
+    }
+
+    @Override
+    public String getScoreSqlDatabase() {
+        return scoreSqlDatabase;
+    }
+
+    @Override
+    public boolean isMultiverseCoreHookEnabled() {
+        return multiverseCoreHookEnabled;
+    }
+
+    @Override
+    public boolean isMultiverseInventoriesHookEnabled() {
+        return multiverseInventoriesHookEnabled;
+    }
+
+    @Override
+    public boolean isWorldeditHookEnabled() {
+        return worldeditHookEnabled;
+    }
+
+    public boolean isSkipUuidCheck() {
+        return skipUuidCheck;
+    }
+
     private static class Names {
 
         private static final String MAIN = "main-config.yml";
@@ -349,7 +419,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
                 + "All comment changes will be removed.%n"
                 + "%n"
                 + "For documentation, please visit %n"
-                + "https://github.com/daboross/SkyWars/wiki/Configuration-main-config%n"
+                + "http://dabo.guru/skywars/configuring-skywars%n"
                 + "#########";
         private static final String ARENA = "####### %s.yml ###%n"
                 + "This is the Skyblock Warriors arena config.%n"

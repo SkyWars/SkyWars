@@ -1,5 +1,16 @@
 ![SkyWars](http://dabo.guru/logo/SkyWars.png)
 
+### Warning for v1.5.0! Version 1.5.0 is ONLY for bukkit #3034 and up!
+
+SkyWars v1.5.0 will fail to start on any craftbukkit version before #3034. If you are using an earlier version, please use SkyWars v1.4.2.
+
+v1.5.0 adds UUID support, which is why it requires a newer CraftBukkit version.
+
+Even though it is possible to run on any build above #3034 (a minecraft 1.7.5 build), it is recommended that you use minecraft 1.7.8 or later.
+
+When using SkyWars v1.5.0, SkyWars will transition it's storage from names to UUIDs as users log into your server.
+This way there is no long transfer period, and it supports any proxies (bungeecord, lilypad) *as long as they forward the UUIDs to Bukkit*.
+
 ### Features
 * Automatically create new arenas every time enough people join the queue.
 * Have *as many arenas* going at the same time as you want!

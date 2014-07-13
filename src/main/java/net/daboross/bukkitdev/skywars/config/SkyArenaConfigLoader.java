@@ -16,9 +16,9 @@
  */
 package net.daboross.bukkitdev.skywars.config;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
 import org.bukkit.configuration.ConfigurationSection;
@@ -28,19 +28,19 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class SkyArenaConfigLoader {
 
-    public SkyArenaConfig loadArena(File file, String name, String messagePrefix) throws SkyConfigurationException {
+    public SkyArenaConfig loadArena(Path file, String name, String messagePrefix) throws SkyConfigurationException {
         FileConfiguration config = new YamlConfiguration();
         try {
-            config.load(file);
+            config.load(file.toFile());
         } catch (FileNotFoundException ex) {
-            throw new SkyConfigurationException("File " + file.getAbsolutePath() + " could not be found.", ex);
+            throw new SkyConfigurationException("File " + file.toAbsolutePath() + " could not be found.", ex);
         } catch (IOException ex) {
-            throw new SkyConfigurationException("IOException loading file " + file.getAbsolutePath(), ex);
+            throw new SkyConfigurationException("IOException loading file " + file.toAbsolutePath(), ex);
         } catch (InvalidConfigurationException ex) {
-            throw new SkyConfigurationException("Failed to load configuration file " + file.getAbsolutePath(), ex);
+            throw new SkyConfigurationException("Failed to load configuration file " + file.toAbsolutePath(), ex);
         }
         if (!checkVersion(config)) {
-            throw new SkyConfigurationException("Unknown config-version " + config.getInt("config-version") + " in file " + file.getAbsolutePath());
+            throw new SkyConfigurationException("Unknown config-version " + config.getInt("config-version") + " in file " + file.toAbsolutePath());
         }
         SkyArenaConfig arenaConfig = SkyArenaConfig.deserialize(config);
         arenaConfig.setArenaName(name);

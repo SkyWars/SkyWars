@@ -16,10 +16,14 @@
  */
 package net.daboross.bukkitdev.skywars.config;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.EnumMap;
 import java.util.Locale;
 import java.util.Map;
@@ -36,28 +40,26 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class TranslationsConfiguration implements SkyTranslations {
 
     private final SkyWars plugin;
-    private final File configFile;
-    private final File newConfigFile;
+    private final Path configFile;
+    private final Path newConfigFile;
     private String language;
     private Map<TransKey, String> values;
 
     public TranslationsConfiguration(SkyWars plugin) throws SkyConfigurationException {
         this.plugin = plugin;
-        this.configFile = new File(plugin.getDataFolder(), "messages.yml");
-        this.newConfigFile = new File(plugin.getDataFolder(), "messages.new.yml");
+        this.configFile = plugin.getDataFolder().toPath().resolve("messages.yml");
+        this.newConfigFile = plugin.getDataFolder().toPath().resolve("messages.new.yml");
         this.values = new EnumMap<>(TransKey.class);
         this.load();
     }
 
     private void load() throws SkyConfigurationException {
-        try {
-            // The or statement makes it so that configFile.createNewFile() isn't called if it exists
-            boolean success = configFile.exists() || configFile.createNewFile();
-            if (!success) {
-                throw new SkyConfigurationException("Failed to create file " + configFile.getAbsolutePath());
+        if (!Files.exists(configFile)) {
+            try {
+                Files.createFile(configFile);
+            } catch (IOException ex) {
+                throw new SkyConfigurationException("IOException creating new file " + configFile.toAbsolutePath(), ex);
             }
-        } catch (IOException ex) {
-            throw new SkyConfigurationException("IOException creating new file " + configFile.getAbsolutePath(), ex);
         }
         FileConfiguration config = loadMain();
         Map<TransKey, String> internal = loadInternal();
@@ -97,7 +99,7 @@ public class TranslationsConfiguration implements SkyTranslations {
         }
         config.options().header(MESSAGES_FILE_HEADER);
         try {
-            config.save(configFile);
+            config.save(configFile.toFile());
         } catch (IOException ex) {
             plugin.getLogger().log(Level.WARNING, "Failed to save translations config file", ex);
         }
@@ -108,7 +110,7 @@ public class TranslationsConfiguration implements SkyTranslations {
                 newConfig.set(key.key, internal.get(key));
             }
             try {
-                newConfig.save(newConfigFile);
+                newConfig.save(newConfigFile.toFile());
             } catch (IOException ex) {
                 plugin.getLogger().log(Level.SEVERE, "Couldn't save messages.new.yml", ex);
             }
@@ -119,11 +121,11 @@ public class TranslationsConfiguration implements SkyTranslations {
         FileConfiguration config = new YamlConfiguration();
         config.options().pathSeparator('%');
         try {
-            config.load(configFile);
+            config.load(configFile.toFile());
         } catch (IOException ex) {
-            throw new SkyConfigurationException("IOException loading messages file " + configFile.getAbsolutePath(), ex);
+            throw new SkyConfigurationException("IOException loading messages file " + configFile.toAbsolutePath(), ex);
         } catch (InvalidConfigurationException ex) {
-            throw new SkyConfigurationException("Messages file " + configFile.getAbsolutePath() + " is invalid", ex);
+            throw new SkyConfigurationException("Messages file " + configFile.toAbsolutePath() + " is invalid", ex);
         }
         return config;
     }
@@ -146,7 +148,9 @@ public class TranslationsConfiguration implements SkyTranslations {
         YamlConfiguration config = new YamlConfiguration();
         config.options().pathSeparator('%');
         try (InputStream is = path.openStream()) {
-            config.load(is);
+            try (Reader reader = new InputStreamReader(is, Charset.forName("UTF-8"))) {
+                config.load(reader);
+            }
         } catch (IOException | InvalidConfigurationException ex) {
             throw new SkyConfigurationException("Couldn't load internal translation file " + file, ex);
         }

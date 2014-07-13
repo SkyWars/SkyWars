@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014 Dabo Ross <http://www.daboross.net/>
+ * Copyright (C) 2013 Dabo Ross <http://www.daboross.net/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,35 +16,27 @@
  */
 package net.daboross.bukkitdev.skywars.listeners;
 
-import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
-import net.daboross.bukkitdev.skywars.api.players.SkyPlayer;
+import net.daboross.bukkitdev.skywars.api.SkyWars;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class QuitListener implements Listener {
+public class StorageLoadListener implements Listener {
 
-    private final SkyWarsPlugin plugin;
+    private final SkyWars plugin;
 
-    public QuitListener(SkyWarsPlugin plugin) {
+    public StorageLoadListener(final SkyWars plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler
+    public void onJoin(PlayerJoinEvent evt) {
+        plugin.getPlayers().loadPlayer(evt.getPlayer());
+    }
+
+    @EventHandler
     public void onQuit(PlayerQuitEvent evt) {
-        SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(evt.getPlayer());
-        if (skyPlayer != null) {
-            switch (skyPlayer.getState()) {
-                case IN_QUEUE:
-                    plugin.getGameQueue().removePlayer(evt.getPlayer());
-                    break;
-                case IN_RUNNING_GAME:
-                    plugin.getGameHandler().removePlayerFromGame(evt.getPlayer(), true, true);
-                    break;
-                case WAITING_FOR_RESPAWN:
-                    plugin.getGameHandler().respawnPlayer(evt.getPlayer());
-                    break;
-            }
-        }
+        plugin.getPlayers().unloadPlayer(evt.getPlayer().getUniqueId());
     }
 }

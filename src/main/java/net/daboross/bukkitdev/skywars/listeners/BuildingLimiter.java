@@ -50,7 +50,7 @@ public class BuildingLimiter implements Listener {
     }
 
     private boolean shouldCancel(Player p, Block block) {
-        SkyGame game = plugin.getIDHandler().getGame(plugin.getCurrentGameTracker().getGameID(p.getName()));
+        SkyGame game = plugin.getIDHandler().getGame(plugin.getCurrentGameTracker().getGameId(p.getUniqueId()));
         if (game == null) {
             return false;
         }

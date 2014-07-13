@@ -33,7 +33,7 @@ public class KitQueueNotifier {
     }
 
     public void onQueueJoin(PlayerJoinQueueInfo info) {
-        if (plugin.getInGame().getPlayer(info.getPlayer()).getSelectedKit() == null) {
+        if (plugin.getPlayers().getPlayer(info.getPlayer()).getSelectedKit() == null) {
             SkyKits kits = plugin.getKits();
             List<SkyKit> availableKits = kits.getAvailableKits(info.getPlayer());
             if (!availableKits.isEmpty()) {

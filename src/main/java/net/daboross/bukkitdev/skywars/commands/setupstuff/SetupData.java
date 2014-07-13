@@ -16,7 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.commands.setupstuff;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
@@ -28,7 +28,7 @@ import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
 public class SetupData {
 
     private String arenaName;
-    private File saveFile;
+    private Path saveFile;
     private SkyBlockLocation originPos1;
     private SkyBlockLocation originPos2;
     private SkyBlockLocation originMin;
@@ -98,7 +98,7 @@ public class SetupData {
         return arenaName;
     }
 
-    public File getSaveFile() {
+    public Path getSaveFile() {
         return saveFile;
     }
 
@@ -126,7 +126,7 @@ public class SetupData {
         this.arenaName = arenaName;
     }
 
-    public void setSaveFile(final File saveFile) {
+    public void setSaveFile(final Path saveFile) {
         this.saveFile = saveFile;
     }
 

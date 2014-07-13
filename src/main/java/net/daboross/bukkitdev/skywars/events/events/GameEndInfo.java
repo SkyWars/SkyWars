@@ -18,6 +18,7 @@ package net.daboross.bukkitdev.skywars.events.events;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import net.daboross.bukkitdev.skywars.game.ArenaGame;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
@@ -33,11 +34,11 @@ public class GameEndInfo {
         Validate.notNull(game, "Game cannot be null");
         this.game = game;
         this.broadcast = broadcast;
-        List<String> alive = game.getAlivePlayers();
+        List<UUID> alive = game.getAlivePlayers();
         alivePlayers = new ArrayList<>();
-        for (String name : alive) {
-            Player p = Bukkit.getPlayerExact(name);
-            Validate.isTrue(p != null, "Player %s not online", name);
+        for (UUID uuid : alive) {
+            Player p = Bukkit.getPlayer(uuid);
+            Validate.isTrue(p != null, "Player (uuid: %s) not online", uuid);
             alivePlayers.add(p);
         }
     }

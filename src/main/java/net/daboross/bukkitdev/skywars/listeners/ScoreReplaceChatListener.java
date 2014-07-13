@@ -17,26 +17,26 @@
 package net.daboross.bukkitdev.skywars.listeners;
 
 import net.daboross.bukkitdev.skywars.api.SkyWars;
-import net.daboross.bukkitdev.skywars.api.points.SkyPoints;
+import net.daboross.bukkitdev.skywars.api.players.SkyPlayers;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-public class PointStorageChatListener implements Listener {
+public class ScoreReplaceChatListener implements Listener {
 
     private static final String REPLACEMENT = "(?i)\\{SKYWARS\\.USER(SCORE|POINTS)\\}";
     private final SkyWars plugin;
 
-    public PointStorageChatListener(final SkyWars plugin) {
+    public ScoreReplaceChatListener(final SkyWars plugin) {
         this.plugin = plugin;
     }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onChat(AsyncPlayerChatEvent evt) {
-        SkyPoints points = plugin.getPoints();
-        if (points != null) {
-            evt.setFormat(evt.getFormat().replaceAll(REPLACEMENT, String.valueOf(points.getScore(evt.getPlayer().getName()))));
+        SkyPlayers players = plugin.getPlayers();
+        if (players.storageEnabled()) {
+            evt.setFormat(evt.getFormat().replaceAll(REPLACEMENT, String.valueOf(players.getPlayer(evt.getPlayer()).getScore())));
         }
     }
 }

@@ -16,7 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.player;
 
-import net.daboross.bukkitdev.skywars.api.ingame.SkySavedInventory;
+import net.daboross.bukkitdev.skywars.api.players.SkySavedInventory;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;

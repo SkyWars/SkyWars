@@ -18,6 +18,7 @@ package net.daboross.bukkitdev.skywars.scoreboards;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.events.events.GameEndInfo;
@@ -31,7 +32,7 @@ import org.bukkit.scoreboard.Team;
 
 public class TeamScoreboardListener {
 
-    private final Map<String, Team> teams = new HashMap<>();
+    private final Map<UUID, Team> teams = new HashMap<>();
     private final Map<Integer, Scoreboard> scoreboards = new HashMap<>();
 
     public void onGameStart(GameStartInfo info) {
@@ -46,11 +47,11 @@ public class TeamScoreboardListener {
                 team.setAllowFriendlyFire(false);
                 team.setCanSeeFriendlyInvisibles(true);
                 team.setPrefix(ChatColor.GRAY + "[" + ChatColor.DARK_RED + teamNum + ChatColor.GRAY + "]" + ChatColor.WHITE + " ");
-                for (String name : game.getAllPlayersInTeam(teamNum)) {
-                    SkyStatic.debug("Adding %s to team %s", name, teamName);
-                    Player player = Bukkit.getPlayerExact(name);
+                for (UUID uuid : game.getAllPlayersInTeam(teamNum)) {
+                    SkyStatic.debug("Adding (uuid: %s) to team %s", uuid, teamName);
+                    Player player = Bukkit.getPlayer(uuid);
                     team.addPlayer(player);
-                    teams.put(name.toLowerCase(), team);
+                    teams.put(uuid, team);
                     player.setScoreboard(board);
                 }
             }
@@ -58,7 +59,7 @@ public class TeamScoreboardListener {
     }
 
     public void onPlayerLeaveGame(PlayerLeaveGameInfo info) {
-        Team team = teams.remove(info.getPlayer().getName().toLowerCase());
+        Team team = teams.remove(info.getPlayer().getUniqueId());
         if (team != null) {
             team.removePlayer(info.getPlayer());
         }

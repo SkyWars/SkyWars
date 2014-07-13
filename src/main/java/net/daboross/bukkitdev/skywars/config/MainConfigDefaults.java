@@ -21,11 +21,12 @@ import java.util.List;
 import java.util.Locale;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 
-class MainConfigDefaults {
+public class MainConfigDefaults {
 
     public static final int VERSION = 2;
     public static final String MESSAGE_PREFIX = "&8[&cSkyWars&8]&a ";
     public static final boolean DEBUG = false;
+    public static final boolean SKIP_UUID_CHECK = false;
     public static final SkyConfiguration.ArenaOrder ARENA_ORDER = SkyConfiguration.ArenaOrder.RANDOM;
     public static final List<String> ENABLED_ARENAS = Arrays.asList("skyblock-warriors");
     public static final boolean SAVE_INVENTORY = true;
@@ -34,13 +35,19 @@ class MainConfigDefaults {
 //    public static final boolean PER_ARENA_DEATH_MESSAGES_ENABLED = true;
 //    public static final boolean PER_ARENA_WIN_MESSAGES_ENABLED = false;
 
-    public static class Points {
+    public static class Score {
 
         public static final boolean ENABLE = true;
         public static final int DEATH_DIFF = -2;
         public static final int WIN_DIFF = 7;
         public static final int KILL_DIFF = 1;
         public static final long SAVE_INTERVAL = 300;
+        public static final boolean USE_SQL = false;
+        public static final String SQL_HOST = "127.0.0.1";
+        public static final int SQL_PORT = 3306;
+        public static final String SQL_DATABASE = "minecraft";
+        public static final String SQL_USERNAME = "root";
+        public static final String SQL_PASSWORD = "aComplexPassword";
     }
 
     public static class Economy {
@@ -56,5 +63,12 @@ class MainConfigDefaults {
         public static final boolean WHITELIST_ENABLED = true;
         public static final boolean IS_BLACKLIST = false;
         public static final List<String> COMMAND_WHITELIST = Arrays.asList("/skywars", "/sw", "/me");
+    }
+
+    public static class Hooks {
+
+        public static final boolean MULTIVERSE_CORE = true;
+        public static final boolean MULTIVERSE_INVENTORIES = true;
+        public static final boolean WORLDEDIT = true;
     }
 }

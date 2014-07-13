@@ -16,7 +16,6 @@
  */
 package net.daboross.bukkitdev.skywars.commands.setupsubcommands;
 
-import java.io.File;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -46,7 +45,7 @@ public class StartNewArena extends SubCommand {
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         SetupData state = new SetupData();
         state.setArenaName(subCommandArgs[0]);
-        state.setSaveFile(new File(plugin.getConfiguration().getArenaFolder(), subCommandArgs[0] + ".yml"));
+        state.setSaveFile(plugin.getConfiguration().getArenaFolder().resolve(subCommandArgs[0] + ".yml"));
         states.setSetupState(sender.getName(), state);
         sender.sendMessage(SkyTrans.get(TransKey.SWS_START_CONFIRMATION, subCommandArgs[0]));
     }

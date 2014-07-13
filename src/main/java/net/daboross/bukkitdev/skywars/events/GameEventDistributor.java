@@ -62,11 +62,11 @@ public class GameEventDistributor {
             plugin.getCurrentGameTracker().onGameStart(info);
             plugin.getBroadcaster().broadcastStart(info);
             plugin.getTeamListener().onGameStart(info);
-            plugin.getInventorySave().onGameStart(info);
-            // -- After InventorySave --
+            plugin.getInventorySaveListener().onGameStart(info);
+            // -- After InventorySaveListener --
             plugin.getWorldHandler().onGameStart(info);
-            // -- After InventorySave --
-            plugin.getInGame().onGameStart(info);
+            // -- After InventorySaveListener --
+            plugin.getPlayers().onGameStart(info);
             plugin.getKitApplyListener().onGameStart(info);
             // -- After WorldHandler --
             plugin.getResetHealth().onGameStart(info);
@@ -86,8 +86,8 @@ public class GameEventDistributor {
             // -- Normal --
             plugin.getBroadcaster().broadcastEnd(info);
             plugin.getTeamListener().onGameEnd(info);
-            if (plugin.getPoints() != null) {
-                plugin.getPoints().onGameEnd(info);
+            if (plugin.getScore() != null) {
+                plugin.getScore().onGameEnd(info);
             }
             if (plugin.getEcoRewards() != null) {
                 plugin.getEcoRewards().onGameEnd(info);
@@ -106,7 +106,7 @@ public class GameEventDistributor {
         Validate.notNull(info, "Info cannot be null");
         try {
             // -- Normal --
-            plugin.getInGame().onLeaveGame(info);
+            plugin.getPlayers().onLeaveGame(info);
             plugin.getCurrentGameTracker().onPlayerLeaveGame(info);
             plugin.getAttackerStorage().onPlayerLeaveGame(info);
             plugin.getTeamListener().onPlayerLeaveGame(info);
@@ -123,8 +123,8 @@ public class GameEventDistributor {
         try {
             // -- Normal --
             plugin.getResetHealth().onPlayerRespawn(info);
-            plugin.getInventorySave().onPlayerRespawn(info);
-            plugin.getInGame().onRespawn(info);
+            plugin.getInventorySaveListener().onPlayerRespawn(info);
+            plugin.getPlayers().onRespawn(info);
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new RespawnAfterLeaveGameEvent(plugin, info.getPlayer()));
         } catch (Throwable t) {
@@ -137,8 +137,8 @@ public class GameEventDistributor {
         Validate.notNull(info, "Info cannot be null");
         try {
             // -- Normal --
-            if (plugin.getPoints() != null) {
-                plugin.getPoints().onKill(info);
+            if (plugin.getScore() != null) {
+                plugin.getScore().onKill(info);
             }
             if (plugin.getEcoRewards() != null) {
                 plugin.getEcoRewards().onPlayerKillPlayer(info);
@@ -155,8 +155,8 @@ public class GameEventDistributor {
         Validate.notNull(info, "Info cannot be null");
         try {
             // -- Normal --
-            if (plugin.getPoints() != null) {
-                plugin.getPoints().onDeath(info);
+            if (plugin.getScore() != null) {
+                plugin.getScore().onDeath(info);
             }
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new ArenaPlayerDeathEvent(plugin, info.getGameId(), info.getKilled()));
@@ -170,7 +170,7 @@ public class GameEventDistributor {
         Validate.notNull(info, "Info cannot be null");
         try {
             // -- Normal --
-            plugin.getInGame().onJoinQueue(info);
+            plugin.getPlayers().onJoinQueue(info);
             plugin.getKitQueueNotifier().onQueueJoin(info);
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new PlayerEnterQueueEvent(plugin, info.getPlayer()));
@@ -184,7 +184,7 @@ public class GameEventDistributor {
         Validate.notNull(info, "Info cannot be null");
         try {
             // -- Normal --
-            plugin.getInGame().onLeaveQueue(info);
+            plugin.getPlayers().onLeaveQueue(info);
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new PlayerLeaveQueueEvent(plugin, info.getPlayer()));
         } catch (Throwable t) {

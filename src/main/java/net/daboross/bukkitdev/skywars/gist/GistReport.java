@@ -17,7 +17,6 @@
 package net.daboross.bukkitdev.skywars.gist;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +29,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
@@ -69,7 +69,7 @@ public class GistReport {
                 .append("\n```\n");
         for (SkyArenaConfig arena : configuration.getEnabledArenas()) {
             appendArena(build.append("\n####").append(arena.getArenaName())
-                    .append(" - ").append(arena.getFile() == null ? "No file" : arena.getFile().getAbsolutePath()), arena);
+                    .append(" - ").append(arena.getFile() == null ? "No file" : arena.getFile().toAbsolutePath()), arena);
         }
         appendArena(build.append("\n####Parent"), configuration.getParentArena());
         return build.toString();
@@ -82,9 +82,9 @@ public class GistReport {
     }
 
     private static String getRawConfig(SkyWars plugin) {
-        File f = new File(plugin.getDataFolder(), "main-config.yml");
+        Path path = plugin.getDataFolder().toPath().resolve("main-config.yml");
         StringBuilder build = new StringBuilder();
-        try (FileInputStream fis = new FileInputStream(f)) {
+        try (FileInputStream fis = new FileInputStream(path.toFile())) {
             try (InputStreamReader isr = new InputStreamReader(fis, Charset.forName("UTF-8"))) {
                 try (BufferedReader buff = new BufferedReader(isr)) {
                     String line;

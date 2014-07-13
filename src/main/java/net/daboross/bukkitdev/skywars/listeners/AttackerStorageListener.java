@@ -20,11 +20,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.game.SkyAttackerStorage;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
-import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayer;
-import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayerState;
+import net.daboross.bukkitdev.skywars.api.players.SkyPlayer;
+import net.daboross.bukkitdev.skywars.api.players.SkyPlayerState;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.events.events.PlayerDeathInArenaInfo;
@@ -44,11 +45,13 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.projectiles.ProjectileSource;
 
 public class AttackerStorageListener implements Listener, SkyAttackerStorage {
 
-    private final Map<String, String> lastHit = new HashMap<>();
-    private final Set<String> causedVoid = new HashSet<>();
+    private final Map<UUID, UUID> lastHitUuid = new HashMap<>();
+    private final Map<UUID, String> lastHitName = new HashMap<>();
+    private final Set<UUID> causedVoid = new HashSet<>();
     private final SkyWarsPlugin plugin;
 
     public AttackerStorageListener(final SkyWarsPlugin plugin) {
@@ -57,38 +60,54 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent evt) {
-        String name = evt.getPlayer().getName().toLowerCase();
-        lastHit.remove(name);
-        causedVoid.remove(name);
+        UUID uuid = evt.getPlayer().getUniqueId();
+        lastHitUuid.remove(uuid);
+        lastHitName.remove(uuid);
+        causedVoid.remove(uuid);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onDamage(EntityDamageByEntityEvent evt) {
         if (evt.getEntity() instanceof Player) {
             Player p = (Player) evt.getEntity();
-            String name = p.getName().toLowerCase();
+
+            UUID uuid = p.getUniqueId();
             Entity damager = evt.getDamager();
             if (damager instanceof HumanEntity) {
-                lastHit.put(name, ((HumanEntity) damager).getName());
+                if (damager instanceof Player) {
+                    lastHitUuid.put(uuid, damager.getUniqueId());
+                } else {
+                    lastHitUuid.remove(uuid);
+                }
+                lastHitName.put(uuid, ((HumanEntity) damager).getName());
             } else if (damager instanceof Projectile) {
-                LivingEntity shooter = ((Projectile) damager).getShooter();
-                if (shooter == null) {
-                    lastHit.put(name, "Unknown Bowman");
+                ProjectileSource shooter = ((Projectile) damager).getShooter();
+                if (shooter == null || !(shooter instanceof LivingEntity)) { // we want to make sure the shooter is a LivingEntity
+                    lastHitUuid.remove(uuid);
+                    lastHitName.put(uuid, "Unknown Bowman");
                 } else {
                     if (shooter instanceof HumanEntity) {
-                        lastHit.put(name, ((HumanEntity) shooter).getName());
+                        if (shooter instanceof Player) {
+                            lastHitUuid.put(uuid, ((Player) shooter).getUniqueId());
+                        } else {
+                            lastHitUuid.remove(uuid);
+                        }
+                        lastHitName.put(uuid, ((HumanEntity) shooter).getName());
                     } else {
-                        String customName = shooter.getCustomName();
-                        lastHit.put(name, customName == null ? shooter.getType().toString() : customName);
+                        String customName = ((LivingEntity) shooter).getCustomName();
+                        lastHitUuid.remove(uuid);
+                        lastHitName.put(uuid, customName == null ? ((LivingEntity) shooter).getType().toString() : customName);
                     }
                 }
             } else if (damager instanceof LivingEntity) {
                 String customName = ((LivingEntity) damager).getCustomName();
-                lastHit.put(name, customName == null ? damager.getType().toString() : customName);
+                lastHitUuid.remove(uuid);
+                lastHitName.put(uuid, customName == null ? damager.getType().toString() : customName);
             } else {
-                lastHit.put(name, evt.getDamager().getType().toString());
+                lastHitUuid.remove(uuid);
+                lastHitName.put(uuid, evt.getDamager().getType().toString());
             }
-            if (plugin.getCurrentGameTracker().isInGame(name)) {
+            if (plugin.getCurrentGameTracker().isInGame(uuid)) {
                 evt.setCancelled(false);
             }
         }
@@ -97,11 +116,11 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
     @EventHandler
     public void onDamage(EntityDamageEvent evt) {
         if (evt.getEntity() instanceof Player) {
-            String name = ((Player) evt.getEntity()).getName().toLowerCase();
+            UUID uuid = evt.getEntity().getUniqueId();
             if (evt.getCause() == EntityDamageEvent.DamageCause.VOID) {
-                causedVoid.add(name);
+                causedVoid.add(uuid);
             } else {
-                causedVoid.remove(name);
+                causedVoid.remove(uuid);
             }
         }
     }
@@ -109,33 +128,42 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
     @EventHandler
     public void onDeath(PlayerDeathEvent evt) {
         String name = evt.getEntity().getName();
-        SkyGame game = plugin.getIDHandler().getGame(plugin.getCurrentGameTracker().getGameID(name));
+        UUID uuid = evt.getEntity().getUniqueId();
+        SkyGame game = plugin.getIDHandler().getGame(plugin.getCurrentGameTracker().getGameId(uuid));
         if (game != null) {
-            String killer = lastHit.get(name.toLowerCase());
+            String killerName = lastHitName.get(uuid);
+            UUID killerUuid = lastHitUuid.get(uuid);
             plugin.getDistributor().distribute(new PlayerDeathInArenaInfo(game.getId(), evt.getEntity()));
-            if (killer != null) {
-                plugin.getDistributor().distribute(new PlayerKillPlayerInfo(game.getId(), killer, evt.getEntity()));
+            if (killerUuid != null) {
+                plugin.getDistributor().distribute(new PlayerKillPlayerInfo(game.getId(), killerUuid, killerName, evt.getEntity()));
             }
             plugin.getGameHandler().removePlayerFromGame(evt.getEntity(), false, false);
-            evt.setDeathMessage(KillMessages.getMessage(name, killer, causedVoid.contains(name.toLowerCase()) ? KillMessages.KillReason.VOID : KillMessages.KillReason.OTHER, game.getArena()));
-        } else if (plugin.getGameQueue().inQueue(name)) {
+            evt.setDeathMessage(KillMessages.getMessage(name, killerName, causedVoid.contains(uuid) ? KillMessages.KillReason.VOID : KillMessages.KillReason.OTHER, game.getArena()));
+        } else if (plugin.getGameQueue().inQueue(uuid)) {
             plugin.getGameQueue().removePlayer(evt.getEntity());
             evt.getEntity().sendMessage(SkyTrans.get(TransKey.QUEUE_DEATH));
         }
     }
 
     public void onPlayerLeaveGame(PlayerLeaveGameInfo info) {
-        lastHit.remove(info.getPlayer().getName().toLowerCase());
+        UUID uuid = info.getPlayer().getUniqueId();
+        lastHitName.remove(uuid);
+        lastHitUuid.remove(uuid);
     }
 
     @Override
-    public String getKiller(String name) {
-        return lastHit.get(name.toLowerCase());
+    public String getKillerName(UUID uuid) {
+        return lastHitName.get(uuid);
+    }
+
+    @Override
+    public UUID getKillerUuid(UUID uuid) {
+        return lastHitUuid.get(uuid);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onRespawn(PlayerRespawnEvent evt) {
-        SkyPlayer skyPlayer = plugin.getInGame().getPlayer(evt.getPlayer());
+        SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(evt.getPlayer());
         if (skyPlayer != null && skyPlayer.getState() == SkyPlayerState.WAITING_FOR_RESPAWN) {
             evt.setRespawnLocation(plugin.getLocationStore().getLobbyPosition().toLocation());
             final Player p = evt.getPlayer();

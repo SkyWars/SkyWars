@@ -18,8 +18,8 @@ package net.daboross.bukkitdev.skywars.game;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
+import java.util.UUID;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.game.SkyCurrentGameTracker;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
@@ -63,29 +63,29 @@ public class GameHandler implements SkyGameHandler {
     }
 
     @Override
-    public void removePlayerFromGame(String playerName, boolean respawn, boolean broadcast) {
-        Validate.notNull(playerName, "Player name cannot be nuller");
-        Player p = plugin.getServer().getPlayerExact(playerName);
-        Validate.isTrue(p != null, "Player %s not online", playerName);
+    public void removePlayerFromGame(UUID playerUuid, boolean respawn, boolean broadcast) {
+        Validate.notNull(playerUuid, "Player uuid cannot be nuller");
+        Player p = plugin.getServer().getPlayer(playerUuid);
+        Validate.isTrue(p != null, "Player (uuid: %s) not online", playerUuid);
         this.removePlayerFromGame(p, respawn, broadcast);
     }
 
     @Override
     public void removePlayerFromGame(Player player, boolean respawn, boolean broadcast) {
         Validate.notNull(player, "Player cannot be null");
-        String playerName = player.getName().toLowerCase(Locale.ENGLISH);
+        UUID playerUuid = player.getUniqueId();
         SkyCurrentGameTracker cg = plugin.getCurrentGameTracker();
-        final int id = cg.getGameID(playerName);
+        final int id = cg.getGameId(playerUuid);
         Validate.isTrue(id != -1, "Player %s not in game", player.getName());
         GameIDHandler idh = plugin.getIDHandler();
         ArenaGame game = idh.getGame(id);
-        game.removePlayer(playerName);
+        game.removePlayer(playerUuid);
         plugin.getDistributor().distribute(new PlayerLeaveGameInfo(id, player));
         if (respawn) {
             respawnPlayer(player);
         }
         if (broadcast) {
-            Bukkit.broadcastMessage(KillMessages.getMessage(player.getName(), plugin.getAttackerStorage().getKiller(playerName), KillMessages.KillReason.LEFT, game.getArena()));
+            Bukkit.broadcastMessage(KillMessages.getMessage(player.getName(), plugin.getAttackerStorage().getKillerName(playerUuid), KillMessages.KillReason.LEFT, game.getArena()));
         }
         if ((!gamesCurrentlyEnding.contains(id)) && isGameWon(game)) {
             gamesCurrentlyEnding.add(id);
@@ -99,7 +99,7 @@ public class GameHandler implements SkyGameHandler {
     }
 
     private boolean isGameWon(SkyGame game) {
-        List<String> alivePlayers = game.getAlivePlayers();
+        List<UUID> alivePlayers = game.getAlivePlayers();
         int size = alivePlayers.size();
         if (size < 2) {
             return true;
@@ -108,8 +108,8 @@ public class GameHandler implements SkyGameHandler {
             return false;
         } else {
             int knownTeam = -1;
-            for (String player : alivePlayers) {
-                int thisTeam = game.getTeamNumber(player);
+            for (UUID playerUuid : alivePlayers) {
+                int thisTeam = game.getTeamNumber(playerUuid);
                 if (knownTeam == -1) {
                     knownTeam = thisTeam;
                 } else if (thisTeam != knownTeam) {
@@ -121,10 +121,10 @@ public class GameHandler implements SkyGameHandler {
     }
 
     @Override
-    public void respawnPlayer(String playerName) {
-        Validate.notNull(playerName, "Player name cannot be null");
-        Player p = plugin.getServer().getPlayerExact(playerName);
-        Validate.isTrue(p != null, "Player %s isn't online", playerName);
+    public void respawnPlayer(UUID playerUuid) {
+        Validate.notNull(playerUuid, "Player uuid cannot be null");
+        Player p = plugin.getServer().getPlayer(playerUuid);
+        Validate.isTrue(p != null, "Player (uuid: %s) isn't online", playerUuid);
         this.respawnPlayer(p);
     }
 

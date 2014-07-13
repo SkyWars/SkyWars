@@ -20,9 +20,9 @@ import java.util.List;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
-import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayer;
-import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayerState;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
+import net.daboross.bukkitdev.skywars.api.players.SkyPlayer;
+import net.daboross.bukkitdev.skywars.api.players.SkyPlayerState;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.command.Command;
@@ -42,7 +42,7 @@ public class KitCommand extends SubCommand {
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         Player p = (Player) sender;
-        SkyPlayer skyPlayer = plugin.getInGame().getPlayerForce(p);
+        SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(p);
         if (skyPlayer.getState() == SkyPlayerState.IN_RUNNING_GAME) {
             sender.sendMessage(SkyTrans.get(TransKey.GENERIC_IN_GAME));
             return;
@@ -68,7 +68,7 @@ public class KitCommand extends SubCommand {
                 return;
             }
             int cost = kit.getCost();
-            if (cost == 0 || plugin.getEconomyHook().canAfford(p.getName(), cost)) {
+            if (cost == 0 || plugin.getEconomyHook().canAfford(p, cost)) {
                 skyPlayer.setSelectedKit(kit);
                 if (cost == 0) {
                     p.sendMessage(SkyTrans.get(TransKey.CMD_KIT_CHOSE_KIT, kit.getName()));
@@ -76,7 +76,7 @@ public class KitCommand extends SubCommand {
                     p.sendMessage(SkyTrans.get(TransKey.CMD_KIT_CHOSE_KIT_WITH_COST, kit.getName(), kit.getCost()));
                 }
             } else {
-                double diff = cost - plugin.getEconomyHook().getAmount(p.getName());
+                double diff = cost - plugin.getEconomyHook().getAmount(p);
                 sender.sendMessage(SkyTrans.get(TransKey.CMD_KIT_NOT_ENOUGH_MONEY, plugin.getEconomyHook().getCurrencySymbolWord(diff), kit.getName(), diff));
             }
         }

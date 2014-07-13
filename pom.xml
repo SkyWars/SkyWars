@@ -37,7 +37,7 @@
             <id>daboross</id>
             <name>Dabo Ross</name>
             <email>daboross@daboross.net</email>
-            <url>http://www.daboross.net</url>
+            <url>http://daboross.net</url>
             <timezone>-8</timezone>
         </developer>
     </developers>
@@ -62,13 +62,13 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.6.4-R2.0</version>
+            <version>1.7.9-R0.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.daboross.vault</groupId>
             <artifactId>vault-api</artifactId>
-            <version>1.2.27</version>
+            <version>1.3.01</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -98,7 +98,7 @@
         <dependency>
             <groupId>net.daboross.json</groupId>
             <artifactId>json</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.3</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -106,6 +106,11 @@
             <artifactId>bukkit-save-timer</artifactId>
             <version>0.0.1</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.daboross.bukkitdev</groupId>
+            <artifactId>async-sql</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -207,6 +212,6 @@
     </issueManagement>
     <ciManagement>
         <system>teamcity</system>
-        <url>http://dabo.guru/ci-p/SkyWarsParent_SkyWars</url>
+        <url>http://ci.dabo.guru/p/SkyWarsParent_SkyWars</url>
     </ciManagement>
 </project>

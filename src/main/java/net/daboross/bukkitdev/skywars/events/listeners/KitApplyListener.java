@@ -17,8 +17,8 @@
 package net.daboross.bukkitdev.skywars.events.listeners;
 
 import net.daboross.bukkitdev.skywars.api.SkyWars;
-import net.daboross.bukkitdev.skywars.api.ingame.SkyPlayer;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
+import net.daboross.bukkitdev.skywars.api.players.SkyPlayer;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
@@ -34,16 +34,22 @@ public class KitApplyListener {
 
     public void onGameStart(GameStartInfo info) {
         for (Player p : info.getPlayers()) {
-            SkyPlayer skyPlayer = plugin.getInGame().getPlayerForce(p);
+            SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(p);
             SkyKit kit = skyPlayer.getSelectedKit();
             if (kit != null) {
+                String permission = kit.getPermission();
+                if (permission != null && !p.hasPermission(permission)) {
+                    p.sendMessage(SkyTrans.get(TransKey.KITS_NO_PERMISSION, kit.getName()));
+                    skyPlayer.setSelectedKit(null);
+                    continue;
+                }
                 int cost = kit.getCost();
                 if (cost == 0) {
                     p.sendMessage(SkyTrans.get(TransKey.KITS_APPLIED_KIT, kit.getName()));
                     kit.applyTo(p);
-                } else if (plugin.getEconomyHook().canAfford(p.getName(), cost)) {
-                    p.sendMessage(SkyTrans.get(TransKey.CMD_KIT_CURRENT_KIT_WITH_COST, kit.getName(), kit.getCost()));
-                    if (plugin.getEconomyHook().charge(p.getName(), cost)) {
+                } else if (plugin.getEconomyHook().canAfford(p, cost)) {
+                    p.sendMessage(SkyTrans.get(TransKey.KITS_APPLIED_KIT_WITH_COST, kit.getName(), kit.getCost()));
+                    if (plugin.getEconomyHook().charge(p, cost)) {
                         kit.applyTo(p);
                     } else {
                         skyPlayer.setSelectedKit(null);
