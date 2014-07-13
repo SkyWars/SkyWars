@@ -51,7 +51,7 @@ public class ScoreStorage extends SkyStorage {
         if (backendClass == null) {
             if (plugin.getConfiguration().isScoreUseSql()) {
                 backendClass = SQLScoreStorage.class;
-                plugin.getLogger().log(Level.INFO, "[Score] Using SQL backend - Warning: SQL Score backend is incomplete, and may completely fail"); // TODO: Remove warning (when done with class)
+                plugin.getLogger().log(Level.INFO, "[Score] Using SQL backend");
             } else {
                 backendClass = JSONScoreStorage.class;
                 plugin.getLogger().log(Level.INFO, "[Score] Using JSON backend");
