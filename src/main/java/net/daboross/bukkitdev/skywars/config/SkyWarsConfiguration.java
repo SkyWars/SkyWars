@@ -402,6 +402,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         return worldeditHookEnabled;
     }
 
+    @Override
     public boolean isSkipUuidCheck() {
         return skipUuidCheck;
     }
