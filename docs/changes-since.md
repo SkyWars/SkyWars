@@ -7,7 +7,7 @@ Changes since 1.4.4
 - Fix players who have had their permissions removed still being able to access kits they have chosen
 - Fix SkyWarsBaseWorld being created outside of world container if container is changed
 
-### API Changes:
+### SkyWars-API:
 - Rename SkyInGame to SkyPlayers, as it's not just keeping track of players in-game now.
 - Update all API methods using java.io.File to use java.nio.file.Path instead
 - Rename all Score methods from XScore to XPoints in SkyConfiguration
@@ -17,7 +17,7 @@ Changes since 1.4.4
 - Rename Points api to Score api, and update it to use UUID storage instead of player names.
 - Each storage backend now needs to provide an extension of AbstractSkyPlayer with getScore/setScore/addScore methods.
 
-# SkyWars-Translations:
+### SkyWars-Translations:
 - Add 'messages.kits.no-permission' message for when a permission is lost for a kit.
 
 

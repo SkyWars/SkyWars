@@ -20,7 +20,7 @@ Changelog
 - Rename Points api to Score api, and update it to use UUID storage instead of player names.
 - Each storage backend now needs to provide an extension of AbstractSkyPlayer with getScore/setScore/addScore methods.
 
-# SkyWars-Translations:
+### SkyWars-Translations:
 - Add 'messages.kits.no-permission' message for when a permission is lost for a kit.
 
 1.4.4
