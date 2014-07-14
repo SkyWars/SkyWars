@@ -153,9 +153,9 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 //        perArenaWinMessagesEnabled = mainConfig.getSetBoolean(MainConfigKeys.PER_ARENA_WIN_MESSAGES_ENABLED, MainConfigDefaults.PER_ARENA_WIN_MESSAGES_ENABLED);
 
         // Hooks
-        multiverseCoreHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.MULTIVERSE_CORE, MainConfigDefaults.Hooks.MULTIVERSE_CORE);
-        multiverseInventoriesHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.MULTIVERSE_INVENTORIES, MainConfigDefaults.Hooks.MULTIVERSE_INVENTORIES);
-        worldeditHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.WORLDEDIT, MainConfigDefaults.Hooks.WORLDEDIT);
+//        multiverseCoreHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.MULTIVERSE_CORE, MainConfigDefaults.Hooks.MULTIVERSE_CORE);
+//        multiverseInventoriesHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.MULTIVERSE_INVENTORIES, MainConfigDefaults.Hooks.MULTIVERSE_INVENTORIES);
+//        worldeditHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.WORLDEDIT, MainConfigDefaults.Hooks.WORLDEDIT);
 
         // Remove deprecated values
         mainConfig.removeValues(MainConfigKeys.Deprecated.CHAT_PREFIX, MainConfigKeys.Deprecated.PREFIX_CHAT);
