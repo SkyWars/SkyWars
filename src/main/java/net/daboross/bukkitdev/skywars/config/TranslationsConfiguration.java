@@ -147,12 +147,21 @@ public class TranslationsConfiguration implements SkyTranslations {
         plugin.getLogger().log(Level.INFO, "[Translations] Loading locale {0}.", new Object[]{locale, file});
         YamlConfiguration config = new YamlConfiguration();
         config.options().pathSeparator('%');
+        StringBuilder builder = new StringBuilder();
         try (InputStream is = path.openStream()) {
             try (Reader reader = new InputStreamReader(is, Charset.forName("UTF-8"))) {
-                config.load(reader);
+                int character;
+                while ((character = reader.read()) != -1) {
+                    builder.append((char) character);
+                }
             }
-        } catch (IOException | InvalidConfigurationException ex) {
+        } catch (IOException ex) {
             throw new SkyConfigurationException("Couldn't load internal translation file " + file, ex);
+        }
+        try {
+            config.loadFromString(builder.toString());
+        } catch (InvalidConfigurationException ex) {
+            throw new SkyConfigurationException("Couldn't load internal translation yaml file " + file, ex);
         }
         Map<TransKey, String> internal = new EnumMap<>(TransKey.class);
         for (TransKey key : TransKey.values()) {
