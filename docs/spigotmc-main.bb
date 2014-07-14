@@ -1,4 +1,13 @@
 [IMG]http://dabo.guru/logo/SkyWars.png[/IMG]
+[SIZE=4][B]Version warning[/B][/SIZE]
+
+SkyWars v1.4.5 will fail to start on any craftbukkit version below 1.7.8. If you are using an earlier version, please use SkyWars v1.4.4.
+
+v1.4.5 adds UUID support, which is why it requires a newer CraftBukkit version.
+
+Also, when using SkyWars v1.4.5, SkyWars will migrate it's storage from names to UUIDs as users log into your server.
+This way there is no long transfer period, and it supports any proxies (bungeecord, lilypad), as long as they forward UUIDs to CraftBukkit.
+
 [SIZE=4][B]Features[/B][/SIZE]
 [LIST]
 [*]Automatically create new arenas every time enough people join the queue.
@@ -11,13 +20,19 @@
 [*]When players walk near a set portal, they will be automatically added to the queue.
 [*]Clears player inventories when the join a game and when the leave.
 [/LIST]
+
 [SIZE=4][B]Basic Installation[/B][/SIZE]
 [LIST]
 [*]Make sure your server is running Java 7. SkyWars will not function with Java 6.
-[*]Download the SkyWars.jar file, and put it in your plugins/ directory. SkyWars v1.4.4 supports minecraft 1.5.2, 1.6.4 and 1.7.2.
+[*]Download the SkyWars.jar file, and put it in your plugins/ directory.
+[LIST]
+[*]SkyWars v1.4.4 supports minecraft 1.5.2, 1.6.4 and 1.7.2.
+[*]SkyWars v1.4.5 supports minecraft 1.7.8, 1.7.9 and 1.7.10.
+[/LIST]
 [*]Restart your server. SkyWars will automatically create 2 new worlds. SkyWarsBaseWorld and SkyWarsArenaWorld.
 [*]Go to where you want the lobby to be and use /sw setlobby.
 [/LIST]
+
 [SIZE=4][B]Useful links[/B][/SIZE]
 [LIST]
 [*][URL='http://dabo.guru/skywars/commands-and-permissions']Commands and Permissions[/URL]
@@ -30,6 +45,7 @@
 [*][URL='http://ci.dabo.guru/p/SkyWarsParent']TeamCity Development Builds - CI Server[/URL]
 [*][URL='http://ci.dabo.guru/d/SkyWarsParent_SkyWars_MainBuild/SkyWars.jar']Download Latest Snapshot[/URL]
 [/LIST]
+
 [B][SIZE=4]MCStats / Plugin metrics[/SIZE][/B]
 SkyWars uses plugin metrics to keep track of people using the plugin. All gathered data can be viewed at[URL]http://mcstats.org/plugin/SkyWars[/URL]. To opt out, change opt-out: false to opt-out: true inplugins/PluginMetrics/config.yml
 
