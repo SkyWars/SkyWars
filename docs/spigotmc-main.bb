@@ -1,11 +1,13 @@
 [IMG]http://dabo.guru/logo/SkyWars.png[/IMG]
-[SIZE=4][B]Version warning[/B][/SIZE]
 
-SkyWars v1.4.5 will fail to start on any craftbukkit version below 1.7.8. If you are using an earlier version, please use SkyWars v1.4.4.
+[SIZE=4][B]Update warning![/B][/SIZE]
 
-v1.4.5 adds UUID support, which is why it requires a newer CraftBukkit version.
+SkyWars v1.4.5 will fail to start on any craftbukkit version below 1.7.8. If you need to use an earlier version of Minecraft, please download SkyWars v1.4.4 instead.
 
-Also, when using SkyWars v1.4.5, SkyWars will migrate it's storage from names to UUIDs as users log into your server.
+SkyWars v1.4.5 adds UUID support, which is why it requires a newer CraftBukkit version.
+
+After updating to v1.4.5, SkyWars will migrate it's storage from names to UUIDs as users log into your server.
+
 This way there is no long transfer period, and it supports any proxies (bungeecord, lilypad), as long as they forward UUIDs to CraftBukkit.
 
 [SIZE=4][B]Features[/B][/SIZE]
@@ -63,7 +65,7 @@ Full credit for the default map, Skyblock Warriors, goes to [URL='http://www.you
 [SIZE=4][B]Sponsors/other[/B][/SIZE]
 This may be an almost empty section, but we would like to thank JetBrains for their support of this project.
 
-[URL='http://www.jetbrains.com/idea/'][IMG]http://www.jetbrains.com/img/logos/logo_intellij_idea.png[/IMG][/URL]
+[URL='http://www.jetbrains.com/idea/'][IMG]http://www.jetbrains.com/idea/docs/logo_intellij_idea.png[/IMG][/URL]
 
 [SIZE=4][B]Translating![/B][/SIZE]
 We need help translating SkyWars! To help out, see [URL='https://github.com/SkyWars/SkyWars-Translations/wiki/Translating']SkyWars-Translations/Translating[/URL].

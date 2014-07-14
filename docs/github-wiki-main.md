@@ -16,11 +16,11 @@
 * Go to where you want the lobby to be and use **/sw setlobby**.
 
 ### Useful links
-* [Commands and Permissions](https://github.com/SkyWars/SkyWars/wiki/Commands-and-Permissions)
-* [Configuration Guide](https://github.com/SkyWars/SkyWars/wiki/Configuration)
-* [Setting up a new Arena](https://github.com/SkyWars/SkyWars/wiki/Setting-up-a-new-arena)
-* [Worlds Created](https://github.com/SkyWars/SkyWars/wiki/Worlds)
-* [Common Issues](https://github.com/SkyWars/SkyWars/wiki/Common-Issues)
+* [Commands and Permissions](http://dabo.guru/skywars/commands-and-permissions)
+* [Configuration Guide](http://dabo.guru/skywars/configuring-skywars)
+* [Setting up a new Arena](http://dabo.guru/skywars/creating-an-arena)
+* [Worlds Created](http://dabo.guru/skywars/skywars-worlds)
+* [Common Issues / Troubleshooting](http://dabo.guru/skywars/troubleshooting)
 * [GitHub](https://github.com/SkyWars/SkyWars)
 * [MCStats Statistics](http://mcstats.org/plugin/SkyWars)
 * [TeamCity Development Builds - CI Server](http://ci.dabo.guru/p/SkyWarsParent)
@@ -42,7 +42,7 @@ make it so that no one can use the **/sw report** command, add the following lin
 ### Bug reports, Feature requests and other Questions
 Please use the SkyWars issue tracker for all bug reports, feature requests and general questions.
 
-See [submitting a ticket](https://github.com/SkyWars/SkyWars/wiki/Submitting-a-ticket) for instructions on how to do this.
+See [submitting a ticket](http://dabo.guru/skywars/submitting-a-ticket) for instructions on how to do this.
 
 ### Map Credit
 Full credit for the default map, Skyblock Warriors, goes to [SwipeShot](http://www.youtube.com/user/SwipeShot)
@@ -50,7 +50,7 @@ Full credit for the default map, Skyblock Warriors, goes to [SwipeShot](http://w
 ### Sponsors/other
 This may be an almost empty section, but we would like to thank JetBrains for their support of this project.
 
-[![JetBrains](http://www.jetbrains.com/img/logos/logo_intellij_idea.png)](http://www.jetbrains.com/idea/)
+[![JetBrains](http://www.jetbrains.com/idea/docs/logo_intellij_idea.png)](http://www.jetbrains.com/idea/)
 
 ### Translating!
 We need help translating SkyWars! To help out, see [SkyWars-Translations/Translating](https://github.com/SkyWars/SkyWars-Translations/wiki/Translating).

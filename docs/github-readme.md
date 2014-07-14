@@ -1,15 +1,14 @@
 ![SkyWars](http://dabo.guru/logo/SkyWars.png)
 
-### Warning for v1.4.5! Version 1.4.5 is ONLY for CraftBukkit 1.7.8 and up!
+### Update warning!
 
-SkyWars v1.4.5 will fail to start on any craftbukkit version below 1.7.8. If you are using an earlier version, please use SkyWars v1.4.2.
+SkyWars v1.4.5 will fail to start on any craftbukkit version below 1.7.8. If you need to use an earlier version of Minecraft, please download SkyWars v1.4.4 instead.
 
-v1.4.5 adds UUID support, which is why it requires a newer CraftBukkit version.
+SkyWars v1.4.5 adds UUID support, which is why it requires a newer CraftBukkit version.
 
-Even though it is possible to run on any build above #3034 (a minecraft 1.7.5 build), it is recommended that you use minecraft 1.7.8 or later.
+After updating to v1.4.5, SkyWars will migrate it's storage from names to UUIDs as users log into your server.
 
-When using SkyWars v1.5.0, SkyWars will transition it's storage from names to UUIDs as users log into your server.
-This way there is no long transfer period, and it supports any proxies (bungeecord, lilypad) *as long as they forward the UUIDs to Bukkit*.
+This way there is no long transfer period, and it supports any proxies (bungeecord, lilypad), as long as they forward UUIDs to CraftBukkit.
 
 ### Features
 * Automatically create new arenas every time enough people join the queue.
@@ -63,7 +62,7 @@ Full credit for the default map, Skyblock Warriors, goes to [SwipeShot](http://w
 ### Sponsors/other
 This may be an almost empty section, but we would like to thank JetBrains for their support of this project.
 
-[![JetBrains](http://www.jetbrains.com/img/logos/logo_intellij_idea.png)](http://www.jetbrains.com/idea/)
+[![JetBrains](http://www.jetbrains.com/idea/docs/logo_intellij_idea.png)](http://www.jetbrains.com/idea/)
 
 ### Translating!
 We need help translating SkyWars! To help out, see [SkyWars-Translations/Translating](https://github.com/SkyWars/SkyWars-Translations/wiki/Translating).
