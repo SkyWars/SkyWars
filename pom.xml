@@ -19,7 +19,7 @@
 
     <groupId>net.daboross.bukkitdev</groupId>
     <artifactId>skywars</artifactId>
-    <version>1.4.5-SNAPSHOT</version>
+    <version>1.4.5</version>
     <packaging>jar</packaging>
 
     <name>SkyWars</name>
@@ -80,13 +80,13 @@
         <dependency>
             <groupId>net.daboross.bukkitdev</groupId>
             <artifactId>skywars-api</artifactId>
-            <version>1.4.5-SNAPSHOT</version>
+            <version>1.4.5</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.daboross.bukkitdev</groupId>
             <artifactId>skywars-translations</artifactId>
-            <version>1.4.5-SNAPSHOT</version>
+            <version>1.4.5</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
