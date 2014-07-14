@@ -1,5 +1,14 @@
 ![SkyWars](http://dabo.guru/logo/SkyWars.png)
 
+## Version warning!
+
+SkyWars v1.4.5 will fail to start on any craftbukkit version below 1.7.8. If you are using an earlier version, please use SkyWars v1.4.4.
+
+v1.4.5 adds UUID support, which is why it requires a newer CraftBukkit version.
+
+Also, when using SkyWars v1.4.5, SkyWars will migrate it's storage from names to UUIDs as users log into your server.
+This way there is no long transfer period, and it supports any proxies (bungeecord, lilypad), as long as they forward UUIDs to CraftBukkit.
+
 ### Features
 * Automatically create new arenas every time enough people join the queue.
 * Have *as many arenas* going at the same time as you want!
@@ -11,7 +20,9 @@
 
 ### Basic Installation
 * Make sure your server is running Java 7. SkyWars **will not function** with Java 6.
-* Download the SkyWars.jar file, and put it in your plugins/ directory. SkyWars v1.4.4 supports minecraft 1.5.2, 1.6.4 and 1.7.2.
+* Download the SkyWars.jar file, and put it in your plugins/ directory.
+ * SkyWars v1.4.4 supports minecraft 1.5.2, 1.6.4 and 1.7.2.
+ * SkyWars v1.4.5 supports minecraft 1.7.8, 1.7.9 and 1.7.10.
 * Restart your server. SkyWars will automatically create 2 new worlds. SkyWarsBaseWorld and SkyWarsArenaWorld.
 * Go to where you want the lobby to be and use **/sw setlobby**.
 
