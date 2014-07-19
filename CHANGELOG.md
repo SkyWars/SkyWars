@@ -1,6 +1,13 @@
 Changelog
 =========
 
+2.0.0
+-----
+
+### SkyWars:
+* Actually bump major version number, as this is an API breaking change.
+* Fix compatibility with craftbukkit 1.7.8
+
 1.4.5
 -----
 

@@ -11,7 +11,7 @@
 * Make sure your server is running Java 7. SkyWars **will not function** with Java 6.
 * Download the SkyWars.jar file, and put it in your plugins/ directory.
  * SkyWars v1.4.4 supports minecraft 1.5.2, 1.6.4 and 1.7.2.
- * SkyWars v1.4.5 supports minecraft 1.7.8, 1.7.9 and 1.7.10.
+ * SkyWars v2.0.0 supports minecraft 1.7.8, 1.7.9 and 1.7.10.
 * Restart your server. SkyWars will automatically create 2 new worlds. SkyWarsBaseWorld and SkyWarsArenaWorld.
 * Go to where you want the lobby to be and use **/sw setlobby**.
 
