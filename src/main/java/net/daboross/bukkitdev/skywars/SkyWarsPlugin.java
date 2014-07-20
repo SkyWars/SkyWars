@@ -17,6 +17,7 @@
 package net.daboross.bukkitdev.skywars;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Locale;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
@@ -355,6 +356,16 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     @Override
     public SkyKits getKits() {
         return kits;
+    }
+
+    @Override
+    public Path getArenaPath() {
+        return getDataPath().resolve("arenas");
+    }
+
+    @Override
+    public Path getDataPath() {
+        return getDataFolder().toPath();
     }
 
     @Override
