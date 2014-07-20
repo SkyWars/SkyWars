@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.world;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,6 +31,7 @@ import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
 import net.daboross.bukkitdev.skywars.events.events.GameEndInfo;
 import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.game.ArenaGame;
+import net.daboross.bukkitdev.skywars.world.providers.ProtobufStorageProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -41,16 +43,21 @@ import org.bukkit.entity.Player;
 public class SkyWorldHandler {
 
     private final SkyWars plugin;
-    private final WorldCopier copier;
+    private final WorldProvider provider;
 
     public SkyWorldHandler(SkyWars plugin) {
         this.plugin = plugin;
-        this.copier = new WorldCopier();
+        this.provider = new ProtobufStorageProvider(plugin);
     }
 
     public void findAndLoadRequiredWorlds() {
         for (SkyArena arena : plugin.getConfiguration().getEnabledArenas()) {
-            loadWorld(arena.getBoundaries().getOrigin().world, arena.getArenaName());
+            try {
+                provider.loadArena(arena);
+            } catch (IOException e) {
+                plugin.getLogger().log(Level.SEVERE, "Failed to load arena '" + arena.getArenaName() + "':", e);
+                plugin.getServer().getPluginManager().disablePlugin(plugin);
+            }
         }
     }
 
@@ -78,26 +85,11 @@ public class SkyWorldHandler {
         Bukkit.unloadWorld(world, false);
     }
 
-    public void loadWorld(String worldName, String arenaNameRequiring) {
-        if (plugin.getServer().getWorld(worldName) == null) {
-            plugin.getLogger().log(Level.INFO, "The arena ''{1}'' requires the world ''{0}'' to be loaded. Loading it now.", new Object[]{worldName, arenaNameRequiring});
-            WorldCreator baseWorldCreator = new WorldCreator(worldName);
-            baseWorldCreator.generateStructures(false);
-            baseWorldCreator.generator(new VoidGenerator());
-            baseWorldCreator.type(WorldType.FLAT);
-            baseWorldCreator.seed(0);
-            baseWorldCreator.createWorld();
-            plugin.getLogger().log(Level.INFO, "Done loading world ''{0}''.", worldName);
-        } else {
-            plugin.getLogger().log(Level.INFO, "The arena ''{1}'' requires the world ''{0}'' to be loaded. It is already loaded.", new Object[]{worldName, arenaNameRequiring});
-        }
-    }
-
     public void onGameStart(GameStartInfo info) {
         ArenaGame game = info.getGame();
         SkyBlockLocation min = getMinLocation(game);
         game.setMin(min);
-        copier.copyArena(min, game.getArena().getBoundaries().getOrigin());
+        provider.copyArena(game.getArena(), min);
         List<SkyPlayerLocation> spawns = new ArrayList<>(game.getArena().getSpawns());
         Collections.shuffle(spawns);
         if (game.areTeamsEnabled()) {
@@ -129,7 +121,7 @@ public class SkyWorldHandler {
 
     public void onGameEnd(GameEndInfo info) {
         SkyBlockLocation min = info.getGame().getMin();
-        copier.destroyArena(min, info.getGame().getArena().getBoundaries().getClearing());
+        provider.destroyArena(info.getGame().getArena(), min);
     }
 
     private SkyBlockLocation getMinLocation(SkyGame game) {

@@ -72,40 +72,40 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>net.daboross.bukkitdev</groupId>
             <artifactId>command-executor-base</artifactId>
             <version>1.5.2</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.daboross.bukkitdev</groupId>
             <artifactId>skywars-api</artifactId>
             <version>2.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.daboross.bukkitdev</groupId>
             <artifactId>skywars-translations</artifactId>
             <version>2.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.daboross.metrics.bukkit</groupId>
             <artifactId>metrics-lite</artifactId>
             <version>1.0.0</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.daboross.json</groupId>
             <artifactId>json</artifactId>
             <version>1.0.3</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.daboross.bukkitdev</groupId>
             <artifactId>bukkit-save-timer</artifactId>
             <version>0.0.1</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.daboross.bukkitdev</groupId>
@@ -113,10 +113,9 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
+            <groupId>net.daboross.bukkitdev.bukkit-storage-protobuf</groupId>
+            <artifactId>bukkit-storage-protobuf</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
@@ -160,7 +159,7 @@
                             <goal>gitdescribe</goal>
                         </goals>
                         <configuration>
-                            <extraArguments/>
+                            <extraArguments />
                         </configuration>
                     </execution>
                 </executions>
@@ -202,6 +201,15 @@
                                     <shadedPattern>net.daboross.bukkitdev.skywars.libraries.json</shadedPattern>
                                 </relocation>
                             </relocations>
+                            <minimizeJar>true</minimizeJar>
+                            <filters>
+                                <filter>
+                                <artifact>net.daboross.bukkitdev:skywars-api</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>

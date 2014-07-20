@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014 Dabo Ross <http://www.daboross.net/>
+ * Copyright (C) 2013 Dabo Ross <http://www.daboross.net/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,17 @@
  */
 package net.daboross.bukkitdev.skywars.world;
 
-public class Statics {
+import java.io.IOException;
+import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
+import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 
-    public static final String ARENA_WORLD_NAME = "SkyWarsArenaWorld";
+public interface WorldProvider {
+
+    public void loadArena(SkyArena arena) throws IOException;
+
+    public void clearLoadedArenas();
+
+    public void copyArena(SkyArena arena, SkyBlockLocation target);
+
+    public void destroyArena(SkyArena arena,  SkyBlockLocation target);
 }

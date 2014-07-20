@@ -63,8 +63,6 @@ import net.daboross.bukkitdev.skywars.score.ScoreStorage;
 import net.daboross.bukkitdev.skywars.scoreboards.TeamScoreboardListener;
 import net.daboross.bukkitdev.skywars.storage.LocationStore;
 import net.daboross.bukkitdev.skywars.world.SkyWorldHandler;
-import net.daboross.bukkitdev.skywars.world.Statics;
-import net.daboross.bukkitdev.skywars.world.WorldUnzipper;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -136,12 +134,6 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
             getLogger().log(Level.SEVERE, "If you wish to ignore this, and run SkyWars anyways, set 'skip-uuid-version-check' to true in plugins/SkyWars/main-config.yml");
             getLogger().log(Level.SEVERE, "Download SkyWars v1.4.4 if you want to run on an older version of Minecraft.");
             throw new StartupFailedException("See above");
-        }
-        for (SkyArena arena : configuration.getEnabledArenas()) {
-            if (arena.getBoundaries().getOrigin().world.equalsIgnoreCase(Statics.BASE_WORLD_NAME)) {
-                new WorldUnzipper().doWorldUnzip(getLogger());
-                break;
-            }
         }
         try {
             translations = new TranslationsConfiguration(this);
