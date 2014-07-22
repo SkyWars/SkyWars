@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import net.daboross.bukkitdev.bukkitstorageprotobuf.MemoryBlockArea;
 import net.daboross.bukkitdev.bukkitstorageprotobuf.ProtobufStorage;
 import net.daboross.bukkitdev.bukkitstorageprotobuf.compiled.BlockStorage;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -45,8 +46,8 @@ import org.bukkit.WorldType;
 
 public class ProtobufStorageProvider implements WorldProvider {
 
-    private final Map<String, BlockStorage.BlockArea> cache = new HashMap<>();
-    private final SkyWars plugin;
+    protected final Map<String, MemoryBlockArea> cache = new HashMap<>();
+    protected final SkyWars plugin;
 
     public ProtobufStorageProvider(final SkyWars plugin) {
         this.plugin = plugin;
@@ -55,19 +56,20 @@ public class ProtobufStorageProvider implements WorldProvider {
     @Override
     public void loadArena(final SkyArena arena) throws IOException {
         Path cachePath = plugin.getArenaPath().resolve(arena.getArenaName() + ".blocks");
+        BlockStorage.BlockArea area;
         try (InputStream inputStream = new FileInputStream(cachePath.toFile())) {
             try (GZIPInputStream gzipInputStream = new GZIPInputStream(inputStream)) {
-                cache.put(arena.getArenaName(), BlockStorage.BlockArea.parseFrom(gzipInputStream));
+                area = BlockStorage.BlockArea.parseFrom(gzipInputStream);
             }
         } catch (FileNotFoundException e) {
-            BlockStorage.BlockArea area = createCache(arena);
-            cache.put(arena.getArenaName(), area);
+            area = createCache(arena);
             try (OutputStream outputStream = new FileOutputStream(cachePath.toFile())) {
                 try (GZIPOutputStream gzipOutputStream = new GZIPOutputStream(outputStream)) {
                     area.writeTo(gzipOutputStream);
                 }
             }
         }
+        cache.put(arena.getArenaName(), new MemoryBlockArea(area));// We turn the BlockStorage.BlockArea into a StoredBlockArea here, not above, because StoredBlockArea can't write to a file.
     }
 
     private BlockStorage.BlockArea createCache(SkyArena source) {
@@ -95,21 +97,19 @@ public class ProtobufStorageProvider implements WorldProvider {
     }
 
     @Override
-    public void copyArena(final SkyArena arena, final SkyBlockLocation target) {
-        BlockStorage.BlockArea storedArea = cache.get(arena.getArenaName());
-        Validate.isTrue(storedArea != null, "Arena " + arena.getArenaName() + " not loaded.");
+    public void copyArena(final World arenaWorld, final SkyArena arena, final SkyBlockLocation target) {
+        Validate.isTrue(target.world.equals(arenaWorld.getName()), "Destination world not arena world.");
 
-        World world = Bukkit.getWorld(target.world);
+        MemoryBlockArea area = cache.get(arena.getArenaName());
+        Validate.notNull(area, "Arena " + arena.getArenaName() + " not loaded.");
 
-        Validate.isTrue(world != null, "Destination world not loaded.");
 
-        ProtobufStorage.apply(storedArea, world, target.x, target.y, target.z);
+        area.apply(arenaWorld, target.x, target.y, target.z);
     }
 
     @Override
-    public void destroyArena(SkyArena arena, SkyBlockLocation target) {
-        World world = Bukkit.getWorld(target.world);
-        Validate.notNull(world, "Destionation world not loaded");
+    public void destroyArena(final World arenaWorld, final SkyArena arena, final SkyBlockLocation target) {
+        Validate.isTrue(target.world.equals(arenaWorld.getName()), "Destination world not arena world.");
 
         SkyBlockLocationRange clearingArea = arena.getBoundaries().getClearing();
         SkyBlockLocation clearingMin = new SkyBlockLocation(target.x + clearingArea.min.x, target.y + clearingArea.min.y, target.z + clearingArea.min.z, null);
@@ -118,7 +118,7 @@ public class ProtobufStorageProvider implements WorldProvider {
         for (int x = clearingMin.x; x <= clearingmax.x; x++) {
             for (int y = clearingMin.y; y <= clearingmax.y; y++) {
                 for (int z = clearingMin.z; z <= clearingmax.z; z++) {
-                    world.getBlockAt(x, y, z).setType(Material.AIR);
+                    arenaWorld.getBlockAt(x, y, z).setType(Material.AIR);
                 }
             }
         }

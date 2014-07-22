@@ -19,6 +19,7 @@ package net.daboross.bukkitdev.skywars.world;
 import java.io.IOException;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
+import org.bukkit.World;
 
 public interface WorldProvider {
 
@@ -26,7 +27,7 @@ public interface WorldProvider {
 
     public void clearLoadedArenas();
 
-    public void copyArena(SkyArena arena, SkyBlockLocation target);
+    public void copyArena(World arenaWorld, SkyArena arena, SkyBlockLocation target);
 
-    public void destroyArena(SkyArena arena,  SkyBlockLocation target);
+    public void destroyArena(World arenaWorld, SkyArena arena,  SkyBlockLocation target);
 }

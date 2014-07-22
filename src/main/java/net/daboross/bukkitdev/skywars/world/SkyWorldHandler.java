@@ -32,6 +32,7 @@ import net.daboross.bukkitdev.skywars.events.events.GameEndInfo;
 import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.game.ArenaGame;
 import net.daboross.bukkitdev.skywars.world.providers.ProtobufStorageProvider;
+import net.daboross.bukkitdev.skywars.world.providers.WorldEditProtobufStorageProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -44,10 +45,16 @@ public class SkyWorldHandler {
 
     private final SkyWars plugin;
     private final WorldProvider provider;
+    private World arenaWorld;
 
     public SkyWorldHandler(SkyWars plugin) {
         this.plugin = plugin;
-        this.provider = new ProtobufStorageProvider(plugin);
+        if (plugin.getConfiguration().isWorldeditHookEnabled() && plugin.getServer().getPluginManager().isPluginEnabled("WorldEdit")) {
+            SkyStatic.log(Level.INFO, "Using WorldEdit hook for arena creation.");
+            this.provider = new WorldEditProtobufStorageProvider(plugin);
+        } else {
+            this.provider = new ProtobufStorageProvider(plugin);
+        }
     }
 
     public void findAndLoadRequiredWorlds() {
@@ -62,22 +69,22 @@ public class SkyWorldHandler {
     }
 
     public void create() {
-        World world = plugin.getServer().getWorld(Statics.ARENA_WORLD_NAME);
-        if (world == null) {
+        arenaWorld = plugin.getServer().getWorld(Statics.ARENA_WORLD_NAME);
+        if (arenaWorld == null) {
             plugin.getLogger().info("Loading world '" + Statics.ARENA_WORLD_NAME + "'.");
             WorldCreator arenaWorldCreator = new WorldCreator(Statics.ARENA_WORLD_NAME);
             arenaWorldCreator.generateStructures(false);
             arenaWorldCreator.generator(new VoidGenerator());
             arenaWorldCreator.type(WorldType.FLAT);
             arenaWorldCreator.seed(0);
-            world = arenaWorldCreator.createWorld();
+            arenaWorld = arenaWorldCreator.createWorld();
             plugin.getLogger().info("Done loading world '" + Statics.ARENA_WORLD_NAME + "'.");
         } else {
             plugin.getLogger().info("The world '" + Statics.ARENA_WORLD_NAME + "' was already loaded.");
         }
-        world.setAutoSave(false);
-        world.getBlockAt(-5000, 45, -5000).setType(Material.STONE);
-        world.setSpawnLocation(-5000, 50, -5000);
+        arenaWorld.setAutoSave(false);
+        arenaWorld.getBlockAt(-5000, 45, -5000).setType(Material.STONE);
+        arenaWorld.setSpawnLocation(-5000, 50, -5000);
     }
 
     public void destroyArenaWorld() {
@@ -89,7 +96,7 @@ public class SkyWorldHandler {
         ArenaGame game = info.getGame();
         SkyBlockLocation min = getMinLocation(game);
         game.setMin(min);
-        provider.copyArena(game.getArena(), min);
+        provider.copyArena(arenaWorld, game.getArena(), min);
         List<SkyPlayerLocation> spawns = new ArrayList<>(game.getArena().getSpawns());
         Collections.shuffle(spawns);
         if (game.areTeamsEnabled()) {
@@ -121,7 +128,7 @@ public class SkyWorldHandler {
 
     public void onGameEnd(GameEndInfo info) {
         SkyBlockLocation min = info.getGame().getMin();
-        provider.destroyArena(info.getGame().getArena(), min);
+        provider.destroyArena(arenaWorld, info.getGame().getArena(), min);
     }
 
     private SkyBlockLocation getMinLocation(SkyGame game) {
