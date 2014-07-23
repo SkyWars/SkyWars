@@ -236,6 +236,63 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <version>2.0.7</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>proguard</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <includeDependency>false</includeDependency>
+                    <libs>
+                        <!-- Java -->
+                        <lib>${java.home}/lib/rt.jar</lib>
+
+                        <!-- Bukkit -->
+                        <lib>${settings.localRepository}/org/bukkit/bukkit/1.7.8-R0.1-SNAPSHOT/bukkit-1.7.8-R0.1-SNAPSHOT.jar</lib>
+
+                        <!-- Vault -->
+                        <lib>${settings.localRepository}/net/daboross/vault/vault-api/1.3.01/vault-api-1.3.01.jar</lib>
+
+                        <!-- WorldEdit -->
+                        <lib>${settings.localRepository}/com/sk89q/worldedit/5.6.3/worldedit-5.6.3.jar</lib>
+                    </libs>
+                    <options>
+                        <!-- Keep plugin classes -->
+                        <option>-keep public class * extends org.bukkit.plugin.java.JavaPlugin { *; }</option>
+
+                        <!-- Keep Score backends that are loaded dynamically -->
+                        <option>-keepclasseswithmembers class * extends net.daboross.bukkitdev.skywars.api.storage.SkyStorageBackend { *; }</option>
+
+                        <!-- Keep event handlers -->
+                        <option>-keepclassmembers class * { @org.bukkit.event.EventHandler *; }</option>
+
+                        <!-- Keep api classes, interfaces and enums -->
+                        <option>-keepclasseswithmembers class net.daboross.bukkitdev.skywars.api.** { *; }</option>
+                        <option>-keep interface net.daboross.bukkitdev.skywars.api.** { *; }</option>
+                        <option>-keepclassmembers interface net.daboross.bukkitdev.skywars.api.** { *; }</option>
+                        <option>-keep enum net.daboross.bukkitdev.skywars.api.** { *; }</option>
+                        <option>-keepclassmembers enum net.daboross.bukkitdev.skywars.api.** { *; }</option>
+
+                        <!-- Keep annotations -->
+                        <option>-keepattributes *Annotation*</option>
+
+                        <!-- Don't obfuscate or optimize, we just want to remove unused classes/methods -->
+                        <option>-dontobfuscate</option>
+                        <option>-dontoptimize</option>
+
+                        <!-- This is for the errors caused by nmsblocks/ in WorldEdit -->
+                        <option>-ignorewarnings</option>
+                        <option>-printconfig target/proguard-config.pro</option>
+                    </options>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
