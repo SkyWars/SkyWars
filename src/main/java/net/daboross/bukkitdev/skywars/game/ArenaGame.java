@@ -39,7 +39,7 @@ public class ArenaGame implements SkyGame {
     private SkyBlockLocationRange boundaries;
     private final boolean teamsEnabled;
     private final Map<UUID, Integer> playerTeams;
-    private final Map<Integer, List<UUID>> teamPlayers;
+    private final List<List<UUID>> teamPlayers;
     private final int numTeams;
 
     public ArenaGame(SkyArena arena, int id, UUID[] originalPlayers) {
@@ -49,27 +49,24 @@ public class ArenaGame implements SkyGame {
         this.id = id;
         this.alivePlayers = new ArrayList<>(Arrays.asList(originalPlayers));
         this.deadPlayers = new ArrayList<>(originalPlayers.length);
-        int teamSize = arena.getTeamSize();
-        if (teamSize > 1) {
-            teamsEnabled = true;
+        int maxTeamNumber = arena.getNumTeams();
+        if (arena.getTeamSize() > 1) { // if teams are enabled (there is more than one person per team)
+            numTeams = maxTeamNumber > alivePlayers.size() ? alivePlayers.size() : maxTeamNumber;
+
+            this.teamsEnabled = true;
             this.playerTeams = new HashMap<>(alivePlayers.size());
-            this.teamPlayers = new HashMap<>(alivePlayers.size() / teamSize);
-            int team = 0;
-            List<UUID> currentTeamList = null;
-            for (int i = 0, lastTeam = -1; i < alivePlayers.size(); i++) {
-                team = i / teamSize;
-                if (team != lastTeam) {
-                    currentTeamList = new ArrayList<>(teamSize);
-                    teamPlayers.put(team, currentTeamList);
-                    lastTeam = team;
-                }
-                UUID uuid = alivePlayers.get(i);
-                playerTeams.put(uuid, team);
-                // This won't produce an NPE, because team!=lastTeam at the start of this loop.
-                //noinspection ConstantConditions
-                currentTeamList.add(uuid);
+            this.teamPlayers = new ArrayList<>(numTeams);
+            for (int i = 0; i < numTeams; i++) {
+                teamPlayers.add(new ArrayList<UUID>());
             }
-            numTeams = team + 1;
+            int nextTeam = 0;
+            for (UUID uuid : alivePlayers) {
+                playerTeams.put(uuid, nextTeam);
+                nextTeam += 1;
+                if (nextTeam >= numTeams) {
+                    nextTeam = 0;
+                }
+            }
         } else {
             playerTeams = null;
             teamPlayers = null;
