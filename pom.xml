@@ -48,7 +48,6 @@
         <developerConnection>scm:git:git@github.com:SkyWars/SkyWars.git</developerConnection>
     </scm>
     <properties>
-        <netbeans.hint.license>gpl30</netbeans.hint.license>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
