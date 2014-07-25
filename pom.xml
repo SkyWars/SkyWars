@@ -288,7 +288,7 @@
 
                         <!-- This is for the errors caused by nmsblocks/ in WorldEdit -->
                         <option>-ignorewarnings</option>
-                        <option>-printconfig target/proguard-config.pro</option>
+                        <option>-dontnote</option>
                     </options>
                 </configuration>
             </plugin>
