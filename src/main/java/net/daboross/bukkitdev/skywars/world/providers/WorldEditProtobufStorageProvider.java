@@ -61,14 +61,10 @@ public class WorldEditProtobufStorageProvider extends ProtobufStorageProvider {
         SkyBlockLocation clearingMin = new SkyBlockLocation(target.x + clearingArea.min.x, target.y + clearingArea.min.y, target.z + clearingArea.min.z, null);
         SkyBlockLocation clearingmax = new SkyBlockLocation(target.x + clearingArea.max.x, target.y + clearingArea.max.y, target.z + clearingArea.max.z, null);
 
-        Vector positionVector = new Vector();
         for (int x = clearingMin.x; x <= clearingmax.x; x++) {
-            positionVector.setX(x);
             for (int y = clearingMin.y; y <= clearingmax.y; y++) {
-                positionVector.setY(y);
                 for (int z = clearingMin.z; z <= clearingmax.z; z++) {
-                    positionVector.setZ(z);
-                    editWorld.setBlockTypeFast(positionVector, 0); // 0 = hardcoded Material.AIR
+                    editWorld.setBlockTypeFast(new Vector(x, y, z), 0); // 0 = hardcoded Material.AIR
                 }
             }
         }
