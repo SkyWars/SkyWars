@@ -62,7 +62,14 @@ public class ProtobufStorageProvider implements WorldProvider {
                 area = BlockStorage.BlockArea.parseFrom(gzipInputStream);
             }
         } catch (FileNotFoundException e) {
-            area = createCache(arena);
+            try (InputStream inputStream = plugin.getResourceAsStream(arena.getArenaName() + ".blocks")) {
+                try (GZIPInputStream gzipInputStream = new GZIPInputStream(inputStream)) {
+                    area = BlockStorage.BlockArea.parseFrom(gzipInputStream);
+                }
+            } catch (FileNotFoundException ex) {
+                area = createCache(arena);
+            }
+            plugin.getLogger().log(Level.INFO, "Loaded pre-built blocks cache file for arena {0}", arena.getArenaName());
             try (OutputStream outputStream = new FileOutputStream(cachePath.toFile())) {
                 try (GZIPOutputStream gzipOutputStream = new GZIPOutputStream(outputStream)) {
                     area.writeTo(gzipOutputStream);

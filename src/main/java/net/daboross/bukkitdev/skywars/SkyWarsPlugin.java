@@ -16,7 +16,9 @@
  */
 package net.daboross.bukkitdev.skywars;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -292,6 +294,21 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         translations = tempTrans;
         SkyTrans.setInstance(tempTrans);
         return true;
+    }
+
+    /**
+     * Acts exactly like getResource(), except for throwing a FileNotSoundException when not found
+     *
+     * @param filename Filename to get from internal jar
+     * @return InputStream for file
+     * @throws FileNotFoundException If the file doesn't exist in the jar
+     */
+    public InputStream getResourceAsStream(final String filename) throws FileNotFoundException {
+        InputStream resource = getResource(filename);
+        if (resource == null) {
+            throw new FileNotFoundException("No resource '" + filename + "' found.");
+        }
+        return resource;
     }
 
     @Override
