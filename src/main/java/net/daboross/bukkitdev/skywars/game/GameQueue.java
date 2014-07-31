@@ -23,6 +23,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.Randomation;
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.game.SkyGameQueue;
@@ -97,10 +98,12 @@ public class GameQueue implements SkyGameQueue {
                 if (nextArenaOrderedNumber >= enabledArenas.size()) {
                     nextArenaOrderedNumber = 0;
                 }
-                nextArena = enabledArenas.get(nextArenaOrderedNumber);
+                nextArena = enabledArenas.get(nextArenaOrderedNumber++);
+                SkyStatic.debug("ORDERED: Choosing arena %s", nextArena.getArenaName());
                 break;
             case RANDOM:
                 nextArena = Randomation.getRandom(enabledArenas);
+                SkyStatic.debug("RANDOM: Choosing arena %s", nextArena.getArenaName());
                 break;
             default:
                 plugin.getLogger().log(Level.WARNING, "[GameQueue] Invalid ArenaOrder found in config!");
