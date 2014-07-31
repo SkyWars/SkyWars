@@ -81,6 +81,9 @@ public class ProtobufStorageProvider implements WorldProvider {
 
     private BlockStorage.BlockArea createCache(SkyArena source) {
         SkyBlockLocationRange origin = source.getBoundaries().getOrigin();
+        if (origin == null) {
+            throw new IllegalStateException("Failed to load arena " + source.getArenaName() + ": Origin location not listed in configuration.");
+        }
         String worldName = origin.world;
         World world = plugin.getServer().getWorld(worldName);
         if (world == null) {

@@ -15,16 +15,6 @@ spawns:
 num-teams: 4
 team-size: 1
 boundaries:
-  origin:
-    min:
-      x: -28
-      y: 97
-      z: -29
-    max:
-      x: 28
-      y: 104
-      z: 29
-    world: SkyWarsBaseWorld
   building:
     min:
       x: -4
