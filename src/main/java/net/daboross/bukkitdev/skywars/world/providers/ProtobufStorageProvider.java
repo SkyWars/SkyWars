@@ -66,10 +66,10 @@ public class ProtobufStorageProvider implements WorldProvider {
                 try (GZIPInputStream gzipInputStream = new GZIPInputStream(inputStream)) {
                     area = BlockStorage.BlockArea.parseFrom(gzipInputStream);
                 }
+                plugin.getLogger().log(Level.INFO, "Loaded pre-built blocks cache file for arena {0}", arena.getArenaName());
             } catch (FileNotFoundException ex) {
                 area = createCache(arena);
             }
-            plugin.getLogger().log(Level.INFO, "Loaded pre-built blocks cache file for arena {0}", arena.getArenaName());
             try (OutputStream outputStream = new FileOutputStream(cachePath.toFile())) {
                 try (GZIPOutputStream gzipOutputStream = new GZIPOutputStream(outputStream)) {
                     area.writeTo(gzipOutputStream);
@@ -92,7 +92,7 @@ public class ProtobufStorageProvider implements WorldProvider {
             baseWorldCreator.seed(0);
             world = baseWorldCreator.createWorld();
         }
-        BlockStorage.BlockArea area = ProtobufStorage.encode(world, origin.min.x, origin.min.y, origin.min.z, origin.max.x - origin.min.x, origin.max.y - origin.min.y, origin.max.z - origin.min.z, true);
+        BlockStorage.BlockArea area = ProtobufStorage.encode(world, origin.min.x, origin.min.y, origin.min.z, origin.max.x - origin.min.x + 1, origin.max.y - origin.min.y + 1, origin.max.z - origin.min.z + 1, true);
         Bukkit.unloadWorld(world, false);
         plugin.getLogger().log(Level.INFO, "Done creating cache for arena ''{0}''", source.getArenaName());
         return area;
