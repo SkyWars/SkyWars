@@ -29,6 +29,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
+import static net.daboross.bukkitdev.skywars.api.game.SkyGame.SkyGameTeam;
 
 public class TeamScoreboardListener {
 
@@ -41,14 +42,16 @@ public class TeamScoreboardListener {
             SkyStatic.debug("Setting up teams for game %s", game.getId());
             Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
             scoreboards.put(game.getId(), board);
-            for (int teamNum = 0, max = game.getNumTeams(); teamNum < max; teamNum++) {
-                String teamName = "Team " + teamNum;
+            for (int teamId = 0, max = game.getNumTeams(); teamId < max; teamId++) {
+                SkyGameTeam gameTeam = game.getTeam(teamId);
+                String teamName = gameTeam.getName();
                 Team team = board.registerNewTeam(teamName);
                 team.setAllowFriendlyFire(false);
                 team.setCanSeeFriendlyInvisibles(true);
-                team.setPrefix(ChatColor.GRAY + "[" + ChatColor.DARK_RED + teamNum + ChatColor.GRAY + "]" + ChatColor.WHITE + " ");
-                for (UUID uuid : game.getAllPlayersInTeam(teamNum)) {
-                    SkyStatic.debug("Adding (uuid: %s) to team %s", uuid, teamName);
+                team.setPrefix(ChatColor.GRAY + "[" + ChatColor.DARK_RED + teamName + ChatColor.GRAY + "]" + ChatColor.WHITE + " ");
+
+                for (UUID uuid : gameTeam.getAlive()) {
+                    SkyStatic.debug("Adding (uuid: %s) to scoreboard team %s", uuid, teamName);
                     Player player = Bukkit.getPlayer(uuid);
                     team.addPlayer(player);
                     teams.put(uuid, team);

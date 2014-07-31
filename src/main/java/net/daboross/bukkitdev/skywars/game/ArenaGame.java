@@ -39,7 +39,7 @@ public class ArenaGame implements SkyGame {
     private SkyBlockLocationRange boundaries;
     private final boolean teamsEnabled;
     private final Map<UUID, Integer> playerTeams;
-    private final List<List<UUID>> teamPlayers;
+    private final Team[] teams;
     private final int numTeams;
 
     public ArenaGame(SkyArena arena, int id, UUID[] originalPlayers) {
@@ -55,13 +55,14 @@ public class ArenaGame implements SkyGame {
 
             this.teamsEnabled = true;
             this.playerTeams = new HashMap<>(alivePlayers.size());
-            this.teamPlayers = new ArrayList<>(numTeams);
+            this.teams = new Team[numTeams];
             for (int i = 0; i < numTeams; i++) {
-                teamPlayers.add(new ArrayList<UUID>());
+                teams[i] = new Team(i, String.valueOf(i + 1));
             }
             int nextTeam = 0;
             for (UUID uuid : alivePlayers) {
                 playerTeams.put(uuid, nextTeam);
+                this.teams[nextTeam].addPlayer(uuid);
                 nextTeam += 1;
                 if (nextTeam >= numTeams) {
                     nextTeam = 0;
@@ -69,7 +70,7 @@ public class ArenaGame implements SkyGame {
             }
         } else {
             playerTeams = null;
-            teamPlayers = null;
+            teams = null;
             teamsEnabled = false;
             numTeams = -1;
         }
@@ -131,34 +132,83 @@ public class ArenaGame implements SkyGame {
     }
 
     @Override
-    public List<UUID> getAlivePlayersInTeam(int teamNumber) {
+    public List<UUID> getAlivePlayersInTeam(int teamId) {
         if (!teamsEnabled) {
             throw new IllegalStateException("Teams aren't enabled");
         }
-        List<UUID> alive = new ArrayList<>(arena.getTeamSize());
-        List<UUID> all = teamPlayers.get(teamNumber);
-        if (all == null) {
-            return null;
+        if (teamId < 0 || teamId >= numTeams) {
+            throw new IllegalArgumentException("Invalid team id");
         }
-        for (UUID uuid : all) {
-            if (alivePlayers.contains(uuid)) {
-                alive.add(uuid);
-            }
-        }
-        return Collections.unmodifiableList(alive);
+        return teams[teamId].getAlive();
     }
 
     @Override
-    public List<UUID> getAllPlayersInTeam(int teamNumber) {
+    public List<UUID> getAllPlayersInTeam(int teamId) {
         if (!teamsEnabled) {
             throw new IllegalStateException("Teams aren't enabled");
         }
-        List<UUID> alive = teamPlayers.get(teamNumber);
-        return alive == null ? null : Collections.unmodifiableList(alive);
+        if (teamId < 0 || teamId >= numTeams) {
+            throw new IllegalArgumentException("Invalid team id");
+        }
+        return teams[teamId].getPlayers();
+    }
+
+    @Override
+    public SkyGameTeam getTeam(final int teamId) {
+        if (!teamsEnabled) {
+            throw new IllegalStateException("Teams aren't enabled");
+        }
+        if (teamId < 0 || teamId >= numTeams) {
+            throw new IllegalArgumentException("Invalid team id");
+        }
+        return teams[teamId];
     }
 
     @Override
     public int getNumTeams() {
         return numTeams;
+    }
+
+    public class Team implements SkyGameTeam {
+
+        private final List<UUID> players;
+        private final int id;
+        private final String name;
+
+        public Team(int id, String name) {
+            this.players = new ArrayList<>();
+            this.id = id;
+            this.name = name;
+        }
+
+        private void addPlayer(UUID uuid) {
+            players.add(uuid);
+        }
+
+        @Override
+        public List<UUID> getAlive() {
+            List<UUID> alive = new ArrayList<>(arena.getTeamSize());
+            for (UUID uuid : players) {
+                if (alivePlayers.contains(uuid)) {
+                    alive.add(uuid);
+                }
+            }
+            return alive;
+        }
+
+        @Override
+        public List<UUID> getPlayers() {
+            return Collections.unmodifiableList(players);
+        }
+
+        @Override
+        public int getId() {
+            return id;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
     }
 }
