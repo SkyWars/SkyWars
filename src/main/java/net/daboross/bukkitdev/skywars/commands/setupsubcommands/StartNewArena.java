@@ -43,7 +43,7 @@ public class StartNewArena extends SubCommand {
 
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        SetupData state = new SetupData();
+        SetupData state = new SetupData(plugin);
         state.setArenaName(subCommandArgs[0]);
         state.setSaveFile(plugin.getConfiguration().getArenaFolder().resolve(subCommandArgs[0] + ".yml"));
         states.setSetupState(sender.getName(), state);
