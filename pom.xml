@@ -140,9 +140,10 @@
                 <filtering>true</filtering>
             </resource>
             <resource>
-                <directory>${project.basedir}/src/main/worlds</directory>
+                <directory>${project.basedir}/src/main/arenas</directory>
                 <includes>
-                    <include>**</include>
+                    <include>**/*.yml</include>
+                    <include>**/*.blocks</include>
                 </includes>
             </resource>
         </resources>
