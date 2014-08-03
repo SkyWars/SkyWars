@@ -101,7 +101,6 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     private InventorySaveListener inventorySaveListener;
     // Bukkit listeners
     private ScoreReplaceChatListener chatListener;
-    private StorageLoadListener joinListener;
     private boolean enabledCorrectly = false;
 
     @Override
@@ -190,7 +189,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         registerListeners(pm, attackerStorage, new StorageLoadListener(this),
                 new QuitListener(this), new PortalListener(this),
                 new CommandWhitelistListener(this), new BuildingLimiter(this),
-                new MobSpawnDisable(), chatListener, joinListener);
+                new MobSpawnDisable(), chatListener);
         enabledCorrectly = true;
     }
 
