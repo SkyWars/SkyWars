@@ -47,12 +47,21 @@ public class StatusCommand extends SubCommand {
         SkyIDHandler idh = plugin.getIDHandler();
         sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_HEADER));
         sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_IN_QUEUE,
-                ArrayHelpers.combinedWithSeperator(plugin.getGameQueue().getCopy(), SkyTrans.get(TransKey.CMD_STATUS_QUEUE_COMMA))));
+                ArrayHelpers.combinedWithSeperator(getNames(plugin.getGameQueue().getCopy()), SkyTrans.get(TransKey.CMD_STATUS_QUEUE_COMMA))));
         sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_ARENA_HEADER));
         for (Integer id : idh.getCurrentIDs()) {
             SkyGame game = idh.getGame(id);
             sender.sendMessage(getPlayerString(game));
         }
+    }
+
+    private String[] getNames(UUID[] uuids) {
+        SkyPlayers players = plugin.getPlayers();
+        String[] names = new String[uuids.length];
+        for (int i = 0; i < uuids.length; i++) {
+            names[i] = players.getPlayer(uuids[i]).getName();
+        }
+        return names;
     }
 
     private String getPlayerString(SkyGame game) {
