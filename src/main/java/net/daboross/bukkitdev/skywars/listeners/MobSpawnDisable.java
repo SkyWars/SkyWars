@@ -20,17 +20,24 @@ import net.daboross.bukkitdev.skywars.world.Statics;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 
 public class MobSpawnDisable implements Listener {
 
     @EventHandler
     public void onMobSpawn(CreatureSpawnEvent evt) {
-        if (evt.getSpawnReason() == SpawnReason.DEFAULT) {
-            String world = evt.getLocation().getWorld().getName();
-            if (Statics.ARENA_WORLD_NAME.equalsIgnoreCase(world)) {
-                evt.setCancelled(true);
-            }
+        switch (evt.getSpawnReason()) {
+            case NATURAL:
+            case JOCKEY:
+            case CHUNK_GEN:
+            case SPAWNER:
+            case BUILD_WITHER:
+            case VILLAGE_DEFENSE:
+            case VILLAGE_INVASION:
+            case REINFORCEMENTS:
+            case NETHER_PORTAL:
+                if (Statics.ARENA_WORLD_NAME.equals(evt.getLocation().getWorld().getName())) {
+                    evt.setCancelled(true);
+                }
         }
     }
 }
