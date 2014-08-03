@@ -38,7 +38,7 @@ public class GameEndInfo {
         alivePlayers = new ArrayList<>();
         for (UUID uuid : alive) {
             Player p = Bukkit.getPlayer(uuid);
-            Validate.isTrue(p != null, "Player (uuid: %s) not online", uuid);
+            Validate.isTrue(p != null, String.format("Player (uuid: %s) not online", uuid));
             alivePlayers.add(p);
         }
     }

@@ -70,6 +70,7 @@ And now, testing!
 * Confirm your score is unaffected when you die outside of a game
 * Confirm you can't hit someone on your team
 * Confirm after you kill everyone the game ends
+* Confirm someone disconnecting from the server removes them from a game their playing
 * Config testing:
  * Confirm you keep your inventory after dying with `save-inventory: true`
  * Confirm you loose your inventory after dying with `save-inventory: false`

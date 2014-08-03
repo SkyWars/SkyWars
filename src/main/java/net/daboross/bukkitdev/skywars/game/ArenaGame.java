@@ -77,7 +77,7 @@ public class ArenaGame implements SkyGame {
     }
 
     public void removePlayer(UUID uuid) {
-        Validate.isTrue(alivePlayers.remove(uuid), "Player (uuid: %s) not alive in game", uuid);
+        Validate.isTrue(alivePlayers.remove(uuid), String.format("Player (uuid: %s) not alive in game", uuid));
         deadPlayers.add(uuid);
     }
 

@@ -18,7 +18,8 @@ package net.daboross.bukkitdev.skywars.game;
 
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
-import net.daboross.bukkitdev.skywars.api.config.SkyMessageKeys;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 
 public class KillMessages {
 
@@ -27,20 +28,20 @@ public class KillMessages {
         if (damager == null) {
             switch (reason) {
                 case VOID:
-                    return String.format(arena.getMessages().getMessage(SkyMessageKeys.SUICIDE_VOID), player);
+                    return SkyTrans.get(TransKey.GAME_DEATH_KILLED_BY_VOID, player);
                 case LEFT:
-                    return String.format(arena.getMessages().getMessage(SkyMessageKeys.FORFEITED), player);
+                    return SkyTrans.get(TransKey.GAME_DEATH_FORFEITED, player);
                 case OTHER:
-                    return String.format(arena.getMessages().getMessage(SkyMessageKeys.KILLED_OTHER), player);
+                    return SkyTrans.get(TransKey.GAME_DEATH_KILLED_BY_ENVIRONMENT, player);
             }
         } else {
             switch (reason) {
                 case VOID:
-                    return String.format(arena.getMessages().getMessage(SkyMessageKeys.KILLED_VOID), damager, player);
+                    return SkyTrans.get(TransKey.GAME_DEATH_KILLED_BY_PLAYER_AND_VOID, damager, player);
                 case LEFT:
-                    return String.format(arena.getMessages().getMessage(SkyMessageKeys.FORFEITED_DAMAGED), damager, player);
+                    return SkyTrans.get(TransKey.GAME_DEATH_FORFEITED_WHILE_ATTACKED, damager, player);
                 case OTHER:
-                    return String.format(arena.getMessages().getMessage(SkyMessageKeys.KILLED_DAMAGED), damager, player);
+                    return SkyTrans.get(TransKey.GAME_DEATH_KILLED_BY_PLAYER, damager, player);
             }
         }
         throw new IllegalArgumentException("Unknown reason");

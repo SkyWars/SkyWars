@@ -36,7 +36,7 @@ public class GameStartInfo {
         this.players = new ArrayList<>(playersList.size());
         for (UUID uuid : playersList) {
             Player p = Bukkit.getPlayer(uuid);
-            Validate.isTrue(p != null, "Player (uuid: %s) not online", uuid);
+            Validate.isTrue(p != null, String.format("Player (uuid: %s) not online", uuid));
             players.add(p);
         }
     }
