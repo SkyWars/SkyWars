@@ -237,7 +237,6 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
     @Override
     public void saveArena(SkyArenaConfig arena) {
-        arena.getMessages().setPrefix(messagePrefix);
         arena.setParent(parentArena);
         saveArena(arena.getFile(), arena, String.format(Headers.ARENA, arena.getArenaName()));
     }

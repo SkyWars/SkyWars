@@ -18,7 +18,8 @@ package net.daboross.bukkitdev.skywars.events.listeners;
 
 import java.util.List;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
-import net.daboross.bukkitdev.skywars.api.config.SkyMessageKeys;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.events.events.GameEndInfo;
 import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import org.bukkit.Bukkit;
@@ -36,10 +37,10 @@ public class GameBroadcaster {
             } else if (i == players.size() - 1) {
                 playerNames.append(ColorList.BROADCAST).append(" and ").append(ColorList.NAME).append(name);
             } else {
-                playerNames.append(ColorList.BROADCAST).append(", ").append(ColorList.NAME).append(name);
+                playerNames.append(ColorList.BROADCAST).append(SkyTrans.get(TransKey.GAME_STARTING_GAMESTARTING_COMMA)).append(ColorList.NAME).append(name);
             }
         }
-        Bukkit.broadcastMessage(String.format(info.getGame().getArena().getMessages().getMessage(SkyMessageKeys.GAME_STARTING), playerNames.toString()));
+        Bukkit.broadcastMessage(SkyTrans.get(TransKey.GAME_STARTING_GAMESTARTING, playerNames));
     }
 
     public void broadcastEnd(GameEndInfo info) {
@@ -47,20 +48,20 @@ public class GameBroadcaster {
             final String message;
             List<Player> winners = info.getAlivePlayers();
             if (winners.isEmpty()) {
-                message = info.getGame().getArena().getMessages().getMessage(SkyMessageKeys.NONE_WON);
+                message = SkyTrans.get(TransKey.GAME_WINNING_NONE_WON);
             } else if (winners.size() == 1) {
-                message = String.format(info.getGame().getArena().getMessages().getMessage(SkyMessageKeys.SINGLE_WON), winners.get(0).getName());
+                message = SkyTrans.get(TransKey.GAME_WINNING_SINGLE_WON, winners.get(0).getName());
             } else {
                 StringBuilder winnerBuilder = new StringBuilder(winners.get(0).getName());
                 for (int i = 1; i < winners.size(); i++) {
                     if (i == winners.size() - 1) {
                         winnerBuilder.append(" and ");
                     } else {
-                        winnerBuilder.append(", ");
+                        winnerBuilder.append(TransKey.GAME_WINNING_MULTI_WON_COMMA);
                     }
                     winnerBuilder.append(winners.get(i).getName());
                 }
-                message = String.format(info.getGame().getArena().getMessages().getMessage(SkyMessageKeys.MULTI_WON), winnerBuilder);
+                message = SkyTrans.get(TransKey.GAME_WINNING_MULTI_WON, winnerBuilder);
             }
             Bukkit.broadcastMessage(message);
         }
