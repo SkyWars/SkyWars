@@ -301,6 +301,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
      * @return InputStream for file
      * @throws FileNotFoundException If the file doesn't exist in the jar
      */
+    @Override
     public InputStream getResourceAsStream(final String filename) throws FileNotFoundException {
         InputStream resource = getResource(filename);
         if (resource == null) {
