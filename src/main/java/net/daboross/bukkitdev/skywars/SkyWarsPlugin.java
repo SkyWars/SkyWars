@@ -164,7 +164,6 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         if (configuration.isEnableScore()) {
             score = new ScoreStorage(this);
             chatListener = new ScoreReplaceChatListener(this);
-            joinListener = new StorageLoadListener(this);
         }
         if (configuration.isEconomyEnabled()) {
             SkyStatic.debug("Enabling economy support");
@@ -188,7 +187,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         new PermissionHandler().setupPermissions();
         setupCommand();
         PluginManager pm = getServer().getPluginManager();
-        registerListeners(pm, attackerStorage,
+        registerListeners(pm, attackerStorage, new StorageLoadListener(this),
                 new QuitListener(this), new PortalListener(this),
                 new CommandWhitelistListener(this), new BuildingLimiter(this),
                 new MobSpawnDisable(), chatListener, joinListener);
