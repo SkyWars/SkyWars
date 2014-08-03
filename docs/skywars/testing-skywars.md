@@ -79,5 +79,9 @@ And now, testing!
  * Confirm messages.new.yml is created after changing locale when auto-update is set to false
  * Confirm messages.yml *does not* update after changing locale when auto-update is set to false
  * Confirm `/sw kit` does not display economy-cost kits after setting `economy.enabled: false`
+ * Confirm points are not altered with `enable-points: false`
+ * Confirm games start correctly with `enable-points: true` and `use-sql: false`
+ * Confirm games start correctly with `enable-points: true` and `use-sql: true`
+ * Confirm games start correctly with `enable-points: false`
  * TODO: More encompassing config testing overview
 * TODO: Setup testing overview
