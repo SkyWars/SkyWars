@@ -66,7 +66,7 @@ public class GameHandler implements SkyGameHandler {
     public void removePlayerFromGame(UUID playerUuid, boolean respawn, boolean broadcast) {
         Validate.notNull(playerUuid, "Player uuid cannot be nuller");
         Player p = plugin.getServer().getPlayer(playerUuid);
-        Validate.isTrue(p != null, "Player (uuid: %s) not online", playerUuid);
+        Validate.isTrue(p != null, String.format("Player (uuid: %s) not online", playerUuid));
         this.removePlayerFromGame(p, respawn, broadcast);
     }
 
@@ -76,7 +76,7 @@ public class GameHandler implements SkyGameHandler {
         UUID playerUuid = player.getUniqueId();
         SkyCurrentGameTracker cg = plugin.getCurrentGameTracker();
         final int id = cg.getGameId(playerUuid);
-        Validate.isTrue(id != -1, "Player %s not in game", player.getName());
+        Validate.isTrue(id != -1, String.format("Player %s not in game", player.getName()));
         GameIDHandler idh = plugin.getIDHandler();
         ArenaGame game = idh.getGame(id);
         game.removePlayer(playerUuid);
@@ -124,7 +124,7 @@ public class GameHandler implements SkyGameHandler {
     public void respawnPlayer(UUID playerUuid) {
         Validate.notNull(playerUuid, "Player uuid cannot be null");
         Player p = plugin.getServer().getPlayer(playerUuid);
-        Validate.isTrue(p != null, "Player (uuid: %s) isn't online", playerUuid);
+        Validate.isTrue(p != null, String.format("Player (uuid: %s) not online", playerUuid));
         this.respawnPlayer(p);
     }
 
