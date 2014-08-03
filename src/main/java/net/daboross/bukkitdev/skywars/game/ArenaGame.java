@@ -129,7 +129,7 @@ public class ArenaGame implements SkyGame {
             throw new IllegalStateException("Teams aren't enabled");
         }
         Integer team = playerTeams.get(uuid);
-        Validate.isTrue(team != null, "Player (uuid: %s) not in game", uuid);
+        Validate.notNull(team, String.format("Player (uuid: %s) not in game", uuid));
         return team;
     }
 
