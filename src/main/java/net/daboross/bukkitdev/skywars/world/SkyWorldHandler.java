@@ -50,7 +50,7 @@ public class SkyWorldHandler {
     public SkyWorldHandler(SkyWars plugin) {
         this.plugin = plugin;
         if (plugin.getConfiguration().isWorldeditHookEnabled() && plugin.getServer().getPluginManager().isPluginEnabled("WorldEdit")) {
-            SkyStatic.log(Level.INFO, "Using WorldEdit hook for arena creation.");
+            SkyStatic.log("Using WorldEdit hook for arena creation.");
             this.provider = new WorldEditProtobufStorageProvider(plugin);
         } else {
             this.provider = new ProtobufStorageProvider(plugin);
