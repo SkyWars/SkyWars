@@ -17,16 +17,18 @@
 package net.daboross.bukkitdev.skywars.listeners;
 
 import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.players.SkyPlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class StorageLoadListener implements Listener {
+public class PlayerStateListener implements Listener {
 
     private final SkyWars plugin;
 
-    public StorageLoadListener(final SkyWars plugin) {
+    public PlayerStateListener(final SkyWars plugin) {
         this.plugin = plugin;
     }
 
@@ -37,6 +39,19 @@ public class StorageLoadListener implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent evt) {
-        plugin.getPlayers().unloadPlayer(evt.getPlayer().getUniqueId());
+        Player player = evt.getPlayer();
+        SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(player);
+        switch (skyPlayer.getState()) {
+            case IN_QUEUE:
+                plugin.getGameQueue().removePlayer(player);
+                break;
+            case IN_RUNNING_GAME:
+                plugin.getGameHandler().removePlayerFromGame(player, true, true);
+                break;
+            case WAITING_FOR_RESPAWN:
+                plugin.getGameHandler().respawnPlayer(player);
+                break;
+        }
+        plugin.getPlayers().unloadPlayer(player.getUniqueId());
     }
 }
