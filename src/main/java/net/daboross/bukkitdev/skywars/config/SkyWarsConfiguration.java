@@ -68,7 +68,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private String locale;
     private boolean disableReport;
     private boolean economyRewardMessages;
-    //    private boolean perArenaDeathMessagesEnabled;
+//    private boolean perArenaDeathMessagesEnabled;
 //    private boolean perArenaWinMessagesEnabled;
     private boolean multiverseCoreHookEnabled;
     private boolean multiverseInventoriesHookEnabled;
