@@ -111,7 +111,7 @@ public class GistReport {
                 }
             }
         } catch (IOException ex) {
-            build.append("\nIOException occurred reading ").append(path.toAbsolutePath()).append("\n");;
+            build.append("\nIOException occurred reading ").append(path.toAbsolutePath()).append("\n");
         }
         return build;
     }
