@@ -93,11 +93,12 @@ public class TranslationsConfiguration implements SkyTranslations {
                 }
             }
         }
+        String messagePrefix = ChatColor.translateAlternateColorCodes('&', plugin.getConfiguration().getMessagePrefix());
         for (Map.Entry<TransKey, String> entry : values.entrySet()) {
             config.set(entry.getKey().key, entry.getValue());
             String compiledValue = ChatColor.translateAlternateColorCodes('&', entry.getValue());
             if (entry.getKey().includePrefix) {
-                compiledValue = plugin.getConfiguration().getMessagePrefix() + compiledValue;
+                compiledValue = messagePrefix + compiledValue;
             }
             entry.setValue(compiledValue);
         }
