@@ -1,4 +1,4 @@
-![SkyWars](http://dabo.guru/logo/SkyWars.png)
+![SkyWars](https://dabo.guru/logo/SkyWars.png)
 
 ### Update warning!
 

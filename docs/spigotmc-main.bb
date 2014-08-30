@@ -1,4 +1,4 @@
-[IMG]http://dabo.guru/logo/SkyWars.png[/IMG]
+[IMG]https://dabo.guru/logo/SkyWars.png[/IMG]
 
 [SIZE=4][B]Update warning![/B][/SIZE]
 
@@ -49,7 +49,7 @@ This way there is no long transfer period, and it supports any proxies (bungeeco
 [/LIST]
 
 [B][SIZE=4]MCStats / Plugin metrics[/SIZE][/B]
-SkyWars uses plugin metrics to keep track of people using the plugin. All gathered data can be viewed at[URL]http://mcstats.org/plugin/SkyWars[/URL]. To opt out, change opt-out: false to opt-out: true inplugins/PluginMetrics/config.yml
+SkyWars uses plugin metrics to keep track of people using the plugin. All gathered data can be viewed at [URL]http://mcstats.org/plugin/SkyWars[/URL]. To opt out, change opt-out: false to opt-out: true inplugins/PluginMetrics/config.yml
 
 [B][SIZE=4]SkyWars Report[/SIZE][/B]
 SkyWars has the ability to use gist.github.com to generate a debug report for your server. When you use the /sw report command, SkyWars will gather information about your server, post it to gist.github.com, and give you a URL. SkyWars does not communicate with gist.github.com unless an admin uses the /sw report command. If you want to make it so that no one can use the /sw report command, add the following line to your main-config.ymlfile: disable-report: true
