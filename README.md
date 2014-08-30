@@ -1,4 +1,4 @@
-![SkyWars](http://dabo.guru/logo/SkyWars.png)
+![SkyWars](https://dabo.guru/logo/SkyWars.png)
 
 ### Update warning!
 
@@ -28,11 +28,11 @@ This way there is no long transfer period, and it supports any proxies (bungeeco
 * Go to where you want the lobby to be and use **/sw setlobby**.
 
 ### Useful links
-* [Commands and Permissions](http://dabo.guru/skywars/commands-and-permissions)
-* [Configuration Guide](http://dabo.guru/skywars/configuring-skywars)
-* [Setting up a new Arena](http://dabo.guru/skywars/creating-an-arena)
-* [Worlds Created](http://dabo.guru/skywars/skywars-worlds)
-* [Common Issues / Troubleshooting](http://dabo.guru/skywars/troubleshooting)
+* [Commands and Permissions](https://dabo.guru/projects/skywars/commands-and-permissions)
+* [Configuration Guide](https://dabo.guru/projects/skywars/configuring-skywars)
+* [Setting up a new Arena](https://dabo.guru/projects/skywars/creating-an-arena)
+* [Worlds Created](https://dabo.guru/projects/skywars/skywars-worlds)
+* [Common Issues / Troubleshooting](https://dabo.guru/projects/skywars/troubleshooting)
 * [GitHub](https://github.com/SkyWars/SkyWars)
 * [MCStats Statistics](http://mcstats.org/plugin/SkyWars)
 * [TeamCity Development Builds - CI Server](http://ci.dabo.guru/p/SkyWarsParent)
@@ -54,7 +54,7 @@ make it so that no one can use the **/sw report** command, add the following lin
 ### Bug reports, Feature requests and other Questions
 Please use the SkyWars issue tracker for all bug reports, feature requests and general questions.
 
-See [submitting a ticket](http://dabo.guru/skywars/submitting-a-ticket) for instructions on how to do this.
+See [submitting a ticket](https://dabo.guru/projects/skywars/submitting-a-ticket) for instructions on how to do this.
 
 ### Map Credit
 Full credit for the default map, Skyblock Warriors, goes to [SwipeShot](http://www.youtube.com/user/SwipeShot)

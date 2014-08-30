@@ -37,11 +37,11 @@ This way there is no long transfer period, and it supports any proxies (bungeeco
 
 [SIZE=4][B]Useful links[/B][/SIZE]
 [LIST]
-[*][URL='http://dabo.guru/skywars/commands-and-permissions']Commands and Permissions[/URL]
-[*][URL='http://dabo.guru/skywars/configuring-skywars']Configuration Guide[/URL]
-[*][URL='http://dabo.guru/skywars/creating-an-arena']Setting up a new Arena[/URL]
-[*][URL='http://dabo.guru/skywars/skywars-worlds']Worlds Created[/URL]
-[*][URL='http://dabo.guru/skywars/troubleshooting']Common Issues / Troubleshooting[/URL]
+[*][URL='https://dabo.guru/projects/skywars/commands-and-permissions']Commands and Permissions[/URL]
+[*][URL='https://dabo.guru/projects/skywars/configuring-skywars']Configuration Guide[/URL]
+[*][URL='https://dabo.guru/projects/skywars/creating-an-arena']Setting up a new Arena[/URL]
+[*][URL='https://dabo.guru/projects/skywars/skywars-worlds']Worlds Created[/URL]
+[*][URL='https://dabo.guru/projects/skywars/troubleshooting']Common Issues / Troubleshooting[/URL]
 [*][URL='https://github.com/SkyWars/SkyWars']GitHub[/URL]
 [*][URL='http://mcstats.org/plugin/SkyWars']MCStats Statistics[/URL]
 [*][URL='http://ci.dabo.guru/p/SkyWarsParent']TeamCity Development Builds - CI Server[/URL]
@@ -57,7 +57,7 @@ SkyWars has the ability to use gist.github.com to generate a debug report for yo
 [SIZE=4][B]Bug reports, Feature requests and other Questions[/B][/SIZE]
 Please use the SkyWars issue tracker for all bug reports, feature requests and general questions.
 
-See [URL='http://dabo.guru/skywars/submitting-a-ticket']submitting a ticket[/URL] for instructions on how to do this.
+See [URL='https://dabo.guru/projects/skywars/submitting-a-ticket']submitting a ticket[/URL] for instructions on how to do this.
 
 [SIZE=4][B]Map Credit[/B][/SIZE]
 Full credit for the default map, Skyblock Warriors, goes to [URL='http://www.youtube.com/user/SwipeShot']SwipeShot[/URL]
