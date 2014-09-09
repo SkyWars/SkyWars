@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -62,7 +63,7 @@ public class ProtobufStorageProvider implements WorldProvider {
                 area = BlockStorage.BlockArea.parseFrom(gzipInputStream);
             }
         } catch (FileNotFoundException e) {
-            try (InputStream inputStream = plugin.getResourceAsStream(arena.getArenaName() + ".blocks")) {
+            try (InputStream inputStream = plugin.getResourceAsStream(Paths.get("arenas", arena.getArenaName() + ".blocks").toString())) {
                 try (GZIPInputStream gzipInputStream = new GZIPInputStream(inputStream)) {
                     area = BlockStorage.BlockArea.parseFrom(gzipInputStream);
                 }
