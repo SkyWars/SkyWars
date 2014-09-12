@@ -61,7 +61,7 @@ Full credit for the default map, Skyblock Warriors, goes to [SwipeShot](http://w
 ### Sponsors/other
 This may be an almost empty section, but we would like to thank JetBrains for their support of this project.
 
-[![JetBrains](http://www.jetbrains.com/idea/docs/logo_intellij_idea.png)](http://www.jetbrains.com/idea/)
+[![JetBrains](https://www.jetbrains.com/idea/docs/logo_intellij_idea.png)](http://www.jetbrains.com/idea/)
 
 ## Translating!
 We need help translating SkyWars! To help out, see [SkyWars-Translations/Translating](https://github.com/SkyWars/SkyWars-Translations/wiki/Translating).
