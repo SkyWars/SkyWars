@@ -1,14 +1,12 @@
 [IMG]https://dabo.guru/logo/SkyWars.png[/IMG]
 
-[SIZE=4][B]Update warning![/B][/SIZE]
+[SIZE=4][B]Update warning for v2.*[/B][/SIZE]
 
-SkyWars v2.0.0 will fail to start on any craftbukkit version below 1.7.8. If you need to use an earlier version of Minecraft, please download SkyWars v1.4.4 instead.
+SkyWars v2.* adds UUID support.
 
-SkyWars v2.0.0 adds UUID support, which is why it requires a newer CraftBukkit version.
+SkyWars v2.* builds require Minecraft version of 1.7.8 or higher. If you need to use an earlier version of Minecraft, please download SkyWars v1.4.4 instead.
 
-After updating to v2.0.0, SkyWars will migrate it's storage from names to UUIDs as users log into your server.
-
-This way there is no long transfer period, and it supports any proxies (bungeecord, lilypad), as long as they forward UUIDs to CraftBukkit.
+After updating to v2.*, SkyWars will migrate its storage from names to UUIDs as users log into your server. This way there is no long transfer period, and it supports all properly configured proxies (bungeecord, lilypad, etc.).
 
 [SIZE=4][B]Features[/B][/SIZE]
 [LIST]
@@ -26,10 +24,10 @@ This way there is no long transfer period, and it supports any proxies (bungeeco
 [SIZE=4][B]Basic Installation[/B][/SIZE]
 [LIST]
 [*]Make sure your server is running Java 7. SkyWars will not function with Java 6.
-[*]Download the SkyWars.jar file, and put it in your plugins/ directory.
+[*]Download the SkyWars.jar for your server version, and put it in your plugins/ directory.
 [LIST]
 [*]SkyWars v1.4.4 supports minecraft 1.5.2, 1.6.4 and 1.7.2.
-[*]SkyWars v2.0.0 supports minecraft 1.7.8, 1.7.9 and 1.7.10.
+[*]SkyWars v2.0.0 supports minecraft 1.7.8 and higher.
 [/LIST]
 [*]Restart your server. SkyWars will automatically create 2 new worlds. SkyWarsBaseWorld and SkyWarsArenaWorld.
 [*]Go to where you want the lobby to be and use /sw setlobby.
