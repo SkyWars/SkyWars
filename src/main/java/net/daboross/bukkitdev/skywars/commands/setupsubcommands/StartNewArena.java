@@ -45,7 +45,7 @@ public class StartNewArena extends SubCommand {
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         SetupData state;
-        if (plugin.getConfiguration().isWorldeditHookEnabled()) {
+        if (plugin.getConfiguration().isWorldeditHookEnabled() && plugin.getServer().getPluginManager().isPluginEnabled("WorldEdit")) {
             state = new WESetupData(plugin);
         } else {
             state = new SetupData(plugin);
