@@ -23,6 +23,7 @@ import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupData;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
+import net.daboross.bukkitdev.skywars.commands.setupstuff.WESetupData;
 import org.apache.commons.lang.Validate;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -43,7 +44,12 @@ public class StartNewArena extends SubCommand {
 
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        SetupData state = new SetupData(plugin);
+        SetupData state;
+        if (plugin.getConfiguration().isWorldeditHookEnabled()) {
+            state = new WESetupData(plugin);
+        } else {
+            state = new SetupData(plugin);
+        }
         state.setArenaName(subCommandArgs[0]);
         state.setSaveFile(plugin.getConfiguration().getArenaFolder().resolve(subCommandArgs[0] + ".yml"));
         states.setSetupState(sender.getName(), state);

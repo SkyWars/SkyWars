@@ -16,9 +16,6 @@
  */
 package net.daboross.bukkitdev.skywars.commands.setupstuff;
 
-import com.sk89q.worldedit.LocalWorld;
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldedit.bukkit.BukkitWorld;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,14 +87,11 @@ public class SetupData {
         return config;
     }
 
-    private SkyBlockLocationRange calculateOrigin(SkyBlockLocation min, SkyBlockLocation max) {
+    protected SkyBlockLocationRange calculateOrigin(SkyBlockLocation min, SkyBlockLocation max) {
         World world = Bukkit.getWorld(min.world);
         if (world == null) {
             throw new IllegalStateException("Origin world '" + min.world + "' no longer loaded.");
         }
-        if (plugin.getConfiguration().isWorldeditHookEnabled()) {
-            return calculateOriginWE(min, max, world);
-        }
         int minX = min.x;
         int minY = min.y;
         int minZ = min.z;
@@ -137,58 +131,6 @@ public class SetupData {
                 && isClear(minX, minY, maxZ, maxX, maxY, maxZ, world)) {
             maxZ -= 1;
         }
-        return new SkyBlockLocationRange(new SkyBlockLocation(minX, minY, minZ, world.getName()), new SkyBlockLocation(maxX, maxY, maxZ, world.getName()), world.getName());
-    }
-
-    private SkyBlockLocationRange calculateOriginWE(SkyBlockLocation min, SkyBlockLocation max, World bukkitWorld) {
-        LocalWorld world = new BukkitWorld(bukkitWorld);
-
-        int minX = min.x;
-        int minY = min.y;
-        int minZ = min.z;
-        int maxX = max.x;
-        int maxY = max.y;
-        int maxZ = max.z;
-
-        // Each of these loops will reduce the empty space around the chosen area,
-        //  by checking each plane of space and reducing the min/max of that direction if the space is clear.
-        System.out.println("Calculating 1 minX:" + minX + " maxX:" + maxX);
-        // Reducing minX
-        while (minX < maxX
-                && isClear(minX, minY, minZ, minX, maxY, maxZ, world)) {
-            minX += 1;
-        }
-        System.out.println("Calculating 2 minY:" + minY + " maxY:" + maxY);
-        // Reducing minY
-        while (minY < maxY
-                && isClear(minX, minY, minZ, maxX, minY, maxZ, world)) {
-            minY += 1;
-        }
-        System.out.println("Calculating 3 minZ:" + minZ + " maxZ:" + maxZ);
-        // Reducing minZ
-        while (minZ < maxZ
-                && isClear(minX, minY, minZ, maxX, maxY, minZ, world)) {
-            minZ += 1;
-        }
-        System.out.println("Calculating 4 minX:" + minX + " maxX:" + maxX);
-        // Reducing maxX
-        while (maxX > minX
-                && isClear(maxX, minY, minZ, maxX, maxY, maxZ, world)) {
-            maxX -= 1;
-        }
-        System.out.println("Calculating 5");
-        // Reducing maxY
-        while (maxY > minY
-                && isClear(minX, maxY, minZ, maxX, maxY, maxZ, world)) {
-            maxY -= 1;
-        }
-        System.out.println("Calculating 6");
-        // Reducing maxZ
-        while (maxZ > minZ
-                && isClear(minX, minY, maxZ, maxX, maxY, maxZ, world)) {
-            maxZ -= 1;
-        }
-        System.out.println("Done");
         return new SkyBlockLocationRange(new SkyBlockLocation(minX, minY, minZ, world.getName()), new SkyBlockLocation(maxX, maxY, maxZ, world.getName()), world.getName());
     }
 
@@ -202,21 +144,6 @@ public class SetupData {
                 }
             }
         }
-        return true;
-    }
-
-    private static boolean isClear(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, LocalWorld world) {
-        for (int x = minX; x <= maxX; x++) {
-            for (int y = minY; y <= maxY; y++) {
-                for (int z = minZ; z <= maxZ; z++) {
-                    if (world.getBlockType(new Vector(x, y, z)) != 0) { // Material.AIR.getId() == 0
-                        System.out.println("Not clear! block:" + world.getBlockType(new Vector(x, y, z)) + " minX:" + minX + " minY:" + minY + " minZ:" + minZ + " maxX:" + maxX + " maxY:" + maxY + " maxZ:" + maxZ);
-                        return false;
-                    }
-                }
-            }
-        }
-        System.out.println("It's clear! minX:" + minX + " minY:" + minY + " minZ:" + minZ + " maxX:" + maxX + " maxY:" + maxY + " maxZ:" + maxZ);
         return true;
     }
 
