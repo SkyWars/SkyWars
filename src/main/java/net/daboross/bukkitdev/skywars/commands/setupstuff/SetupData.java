@@ -114,7 +114,7 @@ public class SetupData {
         // Reducing minZ
         while (minZ < maxZ
                 && isClear(minX, minY, minZ, maxX, maxY, minZ, world)) {
-            minY += 1;
+            minZ += 1;
         }
         // Reducing maxX
         while (maxX > minX
