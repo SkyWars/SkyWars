@@ -68,6 +68,13 @@ public class SkyWorldHandler {
         }
     }
 
+    /**
+     * This method loads a new arena into the current cache - useful for creating caches for new arenas after saving the .yml files.
+     */
+    public void loadNewArena(SkyArena arena) throws IOException {
+        provider.loadArena(arena);
+    }
+
     public void create() {
         arenaWorld = plugin.getServer().getWorld(Statics.ARENA_WORLD_NAME);
         if (arenaWorld == null) {

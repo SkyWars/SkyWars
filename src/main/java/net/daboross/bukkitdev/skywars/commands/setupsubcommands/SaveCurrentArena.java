@@ -16,8 +16,10 @@
  */
 package net.daboross.bukkitdev.skywars.commands.setupsubcommands;
 
+import java.io.IOException;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
+import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
@@ -53,6 +55,12 @@ public class SaveCurrentArena extends SubCommand {
         sender.sendMessage(SkyTrans.get(TransKey.SWS_SAVE_SAVING));
         SkyArenaConfig config = states.getSetupState(sender.getName()).convertToArenaConfig();
         plugin.getConfiguration().saveArena(config);
+        try {
+            ((SkyWarsPlugin) plugin).getWorldHandler().loadNewArena(config);
+        } catch (IOException e) {
+            sender.sendMessage(SkyTrans.get(TransKey.SWS_SAVE_FAILED));
+            return;
+        }
         sender.sendMessage(SkyTrans.get(TransKey.SWS_SAVE_SAVED));
     }
 }

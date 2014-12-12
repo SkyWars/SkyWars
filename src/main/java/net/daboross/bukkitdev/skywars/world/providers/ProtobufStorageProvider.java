@@ -56,6 +56,9 @@ public class ProtobufStorageProvider implements WorldProvider {
 
     @Override
     public void loadArena(final SkyArena arena) throws IOException {
+        if (cache.containsKey(arena.getArenaName())) {
+            plugin.getLogger().log(Level.WARNING, "Overwriting already existing cache for arena named '{}'.", arena.getArenaName());
+        }
         Path cachePath = plugin.getArenaPath().resolve(arena.getArenaName() + ".blocks");
         BlockStorage.BlockArea area;
         try (InputStream inputStream = new FileInputStream(cachePath.toFile())) {
