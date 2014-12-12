@@ -1,14 +1,14 @@
-![SkyWars](http://dabo.guru/logo/SkyWars.png)
+![SkyWars](https://dabo.guru/logo/SkyWars.png)
 
-### Update warning!
+### Update warning for v2.*
 
-SkyWars v2.0.0 will fail to start on any craftbukkit version below 1.7.8. If you need to use an earlier version of Minecraft, please download SkyWars v1.4.4 instead.
+SkyWars v2.* adds UUID support.
 
-SkyWars v2.0.0 adds UUID support, which is why it requires a newer CraftBukkit version.
+SkyWars v2.* builds require Minecraft version of 1.7.8 or higher.
+If you need to use an earlier version of Minecraft, please download SkyWars v1.4.4 instead.
 
-After updating to v2.0.0, SkyWars will migrate its storage from names to UUIDs as users log into your server.
-
-This way there is no long transfer period, and it supports any proxies (bungeecord, lilypad), as long as they forward UUIDs to CraftBukkit.
+After updating to v2.*, SkyWars will migrate its storage from names to UUIDs as users log into your server.
+This way there is no long transfer period, and it supports all properly configured proxies (bungeecord, lilypad, etc.).
 
 ### Features
 * Automatically create new arenas every time enough people join the queue.
@@ -21,18 +21,18 @@ This way there is no long transfer period, and it supports any proxies (bungeeco
 
 ### Basic Installation
 * Make sure your server is running Java 7. SkyWars **will not function** with Java 6.
-* Download the SkyWars.jar file, and put it in your plugins/ directory.
+* Download the SkyWars.jar for your server version, and put it in your plugins/ directory.
  * SkyWars v1.4.4 supports minecraft 1.5.2, 1.6.4 and 1.7.2.
- * SkyWars v2.0.0 supports minecraft 1.7.8, 1.7.9 and 1.7.10.
+ * SkyWars v2.0.0 supports minecraft 1.7.8 and higher.
 * Restart your server. SkyWars will automatically create 2 new worlds. SkyWarsBaseWorld and SkyWarsArenaWorld.
 * Go to where you want the lobby to be and use **/sw setlobby**.
 
 ### Useful links
-* [Commands and Permissions](http://dabo.guru/skywars/commands-and-permissions)
-* [Configuration Guide](http://dabo.guru/skywars/configuring-skywars)
-* [Setting up a new Arena](http://dabo.guru/skywars/creating-an-arena)
-* [Worlds Created](http://dabo.guru/skywars/skywars-worlds)
-* [Common Issues / Troubleshooting](http://dabo.guru/skywars/troubleshooting)
+* [Commands and Permissions](https://dabo.guru/projects/skywars/commands-and-permissions)
+* [Configuration Guide](https://dabo.guru/projects/skywars/configuring-skywars)
+* [Setting up a new Arena](https://dabo.guru/projects/skywars/creating-an-arena)
+* [Worlds Created](https://dabo.guru/projects/skywars/skywars-worlds)
+* [Common Issues / Troubleshooting](https://dabo.guru/projects/skywars/troubleshooting)
 * [GitHub](https://github.com/SkyWars/SkyWars)
 * [MCStats Statistics](http://mcstats.org/plugin/SkyWars)
 * [TeamCity Development Builds - CI Server](http://ci.dabo.guru/p/SkyWarsParent)
@@ -54,7 +54,7 @@ make it so that no one can use the **/sw report** command, add the following lin
 ### Bug reports, Feature requests and other Questions
 Please use the SkyWars issue tracker for all bug reports, feature requests and general questions.
 
-See [submitting a ticket](http://dabo.guru/skywars/submitting-a-ticket) for instructions on how to do this.
+See [submitting a ticket](https://dabo.guru/projects/skywars/submitting-a-ticket) for instructions on how to do this.
 
 ### Map Credit
 Full credit for the default map, Skyblock Warriors, goes to [SwipeShot](http://www.youtube.com/user/SwipeShot)
@@ -62,7 +62,7 @@ Full credit for the default map, Skyblock Warriors, goes to [SwipeShot](http://w
 ### Sponsors/other
 This may be an almost empty section, but we would like to thank JetBrains for their support of this project.
 
-[![JetBrains](http://www.jetbrains.com/idea/docs/logo_intellij_idea.png)](http://www.jetbrains.com/idea/)
+[![JetBrains](https://www.jetbrains.com/idea/docs/logo_intellij_idea.png)](http://www.jetbrains.com/idea/)
 
 ### Translating!
 We need help translating SkyWars! To help out, see [SkyWars-Translations/Translating](https://github.com/SkyWars/SkyWars-Translations/wiki/Translating).

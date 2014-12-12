@@ -3,11 +3,11 @@ Configuring SkyWars - main-config.yml
 
 This is documentation for configuring `plugins/SkyWars/main-config.yml`.
 
-For documentation on configuring a file in the `arenas/` directory, see http://dabo.guru/skywars/configuring-arenas.
+For documentation on configuring a file in the `arenas/` directory, see https://dabo.guru/projects/skywars/configuring-arenas.
 
-For documentation on configuring `arena-parent.yml`, see http://dabo.guru/skywars/configuring-parent.
+For documentation on configuring `arena-parent.yml`, see https://dabo.guru/projects/skywars/configuring-parent.
 
-For documentation on configuring `kits.yml`, see http://dabo.guru/skywars/configuring-kits.
+For documentation on configuring `kits.yml`, see https://dabo.guru/projects/skywars/configuring-kits.
 
 
 ```yaml

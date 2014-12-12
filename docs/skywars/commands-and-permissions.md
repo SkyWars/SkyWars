@@ -29,7 +29,7 @@ Commands and Permissions
 | **/sws** **addspawn** | skywars.setup      | Adds a spawn position to the arena at your current location. |
 | **/sws** **save**     | skywars.setup      | Saves the configuration to file under the name you started with. |
 
-* Note: The /sws command descriptions are brief. If you want a guide on how to use them, check out [Setting up a new arena](http://dabo.guru/skywars/creating-an-arena).
+* Note: The /sws command descriptions are brief. If you want a guide on how to use them, check out [Setting up a new arena](https://dabo.guru/projects/skywars/creating-an-arena).
 
 ### Permissions
 | Permission        | Defaults to       |
