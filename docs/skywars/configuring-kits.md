@@ -9,7 +9,7 @@ This file is located at `plugins/SkyWars/kits.yml`.
 # Kit configuration
 #
 # For documentation, please visit
-# https://dabo.guru/skywars/configuring-kits
+# https://dabo.guru/projects/skywars/configuring-kits
 # #########
 
 my-first-kit:

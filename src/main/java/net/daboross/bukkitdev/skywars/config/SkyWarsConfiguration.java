@@ -419,7 +419,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
                 + "All comment changes will be removed.%n"
                 + "%n"
                 + "For documentation, please visit %n"
-                + "http://dabo.guru/skywars/configuring-skywars%n"
+                + "https://dabo.guru/projects/skywars/configuring-skywars%n"
                 + "#########";
         private static final String ARENA = "####### %s.yml ###%n"
                 + "This is the Skyblock Warriors arena config.%n"
@@ -430,7 +430,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
                 + "All comment changes will be removed.%n"
                 + "%n"
                 + "For documentation, please visit %n"
-                + "http://dabo.guru/skywars/configuring-arenas%n"
+                + "https://dabo.guru/projects/skywars/configuring-arenas%n"
                 + "#######";
         private static final String PARENT = "####### arena-parent.yml ###%n"
                 + "Any settings that an individual arena config leaves out will be inherited%n"
@@ -439,7 +439,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
                 + "All comment changes will be removed.%n"
                 + "%n"
                 + "For documentation, please visit %n"
-                + "http://dabo.guru/skywars/configuring-parent%n"
+                + "https://dabo.guru/projects/skywars/configuring-parent%n"
                 + "#######";
     }
 }
