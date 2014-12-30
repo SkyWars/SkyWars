@@ -16,8 +16,10 @@
  */
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 import net.daboross.bukkitdev.commandexecutorbase.ArrayHelpers;
 import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
@@ -28,6 +30,8 @@ import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
 import net.daboross.bukkitdev.skywars.api.players.SkyPlayers;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -45,9 +49,13 @@ public class StatusCommand extends SubCommand {
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         SkyIDHandler idh = plugin.getIDHandler();
+        ArrayList<String> players = new ArrayList<String>();
+        for (UUID uuid : plugin.getGameQueue().getCopy()){
+        	players.add(Bukkit.getPlayer(uuid).getName());	
+        }
         sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_HEADER));
         sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_IN_QUEUE,
-                ArrayHelpers.combinedWithSeperator(plugin.getGameQueue().getCopy(), SkyTrans.get(TransKey.CMD_STATUS_QUEUE_COMMA))));
+                ArrayHelpers.combinedWithSeperator(players, SkyTrans.get(TransKey.CMD_STATUS_QUEUE_COMMA))));
         sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_ARENA_HEADER));
         for (Integer id : idh.getCurrentIDs()) {
             SkyGame game = idh.getGame(id);
