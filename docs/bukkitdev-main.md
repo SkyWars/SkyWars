@@ -1,5 +1,9 @@
 ![SkyWars](http://dabo.guru/logo/SkyWars.png)
 
+### No longer updated
+
+SkyWars is no longer receiving updates and support. The project was fun while it lasted, but it is no longer. If you wish to take over SkyWars, please contact me at daboross@daboross.net.
+
 ## Update warning!
 
 SkyWars v2.0.0 will fail to start on any craftbukkit version below 1.7.8. If you need to use an earlier version of Minecraft, please download SkyWars v1.4.4 instead.
