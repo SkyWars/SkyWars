@@ -1,3 +1,7 @@
+### No longer updated
+
+SkyWars is no longer receiving updates and support. The project was fun while it lasted, but it is no longer. If you wish to take over SkyWars, please contact me at daboross@daboross.net.
+
 ### Update warning for v2.*
 
 SkyWars v2.* adds UUID support.
