@@ -1,6 +1,21 @@
 Changelog
 =========
 
+2.0.1
+-----
+
+### SkyWars
+* Fix broken end-game message when multiple people are still alive
+* Fix NullPointerException after player leaves server when in game
+* Fix `/sw status` showing UUIDs instead of player names in queue
+* Fix ORDERED arena configuration status only ever playing one arena.
+* Remove support for per-arena-configuration messages. Now all messages are configured in messages.yml.
+* Add a message to `/sw kit` explaining how to remove a kit.
+* Check to see if a player is out of money to use a kit when they join the queue, not just when a game starts.
+
+* Lots of documentation fixes, and configuration documentation fixes
+* Fix plugin compiling when the http://repo.daboross.net nexus server is offline
+
 2.0.0
 -----
 
