@@ -20,3 +20,6 @@ SkyWars Tasks
   "The subcommand 'x' does not exist for the command '/sw'" which can't be changed
   or translated.
   - Fixing this might require moving the subcommand library into the SkyWars codebase.
+- Save EXP along with inventory
+- Force start on a timer
+- Save location and gamemode along with inventory and EXP
