@@ -22,6 +22,7 @@ import java.util.List;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyBoundaries;
+import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyBoundariesConfig;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
 import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
@@ -45,12 +46,10 @@ public class SetupData {
 
     public void setOriginPos1(SkyBlockLocation originPos1) {
         this.originPos1 = originPos1;
-        setOriginBoundaries();
     }
 
     public void setOriginPos2(SkyBlockLocation originPos2) {
         this.originPos2 = originPos2;
-        setOriginBoundaries();
     }
 
     public void setOriginBoundaries() {
@@ -62,29 +61,23 @@ public class SetupData {
     }
 
     public SkyArenaConfig convertToArenaConfig() {
+        setOriginBoundaries();
         if (originRange == null) {
             throw new IllegalStateException("Origin not defined.");
         }
-        SkyArenaConfig config = new SkyArenaConfig();
-        config.setArenaName(arenaName);
-        config.setFile(saveFile);
-        SkyBlockLocationRange building = calculateBuilding(originRange);
-        SkyBlockLocationRange clearing = calculateClearing(building);
-        SkyBoundaries boundaries = config.getBoundaries();
-        boundaries.setOrigin(originRange);
-        boundaries.setBuilding(building);
-        boundaries.setClearing(clearing);
-        config.setPlacementY(20);
+        SkyBoundariesConfig boundaries = new SkyBoundariesConfig(originRange);
         List<SkyPlayerLocation> processedSpawns = new ArrayList<>();
         for (SkyPlayerLocation spawn : spawns) {
             spawn = spawn.subtract(originRange.min);
             spawn = new SkyPlayerLocation(Math.floor(spawn.x) + 0.5, spawn.y, Math.floor(spawn.z) + 0.5, 0, 0, null);
             processedSpawns.add(spawn);
         }
-        config.setSpawns(processedSpawns);
-        config.setNumTeams(spawns.size());
-        config.setTeamSize(1);
-        return config;
+        return new SkyArenaConfig(arenaName,
+                processedSpawns,
+                spawns.size(), // Number of teams
+                1, // Team size
+                20, // Placement Y
+                boundaries);
     }
 
     protected SkyBlockLocationRange calculateOrigin(SkyBlockLocation min, SkyBlockLocation max) {
@@ -147,19 +140,6 @@ public class SetupData {
         return true;
     }
 
-    private static SkyBlockLocationRange calculateBuilding(SkyBlockLocationRange origin) {
-        SkyBlockLocation min = new SkyBlockLocation(-2, -20, -2, null);
-        SkyBlockLocation max = new SkyBlockLocation(origin.max.x - origin.min.x + 1,
-                origin.max.y - origin.min.y + 1,
-                origin.max.z - origin.min.z + 1, null);
-        return new SkyBlockLocationRange(min, max, null);
-    }
-
-    private static SkyBlockLocationRange calculateClearing(SkyBlockLocationRange building) {
-        SkyBlockLocation min = building.min.add(-1, 0, -1);
-        SkyBlockLocation max = building.max.add(1, 1, 1);
-        return new SkyBlockLocationRange(min, max, null);
-    }
 
     public String getArenaName() {
         return arenaName;
@@ -175,10 +155,6 @@ public class SetupData {
 
     public SkyBlockLocation getOriginPos2() {
         return originPos2;
-    }
-
-    public SkyBlockLocationRange getOriginRange() {
-        return originRange;
     }
 
     public List<SkyPlayerLocation> getSpawns() {

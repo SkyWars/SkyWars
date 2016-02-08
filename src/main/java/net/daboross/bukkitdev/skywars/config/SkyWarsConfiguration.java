@@ -42,7 +42,6 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private List<SkyArenaConfig> enabledArenas;
     private final SkyWars plugin;
     private Path arenaFolder;
-    private SkyArenaConfig parentArena;
     private ArenaOrder arenaOrder;
     private boolean skipUuidCheck;
     private String messagePrefix;
@@ -164,7 +163,6 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         mainConfig.save(String.format(Headers.CONFIG));
 
         // Arenas
-        loadParent();
         for (String arenaName : enabledArenaNames) {
             loadArena(arenaName);
         }
@@ -202,26 +200,9 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             }
         }
         SkyArenaConfig arenaConfig = arenaLoader.loadArena(file, name, messagePrefix);
-        arenaConfig.setParent(parentArena);
         enabledArenas.add(arenaConfig);
 
         saveArena(file, arenaConfig, String.format(Headers.ARENA, name));
-    }
-
-    private void loadParent() throws SkyConfigurationException {
-        Path path = plugin.getDataFolder().toPath().resolve("arena-parent.yml");
-        if (!Files.exists(path)) {
-            String fileName = "arena-parent.yml";
-            try {
-                plugin.saveResource(fileName, false);
-            } catch (IllegalArgumentException ex) {
-                throw new SkyConfigurationException("arena-parent.yml could not be found in plugin jar.", ex);
-            }
-        }
-        SkyArenaConfig arenaConfig = arenaLoader.loadArena(path, "parent-arena", messagePrefix);
-        parentArena = arenaConfig;
-        parentArena.confirmAllValuesExist();
-        saveArena(path, arenaConfig, String.format(Headers.PARENT));
     }
 
     public void saveArena(Path path, SkyArenaConfig arenaConfig, String header) {
@@ -237,7 +218,6 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
     @Override
     public void saveArena(SkyArenaConfig arena) {
-        arena.setParent(parentArena);
         saveArena(arena.getFile(), arena, String.format(Headers.ARENA, arena.getArenaName()));
     }
 
@@ -264,11 +244,6 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     @Override
     public Path getArenaFolder() {
         return arenaFolder;
-    }
-
-    @Override
-    public SkyArenaConfig getParentArena() {
-        return parentArena;
     }
 
     @Override

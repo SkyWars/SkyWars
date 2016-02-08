@@ -34,13 +34,13 @@ public class BoundariesSetCondition implements CommandPreCondition, CommandFilte
     @Override
     public boolean canContinue(CommandSender sender, SubCommand subCommand) {
         SetupData state = states.getSetupState(sender.getName());
-        return state != null && state.getOriginRange() != null;
+        return state != null && state.getOriginPos1() != null && state.getOriginPos2() != null;
     }
 
     @Override
     public boolean canContinue(CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         SetupData state = states.getSetupState(sender.getName());
-        return state != null && state.getOriginRange() != null;
+        return state != null && state.getOriginPos1() != null && state.getOriginPos2() != null;
     }
 
     @Override

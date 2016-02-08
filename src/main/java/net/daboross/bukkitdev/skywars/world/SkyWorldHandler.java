@@ -92,6 +92,8 @@ public class SkyWorldHandler {
         arenaWorld.setAutoSave(false);
         arenaWorld.getBlockAt(-5000, 45, -5000).setType(Material.STONE);
         arenaWorld.setSpawnLocation(-5000, 50, -5000);
+        arenaWorld.setGameRuleValue("doDaylightCycle", "false");
+        arenaWorld.setTime(4000);
     }
 
     public void destroyArenaWorld() {
