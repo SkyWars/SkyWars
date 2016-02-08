@@ -85,7 +85,6 @@ public class GistReport {
             }
             appendArena(build, arena);
         }
-        appendArena(build.append("\n#### arena-parent.yml"), configuration.getParentArena());
         return build.toString();
     }
 

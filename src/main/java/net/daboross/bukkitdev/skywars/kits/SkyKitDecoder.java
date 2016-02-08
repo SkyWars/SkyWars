@@ -153,6 +153,7 @@ public class SkyKitDecoder {
         return new SkyKitItemConfig(type, amount, enchantments == null ? Collections.<Enchantment, Integer>emptyMap() : enchantments);
     }
 
+    @SuppressWarnings("unchecked")
     public static SkyKitItem decodeItemMap(Map<String, Object> map) throws SkyConfigurationException {
         Object typeO = map.get("type");
         if (typeO == null) {

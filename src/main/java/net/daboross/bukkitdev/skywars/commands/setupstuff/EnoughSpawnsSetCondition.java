@@ -23,28 +23,28 @@ import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-public class BoundariesSetCondition implements CommandPreCondition, CommandFilter {
+public class EnoughSpawnsSetCondition implements CommandPreCondition, CommandFilter {
 
     private final SetupStates states;
 
-    public BoundariesSetCondition(final SetupStates states) {
+    public EnoughSpawnsSetCondition(final SetupStates states) {
         this.states = states;
     }
 
     @Override
     public boolean canContinue(CommandSender sender, SubCommand subCommand) {
         SetupData state = states.getSetupState(sender.getName());
-        return state != null && state.getOriginPos1() != null && state.getOriginPos2() != null;
+        return state != null && state.getSpawns().size() >= 2;
     }
 
     @Override
     public boolean canContinue(CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         SetupData state = states.getSetupState(sender.getName());
-        return state != null && state.getOriginPos1() != null && state.getOriginPos2() != null;
+        return state != null && state.getSpawns().size() >= 2;
     }
 
     @Override
     public String[] getDeniedMessage(CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        return new String[]{ColorList.ERR + "You haven't set a first position yet."};
+        return new String[]{ColorList.ERR + "You need at least two spawn points to continue."};
     }
 }

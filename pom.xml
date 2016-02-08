@@ -80,6 +80,10 @@
             <id>vault-repo</id>
             <url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
         </repository>
+        <repository>
+            <id>maven.sk891.com</id>
+            <url>http://maven.sk89q.com/repo/</url>
+        </repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -92,6 +96,12 @@
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>VaultAPI</artifactId>
             <version>1.5</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>worldedit</artifactId>
+            <version>5.6.3</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -135,6 +145,11 @@
             <artifactId>async-sql</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>net.daboross.bukkitdev.bukkit-storage-protobuf</groupId>
+            <artifactId>bukkit-storage-protobuf</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -149,9 +164,10 @@
                 <filtering>true</filtering>
             </resource>
             <resource>
-                <directory>${project.basedir}/src/main/worlds</directory>
+                <directory>${project.basedir}/src/main/arenas</directory>
                 <includes>
-                    <include>**</include>
+                    <include>**/*.yml</include>
+                    <include>**/*.blocks</include>
                 </includes>
             </resource>
         </resources>
@@ -226,10 +242,80 @@
                                     <pattern>net.daboross.bukkitdev.bukkitsavetimer</pattern>
                                     <shadedPattern>net.daboross.bukkitdev.skywars.libraries.bukkitsavetimer</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>net.daboross.bukkitdev.bukkitstorageprotobuf</pattern>
+                                    <shadedPattern>net.daboross.bukkitdev.skywars.libraries.bukkitstorageprotobuf</shadedPattern>
+                                </relocation>
                             </relocations>
+                            <minimizeJar>true</minimizeJar>
+                            <filters>
+                                <filter>
+                                    <artifact>net.daboross.bukkitdev:skywars-api</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <version>2.0.8</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>proguard</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <includeDependency>false</includeDependency>
+                    <libs>
+                        <!-- Java -->
+                        <lib>${java.home}/lib/rt.jar</lib>
+
+                        <!-- Bukkit -->
+                        <lib>${settings.localRepository}/org/bukkit/bukkit/1.7.8-R0.1-SNAPSHOT/bukkit-1.7.8-R0.1-SNAPSHOT.jar</lib>
+
+                        <!-- Vault -->
+                        <lib>${settings.localRepository}/net/milkbowl/vault/VaultAPI/1.5/VaultAPI-1.5.jar</lib>
+
+                        <!-- WorldEdit -->
+                        <lib>${settings.localRepository}/com/sk89q/worldedit/5.6.3/worldedit-5.6.3.jar</lib>
+                    </libs>
+                    <options>
+                        <!-- Keep plugin classes -->
+                        <option>-keep public class * extends org.bukkit.plugin.java.JavaPlugin { *; }</option>
+
+                        <!-- Keep Score backends that are loaded dynamically -->
+                        <option>-keepclasseswithmembers class * extends net.daboross.bukkitdev.skywars.api.storage.SkyStorageBackend { *; }</option>
+
+                        <!-- Keep event handlers -->
+                        <option>-keepclassmembers class * { @org.bukkit.event.EventHandler *; }</option>
+
+                        <!-- Keep api classes, interfaces and enums -->
+                        <option>-keepclasseswithmembers class net.daboross.bukkitdev.skywars.api.** { *; }</option>
+                        <option>-keep interface net.daboross.bukkitdev.skywars.api.** { *; }</option>
+                        <option>-keepclassmembers interface net.daboross.bukkitdev.skywars.api.** { *; }</option>
+                        <option>-keep enum net.daboross.bukkitdev.skywars.api.** { *; }</option>
+                        <option>-keepclassmembers enum net.daboross.bukkitdev.skywars.api.** { *; }</option>
+
+                        <!-- Keep annotations -->
+                        <option>-keepattributes *Annotation*</option>
+
+                        <!-- Don't obfuscate or optimize, we just want to remove unused classes/methods -->
+                        <option>-dontobfuscate</option>
+                        <option>-dontoptimize</option>
+
+                        <!-- This is for the errors caused by nmsblocks/ in WorldEdit -->
+                        <option>-ignorewarnings</option>
+                        <option>-dontnote</option>
+                    </options>
+                </configuration>
             </plugin>
         </plugins>
     </build>

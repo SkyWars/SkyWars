@@ -31,6 +31,7 @@ import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import static net.daboross.bukkitdev.skywars.api.game.SkyGame.SkyGameTeam;
 
 public class StatusCommand extends SubCommand {
 
@@ -78,10 +79,11 @@ public class StatusCommand extends SubCommand {
                 break;
             default:
                 if (game.areTeamsEnabled()) {
-                    for (int team = 0; team < game.getNumTeams(); team++) {
-                        List<UUID> players = game.getAlivePlayersInTeam(team);
+                    for (int teamId = 0; teamId < game.getNumTeams(); teamId++) {
+                        SkyGameTeam team = game.getTeam(teamId);
+                        List<UUID> players = team.getAlive();
                         if (!players.isEmpty()) {
-                            b.append("\n  ").append(ColorList.REG).append("Team ").append(ColorList.DATA).append(team).append(ColorList.REG).append(": ").append(ColorList.DATA).append(skyPlayers.getPlayer(players.get(0)).getName());
+                            b.append("\n  ").append(ColorList.REG).append("Team ").append(ColorList.DATA).append(team.getName()).append(ColorList.REG).append(": ").append(ColorList.DATA).append(skyPlayers.getPlayer(players.get(0)).getName());
                             for (int i = 1; i < players.size(); i++) {
                                 // I would use Bukkit.getPlayer(), but this uses a hashmap lookup, which is more efficient.
                                 b.append(ColorList.REG).append(", ").append(ColorList.DATA).append(skyPlayers.getPlayer(players.get(i)).getName());

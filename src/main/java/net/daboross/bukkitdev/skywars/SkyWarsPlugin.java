@@ -16,13 +16,14 @@
  */
 package net.daboross.bukkitdev.skywars;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
-import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
 import net.daboross.bukkitdev.skywars.api.game.SkyGameHandler;
@@ -61,8 +62,6 @@ import net.daboross.bukkitdev.skywars.score.ScoreStorage;
 import net.daboross.bukkitdev.skywars.scoreboards.TeamScoreboardListener;
 import net.daboross.bukkitdev.skywars.storage.LocationStore;
 import net.daboross.bukkitdev.skywars.world.SkyWorldHandler;
-import net.daboross.bukkitdev.skywars.world.Statics;
-import net.daboross.bukkitdev.skywars.world.WorldUnzipper;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -133,12 +132,6 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
             getLogger().log(Level.SEVERE, "If you wish to ignore this, and run SkyWars anyways, set 'skip-uuid-version-check' to true in plugins/SkyWars/main-config.yml");
             getLogger().log(Level.SEVERE, "Download SkyWars v1.4.4 if you want to run on an older version of Minecraft.");
             throw new StartupFailedException("See above");
-        }
-        for (SkyArena arena : configuration.getEnabledArenas()) {
-            if (arena.getBoundaries().getOrigin().world.equalsIgnoreCase(Statics.BASE_WORLD_NAME)) {
-                new WorldUnzipper().doWorldUnzip(getLogger());
-                break;
-            }
         }
         try {
             translations = new TranslationsConfiguration(this);
@@ -297,6 +290,22 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         translations = tempTrans;
         SkyTrans.setInstance(tempTrans);
         return true;
+    }
+
+    /**
+     * Acts exactly like getResource(), except for throwing a FileNotSoundException when not found
+     *
+     * @param filename Filename to get from internal jar
+     * @return InputStream for file
+     * @throws FileNotFoundException If the file doesn't exist in the jar
+     */
+    @Override
+    public InputStream getResourceAsStream(final String filename) throws FileNotFoundException {
+        InputStream resource = getResource(filename);
+        if (resource == null) {
+            throw new FileNotFoundException("No resource '" + filename + "' found.");
+        }
+        return resource;
     }
 
     @Override

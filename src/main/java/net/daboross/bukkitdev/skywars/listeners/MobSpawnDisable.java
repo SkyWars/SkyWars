@@ -35,10 +35,8 @@ public class MobSpawnDisable implements Listener {
             case VILLAGE_INVASION:
             case REINFORCEMENTS:
             case NETHER_PORTAL:
-                switch (evt.getLocation().getWorld().getName()) {
-                    case Statics.ARENA_WORLD_NAME:
-                    case Statics.BASE_WORLD_NAME:
-                        evt.setCancelled(true);
+                if (Statics.ARENA_WORLD_NAME.equals(evt.getLocation().getWorld().getName())) {
+                    evt.setCancelled(true);
                 }
         }
     }
