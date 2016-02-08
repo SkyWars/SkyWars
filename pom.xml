@@ -65,14 +65,6 @@
             <url>http://repo.daboross.net/snapshots/</url>
         </repository>
         <repository>
-            <id>repo-daboross-net-backup-tp-releases</id>
-            <url>http://repo.daboross.net/third-party-releases/</url>
-        </repository>
-        <repository>
-            <id>repo-daboross-net-backup-tp-snapshots</id>
-            <url>http://repo.daboross.net/third-party-snapshots/</url>
-        </repository>
-        <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
