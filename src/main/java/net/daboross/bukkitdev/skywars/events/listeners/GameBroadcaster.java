@@ -57,7 +57,7 @@ public class GameBroadcaster {
                     if (i == winners.size() - 1) {
                         winnerBuilder.append(" and ");
                     } else {
-                        winnerBuilder.append(TransKey.GAME_WINNING_MULTI_WON_COMMA);
+                        winnerBuilder.append(SkyTrans.get(TransKey.GAME_WINNING_MULTI_WON_COMMA));
                     }
                     winnerBuilder.append(winners.get(i).getName());
                 }
