@@ -8,6 +8,7 @@ Index
 * [Configuring SkyWars](https://dabo.guru/projects/skywars/configuring-skywars)
 * [Configuring Kits](https://dabo.guru/projects/skywars/configuring-kits)
 * [Creating an Arena](https://dabo.guru/projects/skywars/creating-an-arena)
+* [Using the Score System](https://dabo.guru/projects/skywars/score)
 * [SkyWars Worlds](https://dabo.guru/projects/skywars/skywars-worlds)
 * [Troubleshooting SkyWars](https://dabo.guru/projects/skywars/troubleshooting)
 * [Submitting a ticket](https://dabo.guru/projects/skywars/submitting-a-ticket)
