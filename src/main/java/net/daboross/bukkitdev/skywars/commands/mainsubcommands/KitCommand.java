@@ -97,6 +97,9 @@ public class KitCommand extends SubCommand {
                 }
             }
             p.sendMessage(SkyTrans.get(TransKey.KITS_CHOOSE_A_KIT));
+            if (currentKit != null) {
+                p.sendMessage(SkyTrans.get(TransKey.KITS_REMOVE_A_KIT, currentKit.getName()));
+            }
             p.sendMessage(getAvailableKitList(availableKits));
         }
         if (!unAvailableKits.isEmpty()) {
