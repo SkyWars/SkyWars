@@ -20,9 +20,11 @@ import java.util.List;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKits;
+import net.daboross.bukkitdev.skywars.api.players.SkyPlayer;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.events.events.PlayerJoinQueueInfo;
+import org.bukkit.entity.Player;
 
 public class KitQueueNotifier {
 
@@ -33,12 +35,31 @@ public class KitQueueNotifier {
     }
 
     public void onQueueJoin(PlayerJoinQueueInfo info) {
-        if (plugin.getPlayers().getPlayer(info.getPlayer()).getSelectedKit() == null) {
+        SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(info.getPlayer());
+        SkyKit kit = skyPlayer.getSelectedKit();
+        if (kit == null) {
             SkyKits kits = plugin.getKits();
             List<SkyKit> availableKits = kits.getAvailableKits(info.getPlayer());
             if (!availableKits.isEmpty()) {
                 info.getPlayer().sendMessage(SkyTrans.get(TransKey.KITS_CHOOSE_A_KIT));
                 info.getPlayer().sendMessage(generateKitList(availableKits));
+            }
+        } else {
+            Player player = info.getPlayer();
+            String permission = kit.getPermission();
+            if (permission != null && !player.hasPermission(permission)) {
+                player.sendMessage(SkyTrans.get(TransKey.KITS_NO_PERMISSION, kit.getName()));
+                skyPlayer.setSelectedKit(null);
+                return;
+            }
+            int cost = kit.getCost();
+            if (cost == 0) {
+                player.sendMessage(SkyTrans.get(TransKey.CMD_KIT_CURRENT_KIT, kit.getName()));
+            } else if (plugin.getEconomyHook().canAfford(player, cost)) {
+                player.sendMessage(SkyTrans.get(TransKey.CMD_KIT_CURRENT_KIT_WITH_COST, kit.getName(), kit.getCost()));
+            } else {
+                skyPlayer.setSelectedKit(null);
+                player.sendMessage(SkyTrans.get(TransKey.KITS_NOT_ENOUGH_MONEY, kit.getName()));
             }
         }
     }

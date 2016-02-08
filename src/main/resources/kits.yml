@@ -15,7 +15,7 @@ my-first-kit:
     # Each item has a type:. It also may optionally have an enchantments:
     # and amount:
     # The type is a material name. You can get a list of these here:
-    # http://tiny.cc/BukkitMaterial
+    # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
     - {type: ARROW, amount: 22}
     # When amount is not given, it defaults to 1.
     - {type: BOW}
@@ -24,9 +24,10 @@ my-first-kit:
   helmet: {type: DIAMOND_HELMET}
   chestplate: {type: DIAMOND_CHESTPLATE}
   leggings: {type: DIAMOND_LEGGINGS}
-  # Every item may have an enchantments:. This contains a bunch of enchantments
-  # for the item. You can go to http://tiny.cc/BukkitEnchants to see a list of
-  # all the enchantment names.
+  # Every item may have an enchantments: section. This contains a bunch of enchantments
+  # for the item. You can go to
+  # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/enchantments/Enchantment.html
+  # to see a list of all the enchantment names.
   boots: {type: DIAMOND_BOOTS, enchantments: {PROTECTION_FIRE: 2, PROTECTION_FALL: 1}}
 donator-kit:
   # You can define a permission, a cost, or both for a kit.

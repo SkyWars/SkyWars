@@ -13,15 +13,15 @@ This file is located at `plugins/SkyWars/kits.yml`.
 # #########
 
 my-first-kit:
-  # This kit has a cost of 20.
+  # This kit has a cost of 200002.
   # It is a bit overpowered, so you may want to remove it.
-  cost: 20
+  cost: 200002
   items:
     # You can list any number of items here.
     # Each item has a type:. It also may optionally have an enchantments:
     # and amount:
     # The type is a material name. You can get a list of these here:
-    # http://tiny.cc/BukkitMaterial
+    # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
     - {type: ARROW, amount: 22}
     # When amount is not given, it defaults to 1.
     - {type: BOW}
@@ -30,8 +30,10 @@ my-first-kit:
   helmet: {type: DIAMOND_HELMET}
   chestplate: {type: DIAMOND_CHESTPLATE}
   leggings: {type: DIAMOND_LEGGINGS}
-  # Every item may have an enchantments:. This contains a bunch of enchantments
-  # for the item.
+  # Every item may have an enchantments: section. This contains a bunch of enchantments
+  # for the item. You can go to
+  # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/enchantments/Enchantment.html
+  # to see a list of all the enchantment names.
   boots: {type: DIAMOND_BOOTS, enchantments: {PROTECTION_FIRE: 2, PROTECTION_FALL: 1}}
 donator-kit:
   # You can define a permission, a cost, or both for a kit.
@@ -40,10 +42,16 @@ donator-kit:
   # This donor kit is not that great, so you may want to change it.
   permission: myserver.donator.kit
   items:
-    - {type: DIAMOND_SWORD, amount: 64}
+    - {type: DIAMOND_SWORD, amount: 1, enchantments: {KNOCKBACK: 2}}
 costly-donator-kit:
-  # This kit both requires the permission 'myserver.donator.kit2' and costs 200.
+  # This kit both requires the permission 'myserver.donator.kit2' and costs 20000.
   permission: myserver.donator.kit2
-  cost: 200
+  cost: 20000
   boots: {type: DIAMOND_BOOTS}
 ```
+For a complete list of material names to use, see https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html.
+
+For a complete list of enchantment names to use, see https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/enchantments/Enchantment.html.
+
+Both of those links have more information than needed, but they are continually the most up to date lists of full names.
+All you need to use a material or enchantment is the UPPERCASE_NAME.
