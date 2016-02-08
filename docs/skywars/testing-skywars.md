@@ -46,8 +46,8 @@ And now, testing!
 * Confirm `/sw kit` will apply a kit that does require permission
 * Confirm `/sw kit` will apply a kit that doesn't require permissions or money
 * Confirm `/sw kit` will apply a kit that costs money, and that your money decreases
-* Confirm kit is removed after you run out of money
-* Confirm permission kit isn't applied if you loose the permission
+* Confirm kit is removed after you run out of money (when you join, not just when the game starts)
+* Confirm permission kit isn't applied if you loose the permission (when you join, not just when the game starts)
 * Confirm `/me` isn't blocked in-game
 * Confirm `/gamemode` is blocked in-game
 * Confirm `/sw leave` works from the queue
@@ -71,11 +71,12 @@ And now, testing!
 * Confirm you can't hit someone on your team
 * Confirm after you kill everyone the game ends
 * Confirm someone disconnecting from the server removes them from a game their playing
+* Confirm it's always daylight in the game
 * Config testing:
  * Confirm you keep your inventory after dying with `save-inventory: true`
  * Confirm you loose your inventory after dying with `save-inventory: false`
- * Confirm `/sw help` changes after setting `locale: es` (or any other language)
- * Confirm SkyWars starts up correctly with locale set to `cz`, `de`, `en`, `es`, `fr`, `pt` and `ru`
+ * Confirm the `/sw` help message changes after setting `locale: es` (or any other language)
+ * Confirm SkyWars starts up correctly with locale set to `cz`, `de`, `dk, `en`, `es`, `fr`, `nl`, `pl`, `pt` and `ru`
  * Confirm messages.yml updates after changing locale when auto-update is set to true
  * Confirm messages.new.yml is created after changing locale when auto-update is set to false
  * Confirm messages.yml *does not* update after changing locale when auto-update is set to false
