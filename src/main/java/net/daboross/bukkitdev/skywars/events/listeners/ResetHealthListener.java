@@ -39,5 +39,10 @@ public class ResetHealthListener {
         CrossVersion.setHealth(p, CrossVersion.getMaxHealth(p));
         p.setFallDistance(0);
         p.setFoodLevel(20);
+        p.setExhaustion(0);
+        p.setSaturation(0);
+        p.setHealthScaled(false);
+        p.setAllowFlight(false);
+        p.setFlying(false);
     }
 }

@@ -131,7 +131,9 @@ public class GameHandler implements SkyGameHandler {
     @Override
     public void respawnPlayer(Player p) {
         Validate.notNull(p, "Player cannot be null");
-        p.teleport(plugin.getLocationStore().getLobbyPosition().toLocation());
+        if (!plugin.getConfiguration().isInventorySaveEnabled() || !plugin.getConfiguration().isPghSaveEnabled()) {
+            p.teleport(plugin.getLocationStore().getLobbyPosition().toLocation());
+        }
         plugin.getDistributor().distribute(new PlayerRespawnAfterGameEndInfo(p));
     }
 }

@@ -25,6 +25,8 @@ public class MainConfigKeys {
     public static final String DEBUG = "debug";
     public static final String SKIP_UUID_CHECK = "skip-uuid-version-check";
     public static final String SAVE_INVENTORY = "save-inventory";
+    public static final String SAVE_EXPERIENCE = "save-experience";
+    public static final String SAVE_POSITION_GAMEMODE_HEALTH = "save-position-gamemode-health";
     public static final String ARENA_DISTANCE_APART = "arena-distance-apart";
     public static final String LOCALE = "locale";
 //    public static final String PER_ARENA_DEATH_MESSAGES_ENABLED = "enable-per-arena-death-messages";

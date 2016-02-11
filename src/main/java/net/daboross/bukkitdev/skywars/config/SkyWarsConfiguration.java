@@ -46,6 +46,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private boolean skipUuidCheck;
     private String messagePrefix;
     private boolean inventorySaveEnabled;
+    private boolean experienceSaveEnabled;
+    private boolean pghSaveEnabled;
     private boolean enableScore;
     private int deathScoreDiff;
     private int winScoreDiff;
@@ -110,6 +112,11 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         messagePrefix = ConfigColorCode.translateCodes(mainConfig.getSetString(MainConfigKeys.MESSAGE_PREFIX, MainConfigDefaults.MESSAGE_PREFIX));
         mainConfig.setStringIfNot(MainConfigKeys.MESSAGE_PREFIX, messagePrefix);
         inventorySaveEnabled = mainConfig.getSetBoolean(MainConfigKeys.SAVE_INVENTORY, MainConfigDefaults.SAVE_INVENTORY);
+        experienceSaveEnabled = mainConfig.getSetBoolean(MainConfigKeys.SAVE_EXPERIENCE, inventorySaveEnabled);
+        pghSaveEnabled = mainConfig.getSetBoolean(MainConfigKeys.SAVE_POSITION_GAMEMODE_HEALTH, inventorySaveEnabled);
+        if ((pghSaveEnabled || experienceSaveEnabled) && !inventorySaveEnabled) {
+            throw new SkyConfigurationException("Inventory saving must be enabled to enable experience saving or position-health-gamemode saving!");
+        }
 
         List<String> enabledArenaNames = mainConfig.getSetStringList(MainConfigKeys.ENABLED_ARENAS, MainConfigDefaults.ENABLED_ARENAS);
         enabledArenas = new ArrayList<>(enabledArenaNames.size());
@@ -259,6 +266,16 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     @Override
     public boolean isInventorySaveEnabled() {
         return inventorySaveEnabled;
+    }
+
+    @Override
+    public boolean isExperienceSaveEnabled() {
+        return experienceSaveEnabled;
+    }
+
+    @Override
+    public boolean isPghSaveEnabled() {
+        return pghSaveEnabled;
     }
 
     @Override

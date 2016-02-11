@@ -30,6 +30,8 @@ public class MainConfigDefaults {
     public static final SkyConfiguration.ArenaOrder ARENA_ORDER = SkyConfiguration.ArenaOrder.RANDOM;
     public static final List<String> ENABLED_ARENAS = Arrays.asList("skyblock-warriors", "water-warriors");
     public static final boolean SAVE_INVENTORY = true;
+//    public static final boolean SAVE_EXPERIENCE = true;
+//    public static final boolean SAVE_POSITION_GAMEMODE_HEALTH = true;
     public static final int ARENA_DISTANCE_APART = 200;
     public static final String LOCALE = Locale.getDefault().getLanguage();
 //    public static final boolean PER_ARENA_DEATH_MESSAGES_ENABLED = true;
