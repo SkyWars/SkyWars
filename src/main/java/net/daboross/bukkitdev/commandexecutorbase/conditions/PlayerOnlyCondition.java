@@ -21,9 +21,6 @@ import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-/**
- * @author daboross
- */
 public class PlayerOnlyCondition implements CommandPreCondition {
 
     @Override

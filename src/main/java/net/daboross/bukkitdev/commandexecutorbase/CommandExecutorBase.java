@@ -21,18 +21,18 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
+import org.apache.commons.lang.Validate;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
-/**
- * @author daboross
- */
 public class CommandExecutorBase implements TabExecutor {
 
-    private final Map<String, SubCommand> aliasToCommandMap = new HashMap<String, SubCommand>();
-    private final List<SubCommand> subCommands = new ArrayList<SubCommand>();
+    private final Map<String, SubCommand> aliasToCommandMap = new HashMap<>();
+    private final List<SubCommand> subCommands = new ArrayList<>();
     private final String commandPermission;
 
     public CommandExecutorBase(String commandPermission) {
@@ -40,15 +40,9 @@ public class CommandExecutorBase implements TabExecutor {
     }
 
     public final void addSubCommand(SubCommand subCommand) {
-        if (subCommand == null) {
-            throw new IllegalArgumentException("Null SubCommand");
-        }
+        Validate.notNull(subCommand);
         subCommands.add(subCommand);
         aliasToCommandMap.put(subCommand.getName(), subCommand);
-        for (String alias : subCommand.getAliases()) {
-            aliasToCommandMap.put(alias, subCommand);
-        }
-        subCommand.usingCommand(this);
     }
 
     @Override
@@ -66,13 +60,13 @@ public class CommandExecutorBase implements TabExecutor {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length == 0 || args[0].isEmpty()) {
-            ArrayList<String> resultList = new ArrayList<String>();
+            ArrayList<String> resultList = new ArrayList<>();
             for (String alias : aliasToCommandMap.keySet()) {
                 resultList.add(alias);
             }
             return resultList;
         } else if (args.length == 1) {
-            ArrayList<String> resultList = new ArrayList<String>();
+            ArrayList<String> resultList = new ArrayList<>();
             for (String alias : aliasToCommandMap.keySet()) {
                 if (alias.startsWith(args[0].toLowerCase())) {
                     if (hasHelpConditions(sender, aliasToCommandMap.get(alias))) {
@@ -84,7 +78,7 @@ public class CommandExecutorBase implements TabExecutor {
         } else {
             SubCommand subCommand = aliasToCommandMap.get(args[0].toLowerCase());
             if (subCommand == null) {
-                return Collections.EMPTY_LIST;
+                return Collections.emptyList();
             } else {
                 return subCommand.tabComplete(sender, cmd, label, subCommand, args[0], ArrayHelpers.getSubArray(args, 1, args.length - 1));
             }
@@ -92,11 +86,11 @@ public class CommandExecutorBase implements TabExecutor {
     }
 
     private void sendInvalidSubCommandMessage(CommandSender sender, String label, String[] args) {
-        sender.sendMessage(ColorList.REG + "The subcommand '" + ColorList.SUBCMD + args[0] + ColorList.REG + "' does not exist for the command '" + ColorList.CMD + "/" + label + ColorList.REG + "'");
+        sender.sendMessage(SkyTrans.get(TransKey.INVALID_SUB_COMMAND, label, args[0]));
     }
 
     private void sendHelpMessage(CommandSender sender, String baseCommandLabel) {
-        sender.sendMessage(String.format(ColorList.TOP_FORMAT, "Help"));
+        sender.sendMessage(SkyTrans.get(TransKey.HELP_HEADER));
         for (SubCommand subCommandVar : subCommands) {
             if (hasHelpConditions(sender, subCommandVar)) {
                 sender.sendMessage(getHelpMessage(subCommandVar, baseCommandLabel));
@@ -105,7 +99,7 @@ public class CommandExecutorBase implements TabExecutor {
     }
 
     private void sendNoPermissionMessage(CommandSender sender, String label) {
-        sender.sendMessage(ColorList.ERR + "You don't have permission to use " + ColorList.CMD + "/" + label);
+        sender.sendMessage(SkyTrans.get(TransKey.NO_PERMISSION, SkyTrans.get(TransKey.COLORED_CMD, label)));
     }
 
     SubCommand getSubCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -129,60 +123,15 @@ public class CommandExecutorBase implements TabExecutor {
         return (commandPermission == null || sender.hasPermission(commandPermission) || !(sender instanceof Player));
     }
 
-    void addAlias(SubCommand subCommand, String alias) {
-        if (subCommands.contains(subCommand)) {
-            aliasToCommandMap.put(alias, subCommand);
-        } else {
-            throw new IllegalArgumentException("SubCommand not added");
-        }
-    }
-
-    void addAliases(SubCommand subCommand, String... aliases) {
-        if (subCommands.contains(subCommand)) {
-            for (String alias : aliases) {
-                aliasToCommandMap.put(alias, subCommand);
-            }
-        } else {
-            throw new IllegalArgumentException("SubCommand not added");
-        }
-    }
-
     static String getHelpMessage(SubCommand subCommand, String baseCommandLabel) {
         StringBuilder resultBuilder = new StringBuilder();
-        resultBuilder.append(ColorList.CMD).append("/").append(baseCommandLabel).append(ColorList.SUBCMD).append(" ");
-        resultBuilder.append(ColorList.SUBCMD).append(subCommand.getName());
-        for (String alias : subCommand.getAliases()) {
-            resultBuilder.append(ColorList.DIVIDER).append("|").append(ColorList.SUBCMD).append(alias);
-        }
-        resultBuilder.append(" ");
+        resultBuilder.append(SkyTrans.get(TransKey.COLORED_CMD_SUBCMD, baseCommandLabel, subCommand.getName()));
         if (!subCommand.getArgumentNames().isEmpty()) {
-            resultBuilder.append(ColorList.ARGS_SURROUNDER);
             for (String argument : subCommand.getArgumentNames()) {
-                resultBuilder.append("<").append(ColorList.ARGS).append(argument).append(ColorList.ARGS_SURROUNDER).append("> ");
+                resultBuilder.append(SkyTrans.get(TransKey.COLORED_CMD_ARG, argument));
             }
         }
-        resultBuilder.append(ColorList.HELP).append(subCommand.getHelpMessage());
-        return resultBuilder.toString();
-    }
-
-    static String getHelpMessage(SubCommand subCommand, String baseCommandLabel, String subCommandLabel) {
-        if (!(subCommand.getAliases().contains(subCommandLabel.toLowerCase()) || subCommandLabel.equalsIgnoreCase(subCommand.getName()))) {
-            throw new IllegalArgumentException("Alias '" + subCommandLabel + "' doesn't belong to given SubCommand '" + subCommand.getName() + "'");
-        }
-        StringBuilder resultBuilder = new StringBuilder();
-        resultBuilder.append(ColorList.CMD).append("/").append(baseCommandLabel).append(ColorList.SUBCMD).append(" ");
-        resultBuilder.append(ColorList.SUBCMD).append(subCommand.getName());
-        for (String alias : subCommand.getAliases()) {
-            resultBuilder.append(ColorList.DIVIDER).append("|").append(ColorList.SUBCMD).append(alias);
-        }
-        resultBuilder.append(" ");
-        if (!subCommand.getArgumentNames().isEmpty()) {
-            resultBuilder.append(ColorList.ARGS_SURROUNDER);
-            for (String argument : subCommand.getArgumentNames()) {
-                resultBuilder.append("<").append(ColorList.ARGS).append(argument).append(ColorList.ARGS_SURROUNDER).append("> ");
-            }
-        }
-        resultBuilder.append(ColorList.HELP).append(subCommand.getHelpMessage());
+        resultBuilder.append(SkyTrans.get(TransKey.COLORED_HELP_MSG, subCommand.getHelpMessage()));
         return resultBuilder.toString();
     }
 

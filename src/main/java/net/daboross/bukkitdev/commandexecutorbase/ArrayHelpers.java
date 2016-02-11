@@ -16,59 +16,9 @@
  */
 package net.daboross.bukkitdev.commandexecutorbase;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
-/**
- * @author daboross
- */
 public class ArrayHelpers {
 
     public static final String[] EMPTY_STRING = {};
-
-    public static String[] copyArray(String[] array) {
-        if (array.length == 0) {
-            return EMPTY_STRING;
-        }
-        String[] copy = new String[array.length];
-        System.arraycopy(array, 0, copy, 0, array.length);
-        return copy;
-    }
-
-    public static String[] copyAndInclude(String[] array, String... includedItems) {
-        String[] copy = new String[array.length + includedItems.length];
-        System.arraycopy(array, 0, copy, 0, array.length);
-        System.arraycopy(includedItems, 0, copy, array.length, includedItems.length);
-        return copy;
-    }
-
-    public static <T> Set<T> copyToSet(T... items) {
-        return new HashSet<T>(Arrays.asList(items));
-    }
-
-    public static Set<String> copyToSetLowercase(String... items) {
-        Set<String> result = new HashSet<String>();
-        for (String str : items) {
-            result.add(str.toLowerCase(Locale.ENGLISH));
-        }
-        return result;
-    }
-
-    public static <T> List<T> copyToList(T... items) {
-        return new ArrayList<T>(Arrays.asList(items));
-    }
-
-    public static List<String> copyToListLowercase(String... items) {
-        List<String> result = new ArrayList<String>();
-        for (String str : items) {
-            result.add(str.toLowerCase(Locale.ENGLISH));
-        }
-        return result;
-    }
 
     public static String[] getSubArray(String[] array, int startPos, int length) {
         if (startPos + length > array.length) {
@@ -94,20 +44,6 @@ public class ArrayHelpers {
             StringBuilder resultBuilder = new StringBuilder(String.valueOf(array[0]));
             for (int i = 1; i < array.length; i++) {
                 resultBuilder.append(seperator).append(array[i]);
-            }
-            return resultBuilder.toString();
-        }
-    }
-
-    public static String combinedWithSeperator(List<?> list, String seperator) {
-        if (list.isEmpty()) {
-            return "";
-        } else if (list.size() == 1) {
-            return String.valueOf(list.get(0));
-        } else {
-            StringBuilder resultBuilder = new StringBuilder(String.valueOf(list.get(0)));
-            for (int i = 1; i < list.size(); i++) {
-                resultBuilder.append(seperator).append(list.get(i));
             }
             return resultBuilder.toString();
         }

@@ -16,10 +16,11 @@
  */
 package net.daboross.bukkitdev.skywars.commands.setupstuff;
 
-import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.CommandFilter;
 import net.daboross.bukkitdev.commandexecutorbase.CommandPreCondition;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -46,9 +47,9 @@ public class StartedArenaCondition implements CommandPreCondition, CommandFilter
     @Override
     public String[] getDeniedMessage(CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         if (states.getSetupState(sender.getName()) == null) {
-            return new String[]{ColorList.ERR + "You haven't started creating an arena yet"};
+            return new String[]{SkyTrans.get(TransKey.SWS_NO_ARENA_STARTED)};
         } else {
-            return new String[]{ColorList.ERR + "You already started creating an arena"};
+            return new String[]{SkyTrans.get(TransKey.SWS_ARENA_ALREADY_STARTED)};
         }
     }
 }

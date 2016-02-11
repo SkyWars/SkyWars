@@ -16,64 +16,42 @@
  */
 package net.daboross.bukkitdev.commandexecutorbase;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 import net.daboross.bukkitdev.commandexecutorbase.conditions.PermissionCondition;
 import net.daboross.bukkitdev.commandexecutorbase.conditions.PlayerOnlyCondition;
 import net.daboross.bukkitdev.commandexecutorbase.filters.PermissionFilter;
 import net.daboross.bukkitdev.commandexecutorbase.filters.PlayerOnlyFilter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import org.apache.commons.lang.Validate;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-/**
- * @author daboross
- */
 public abstract class SubCommand {
 
-    private final Set<CommandExecutorBase> commandExecutorBasesUsingThis;
     private final String commandName;
     private String help;
     private String permission;
-    private final List<String> aliases;
     private final List<String> argumentNames;
     private final List<CommandFilter> commandFilters;
     private final List<CommandPreCondition> helpConditions;
 
     public SubCommand(String commandName, boolean canConsoleExecute, String permission, String helpMessage) {
-        if (commandName == null) {
-            throw new IllegalArgumentException("Null commandName argument");
-        }
+        Validate.notNull(commandName);
         this.commandName = commandName.toLowerCase(Locale.ENGLISH);
         this.help = (helpMessage == null ? "" : helpMessage);
         this.permission = permission;
-        this.aliases = new ArrayList<String>();
-        this.argumentNames = new ArrayList<String>();
-        this.commandExecutorBasesUsingThis = new HashSet<CommandExecutorBase>();
-        this.commandFilters = new ArrayList<CommandFilter>();
-        this.helpConditions = new ArrayList<CommandPreCondition>();
+        this.argumentNames = new ArrayList<>();
+        this.commandFilters = new ArrayList<>();
+        this.helpConditions = new ArrayList<>();
         this.helpConditions.add(new PermissionCondition());
         this.commandFilters.add(new PermissionFilter());
         if (!canConsoleExecute) {
             this.helpConditions.add(new PlayerOnlyCondition());
             this.commandFilters.add(new PlayerOnlyFilter());
         }
-    }
-
-    /**
-     * @return this, for chaining.
-     */
-    public SubCommand addAliases(String... aliases) {
-        List<String> aliasesList = Arrays.asList(aliases);
-        this.aliases.addAll(aliasesList);
-        for (CommandExecutorBase commandExecutorBase : commandExecutorBasesUsingThis) {
-            commandExecutorBase.addAliases(this, aliases);
-        }
-        return this;
     }
 
     /**
@@ -120,10 +98,6 @@ public abstract class SubCommand {
         return permission;
     }
 
-    public List<String> getAliases() {
-        return Collections.unmodifiableList(aliases);
-    }
-
     public List<String> getArgumentNames() {
         return Collections.unmodifiableList(argumentNames);
     }
@@ -138,14 +112,6 @@ public abstract class SubCommand {
 
     public String getHelpMessage(String baseCommandLabel) {
         return CommandExecutorBase.getHelpMessage(this, baseCommandLabel);
-    }
-
-    public String getHelpMessage(String baseCommandLabel, String subCommandLabel) {
-        return CommandExecutorBase.getHelpMessage(this, baseCommandLabel, subCommandLabel);
-    }
-
-    void usingCommand(CommandExecutorBase commandExecutorBase) {
-        commandExecutorBasesUsingThis.add(commandExecutorBase);
     }
 
     public abstract void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs);

@@ -16,10 +16,11 @@
  */
 package net.daboross.bukkitdev.skywars.commands.setupstuff;
 
-import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.CommandFilter;
 import net.daboross.bukkitdev.commandexecutorbase.CommandPreCondition;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -45,6 +46,6 @@ public class NoSpawnSetCondition implements CommandPreCondition, CommandFilter {
 
     @Override
     public String[] getDeniedMessage(CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        return new String[]{ColorList.ERR + "You can't edit the boundaries after having spawn locations set."};
+        return new String[]{SkyTrans.get(TransKey.SWS_TOO_LATE_SPAWNS_SET)};
     }
 }

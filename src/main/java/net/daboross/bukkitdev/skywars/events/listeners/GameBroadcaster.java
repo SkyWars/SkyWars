@@ -17,7 +17,6 @@
 package net.daboross.bukkitdev.skywars.events.listeners;
 
 import java.util.List;
-import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.events.events.GameEndInfo;
@@ -29,16 +28,14 @@ public class GameBroadcaster {
 
     public void broadcastStart(GameStartInfo info) {
         List<Player> players = info.getPlayers();
-        StringBuilder playerNames = new StringBuilder();
-        for (int i = 0; i < players.size(); i++) {
-            String name = players.get(i).getName();
-            if (i == 0) {
-                playerNames.append(ColorList.NAME).append(name);
-            } else if (i == players.size() - 1) {
-                playerNames.append(ColorList.BROADCAST).append(" and ").append(ColorList.NAME).append(name);
+        StringBuilder playerNames = new StringBuilder(players.get(0).getName());
+        for (int i = 1; i < players.size(); i++) {
+            if (i == players.size() - 1) {
+                playerNames.append(SkyTrans.get(TransKey.GAME_STARTING_GAMESTARTING_FINAL_COMMA));
             } else {
-                playerNames.append(ColorList.BROADCAST).append(SkyTrans.get(TransKey.GAME_STARTING_GAMESTARTING_COMMA)).append(ColorList.NAME).append(name);
+                playerNames.append(SkyTrans.get(TransKey.GAME_STARTING_GAMESTARTING_COMMA));
             }
+            playerNames.append(players.get(i).getName());
         }
         Bukkit.broadcastMessage(SkyTrans.get(TransKey.GAME_STARTING_GAMESTARTING, playerNames));
     }
@@ -55,7 +52,7 @@ public class GameBroadcaster {
                 StringBuilder winnerBuilder = new StringBuilder(winners.get(0).getName());
                 for (int i = 1; i < winners.size(); i++) {
                     if (i == winners.size() - 1) {
-                        winnerBuilder.append(" and ");
+                        winnerBuilder.append(SkyTrans.get(TransKey.GAME_WINNING_MULTI_WON_FINAL_COMMA));
                     } else {
                         winnerBuilder.append(SkyTrans.get(TransKey.GAME_WINNING_MULTI_WON_COMMA));
                     }

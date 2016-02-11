@@ -169,6 +169,17 @@ public class ArenaGame implements SkyGame {
         return numTeams;
     }
 
+    @Override
+    public int getAliveTeams() {
+        int alive = 0;
+        for (Team team : teams) {
+            if (!team.getAlive().isEmpty()) {
+                alive += 1;
+            }
+        }
+        return alive;
+    }
+
     public class Team implements SkyGameTeam {
 
         private final List<UUID> players;

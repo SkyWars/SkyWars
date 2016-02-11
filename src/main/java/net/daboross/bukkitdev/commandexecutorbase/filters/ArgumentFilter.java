@@ -16,18 +16,13 @@
  */
 package net.daboross.bukkitdev.commandexecutorbase.filters;
 
-import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.CommandFilter;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-/**
- * @author daboross
- */
 public class ArgumentFilter implements CommandFilter {
 
-    public static final ArgumentFilter NO_ARGS = new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, ColorList.ERR + "This command doesn't require any arguments.");
     private final ArgumentCondition condition;
     private final int conditionValue;
     private final String deniedMessage;
@@ -51,10 +46,10 @@ public class ArgumentFilter implements CommandFilter {
 
     @Override
     public String[] getDeniedMessage(CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        return showHelp ? new String[]{deniedMessage, subCommand.getHelpMessage(baseCommandLabel, subCommandLabel)} : new String[]{deniedMessage};
+        return showHelp ? new String[]{deniedMessage, subCommand.getHelpMessage(baseCommandLabel)} : new String[]{deniedMessage};
     }
 
-    public static enum ArgumentCondition {
+    public enum ArgumentCondition {
 
         GREATER_THAN {
             @Override
