@@ -134,7 +134,7 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
             String killerName = lastHitName.get(uuid);
             UUID killerUuid = lastHitUuid.get(uuid);
             plugin.getDistributor().distribute(new PlayerDeathInArenaInfo(game.getId(), evt.getEntity()));
-            if (killerUuid != null) {
+            if (killerUuid != null && killerUuid != uuid) {
                 plugin.getDistributor().distribute(new PlayerKillPlayerInfo(game.getId(), killerUuid, killerName, evt.getEntity()));
             }
             plugin.getGameHandler().removePlayerFromGame(evt.getEntity(), false, false);
