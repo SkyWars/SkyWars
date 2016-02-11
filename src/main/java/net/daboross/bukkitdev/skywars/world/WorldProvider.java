@@ -23,11 +23,11 @@ import org.bukkit.World;
 
 public interface WorldProvider {
 
-    public void loadArena(SkyArena arena) throws IOException;
+    void loadArena(SkyArena arena) throws IOException;
 
-    public void clearLoadedArenas();
+    void clearLoadedArenas();
 
-    public void copyArena(World arenaWorld, SkyArena arena, SkyBlockLocation target);
+    void copyArena(World arenaWorld, SkyArena arena, SkyBlockLocation target);
 
-    public void destroyArena(World arenaWorld, SkyArena arena,  SkyBlockLocation target);
+    void destroyArena(World arenaWorld, SkyArena arena, SkyBlockLocation target);
 }
