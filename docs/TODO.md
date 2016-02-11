@@ -16,12 +16,6 @@ SkyWars Tasks
 - Option to only broadcast messages to players in the games.
 - Sometimes items dropped in previous games are still there in new games.
   This will need some kind of item-removal thing in each world provider to fix.
-- There are some messages which are hardcoded into the command system, such as
-  "The subcommand 'x' does not exist for the command '/sw'" which can't be changed
-  or translated.
-  - Fixing this might require moving the subcommand library into the SkyWars codebase.
-- Save EXP along with inventory
 - Force start on a timer
-- Save location and gamemode along with inventory and EXP
 - "Update arena" option for when arenas are stored as .blocks files?
 - Import schematics into .blocks files.
