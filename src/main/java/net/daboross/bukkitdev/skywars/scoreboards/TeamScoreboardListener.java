@@ -53,7 +53,7 @@ public class TeamScoreboardListener {
                 for (UUID uuid : gameTeam.getAlive()) {
                     SkyStatic.debug("Adding (uuid: %s) to scoreboard team %s", uuid, teamName);
                     Player player = Bukkit.getPlayer(uuid);
-                    team.addPlayer(player);
+                    team.addEntry(player.getName());
                     teams.put(uuid, team);
                     player.setScoreboard(board);
                 }
@@ -64,7 +64,7 @@ public class TeamScoreboardListener {
     public void onPlayerLeaveGame(PlayerLeaveGameInfo info) {
         Team team = teams.remove(info.getPlayer().getUniqueId());
         if (team != null) {
-            team.removePlayer(info.getPlayer());
+            team.removeEntry(info.getPlayer().getName());
         }
     }
 
