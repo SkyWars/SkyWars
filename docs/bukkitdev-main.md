@@ -41,10 +41,7 @@ This way there is no long transfer period, and it supports all properly configur
 * [MCStats Statistics](http://mcstats.org/plugin/SkyWars)
 
 ## Development builds
-Development builds of this project can be acquired at the provided continuous integration server.
-These builds have not been approved by the BukkitDev staff. Use them at your own risk.
-[TeamCity Development Builds - CI Server](http://ci.dabo.guru/p/SkyWarsParent)
-[Download Latest Snapshot](http://ci.dabo.guru/d/SkyWarsParent_SkyWars_MainBuild/SkyWars.jar)
+Development builds are no longer provided, as this project is inactive.
 
 ### MCStats / Plugin metrics
 SkyWars uses plugin metrics to keep track of people using the plugin.

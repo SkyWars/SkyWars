@@ -64,7 +64,7 @@ public class WorldEditProtobufStorageProvider extends ProtobufStorageProvider {
         for (int x = clearingMin.x; x <= clearingmax.x; x++) {
             for (int y = clearingMin.y; y <= clearingmax.y; y++) {
                 for (int z = clearingMin.z; z <= clearingmax.z; z++) {
-                    editWorld.setBlockTypeFast(new Vector(x, y, z), 0); // 0 = hardcoded Material.AIR
+                    editWorld.setBlockType(new Vector(x, y, z), 0); // 0 = hardcoded Material.AIR
                 }
             }
         }

@@ -87,3 +87,6 @@ And now, testing!
  * Confirm games start correctly with `enable-points: false`
  * TODO: More encompassing config testing overview
 * TODO: Setup testing overview
+* Arena creation testing:
+ * Create an arena?
+ * TODO: finish this section.

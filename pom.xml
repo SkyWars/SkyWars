@@ -65,6 +65,10 @@
             <url>http://repo.daboross.net/snapshots/</url>
         </repository>
         <repository>
+            <id>repo-daboross-net-backup-mcstats-mirror</id>
+            <url>http://repo.daboross.net/mcstats/</url>
+        </repository>
+        <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
@@ -91,15 +95,15 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.sk89q</groupId>
-            <artifactId>worldedit</artifactId>
-            <version>5.6.3</version>
+            <groupId>com.sk89q.worldedit</groupId>
+            <artifactId>worldedit-bukkit</artifactId>
+            <version>6.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -118,9 +122,10 @@
             <version>1.5.2</version>
         </dependency>
         <dependency>
-            <groupId>net.daboross.metrics.bukkit</groupId>
+            <groupId>org.mcstats.bukkit</groupId>
             <artifactId>metrics-lite</artifactId>
-            <version>1.0.0</version>
+            <version>R7</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.daboross.json</groupId>
@@ -140,7 +145,7 @@
         <dependency>
             <groupId>net.daboross.bukkitdev.bukkit-storage-protobuf</groupId>
             <artifactId>bukkit-storage-protobuf</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.0.1</version>
         </dependency>
     </dependencies>
 
@@ -167,7 +172,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.5.1</version>
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
@@ -177,7 +182,7 @@
             <plugin>
                 <groupId>com.lukegb.mojo</groupId>
                 <artifactId>gitdescribe-maven-plugin</artifactId>
-                <version>2.0</version>
+                <version>3.0</version>
                 <executions>
                     <execution>
                         <phase>initialize</phase>
@@ -185,7 +190,7 @@
                             <goal>gitdescribe</goal>
                         </goals>
                         <configuration>
-                            <extraArguments/>
+                            <extraArguments />
                         </configuration>
                     </execution>
                 </executions>
@@ -193,7 +198,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.5</version>
+                <version>2.6</version>
                 <configuration>
                     <archive>
                         <manifestEntries>
@@ -205,7 +210,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.3</version>
+                <version>2.4.3</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -255,7 +260,7 @@
             <plugin>
                 <groupId>com.github.wvengen</groupId>
                 <artifactId>proguard-maven-plugin</artifactId>
-                <version>2.0.8</version>
+                <version>2.0.11</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -273,11 +278,15 @@
                         <!-- Bukkit -->
                         <lib>${settings.localRepository}/org/bukkit/bukkit/1.8.8-R0.1-SNAPSHOT/bukkit-1.8.8-R0.1-SNAPSHOT.jar</lib>
 
+                        <!-- Bukkit Apache Library -->
+                        <lib>${settings.localRepository}/commons-lang/commons-lang/2.6/commons-lang-2.6.jar</lib>
+
                         <!-- Vault -->
                         <lib>${settings.localRepository}/net/milkbowl/vault/VaultAPI/1.5/VaultAPI-1.5.jar</lib>
 
                         <!-- WorldEdit -->
-                        <lib>${settings.localRepository}/com/sk89q/worldedit/5.6.3/worldedit-5.6.3.jar</lib>
+                        <lib>${settings.localRepository}/com/sk89q/worldedit/worldedit-bukkit/6.1/worldedit-bukkit-6.1.jar</lib>
+                        <lib>${settings.localRepository}/com/sk89q/worldedit/worldedit-core/6.1/worldedit-core-6.1.jar</lib>
                     </libs>
                     <options>
                         <!-- Keep plugin classes -->
