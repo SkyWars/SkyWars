@@ -16,11 +16,14 @@
  */
 package net.daboross.bukkitdev.skywars.events.listeners;
 
+import java.util.logging.Level;
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerRespawnAfterGameEndInfo;
 import net.daboross.bukkitdev.skywars.util.CrossVersion;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
 
 public class ResetHealthListener {
 
@@ -44,5 +47,9 @@ public class ResetHealthListener {
         p.setHealthScaled(false);
         p.setAllowFlight(false);
         p.setFlying(false);
+        for (PotionEffect effect : p.getActivePotionEffects()) {
+            SkyStatic.log(Level.INFO, "Removing:" + effect);
+            p.removePotionEffect(effect.getType());
+        }
     }
 }

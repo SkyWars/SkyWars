@@ -16,6 +16,8 @@
  */
 package net.daboross.bukkitdev.skywars.player;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.daboross.bukkitdev.skywars.api.players.SkySavedInventory;
 import net.daboross.bukkitdev.skywars.util.CrossVersion;
 import org.bukkit.GameMode;
@@ -23,24 +25,16 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffect;
 
 public class SavedInventory implements SkySavedInventory {
 
     private final ItemStack[] items;
     private final ItemStack[] armor;
     private final int experience;
-    private final Location location;
-    private final double health;
-    private final double healthScale;
-    private final float fallDistance;
-    private final int foodLevel;
-    private final float exhaustion;
-    private final float saturation;
-    private final boolean allowFlight;
-    private final boolean isFlying;
-    private final GameMode gameMode;
+    private final SavedPghData pghData;
 
-    public SavedInventory(Player p) {
+    public SavedInventory(Player p, boolean savePgh) {
         PlayerInventory inv = p.getInventory();
         ItemStack[] contents = inv.getContents();
         items = new ItemStack[contents.length];
@@ -52,23 +46,61 @@ public class SavedInventory implements SkySavedInventory {
         for (int i = 0; i < armorContents.length; i++) {
             armor[i] = armorContents[i] == null ? null : armorContents[i].clone();
         }
-        location = p.getLocation();
         experience = p.getTotalExperience();
-        health = p.getHealth();
-        healthScale = p.getHealthScale();
-        fallDistance = p.getFallDistance();
-        foodLevel = p.getFoodLevel();
-        exhaustion = p.getExhaustion();
-        saturation = p.getSaturation();
-        allowFlight = p.getAllowFlight();
-        isFlying = p.isFlying();
-        gameMode = p.getGameMode();
+        // don't store all of this if we don't need to.
+        if (savePgh) {
+            pghData = new SavedPghData(p);
+        } else {
+            pghData = null;
+        }
     }
 
     @Override
-    public void apply(final Player p, boolean saveExperience, boolean savePgh) {
-        if (savePgh) {
-            p.teleport(location); // player hasn't been teleported yet if savePgh is enabled.
+    public void apply(final Player p, boolean restoreExp, boolean restorePgh) {
+        if (restorePgh) {
+            // player hasn't been teleported yet if savePgh is enabled,
+            // so we need to apply it first
+            pghData.apply(p);
+        }
+        PlayerInventory inv = p.getInventory();
+        inv.setContents(items);
+        inv.setArmorContents(armor);
+        if (restoreExp) {
+            p.setTotalExperience(experience);
+        }
+    }
+
+    private class SavedPghData {
+
+        private final Location location;
+        private final double health;
+        private final double healthScale;
+        private final float fallDistance;
+        private final int foodLevel;
+        private final float exhaustion;
+        private final float saturation;
+        private final boolean allowFlight;
+        private final boolean isFlying;
+        private final GameMode gameMode;
+        private final List<PotionEffect> effects;
+
+        private SavedPghData(Player p) {
+            location = p.getLocation();
+            health = p.getHealth();
+            healthScale = p.getHealthScale();
+            fallDistance = p.getFallDistance();
+            foodLevel = p.getFoodLevel();
+            exhaustion = p.getExhaustion();
+            saturation = p.getSaturation();
+            allowFlight = p.getAllowFlight();
+            isFlying = p.isFlying();
+            gameMode = p.getGameMode();
+            effects = new ArrayList<>(p.getActivePotionEffects());
+        }
+
+        public void apply(final Player p) {
+            // player hasn't been teleported yet if savePgh is enabled.
+            p.teleport(location);
             CrossVersion.setHealth(p, health);
             p.setHealthScale(healthScale);
             p.setFallDistance(fallDistance);
@@ -78,12 +110,9 @@ public class SavedInventory implements SkySavedInventory {
             p.setAllowFlight(allowFlight);
             p.setFlying(isFlying);
             p.setGameMode(gameMode);
-        }
-        PlayerInventory inv = p.getInventory();
-        inv.setContents(items);
-        inv.setArmorContents(armor);
-        if (saveExperience) {
-            p.setTotalExperience(experience);
+            for (PotionEffect effect : effects) {
+                p.addPotionEffect(effect);
+            }
         }
     }
 }

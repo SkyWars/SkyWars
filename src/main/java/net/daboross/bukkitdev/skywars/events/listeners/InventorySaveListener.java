@@ -37,10 +37,11 @@ public class InventorySaveListener {
 
     public void onGameStart(GameStartInfo info) {
         boolean save = plugin.getConfiguration().isInventorySaveEnabled();
+        boolean savePgh = plugin.getConfiguration().isPghSaveEnabled();
         for (Player p : info.getPlayers()) {
             if (save) {
                 SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(p);
-                skyPlayer.setSavedInventory(new SavedInventory(p));
+                skyPlayer.setSavedInventory(new SavedInventory(p, savePgh));
             }
             PlayerInventory inv = p.getInventory();
             inv.clear();
@@ -50,8 +51,8 @@ public class InventorySaveListener {
 
     public void onPlayerRespawn(PlayerRespawnAfterGameEndInfo info) {
         boolean save = plugin.getConfiguration().isInventorySaveEnabled();
-        boolean exp = plugin.getConfiguration().isExperienceSaveEnabled();
-        boolean pgh = plugin.getConfiguration().isPghSaveEnabled();
+        boolean restoreExp = plugin.getConfiguration().isExperienceSaveEnabled();
+        boolean restorePgh = plugin.getConfiguration().isPghSaveEnabled();
         Player player = info.getPlayer();
         PlayerInventory inv = player.getInventory();
         inv.clear();
@@ -59,8 +60,9 @@ public class InventorySaveListener {
         if (save) {
             SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(player);
             SkySavedInventory savedInventory = skyPlayer.getSavedInventory();
-            Validate.notNull(savedInventory, "Saved inventory was null!");
-            savedInventory.apply(player, exp, pgh);
+            Validate.notNull(savedInventory, "Saved inventory for " + skyPlayer.getName() + " was null!");
+            savedInventory.apply(player, restoreExp, restorePgh);
+            skyPlayer.setSavedInventory(null); // no need to keep this around
         }
     }
 }
