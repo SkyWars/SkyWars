@@ -57,7 +57,7 @@ public class SkyWorldHandler {
         }
     }
 
-    public void findAndLoadRequiredWorlds() {
+    public void loadArenas() {
         for (SkyArena arena : plugin.getConfiguration().getEnabledArenas()) {
             try {
                 provider.loadArena(arena);

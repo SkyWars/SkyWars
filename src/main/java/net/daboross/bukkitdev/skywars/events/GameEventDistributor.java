@@ -61,7 +61,7 @@ public class GameEventDistributor {
             plugin.getIDHandler().onGameStart(info);
             plugin.getCurrentGameTracker().onGameStart(info);
             plugin.getBroadcaster().broadcastStart(info);
-            plugin.getTeamListener().onGameStart(info);
+            plugin.getTeamScoreBoardListener().onGameStart(info);
             // -- Before gameStart1 --
             plugin.getWorldHandler().onGameStart0(info);
             // -- After gameStart0 --
@@ -88,7 +88,7 @@ public class GameEventDistributor {
             plugin.getIDHandler().onGameEnd(info);
             // -- Normal --
             plugin.getBroadcaster().broadcastEnd(info);
-            plugin.getTeamListener().onGameEnd(info);
+            plugin.getTeamScoreBoardListener().onGameEnd(info);
             if (plugin.getScore() != null) {
                 plugin.getScore().onGameEnd(info);
             }
@@ -112,7 +112,7 @@ public class GameEventDistributor {
             plugin.getPlayers().onLeaveGame(info);
             plugin.getCurrentGameTracker().onPlayerLeaveGame(info);
             plugin.getAttackerStorage().onPlayerLeaveGame(info);
-            plugin.getTeamListener().onPlayerLeaveGame(info);
+            plugin.getTeamScoreBoardListener().onPlayerLeaveGame(info);
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new LeaveGameEvent(plugin, info.getId(), info.getPlayer()));
         } catch (Throwable t) {

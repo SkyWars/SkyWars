@@ -172,7 +172,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
             @Override
             public void run() {
                 worldHandler.create();
-                worldHandler.findAndLoadRequiredWorlds();
+                worldHandler.loadArenas();
             }
         }.runTask(this);
         new PermissionHandler().setupPermissions();
@@ -402,7 +402,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         return ecoRewards;
     }
 
-    public TeamScoreboardListener getTeamListener() {
+    public TeamScoreboardListener getTeamScoreBoardListener() {
         return teamListener;
     }
 
