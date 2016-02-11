@@ -69,7 +69,8 @@ public class SkyWorldHandler {
     }
 
     /**
-     * This method loads a new arena into the current cache - useful for creating caches for new arenas after saving the .yml files.
+     * This method loads a new arena into the current cache - useful for creating caches for new arenas after saving the
+     * .yml files.
      */
     public void loadNewArena(SkyArena arena) throws IOException {
         provider.loadArena(arena);
@@ -101,11 +102,17 @@ public class SkyWorldHandler {
         Bukkit.unloadWorld(world, false);
     }
 
-    public void onGameStart(GameStartInfo info) {
+    public void onGameStart0(GameStartInfo info) {
+        // Copy arena *first* before doing anything else.
         ArenaGame game = info.getGame();
         SkyBlockLocation min = getMinLocation(game);
         game.setMin(min);
         provider.copyArena(arenaWorld, game.getArena(), min);
+    }
+
+    public void onGameStart1(GameStartInfo info) {
+        ArenaGame game = info.getGame();
+        SkyBlockLocation min = getMinLocation(game);
         List<SkyPlayerLocation> spawns = new ArrayList<>(game.getArena().getSpawns());
         Collections.shuffle(spawns);
         if (game.areTeamsEnabled()) {

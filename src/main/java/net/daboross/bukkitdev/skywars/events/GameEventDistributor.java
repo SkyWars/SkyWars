@@ -62,9 +62,12 @@ public class GameEventDistributor {
             plugin.getCurrentGameTracker().onGameStart(info);
             plugin.getBroadcaster().broadcastStart(info);
             plugin.getTeamListener().onGameStart(info);
+            // -- Before gameStart1 --
+            plugin.getWorldHandler().onGameStart0(info);
+            // -- After gameStart0 --
             plugin.getInventorySaveListener().onGameStart(info);
             // -- After InventorySaveListener --
-            plugin.getWorldHandler().onGameStart(info);
+            plugin.getWorldHandler().onGameStart1(info);
             // -- After InventorySaveListener --
             plugin.getPlayers().onGameStart(info);
             plugin.getKitApplyListener().onGameStart(info);
