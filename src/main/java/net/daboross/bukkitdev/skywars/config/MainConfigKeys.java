@@ -29,6 +29,7 @@ public class MainConfigKeys {
     public static final String SAVE_POSITION_GAMEMODE_HEALTH = "save-position-gamemode-health";
     public static final String ARENA_DISTANCE_APART = "arena-distance-apart";
     public static final String LOCALE = "locale";
+    public static final String DEVELOPER_OPTIONS = "developer-options";
 //    public static final String PER_ARENA_DEATH_MESSAGES_ENABLED = "enable-per-arena-death-messages";
 //    public static final String PER_ARENA_WIN_MESSAGES_ENABLED = "enable-per-arena-win-messages";
 

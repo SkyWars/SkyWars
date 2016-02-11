@@ -34,6 +34,7 @@ public class MainConfigDefaults {
 //    public static final boolean SAVE_POSITION_GAMEMODE_HEALTH = true;
     public static final int ARENA_DISTANCE_APART = 200;
     public static final String LOCALE = Locale.getDefault().getLanguage();
+    public static final boolean DEVELOPER_OPTIONS = false;
 //    public static final boolean PER_ARENA_DEATH_MESSAGES_ENABLED = true;
 //    public static final boolean PER_ARENA_WIN_MESSAGES_ENABLED = false;
 

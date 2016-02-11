@@ -16,8 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.events.listeners;
 
-import java.util.logging.Level;
-import net.daboross.bukkitdev.skywars.api.SkyStatic;
+import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerRespawnAfterGameEndInfo;
 import net.daboross.bukkitdev.skywars.util.CrossVersion;
@@ -26,6 +25,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
 public class ResetHealthListener {
+
+    private final SkyWars plugin;
+
+    public ResetHealthListener(final SkyWars plugin) {
+        this.plugin = plugin;
+    }
 
     public void onGameStart(GameStartInfo info) {
         for (Player p : info.getPlayers()) {
@@ -40,6 +45,9 @@ public class ResetHealthListener {
     public void resetHealth(Player p) {
         p.setGameMode(GameMode.SURVIVAL);
         CrossVersion.setHealth(p, CrossVersion.getMaxHealth(p));
+        if (plugin.getConfiguration().areDeveloperOptionsEnabled() && p.getName().length() == 1) {
+            return;
+        }
         p.setFallDistance(0);
         p.setFoodLevel(20);
         p.setExhaustion(0);
@@ -48,7 +56,6 @@ public class ResetHealthListener {
         p.setAllowFlight(false);
         p.setFlying(false);
         for (PotionEffect effect : p.getActivePotionEffects()) {
-            SkyStatic.log(Level.INFO, "Removing:" + effect);
             p.removePotionEffect(effect.getType());
         }
     }

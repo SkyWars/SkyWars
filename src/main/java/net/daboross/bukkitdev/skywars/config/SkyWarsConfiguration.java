@@ -69,11 +69,13 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private String locale;
     private boolean disableReport;
     private boolean economyRewardMessages;
+    //
 //    private boolean perArenaDeathMessagesEnabled;
 //    private boolean perArenaWinMessagesEnabled;
     private boolean multiverseCoreHookEnabled;
     private boolean multiverseInventoriesHookEnabled;
     private boolean worldeditHookEnabled;
+    private boolean developerOptions;
 
     public SkyWarsConfiguration(SkyWars plugin) throws IOException, InvalidConfigurationException, SkyConfigurationException {
         this.plugin = plugin;
@@ -162,6 +164,12 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         multiverseCoreHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.MULTIVERSE_CORE, MainConfigDefaults.Hooks.MULTIVERSE_CORE);
         multiverseInventoriesHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.MULTIVERSE_INVENTORIES, MainConfigDefaults.Hooks.MULTIVERSE_INVENTORIES);
         worldeditHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.WORLDEDIT, MainConfigDefaults.Hooks.WORLDEDIT);
+
+        // Developer options
+        developerOptions = mainConfig.getConfig().getBoolean(MainConfigKeys.DEVELOPER_OPTIONS, MainConfigDefaults.DEVELOPER_OPTIONS);
+        if (developerOptions) {
+            plugin.getLogger().info("Enabling developer options.");
+        }
 
         // Remove deprecated values
         mainConfig.removeValues(MainConfigKeys.Deprecated.CHAT_PREFIX, MainConfigKeys.Deprecated.PREFIX_CHAT);
@@ -396,6 +404,11 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     @Override
     public boolean isSkipUuidCheck() {
         return skipUuidCheck;
+    }
+
+    @Override
+    public boolean areDeveloperOptionsEnabled() {
+        return developerOptions;
     }
 
     private static class Names {
