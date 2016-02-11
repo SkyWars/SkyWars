@@ -40,13 +40,35 @@ message-prefix: '&8[&cSkyWars&8]&a '
 # that time will not be recoverable.
 save-inventory: true
 
+# Whether or not experience level will be saved along with inventory.
+# This won't work without save-inventory also being true. See save-inventory
+# for more information.
+save-experience: true
+
+# Whether or not position, gamemode, health, hunger, and other survival player
+# properties are saved when joining a SkyWars games (and restored upon leaving).
+# This will teleport players back to their original locations, instead of going
+# to a lobby when finished - and will restore their gamemode, health, hunger,
+# exhaustion and stamina. This won't work without save-inventory also being true.
+# If this is false, players are teleported to the lobby, and only their inventory
+# (and experience) are restored. If false, gamemode, health and hunger are completely
+# reset upon leaving a game.
+save-position-gamemode-health: true
+
+
 # A list of enabled arenas. Each of the items in this list corresponds to a
 # file in the arenas/ folder. When SkyWars loads, it will take each item in
 # this list, look for a file in the arenas/ folder who's name is this followed
 # by '.yml', then load it into the enabled arenas list.
 enabled-arenas:
 - skyblock-warriors
+- water-warriors
 
+# Locale to use for all player messages. Currently available locales:
+# cz, de, dk, en, es, fr, nl, pl, pt and ru.
+# Note that some translations are incomplete. You can also modify
+# `messages.yml` to make your own translation (if you do, be sure to
+# set auto-update to false in messages.yml).
 locale: en
 
 # Sub section for score storage

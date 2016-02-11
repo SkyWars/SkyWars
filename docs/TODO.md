@@ -19,3 +19,4 @@ SkyWars Tasks
 - Force start on a timer
 - "Update arena" option for when arenas are stored as .blocks files?
 - Import schematics into .blocks files.
+- Fix team economy rewards!
