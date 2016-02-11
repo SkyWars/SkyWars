@@ -37,7 +37,7 @@ public class ResetHealthListener {
         resetHealth(info.getPlayer());
     }
 
-    private void resetHealth(Player p) {
+    public void resetHealth(Player p) {
         p.setGameMode(GameMode.SURVIVAL);
         CrossVersion.setHealth(p, CrossVersion.getMaxHealth(p));
         p.setFallDistance(0);
