@@ -40,10 +40,12 @@ import net.daboross.bukkitdev.skywars.world.VoidGenerator;
 import net.daboross.bukkitdev.skywars.world.WorldProvider;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
+import org.bukkit.entity.Entity;
 
 public class ProtobufStorageProvider implements WorldProvider {
 
@@ -112,7 +114,7 @@ public class ProtobufStorageProvider implements WorldProvider {
 
     @Override
     public void copyArena(final World arenaWorld, final SkyArena arena, final SkyBlockLocation target) {
-        Validate.isTrue(target.world.equals(arenaWorld.getName()), "Destination world not arena world.");
+        Validate.isTrue(target.world.equals(arenaWorld.getName()), "Destination world is not arena world.");
 
         MemoryBlockArea area = cache.get(arena.getArenaName());
         Validate.notNull(area, "Arena " + arena.getArenaName() + " not loaded.");
@@ -123,18 +125,23 @@ public class ProtobufStorageProvider implements WorldProvider {
 
     @Override
     public void destroyArena(final World arenaWorld, final SkyArena arena, final SkyBlockLocation target) {
-        Validate.isTrue(target.world.equals(arenaWorld.getName()), "Destination world not arena world.");
+        Validate.isTrue(target.world.equals(arenaWorld.getName()), "Destination world is not arena world.");
 
         SkyBlockLocationRange clearingArea = arena.getBoundaries().getClearing();
         SkyBlockLocation clearingMin = new SkyBlockLocation(target.x + clearingArea.min.x, target.y + clearingArea.min.y, target.z + clearingArea.min.z, null);
-        SkyBlockLocation clearingmax = new SkyBlockLocation(target.x + clearingArea.max.x, target.y + clearingArea.max.y, target.z + clearingArea.max.z, null);
+        SkyBlockLocation clearingMax = new SkyBlockLocation(target.x + clearingArea.max.x, target.y + clearingArea.max.y, target.z + clearingArea.max.z, null);
 
-        for (int x = clearingMin.x; x <= clearingmax.x; x++) {
-            for (int y = clearingMin.y; y <= clearingmax.y; y++) {
-                for (int z = clearingMin.z; z <= clearingmax.z; z++) {
+        for (int x = clearingMin.x; x <= clearingMax.x; x++) {
+            for (int y = clearingMin.y; y <= clearingMax.y; y++) {
+                for (int z = clearingMin.z; z <= clearingMax.z; z++) {
                     arenaWorld.getBlockAt(x, y, z).setType(Material.AIR);
                 }
             }
+        }
+        SkyBlockLocation halfDistance = new SkyBlockLocation((clearingMax.x - clearingMin.x) / 2, (clearingMax.y - clearingMin.y) / 2, (clearingMax.z - clearingMin.z) / 2, null);
+        Location center = clearingMin.add(halfDistance).toLocationWithWorldObj(arenaWorld);
+        for (Entity entity : arenaWorld.getNearbyEntities(center, halfDistance.x, halfDistance.y, halfDistance.z)) {
+            entity.remove();
         }
     }
 }

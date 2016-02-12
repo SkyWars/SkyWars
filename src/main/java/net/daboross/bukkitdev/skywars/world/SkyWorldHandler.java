@@ -17,6 +17,10 @@
 package net.daboross.bukkitdev.skywars.world;
 
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -50,9 +54,10 @@ public class SkyWorldHandler {
     public SkyWorldHandler(SkyWars plugin) {
         this.plugin = plugin;
         if (plugin.getConfiguration().isWorldeditHookEnabled() && plugin.getServer().getPluginManager().isPluginEnabled("WorldEdit")) {
-            SkyStatic.log("Using WorldEdit hook for arena creation.");
+            plugin.getLogger().info("Using WorldEdit hook for arena creation.");
             this.provider = new WorldEditProtobufStorageProvider(plugin);
         } else {
+            plugin.getLogger().info("Using slower non-worldedit backend for arena creation.");
             this.provider = new ProtobufStorageProvider(plugin);
         }
     }
@@ -98,8 +103,17 @@ public class SkyWorldHandler {
     }
 
     public void destroyArenaWorld() {
-        World world = plugin.getServer().getWorld(Statics.ARENA_WORLD_NAME);
-        Bukkit.unloadWorld(world, false);
+        Path worldFolder = arenaWorld.getWorldFolder().toPath();
+        Bukkit.unloadWorld(arenaWorld, false);
+        arenaWorld = null;
+        if (Files.exists(worldFolder)) {
+            plugin.getLogger().info("Cleaning up: Deleting " + worldFolder);
+            try {
+                deletePath(worldFolder);
+            } catch (IOException e) {
+                plugin.getLogger().log(Level.SEVERE, "Failed to delete " + worldFolder, e);
+            }
+        }
     }
 
     public void onGameStart0(GameStartInfo info) {
@@ -157,5 +171,23 @@ public class SkyWorldHandler {
         int modZ = (id / 2) * distanceApart;
         int modY = arena.getPlacementY();
         return new SkyBlockLocation(modX, modY, modZ, Statics.ARENA_WORLD_NAME);
+    }
+
+    public static void deletePath(final Path path) throws IOException {
+        if (Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS)) {
+            cleanDirectory(path);
+        }
+        Files.deleteIfExists(path);
+    }
+
+    public static void cleanDirectory(final Path path) throws IOException {
+        if (!Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS)) {
+            return;
+        }
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
+            for (Path entry : stream) {
+                deletePath(entry);
+            }
+        }
     }
 }

@@ -24,7 +24,9 @@ import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
 
 public class WorldEditProtobufStorageProvider extends ProtobufStorageProvider {
 
@@ -59,14 +61,20 @@ public class WorldEditProtobufStorageProvider extends ProtobufStorageProvider {
 
         SkyBlockLocationRange clearingArea = arena.getBoundaries().getClearing();
         SkyBlockLocation clearingMin = new SkyBlockLocation(target.x + clearingArea.min.x, target.y + clearingArea.min.y, target.z + clearingArea.min.z, null);
-        SkyBlockLocation clearingmax = new SkyBlockLocation(target.x + clearingArea.max.x, target.y + clearingArea.max.y, target.z + clearingArea.max.z, null);
+        SkyBlockLocation clearingMax = new SkyBlockLocation(target.x + clearingArea.max.x, target.y + clearingArea.max.y, target.z + clearingArea.max.z, null);
 
-        for (int x = clearingMin.x; x <= clearingmax.x; x++) {
-            for (int y = clearingMin.y; y <= clearingmax.y; y++) {
-                for (int z = clearingMin.z; z <= clearingmax.z; z++) {
+        for (int x = clearingMin.x; x <= clearingMax.x; x++) {
+            for (int y = clearingMin.y; y <= clearingMax.y; y++) {
+                for (int z = clearingMin.z; z <= clearingMax.z; z++) {
                     editWorld.setBlockType(new Vector(x, y, z), 0); // 0 = hardcoded Material.AIR
                 }
             }
+        }
+        // TODO: do this part with WorldEdit too
+        SkyBlockLocation halfDistance = new SkyBlockLocation((clearingMax.x - clearingMin.x) / 2, (clearingMax.y - clearingMin.y) / 2, (clearingMax.z - clearingMin.z) / 2, null);
+        Location center = clearingMin.add(halfDistance).toLocationWithWorldObj(arenaWorld);
+        for (Entity entity : arenaWorld.getNearbyEntities(center, halfDistance.x, halfDistance.y, halfDistance.z)) {
+            entity.remove();
         }
     }
 }
