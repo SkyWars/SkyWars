@@ -89,6 +89,7 @@ And now, testing!
  * Confirm games start correctly with `enable-points: false`
  * Confirm position, game mode, health and hunger are all saved with `save-position-gamemode-health`.
  * Confirm allowFlight is reset when joining game
+ * Confirm all team members are given economy and point rewards when using teams.
  * TODO: More encompassing config testing overview
 * TODO: Setup testing overview
 * Arena creation testing:
