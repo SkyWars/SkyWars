@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
-import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyBoundaries;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyBoundariesConfig;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
@@ -69,15 +68,17 @@ public class SetupData {
         List<SkyPlayerLocation> processedSpawns = new ArrayList<>();
         for (SkyPlayerLocation spawn : spawns) {
             spawn = spawn.subtract(originRange.min);
-            spawn = new SkyPlayerLocation(Math.floor(spawn.x) + 0.5, spawn.y, Math.floor(spawn.z) + 0.5, 0, 0, null);
+            spawn = new SkyPlayerLocation(Math.round(spawn.x - 0.5) + 0.5, Math.round(spawn.y), Math.round(spawn.z - 0.5) + 0.5, 0, 0, null);
             processedSpawns.add(spawn);
         }
-        return new SkyArenaConfig(arenaName,
+        SkyArenaConfig config = new SkyArenaConfig(arenaName,
                 processedSpawns,
                 spawns.size(), // Number of teams
                 1, // Team size
                 20, // Placement Y
                 boundaries);
+        config.setFile(saveFile);
+        return config;
     }
 
     protected SkyBlockLocationRange calculateOrigin(SkyBlockLocation min, SkyBlockLocation max) {
@@ -139,7 +140,6 @@ public class SetupData {
         }
         return true;
     }
-
 
     public String getArenaName() {
         return arenaName;
