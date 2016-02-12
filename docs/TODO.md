@@ -2,11 +2,7 @@ SkyWars Tasks
 =============
 
 - Better team integration
-  - Teams should be told explicitly who their members are
-    - A translation message key already exists for this, it just needs to be implemented in code.
-  - Creative team names?
-    - You, X and Z are on team creeper!
-    - Y, A, B are on team lion!
+  - Colors for team names?
   - Choosing teams before a match?
     - This might need a "custom queue" support, or a specific teamed mode.
 - Multiple queues for each arena
@@ -19,4 +15,4 @@ SkyWars Tasks
 - Force start on a timer
 - "Update arena" option for when arenas are stored as .blocks files?
 - Import schematics into .blocks files.
-- Fix team economy rewards!
+- Respawn immediately
