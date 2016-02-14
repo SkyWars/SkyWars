@@ -3,6 +3,10 @@ Configuring Kits - kits.yml
 
 This file is located at `plugins/SkyWars/kits.yml`.
 
+Note: This document is on how to manually type in new kits into the config.
+
+For a much simpler way to do this in game just using your inventory, check out [Creating a new kit](https://dabo.guru/projects/skywars/create-a-new-kit). (Note that this is only in 2.1.0, which hasn't been released!)
+
 ```yaml
 # ####### kits.yml #######
 #
@@ -12,42 +16,36 @@ This file is located at `plugins/SkyWars/kits.yml`.
 # https://dabo.guru/projects/skywars/configuring-kits
 # #########
 
-my-first-kit:
-  # This kit has a cost of 200002.
-  # It is a bit overpowered, so you may want to remove it.
-  cost: 200002
+bowman:
+  # This kit has a cost of $100. The cost is charged every game in which it is used.
+  cost: 100
   items:
     # You can list any number of items here.
-    # Each item has a type:. It also may optionally have an enchantments:
-    # and amount:
+    # Each item has a type section. It also may optionally have an enchantments
+    # section and amount value.
     # The type is a material name. You can get a list of these here:
     # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
-    - {type: ARROW, amount: 22}
+    - {type: ARROW, amount: 16}
     # When amount is not given, it defaults to 1.
     - {type: BOW}
-  # You can also define a helmet, chestplate, leggings and boots.
-  # These will automatically be placed in the armor slots of the player.
-  helmet: {type: DIAMOND_HELMET}
-  chestplate: {type: DIAMOND_CHESTPLATE}
-  leggings: {type: DIAMOND_LEGGINGS}
-  # Every item may have an enchantments: section. This contains a bunch of enchantments
-  # for the item. You can go to
-  # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/enchantments/Enchantment.html
-  # to see a list of all the enchantment names.
-  boots: {type: DIAMOND_BOOTS, enchantments: {PROTECTION_FIRE: 2, PROTECTION_FALL: 1}}
-donator-kit:
+diamond-swordsman:
   # You can define a permission, a cost, or both for a kit.
   # When you define a permission, the kit is only shown to people with that
-  # permission.
-  # This donor kit is not that great, so you may want to change it.
-  permission: myserver.donator.kit
+  # permission. This allows you to make kits only available to donors.
+  permission: server.donor.kit
   items:
     - {type: DIAMOND_SWORD, amount: 1, enchantments: {KNOCKBACK: 2}}
-costly-donator-kit:
-  # This kit both requires the permission 'myserver.donator.kit2' and costs 20000.
-  permission: myserver.donator.kit2
-  cost: 20000
-  boots: {type: DIAMOND_BOOTS}
+full-donor-armor:
+  # This kit is only available to donors, but it also costs $500 each game!
+  permission: server.donor.kit
+  cost: 500
+  # You can define a helmet, chestplate, leggings and boots.
+  # These will automatically be placed in the armor slots of the player.
+  helmet: {type: DIAMOND_HELMET}
+  chestplate: {type: DIAMOND_CHESTPLATE, enchantments: {PROTECTION_PROJECTILE: 2}}
+  leggings: {type: DIAMOND_LEGGINGS}
+  # See link above for exact enchantment names
+  boots: {type: DIAMOND_BOOTS, enchantments: {PROTECTION_FALL: 2}}
 ```
 For a complete list of material names to use, see https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html.
 

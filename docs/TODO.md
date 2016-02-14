@@ -16,3 +16,4 @@ SkyWars Tasks
 - "Update arena" option for when arenas are stored as .blocks files?
 - Import schematics into .blocks files.
 - Respawn immediately
+- Implement `/sws createkit`

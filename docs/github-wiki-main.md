@@ -1,6 +1,10 @@
 ### No longer updated
 
-SkyWars is no longer receiving updates and support. The project was fun while it lasted, but it is no longer. If you wish to take over SkyWars, please contact me at daboross@daboross.net.
+SkyWars is no longer receiving dedicated updates and support.
+
+There are several people who have volunteered to take over, and are working on updating the plugin with new features as we speak.
+
+I am providing a limited number of support updates to ensure the plugin still works on the latest Spigot builds, but I may not have the time to answer questions in detail.
 
 ### Update warning for v2.*
 
@@ -13,32 +17,55 @@ After updating to v2.*, SkyWars will migrate its storage from names to UUIDs as 
 This way there is no long transfer period, and it supports all properly configured proxies (bungeecord, lilypad, etc.).
 
 ### Features
-* Automatically create new arenas every time enough people join the queue.
-* Have *as many arenas* going at the same time as you want!
- * Whenever the configured amount of people in the queue (default to 4), a new arena is created automatically!
- * There is no limit besides your server's capacity to how many arenas SkyWars can create.
-* Teleports people to lobby location when they leave or die.
-* When players walk near a set portal, they will be automatically added to the queue.
-* Clears player inventories when the join a game and when the leave.
+* Integrates seamlessly into any server, survival, creative or otherwise.
+ * Join the SkyWars queue from any world, and you'll be transported back exactly where you came from once the game ends!
+ * SkyWars saves gamemode, health, hunger, potion status, and pretty much anything else you'd need to keep track of.
+* Use an unlimited number of arenas at the same time! The only limit is your server player capacity.
+* Use SkyWars's kit system to let players pay money each game for a kit, and give access to extra kits to donors through permissions support!
+* SkyWars is extremely customizable!
+ * Creating a new arena has never been easier! No entering items into config files, just build the arena in game, fill starting chests, and use **/sws** to set spawn locations and save the arena!
+ * Creating a new kit for players to use is as easy as filling your inventory, and using **/sws createkit**. (Note that this is only in 2.1.0, which hasn't been released!)
+ * All messages sent to players by SkyWars are fully customizable. Give your server a unique feel by modifying messages and message color!
+* Support for portals to step into and join the queue.
+* Economy rewards available for players who win games.
 
-### Basic Installation
-* Make sure your server is running Java 7. SkyWars **will not function** with Java 6.
-* Download the SkyWars.jar for your server version, and put it in your plugins/ directory.
- * SkyWars v1.4.4 supports minecraft 1.5.2, 1.6.4 and 1.7.2.
- * SkyWars v2.0.1 supports minecraft 1.7.8 and higher.
-* Restart your server. SkyWars will automatically create 2 new worlds. SkyWarsBaseWorld and SkyWarsArenaWorld.
-* Go to where you want the lobby to be and use **/sw setlobby**.
+### Installing SkyWars
+* Server must be running at least Java 7.
+* For SkyWars v2.0.0 and higher, server must be at least Minecraft version 1.7.8
+* Download SkyWars from BukkitDev, SpigotMC or GitHub Releases, links below.
+* Put SkyWars.jar into your plugins directory, and restart the server.
+* Customize SkyWars by creating new kits and arenas unique to your server! See the links below for more information.
 
-### Useful links
+#### Documentation
 * [Commands and Permissions](https://dabo.guru/projects/skywars/commands-and-permissions)
-* [Configuration Guide](https://dabo.guru/projects/skywars/configuring-skywars)
-* [Setting up a new Arena](https://dabo.guru/projects/skywars/creating-an-arena)
-* [Worlds Created](https://dabo.guru/projects/skywars/skywars-worlds)
-* [Common Issues / Troubleshooting](https://dabo.guru/projects/skywars/troubleshooting)
-* [GitHub](https://github.com/SkyWars/SkyWars)
+* [Configuring SkyWars](https://dabo.guru/projects/skywars/configuring-skywars)
+* [SkyWars's limited score system](https://dabo.guru/projects/skywars/score)
+
+#### Customization
+* [Creating a new Kit](https://dabo.guru/projects/skywars/creating-a-new-kit)
+* [Creating a new Arena](https://dabo.guru/projects/skywars/creating-an-arena)
+
+#### Debugging
+* [SkyWars Worlds](https://dabo.guru/projects/skywars/skywars-worlds)
+* [Troubleshooting SkyWars](https://dabo.guru/projects/skywars/troubleshooting)
+* [Submitting a ticket](https://dabo.guru/projects/skywars/submitting-a-ticket)
+* [Version Changes](https://dabo.guru/projects/skywars/changelog)
+
+#### Download SkyWars!
+* [BukkitDev/SkyWars](http://dev.bukkit.org/bukkit-plugins/skywars/)
+* [SpigotMC/SkyWars](http://www.spigotmc.org/resources/skywars.167/)
+* [GitHub/SkyWars](https://github.com/SkyWars/SkyWars/releases)
+
+#### For developers
+* [GitHub/SkyWars](https://github.com/SkyWars/SkyWars/)
+* [SkyWars API Overview](https://dabo.guru/projects/skywars/api-overview)
+* [Testing SkyWars](https://dabo.guru/projects/skywars/testing-skywars)
 * [MCStats Statistics](http://mcstats.org/plugin/SkyWars)
-* [TeamCity Development Builds - CI Server](http://ci.dabo.guru/p/SkyWarsParent)
-* [Download Latest Snapshot](http://ci.dabo.guru/d/SkyWarsParent_SkyWars_MainBuild/SkyWars.jar)
+
+### Translations / Localization
+* SkyWars is currently partway localized for 10 different languages, most are currently incomplete however!
+* SkyWars should automatically use the localization that your server is set to, if it supports it.
+* To help out SkyWars by translating it into your local language, go to [SkyWars-Translations/Translating](https://github.com/SkyWars/SkyWars-Translations/wiki/Translating).
 
 #### MCStats / Plugin metrics
 SkyWars uses plugin metrics to keep track of people using the plugin.
@@ -52,19 +79,15 @@ URL. SkyWars does not communicate with gist.github.com unless an admin uses the 
 make it so that no one can use the **/sw report** command, add the following line to your **main-config.yml** file:
 **disable-report: true**
 
-
 ### Bug reports, Feature requests and other Questions
 Please use the SkyWars issue tracker for all bug reports, feature requests and general questions.
 
 See [submitting a ticket](https://dabo.guru/projects/skywars/submitting-a-ticket) for instructions on how to do this.
 
-### Map Credit
-Full credit for the default map, Skyblock Warriors, goes to [SwipeShot](http://www.youtube.com/user/SwipeShot)
+### Credits
+Full credit for the default map, Skyblock Warriors, goes to [SwipeShot](http://www.youtube.com/user/SwipeShot).
 
-### Sponsors/other
-This may be an almost empty section, but we would like to thank JetBrains for their support of this project.
+### Sponsors
+We would like to thank JetBrains for their support of this project.
 
-[![JetBrains](https://www.jetbrains.com/idea/docs/logo_intellij_idea.png)](http://www.jetbrains.com/idea/)
-
-### Translating!
-We need help translating SkyWars! To help out, see [SkyWars-Translations/Translating](https://github.com/SkyWars/SkyWars-Translations/wiki/Translating).
+[![JetBrains](https://www.jetbrains.com/idea/docs/logo_intellij_idea.png)](http://www.jetbrains.com/idea/).
