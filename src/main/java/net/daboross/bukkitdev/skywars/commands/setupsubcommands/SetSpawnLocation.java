@@ -44,7 +44,7 @@ public class SetSpawnLocation extends SubCommand {
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         Player p = (Player) sender;
-        SetupData state = states.getSetupState(p.getName());
+        SetupData state = states.getSetupState(p.getUniqueId());
         SkyPlayerLocation pos = new SkyPlayerLocation(p.getLocation());
         sender.sendMessage(SkyTrans.get(TransKey.SWS_ADDSPAWN_CONFIRMATION, pos.toString()));
         state.getSpawns().add(pos);

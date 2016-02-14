@@ -53,7 +53,7 @@ public class SetPos1 extends SubCommand {
         Player p = (Player) sender;
         Location eye = p.getEyeLocation();
         SkyBlockLocation pos1 = new SkyBlockLocation(eye);
-        SetupData state = states.getSetupState(p.getName());
+        SetupData state = states.getSetupState(((Player) sender).getUniqueId());
         if (state.getOriginPos2() != null && !state.getOriginPos2().world.equalsIgnoreCase(pos1.world)) {
             sender.sendMessage(SkyTrans.get(TransKey.SWS_SETPOS1_POS2_OTHER_WORLD));
             state.setOriginPos2(null);

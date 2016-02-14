@@ -30,6 +30,7 @@ import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
 import org.apache.commons.lang.Validate;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class SaveCurrentArena extends SubCommand {
 
@@ -53,7 +54,7 @@ public class SaveCurrentArena extends SubCommand {
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         sender.sendMessage(SkyTrans.get(TransKey.SWS_SAVE_SAVING));
-        SkyArenaConfig config = states.getSetupState(sender.getName()).convertToArenaConfig();
+        SkyArenaConfig config = states.getSetupState(((Player) sender).getUniqueId()).convertToArenaConfig();
         plugin.getConfiguration().saveArena(config);
         try {
             ((SkyWarsPlugin) plugin).getWorldHandler().loadNewArena(config);

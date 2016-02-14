@@ -23,6 +23,7 @@ import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class EnoughSpawnsSetCondition implements CommandPreCondition, CommandFilter {
 
@@ -34,13 +35,13 @@ public class EnoughSpawnsSetCondition implements CommandPreCondition, CommandFil
 
     @Override
     public boolean canContinue(CommandSender sender, SubCommand subCommand) {
-        SetupData state = states.getSetupState(sender.getName());
+        SetupData state = states.getSetupState(((Player)sender).getUniqueId());
         return state != null && state.getSpawns().size() >= 2;
     }
 
     @Override
     public boolean canContinue(CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        SetupData state = states.getSetupState(sender.getName());
+        SetupData state = states.getSetupState(((Player)sender).getUniqueId());
         return state != null && state.getSpawns().size() >= 2;
     }
 

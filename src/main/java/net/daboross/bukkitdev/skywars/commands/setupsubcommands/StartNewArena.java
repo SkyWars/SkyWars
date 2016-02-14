@@ -27,6 +27,7 @@ import net.daboross.bukkitdev.skywars.commands.setupstuff.WESetupData;
 import org.apache.commons.lang.Validate;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class StartNewArena extends SubCommand {
 
@@ -52,7 +53,7 @@ public class StartNewArena extends SubCommand {
         }
         state.setArenaName(subCommandArgs[0]);
         state.setSaveFile(plugin.getConfiguration().getArenaFolder().resolve(subCommandArgs[0] + ".yml"));
-        states.setSetupState(sender.getName(), state);
+        states.setSetupState(((Player) sender).getUniqueId(), state);
         sender.sendMessage(SkyTrans.get(TransKey.SWS_START_CONFIRMATION, subCommandArgs[0]));
     }
 }
