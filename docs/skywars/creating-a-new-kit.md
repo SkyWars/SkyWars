@@ -16,6 +16,7 @@ Warning: Make sure you've restarted the server since the last time you edited `k
 3. Use **/sws createkit** while you have all the items in your inventory. This will save all items to the kit file, and the kit will be available immediately after you use this successfully.
 
    Example usages:
+
    | :--- | :---  | :--- |
    | Completely free kit, usable by everyone            | **/sws createkit SuperAwesomeKit** |
    | Kit which costs $100 per round, usable by everyone | **/sws createkit EvenMoreAwesomeKit 100** |
