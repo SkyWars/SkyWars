@@ -5,6 +5,8 @@ Note: This feature is not complete, and won't be released until 2.1.0.
 
 See [Configuring Kits](https://dabo.guru/projects/skywars/configuring-kits) on how to manually make a kit by entering config values.
 
+Warning: Make sure you've restarted the server since the last time you edited `kits.yml`. Using **/sws createkit** will overwrite any changes made to `kits.yml` since the last restart.
+
 1. Gather all items you want to be in the kit in your inventory. Armor slots will also be used when saving the kit.
 
 2. Decide on a kit name, a cost for the kit, and a permission to access it.
@@ -14,7 +16,7 @@ See [Configuring Kits](https://dabo.guru/projects/skywars/configuring-kits) on h
 3. Use **/sws createkit** while you have all the items in your inventory. This will save all items to the kit file, and the kit will be available immediately after you use this successfully.
 
    Example usages:
-
+   | :--- | :---  | :--- |
    | Completely free kit, usable by everyone            | **/sws createkit SuperAwesomeKit** |
    | Kit which costs $100 per round, usable by everyone | **/sws createkit EvenMoreAwesomeKit 100** |
    | Kit which is free, but requires the **server.donor** permission to use | **/sws createkit DonorKit 0 server.donor** |
@@ -22,6 +24,4 @@ See [Configuring Kits](https://dabo.guru/projects/skywars/configuring-kits) on h
 
 4. You're done!
 
-Bonus:
-
-If you want to remove your kit, or tweak it slightly, you can check out [Configuring Kits](https://dabo.guru/projects/skywars/configuring-kits)
+There are also 4 default kits provided in kits.yml. If you want to modify any existing kits, or remove them, check out [Configuring Kits](https://dabo.guru/projects/skywars/configuring-kits)

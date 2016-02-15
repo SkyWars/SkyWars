@@ -5,7 +5,7 @@ This file is located at `plugins/SkyWars/kits.yml`.
 
 Note: This document is on how to manually type in new kits into the config.
 
-For a much simpler way to do this in game just using your inventory, check out [Creating a new kit](https://dabo.guru/projects/skywars/create-a-new-kit). (Note that this is only in 2.1.0, which hasn't been released!)
+For a much simpler way to do this in game just using your inventory, check out [Creating a new kit](https://dabo.guru/projects/skywars/creating-a-new-kit). (Note that this is only in 2.1.0, which hasn't been released!)
 
 ```yaml
 # ####### kits.yml #######
@@ -16,6 +16,7 @@ For a much simpler way to do this in game just using your inventory, check out [
 # https://dabo.guru/projects/skywars/configuring-kits
 # #########
 
+# Note that to enable most of these kits, you must enable economy support in main-config.yml.
 bowman:
   # This kit has a cost of $100. The cost is charged every game in which it is used.
   cost: 100

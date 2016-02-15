@@ -32,7 +32,7 @@ Commands and Permissions
 
 For a full guide on using the setup commands, check out [Setting up a new arena](https://dabo.guru/projects/skywars/creating-an-arena).
 
-For a full guide on **/sws createkit**, check out [Creating a new kit](https://dabo.guru/projects/skywars/create-a-new-kit)
+For a full guide on **/sws createkit**, check out [Creating a new kit](https://dabo.guru/projects/skywars/creating-a-new-kit)
 
 
 ### Permissions
