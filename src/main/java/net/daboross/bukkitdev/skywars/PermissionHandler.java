@@ -29,7 +29,7 @@ public class PermissionHandler {
     public void setupPermissions() {
         PluginManager pm = Bukkit.getPluginManager();
         addEveryonePermissions(pm, "join", "leave", "status", "version", "lobby");
-        addOpOnlyPermissions(pm, "kit", "setlobby", "setportal", "cancel", "cancelall", "report", "setup", "forcestart");
+        addOpOnlyPermissions(pm, "kit", "testkit", "setlobby", "setportal", "cancel", "cancelall", "report", "setup", "forcestart");
         updateBasePermission(pm);
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014 Dabo Ross <http://www.daboross.net/>
+ * Copyright (C) 2016 Dabo Ross <http://www.daboross.net/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,39 +19,32 @@ package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
-import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
+import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
-public class CancelCommand extends SubCommand {
+public class TestKitCommand extends SubCommand {
 
     private final SkyWars plugin;
 
-    public CancelCommand(SkyWars plugin) {
-        super("cancel", true, "skywars.cancel", SkyTrans.get(TransKey.CMD_CANCEL_DESCRIPTION));
-        addArgumentNames(SkyTrans.get(TransKey.CMD_CANCEL_ARGUMENT));
+    public TestKitCommand(SkyWars plugin) {
+        super("testkit", false, "skywars.testkit", SkyTrans.get(TransKey.CMD_TESTKIT_DESCRIPTION));
+        addArgumentNames(SkyTrans.get(TransKey.CMD_KIT_ARGUMENT));
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.LESS_THAN, 2, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
-        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.GREATER_THAN, 0, SkyTrans.get(TransKey.NOT_ENOUGH_PARAMS)));
         this.plugin = plugin;
     }
 
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        int id;
-        try {
-            id = Integer.parseInt(subCommandArgs[0]);
-        } catch (NumberFormatException ex) {
-            sender.sendMessage(SkyTrans.get(TransKey.CMD_CANCEL_NOT_AN_INT, subCommandArgs[0]));
-            return;
+        SkyKit kit = plugin.getKits().getKit(subCommandArgs[0]);
+        if (kit == null) {
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_TESTKIT_UNKNOWN, subCommandArgs[0]));
+        } else {
+            kit.applyTo((Player)sender);
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_TESTKIT_APPLIED, subCommandArgs[0]));
         }
-        SkyIDHandler idh = plugin.getIDHandler();
-        if (idh.getGame(id) == null) {
-            sender.sendMessage(SkyTrans.get(TransKey.CMD_CANCEL_NO_GAMES_WITH_ID, id));
-            return;
-        }
-        sender.sendMessage(SkyTrans.get(TransKey.CMD_CANCEL_CONFIRMATION, id));
-        plugin.getGameHandler().endGame(id, true);
     }
 }

@@ -29,16 +29,35 @@ bowman:
     - {type: ARROW, amount: 16}
     # When amount is not given, it defaults to 1.
     - {type: BOW}
+whacker:
+  cost: 20
+  items:
+    - {type: STICK, enchantments: {KNOCKBACK: 3}}
+potions:
+  # This kit demonstrates how to enter potions into kits.
+  cost: 100
+  items:
+    # this is a drinkable invisibility potion
+    # duration is given in seconds, default is 120.
+    - {type: POTION, amount: 2, effects: [{type: INVISIBILITY, duration: 480}]}
+    # this potion is a double edged sword - it gives speed, and poison.
+    # however, the poison effect has an extended time, and the speed doesn't.
+    - {type: POTION, amount: 2, splash: true, effects: [
+                              {type: POISON, duration: 120},
+                              {type: SPEED, duration: 80}]}
+    # Full heal - the higher the amplifier, the more effect it has.
+    - {type: POTION, amount: 4, effects: [{type: HEAL, amplifier: 5}]}
+
 diamond-swordsman:
   # You can define a permission, a cost, or both for a kit.
   # When you define a permission, the kit is only shown to people with that
   # permission. This allows you to make kits only available to donors.
-  permission: server.donor.kit
+  permission: server.donor
   items:
-    - {type: DIAMOND_SWORD, amount: 1, enchantments: {KNOCKBACK: 2}}
+    - {type: DIAMOND_SWORD, amount: 1}
 full-donor-armor:
   # This kit is only available to donors, but it also costs $500 each game!
-  permission: server.donor.kit
+  permission: server.donor
   cost: 500
   # You can define a helmet, chestplate, leggings and boots.
   # These will automatically be placed in the armor slots of the player.
@@ -48,9 +67,10 @@ full-donor-armor:
   # See link above for exact enchantment names
   boots: {type: DIAMOND_BOOTS, enchantments: {PROTECTION_FALL: 2}}
 ```
-For a complete list of material names to use, see https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html.
+Complete list of possible names:
+- Materials: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html.
+- Enchantments: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/enchantments/Enchantment.html.
+- Potions: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
 
-For a complete list of enchantment names to use, see https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/enchantments/Enchantment.html.
-
-Both of those links have more information than needed, but they are continually the most up to date lists of full names.
-All you need to use a material or enchantment is the UPPERCASE_NAME.
+The links above have more information than needed, but they are continually the most up to date lists of full names.
+All you need to use a material, enchantment or potion is the UPPERCASE name.

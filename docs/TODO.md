@@ -17,3 +17,4 @@ SkyWars Tasks
 - Import schematics into .blocks files.
 - Respawn immediately
 - Implement `/sws createkit`
+- Figure out what potion extra effect "duration" is counted in.

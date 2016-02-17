@@ -35,6 +35,7 @@ public class KitCommand extends SubCommand {
 
     public KitCommand(SkyWars plugin) {
         super("kit", false, "skywars.kit", SkyTrans.get(TransKey.CMD_KIT_DESCRIPTION));
+        addArgumentNames(SkyTrans.get(TransKey.CMD_KIT_ARGUMENT));
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.LESS_THAN, 2, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
         this.plugin = plugin;
     }
