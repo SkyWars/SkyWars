@@ -28,3 +28,6 @@ Index
 * [SkyWars API Overview](https://dabo.guru/projects/skywars/api-overview)
 * [Testing SkyWars](https://dabo.guru/projects/skywars/testing-skywars)
 * [MCStats Statistics](http://mcstats.org/plugin/SkyWars)
+
+#### References
+* [Full kits.yml Reference of Valid Values](https://dabo.guru/projects/skywars/reference/kits/)
