@@ -18,13 +18,23 @@ package net.daboross.bukkitdev.skywars.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import org.apache.commons.lang.Validate;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Damageable;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Team;
 
 public class CrossVersion {
 
+    /**
+     * Supports Bukkit earlier than 1.6. TODO: removable?
+     */
     public static void setHealth(Damageable d, double health) {
         Validate.notNull(d, "Damageable cannot be null");
         try {
@@ -40,6 +50,9 @@ public class CrossVersion {
         }
     }
 
+    /**
+     * Supports Bukkit earlier than 1.6. TODO: removable?
+     */
     public static double getMaxHealth(Damageable d) {
         Validate.notNull(d, "Damageable cannot be null");
         try {
@@ -58,6 +71,45 @@ public class CrossVersion {
                 SkyStatic.getLogger().log(Level.WARNING, "Couldn't find / use .getMaxHealth method of LivingEntity!", ex);
             }
             return 10;
+        }
+    }
+
+    /**
+     * Supports Bukkit earlier than Spigot Bukkit-1.8.4
+     */
+    public static Collection<Entity> getNearbyEntities(Location location, double x, double y, double z) {
+        World world = location.getWorld();
+        try {
+            return world.getNearbyEntities(location, x, y, z);
+        } catch (NoSuchMethodError ignored) {
+            Entity entity = world.spawnEntity(location, EntityType.EXPERIENCE_ORB);
+            Collection<Entity> result = entity.getNearbyEntities(x, y, z);
+            entity.remove();
+            return result;
+        }
+    }
+
+    /**
+     * Supports Bukkit earlier than Spigot Bukkit-1.8.7
+     */
+    @SuppressWarnings("deprecation")
+    public static void addPlayerToTeam(Team team, Player player) {
+        try {
+            team.addEntry(player.getName());
+        } catch (NoSuchMethodError ignored) {
+            team.addPlayer(player);
+        }
+    }
+
+    /**
+     * Supports Bukkit earlier than Spigot Bukkit-1.8.7
+     */
+    @SuppressWarnings("deprecation")
+    public static void removePlayerFromTeam(Team team, Player player) {
+        try {
+            team.removeEntry(player.getName());
+        } catch (NoSuchMethodError ignored) {
+            team.removePlayer(player);
         }
     }
 }

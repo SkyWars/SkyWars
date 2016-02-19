@@ -24,6 +24,7 @@ import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.events.events.GameEndInfo;
 import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveGameInfo;
+import net.daboross.bukkitdev.skywars.util.CrossVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -53,7 +54,7 @@ public class TeamScoreboardListener {
                 for (UUID uuid : gameTeam.getAlive()) {
                     SkyStatic.debug("Adding (uuid: %s) to scoreboard team %s", uuid, teamName);
                     Player player = Bukkit.getPlayer(uuid);
-                    team.addEntry(player.getName());
+                    CrossVersion.addPlayerToTeam(team, player);
                     teams.put(uuid, team);
                     player.setScoreboard(board);
                 }
@@ -64,7 +65,7 @@ public class TeamScoreboardListener {
     public void onPlayerLeaveGame(PlayerLeaveGameInfo info) {
         Team team = teams.remove(info.getPlayer().getUniqueId());
         if (team != null) {
-            team.removeEntry(info.getPlayer().getName());
+            CrossVersion.removePlayerFromTeam(team, info.getPlayer());
         }
     }
 

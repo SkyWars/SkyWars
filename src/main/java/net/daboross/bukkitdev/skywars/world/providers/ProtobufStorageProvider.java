@@ -36,6 +36,7 @@ import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
+import net.daboross.bukkitdev.skywars.util.CrossVersion;
 import net.daboross.bukkitdev.skywars.world.VoidGenerator;
 import net.daboross.bukkitdev.skywars.world.WorldProvider;
 import org.apache.commons.lang.Validate;
@@ -140,7 +141,7 @@ public class ProtobufStorageProvider implements WorldProvider {
         }
         SkyBlockLocation halfDistance = new SkyBlockLocation((clearingMax.x - clearingMin.x) / 2, (clearingMax.y - clearingMin.y) / 2, (clearingMax.z - clearingMin.z) / 2, null);
         Location center = clearingMin.add(halfDistance).toLocationWithWorldObj(arenaWorld);
-        for (Entity entity : arenaWorld.getNearbyEntities(center, halfDistance.x, halfDistance.y, halfDistance.z)) {
+        for (Entity entity : CrossVersion.getNearbyEntities(center, halfDistance.x, halfDistance.y, halfDistance.z)) {
             entity.remove();
         }
     }
