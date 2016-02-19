@@ -37,16 +37,38 @@ potions:
   # This kit demonstrates how to enter potions into kits.
   cost: 100
   items:
+    # Potions:
+    # There are two ways to add potions to an item:
+    #
+    # Using `potion: {TYPE, extended: true/false, splash: true/false, level: 1/2}`
+    # will turn the item into one of the set potions in minecraft, and update the
+    # item name and lore accordingly. TYPE in this case is a PotionType, see links below.
+    #
+    # You can also add "custom" potion effects, using:
+    # `extra-effects: [{type: TYPE, duration: SECONDS, amplifier: AMPLIFIER}, {type: TYPE2, ...}]`
+    # For extra-effects, TYPE is a PotionEffectType, see the links below. SECONDS is how long it
+    # will last, AMPLIFIER is similar to a potion level, but can go up to 128. amplifier: 0
+    # represents the default effects, and is the default value.
+    #
+    # When adding custom potion effects, it is recommended to still have one "regular" potion set.
+    # Even if you override it with a custom effect, it will allow the item's name and lore to
+    # update for the potion it holds.
+
     # this is a drinkable invisibility potion
-    # duration is given in seconds, default is 120.
-    - {type: POTION, amount: 2, effects: [{type: INVISIBILITY, duration: 480}]}
+    - {type: POTION, amount: 2, potion: {type: INVISIBILITY}}
     # this potion is a double edged sword - it gives speed, and poison.
-    # however, the poison effect has an extended time, and the speed doesn't.
-    - {type: POTION, amount: 2, splash: true, effects: [
-                              {type: POISON, duration: 120},
-                              {type: SPEED, duration: 80}]}
+    # however, the speed lasts a bit longer than the poison does.
+    - {type: POTION, amount: 2, potion: {type: SPEED, splash: true},
+                          extra-effects: [
+                            # this will overwrite the main speed effect, while allowing the text to remain.
+                            # I honestly have no idea what this duration is counted in.
+                            {type: SPEED, duration: 2000},
+                            {type: POISON, duration: 1000}
+                          ]}
     # Full heal - the higher the amplifier, the more effect it has.
-    - {type: POTION, amount: 4, effects: [{type: HEAL, amplifier: 5}]}
+    - {type: POTION, amount: 3, potion: {type: HEAL, splash: true}}
+    - {type: POTION, amount: 4, potion: {type: HEAL, splash: true},
+                          extra-effects: [{type: HEAL, amplifier: 5}]}
 
 diamond-swordsman:
   # You can define a permission, a cost, or both for a kit.
@@ -68,9 +90,14 @@ full-donor-armor:
   boots: {type: DIAMOND_BOOTS, enchantments: {PROTECTION_FALL: 2}}
 ```
 Complete list of possible names:
-- Materials: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html.
-- Enchantments: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/enchantments/Enchantment.html.
-- Potions: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
+- Materials:
+  - https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html.
+- Enchantments:
+  - https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/enchantments/Enchantment.html.
+- Potions (potion: {type: ...}):
+  -https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionType.html
+- Potions (extra-effects: [{type: ...}]):
+  - https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html
 
 The links above have more information than needed, but they are continually the most up to date lists of full names.
 All you need to use a material, enchantment or potion is the UPPERCASE name.
