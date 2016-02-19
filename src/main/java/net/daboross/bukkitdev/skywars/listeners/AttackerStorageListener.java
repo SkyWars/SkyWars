@@ -79,6 +79,7 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
                 } else {
                     lastHitUuid.remove(uuid);
                 }
+                //noinspection RedundantCast // for Bukkit 1.7.10
                 lastHitName.put(uuid, ((HumanEntity) damager).getName());
             } else if (damager instanceof Projectile) {
                 ProjectileSource shooter = ((Projectile) damager).getShooter();
@@ -100,6 +101,7 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
                     }
                 }
             } else if (damager instanceof LivingEntity) {
+                //noinspection RedundantCast // for Bukkit 1.7.10
                 String customName = ((LivingEntity) damager).getCustomName();
                 lastHitUuid.remove(uuid);
                 lastHitName.put(uuid, customName == null ? damager.getType().toString() : customName);
