@@ -32,6 +32,7 @@ import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKits;
+import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -75,20 +76,24 @@ public class SkyKitConfiguration implements SkyKits {
     }
 
     @Override
-    public void save() {
+    public void save() throws IOException {
         Path kitFile = plugin.getDataFolder().toPath().resolve("kits.yml");
         if (!Files.exists(kitFile)) {
             plugin.saveResource("kits.yml", true);
         }
-        FileConfiguration config = YamlConfiguration.loadConfiguration(kitFile.toFile());
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(kitFile.toFile());
         for (SkyKit kit : kits.values()) {
             SkyKitEnconder.encodeKit(kit, config);
         }
-        try {
-            config.save(kitFile.toFile());
-        } catch (IOException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to save kit file", e);
-        }
+        config.options().header(String.format(KIT_HEADER)).indent(2);
+        config.save(kitFile.toFile());
+    }
+
+    @Override
+    public void addKit(SkyKit kit) {
+        Validate.notNull(kit);
+        Validate.isTrue(!kits.containsKey(kit.getName()), "Kit already exists!");
+        kits.put(kit.getName(), kit);
     }
 
     @Override
@@ -131,4 +136,12 @@ public class SkyKitConfiguration implements SkyKits {
         }
         return list;
     }
+
+    private static final String KIT_HEADER = "####### kits.yml #######%n" +
+            "%n" +
+            "Kit configuration%n" +
+            "#%n" +
+            "For documentation, please visit%n" +
+            "https://dabo.guru/projects/skywars/configuring-kits%n" +
+            "#########";
 }

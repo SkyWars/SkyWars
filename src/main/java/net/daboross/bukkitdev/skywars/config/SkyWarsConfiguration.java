@@ -437,14 +437,5 @@ public class SkyWarsConfiguration implements SkyConfiguration {
                 + "For documentation, please visit %n"
                 + "https://dabo.guru/projects/skywars/configuring-arenas%n"
                 + "#######";
-        private static final String PARENT = "####### arena-parent.yml ###%n"
-                + "Any settings that an individual arena config leaves out will be inherited%n"
-                + " from this arena config.%n"
-                + "%n"
-                + "All comment changes will be removed.%n"
-                + "%n"
-                + "For documentation, please visit %n"
-                + "https://dabo.guru/projects/skywars/configuring-parent%n"
-                + "#######";
     }
 }

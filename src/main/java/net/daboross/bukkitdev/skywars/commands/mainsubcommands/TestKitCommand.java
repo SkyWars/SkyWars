@@ -33,6 +33,7 @@ public class TestKitCommand extends SubCommand {
     public TestKitCommand(SkyWars plugin) {
         super("testkit", false, "skywars.testkit", SkyTrans.get(TransKey.CMD_TESTKIT_DESCRIPTION));
         addArgumentNames(SkyTrans.get(TransKey.CMD_KIT_ARGUMENT));
+        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.GREATER_THAN, 0, SkyTrans.get(TransKey.NOT_ENOUGH_PARAMS)));
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.LESS_THAN, 2, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
         this.plugin = plugin;
     }

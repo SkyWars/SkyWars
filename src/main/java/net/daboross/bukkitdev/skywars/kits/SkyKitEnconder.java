@@ -80,8 +80,10 @@ public class SkyKitEnconder {
      * neccessary for armor.
      */
     public static void encodeArmorItemToConfig(SkyKitItem item, ConfigurationSection armorSection) {
-        armorSection.set("type", item.getMaterial());
-        armorSection.set("amount", item.getAmount());
+        armorSection.set("type", item.getMaterial().name());
+        if (item.getAmount() != 1) {
+            armorSection.set("amount", item.getAmount());
+        }
 
         Map<Enchantment, Integer> enchantments = item.getEnchantments();
         if (enchantments != null) {
@@ -95,7 +97,9 @@ public class SkyKitEnconder {
     public static Map<String, Object> encodeItemToMap(SkyKitItem item) {
         Map<String, Object> result = new HashMap<>();
         result.put("type", item.getMaterial().name());
-        result.put("amount", item.getAmount());
+        if (item.getAmount() != 1) {
+            result.put("amount", item.getAmount());
+        }
         Map<Enchantment, Integer> enchantments = item.getEnchantments();
 
         if (enchantments != null) {
@@ -128,7 +132,9 @@ public class SkyKitEnconder {
     public static Map<String, Object> encodePotionEffect(PotionEffect effect) {
         Map<String, Object> result = new HashMap<>(3); // type, amplifier, duration
         result.put("type", effect.getType().getName());
-        result.put("amplifier", effect.getAmplifier());
+        if (effect.getAmplifier() != 0) {
+            result.put("amplifier", effect.getAmplifier());
+        }
         result.put("duration", effect.getDuration());
         return result;
     }

@@ -43,7 +43,7 @@ public class CancelCommand extends SubCommand {
         try {
             id = Integer.parseInt(subCommandArgs[0]);
         } catch (NumberFormatException ex) {
-            sender.sendMessage(SkyTrans.get(TransKey.CMD_CANCEL_NOT_AN_INT, subCommandArgs[0]));
+            sender.sendMessage(SkyTrans.get(TransKey.NOT_AN_INTEGER, subCommandArgs[0]));
             return;
         }
         SkyIDHandler idh = plugin.getIDHandler();
