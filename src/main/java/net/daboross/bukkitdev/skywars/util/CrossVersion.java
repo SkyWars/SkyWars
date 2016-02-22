@@ -25,7 +25,9 @@ import org.bukkit.entity.Damageable;
 
 public class CrossVersion {
 
-    public static void setHealth(Damageable d, double health) {
+	private CrossVersion() {}
+	
+	public static void setHealth(Damageable d, double health) {
         Validate.notNull(d, "Damageable cannot be null");
         try {
             d.setHealth(health);

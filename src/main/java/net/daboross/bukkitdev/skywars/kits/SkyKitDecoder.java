@@ -34,6 +34,7 @@ import org.bukkit.enchantments.Enchantment;
 
 public class SkyKitDecoder {
 
+	private SkyKitDecoder() {}
     public static SkyKit decodeKit(ConfigurationSection section, String name) throws SkyConfigurationException {
         SkyKitItem[] armor;
         try {
