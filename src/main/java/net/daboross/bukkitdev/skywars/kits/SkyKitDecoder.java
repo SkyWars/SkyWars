@@ -27,8 +27,8 @@ import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
 import net.daboross.bukkitdev.skywars.api.kits.SkyItemMeta;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKitItem;
-import net.daboross.bukkitdev.skywars.api.kits.impl.SkyItemExtraEffects;
-import net.daboross.bukkitdev.skywars.api.kits.impl.SkyItemPotion;
+import net.daboross.bukkitdev.skywars.api.kits.impl.SkyExtraEffectsMeta;
+import net.daboross.bukkitdev.skywars.api.kits.impl.SkyPotionMeta;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyKitConfig;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyKitItemConfig;
 import org.bukkit.Material;
@@ -209,7 +209,7 @@ public class SkyKitDecoder {
         Object potionO = map.get("potion");
         if (potionO != null) {
             if (potionO instanceof Map) {
-                meta.add(new SkyItemPotion(decodePotion((Map) potionO)));
+                meta.add(new SkyPotionMeta(decodePotion((Map) potionO)));
             } else {
                 throw new SkyConfigurationException("Potion invalid (not a map)!");
             }
@@ -230,7 +230,7 @@ public class SkyKitDecoder {
             } else {
                 throw new SkyConfigurationException("Effects invalid (not a list)!");
             }
-            meta.add(new SkyItemExtraEffects(effects));
+            meta.add(new SkyExtraEffectsMeta(effects));
         }
         return new SkyKitItemConfig(type, amount, enchantments, meta);
     }

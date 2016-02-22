@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.kits;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -70,6 +71,23 @@ public class SkyKitConfiguration implements SkyKits {
             } else {
                 plugin.getLogger().log(Level.WARNING, "There is a non-kit value in the kits.yml file ''{0}''.", config.get(key));
             }
+        }
+    }
+
+    @Override
+    public void save() {
+        Path kitFile = plugin.getDataFolder().toPath().resolve("kits.yml");
+        if (!Files.exists(kitFile)) {
+            plugin.saveResource("kits.yml", true);
+        }
+        FileConfiguration config = YamlConfiguration.loadConfiguration(kitFile.toFile());
+        for (SkyKit kit : kits.values()) {
+            SkyKitEnconder.encodeKit(kit, config);
+        }
+        try {
+            config.save(kitFile.toFile());
+        } catch (IOException e) {
+            plugin.getLogger().log(Level.SEVERE, "Failed to save kit file", e);
         }
     }
 
