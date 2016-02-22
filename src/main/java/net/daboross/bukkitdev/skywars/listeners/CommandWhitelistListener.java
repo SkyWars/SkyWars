@@ -34,17 +34,13 @@ public class CommandWhitelistListener implements Listener {
 
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent evt) {
-        SkyConfiguration config = plugin.getConfiguration();
-        if (config.isCommandWhitelistEnabled()) {
-            if (plugin.getCurrentGameTracker().isInGame(evt.getPlayer().getUniqueId())) {
-                Pattern pattern = config.getCommandWhitelistCommandRegex();
-                if (pattern != null) {
-                    if (config.isCommandWhitelistABlacklist() == pattern.matcher(evt.getMessage()).find()) {
-                        plugin.getLogger().log(Level.INFO, "[CommandWhitelist] Blocked command ''{0}'' sent by {1}", new Object[]{evt.getMessage(), evt.getPlayer().getName()});
-                        evt.setCancelled(true);
-                    }
-                }
-            }
-        }
+    	SkyConfiguration config = plugin.getConfiguration();
+    	if (config.isCommandWhitelistEnabled() && plugin.getCurrentGameTracker().isInGame(evt.getPlayer().getUniqueId())) {
+    		Pattern pattern = config.getCommandWhitelistCommandRegex();
+    		if (pattern != null && config.isCommandWhitelistABlacklist() == pattern.matcher(evt.getMessage()).find()) {
+    			plugin.getLogger().log(Level.INFO, "[CommandWhitelist] Blocked command ''{0}'' sent by {1}", new Object[]{evt.getMessage(), evt.getPlayer().getName()});
+    			evt.setCancelled(true);
+    		}
+    	}
     }
 }

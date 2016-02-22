@@ -39,6 +39,29 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class TranslationsConfiguration implements SkyTranslations {
 
+    private static final String MESSAGES_FILE_HEADER = "### messages.yml ###\n"
+            + "Note! If you are editing this file, set auto-update to false. \n"
+            + "If auto-update is left true, all changed values will be overwritten.\n"
+            + "\n"
+            + "When auto-update is false, new values will be added, but existing ones won't\n"
+            + "be touched. When there is a new version of existing values available, SkyWars\n"
+            + "will create a 'messages.new.yml' file containing the updated messages, that\n"
+            + "you are free to copy from.\n"
+            + "\n"
+            + "The messages-version key is used to keep track of when updated messages are\n"
+            + "available, no matter what the setting of auto-update is. The messages-locale is\n"
+            + "also automatic, you should edit the locale in main-config.yml if you want to change\n"
+            + "it.";
+    private static final String NEW_MESSAGES_FILE_HEADER = "### messages.new.yml ###\n"
+            + "This file was generated because you have auto-update set to false in the\n"
+            + "messages.yml file, and there are updated messages available.\n"
+            + "\n"
+            + "If you've updated the configuration to your desire, you can set the\n"
+            + "config-version in messages.yml to %s to stop this file from re-generating,\n"
+            + "then delete it.\n"
+            + "\n"
+            + "No changes to this file will persist!";
+    
     private final SkyWars plugin;
     private final Path configFile;
     private final Path newConfigFile;
@@ -183,27 +206,4 @@ public class TranslationsConfiguration implements SkyTranslations {
     public String get(TransKey key) {
         return values.get(key);
     }
-
-    private static final String MESSAGES_FILE_HEADER = "### messages.yml ###\n"
-            + "Note! If you are editing this file, set auto-update to false. \n"
-            + "If auto-update is left true, all changed values will be overwritten.\n"
-            + "\n"
-            + "When auto-update is false, new values will be added, but existing ones won't\n"
-            + "be touched. When there is a new version of existing values available, SkyWars\n"
-            + "will create a 'messages.new.yml' file containing the updated messages, that\n"
-            + "you are free to copy from.\n"
-            + "\n"
-            + "The messages-version key is used to keep track of when updated messages are\n"
-            + "available, no matter what the setting of auto-update is. The messages-locale is\n"
-            + "also automatic, you should edit the locale in main-config.yml if you want to change\n"
-            + "it.";
-    private static final String NEW_MESSAGES_FILE_HEADER = "### messages.new.yml ###\n"
-            + "This file was generated because you have auto-update set to false in the\n"
-            + "messages.yml file, and there are updated messages available.\n"
-            + "\n"
-            + "If you've updated the configuration to your desire, you can set the\n"
-            + "config-version in messages.yml to %s to stop this file from re-generating,\n"
-            + "then delete it.\n"
-            + "\n"
-            + "No changes to this file will persist!";
 }
