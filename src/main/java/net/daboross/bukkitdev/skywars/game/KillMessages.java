@@ -33,6 +33,8 @@ public class KillMessages {
                     return SkyTrans.get(TransKey.GAME_DEATH_FORFEITED, player);
                 case OTHER:
                     return SkyTrans.get(TransKey.GAME_DEATH_KILLED_BY_ENVIRONMENT, player);
+                default:
+                    break;
             }
         } else {
             switch (reason) {
@@ -42,6 +44,8 @@ public class KillMessages {
                     return SkyTrans.get(TransKey.GAME_DEATH_FORFEITED_WHILE_ATTACKED, damager, player);
                 case OTHER:
                     return SkyTrans.get(TransKey.GAME_DEATH_KILLED_BY_PLAYER, damager, player);
+                default:
+                    break;
             }
         }
         throw new IllegalArgumentException("Unknown reason");

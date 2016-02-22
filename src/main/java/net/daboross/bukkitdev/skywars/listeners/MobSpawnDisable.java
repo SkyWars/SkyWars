@@ -39,7 +39,13 @@ public class MobSpawnDisable implements Listener {
                     case Statics.ARENA_WORLD_NAME:
                     case Statics.BASE_WORLD_NAME:
                         evt.setCancelled(true);
+                        break;
+                    default:
+                        break;
                 }
+                break;
+            default:
+                break;
         }
     }
 }

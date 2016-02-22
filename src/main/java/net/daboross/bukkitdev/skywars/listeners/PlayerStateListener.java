@@ -51,6 +51,8 @@ public class PlayerStateListener implements Listener {
             case WAITING_FOR_RESPAWN:
                 plugin.getGameHandler().respawnPlayer(player);
                 break;
+            default:
+            	break;
         }
         plugin.getPlayers().unloadPlayer(player.getUniqueId());
     }
