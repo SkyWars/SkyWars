@@ -24,6 +24,7 @@ import net.daboross.bukkitdev.skywars.api.players.SkyPlayer;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.events.events.PlayerJoinQueueInfo;
+import net.daboross.bukkitdev.skywars.kits.KitUtils;
 import org.bukkit.entity.Player;
 
 public class KitQueueNotifier {
@@ -65,16 +66,6 @@ public class KitQueueNotifier {
     }
 
     private String generateKitList(List<SkyKit> kits) {
-        StringBuilder kitString = new StringBuilder();
-        String comma = SkyTrans.get(TransKey.KITS_KIT_LIST_COMMA);
-        for (SkyKit kit : kits) {
-            if (kit.getCost() == 0) {
-                kitString.append(kit.getName());
-            } else {
-                kitString.append(SkyTrans.get(TransKey.KITS_KIT_LIST_COST_ITEM, kit.getName(), kit.getCost()));
-            }
-            kitString.append(comma);
-        }
-        return SkyTrans.get(TransKey.KITS_KIT_LIST, kitString);
+        return SkyTrans.get(TransKey.KITS_KIT_LIST, KitUtils.formatKitList(kits));
     }
 }

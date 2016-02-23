@@ -25,6 +25,7 @@ import net.daboross.bukkitdev.skywars.api.players.SkyPlayer;
 import net.daboross.bukkitdev.skywars.api.players.SkyPlayerState;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
+import net.daboross.bukkitdev.skywars.kits.KitUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -109,30 +110,10 @@ public class KitCommand extends SubCommand {
     }
 
     private String getAvailableKitList(List<SkyKit> availableKits) {
-        String comma = SkyTrans.get(TransKey.KITS_KIT_LIST_COMMA);
-        StringBuilder result = new StringBuilder();
-        for (SkyKit kit : availableKits) {
-            if (kit.getCost() == 0) {
-                result.append(kit.getName());
-            } else {
-                result.append(SkyTrans.get(TransKey.KITS_KIT_LIST_COST_ITEM, kit.getName(), kit.getCost()));
-            }
-            result.append(comma);
-        }
-        return SkyTrans.get(TransKey.KITS_KIT_LIST, result);
+        return SkyTrans.get(TransKey.KITS_KIT_LIST, KitUtils.formatKitList(availableKits));
     }
 
     private String getUnavailableKitList(List<SkyKit> unavailableKits) {
-        String comma = SkyTrans.get(TransKey.KITS_KIT_LIST_COMMA);
-        StringBuilder result = new StringBuilder();
-        for (SkyKit kit : unavailableKits) {
-            if (kit.getCost() == 0) {
-                result.append(kit.getName());
-            } else {
-                result.append(SkyTrans.get(TransKey.KITS_KIT_LIST_COST_ITEM, kit.getName(), kit.getCost()));
-            }
-            result.append(comma);
-        }
-        return SkyTrans.get(TransKey.CMD_KIT_UNAVAILABLE_KITS, result);
+        return SkyTrans.get(TransKey.CMD_KIT_UNAVAILABLE_KITS, KitUtils.formatKitList(unavailableKits));
     }
 }

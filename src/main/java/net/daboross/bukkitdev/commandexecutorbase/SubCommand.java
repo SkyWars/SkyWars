@@ -32,8 +32,8 @@ import org.bukkit.command.CommandSender;
 public abstract class SubCommand {
 
     private final String commandName;
-    private String help;
-    private String permission;
+    private final String help;
+    private final String permission;
     private final List<String> argumentNames;
     private final List<CommandFilter> commandFilters;
     private final List<CommandPreCondition> helpConditions;
@@ -59,14 +59,6 @@ public abstract class SubCommand {
      */
     public SubCommand addArgumentNames(String... argumentNames) {
         this.argumentNames.addAll(Arrays.asList(argumentNames));
-        return this;
-    }
-
-    /**
-     * @return this, for chaining.
-     */
-    public SubCommand setPermission(String permission) {
-        this.permission = permission;
         return this;
     }
 
