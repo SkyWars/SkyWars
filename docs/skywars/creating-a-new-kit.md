@@ -1,8 +1,6 @@
 Creating a new kit
 ==================
 
-Note: This feature is not complete, and won't be released until 2.1.0.
-
 See [Configuring Kits](https://dabo.guru/projects/skywars/configuring-kits) on how to manually make a kit by entering config values.
 
 Warning: Make sure you've restarted the server since the last time you edited `kits.yml`. Using **/sws createkit** will overwrite any changes made to `kits.yml` since the last restart.
