@@ -95,10 +95,14 @@ public class ScoreStorage extends SkyStorage {
 
     @Override
     public void addScore(UUID uuid, int diff) {
-        if (timer != null) {
-            timer.dataChanged();
+        SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(uuid);
+        if (skyPlayer != null) {
+            skyPlayer.addScore(diff);
+        } else {
+            // Player is offline, use backend method directly.
+            backend.addScore(uuid, diff);
         }
-        backend.addScore(uuid, diff);
+        dataChanged();
     }
 
     @Override
@@ -120,6 +124,7 @@ public class ScoreStorage extends SkyStorage {
             // Player is offline, use backend method directly.
             backend.setScore(uuid, score);
         }
+        dataChanged();
     }
 
     @Override
