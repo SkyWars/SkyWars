@@ -50,6 +50,8 @@ public class GistReport {
     private static final String GIST_API = "https://api.github.com/gists";
     private static URL GIST_API_URL;
     private static final String ISGD_API = "http://is.gd/create.php?format=simple&url=%s";
+    
+    private GistReport() {}
 
     /**
      * @param plugin plugin
