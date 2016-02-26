@@ -38,6 +38,9 @@ public class MobSpawnDisable implements Listener {
                 if (Statics.ARENA_WORLD_NAME.equals(evt.getLocation().getWorld().getName())) {
                     evt.setCancelled(true);
                 }
+                break;
+            default:
+                break;
         }
     }
 }

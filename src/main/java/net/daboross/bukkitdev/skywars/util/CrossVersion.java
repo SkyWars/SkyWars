@@ -32,6 +32,9 @@ import org.bukkit.scoreboard.Team;
 
 public class CrossVersion {
 
+    private CrossVersion() {
+    }
+
     /**
      * Supports Bukkit earlier than 1.6. TODO: removable?
      */

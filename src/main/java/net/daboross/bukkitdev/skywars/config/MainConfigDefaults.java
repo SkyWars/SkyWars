@@ -38,6 +38,9 @@ public class MainConfigDefaults {
 //    public static final boolean PER_ARENA_DEATH_MESSAGES_ENABLED = true;
 //    public static final boolean PER_ARENA_WIN_MESSAGES_ENABLED = false;
 
+    private MainConfigDefaults() {
+    }
+
     public static class Score {
 
         public static final boolean ENABLE = true;
@@ -51,6 +54,9 @@ public class MainConfigDefaults {
         public static final String SQL_DATABASE = "minecraft";
         public static final String SQL_USERNAME = "root";
         public static final String SQL_PASSWORD = "aComplexPassword";
+
+        private Score() {
+        }
     }
 
     public static class Economy {
@@ -59,6 +65,9 @@ public class MainConfigDefaults {
         public static final int WIN_REWARD = 10;
         public static final int KILL_REWARD = 10;
         public static final boolean MESSAGE = true;
+
+        private Economy() {
+        }
     }
 
     public static class CommandWhitelist {
@@ -66,6 +75,9 @@ public class MainConfigDefaults {
         public static final boolean WHITELIST_ENABLED = true;
         public static final boolean IS_BLACKLIST = false;
         public static final List<String> COMMAND_WHITELIST = Arrays.asList("/skywars", "/sw", "/me");
+
+        private CommandWhitelist() {
+        }
     }
 
     public static class Hooks {
@@ -73,5 +85,8 @@ public class MainConfigDefaults {
         public static final boolean MULTIVERSE_CORE = true;
         public static final boolean MULTIVERSE_INVENTORIES = true;
         public static final boolean WORLDEDIT = true;
+
+        private Hooks() {
+        }
     }
 }

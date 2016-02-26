@@ -51,6 +51,9 @@ public class GistReport {
     private static URL GIST_API_URL;
     private static final String ISGD_API = "http://is.gd/create.php?format=simple&url=%s";
 
+    private GistReport() {
+    }
+
     /**
      * @param plugin plugin
      * @return Raw report text

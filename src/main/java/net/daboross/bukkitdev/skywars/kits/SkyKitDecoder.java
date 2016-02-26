@@ -28,9 +28,9 @@ import net.daboross.bukkitdev.skywars.api.kits.SkyItemMeta;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKitItem;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyExtraEffectsMeta;
-import net.daboross.bukkitdev.skywars.api.kits.impl.SkyPotionMeta;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyKitConfig;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyKitItemConfig;
+import net.daboross.bukkitdev.skywars.api.kits.impl.SkyPotionMeta;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
@@ -40,6 +40,9 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
 public class SkyKitDecoder {
+
+    private SkyKitDecoder() {
+    }
 
     public static SkyKit decodeKit(ConfigurationSection section, String name) throws SkyConfigurationException {
         SkyKitItem[] armor;

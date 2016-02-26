@@ -19,4 +19,7 @@ package net.daboross.bukkitdev.skywars.world;
 public class Statics {
 
     public static final String ARENA_WORLD_NAME = "SkyWarsArenaWorld";
+
+    private Statics() {
+    }
 }

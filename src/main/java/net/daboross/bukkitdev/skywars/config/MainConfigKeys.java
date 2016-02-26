@@ -33,6 +33,9 @@ public class MainConfigKeys {
 //    public static final String PER_ARENA_DEATH_MESSAGES_ENABLED = "enable-per-arena-death-messages";
 //    public static final String PER_ARENA_WIN_MESSAGES_ENABLED = "enable-per-arena-win-messages";
 
+    private MainConfigKeys() {
+    }
+
     public static class Score {
 
         public static final String ENABLE = "points.enable-points";
@@ -46,6 +49,9 @@ public class MainConfigKeys {
         public static final String SQL_DATABASE = "points.sql.database";
         public static final String SQL_USERNAME = "points.sql.username";
         public static final String SQL_PASSWORD = "points.sql.password";
+
+        private Score() {
+        }
     }
 
     public static class Economy {
@@ -54,6 +60,9 @@ public class MainConfigKeys {
         public static final String WIN_REWARD = "economy.win-reward";
         public static final String KILL_REWARD = "economy.kill-reward";
         public static final String MESSAGE = "economy.reward-messages";
+
+        private Economy() {
+        }
     }
 
     public static class CommandWhitelist {
@@ -61,6 +70,9 @@ public class MainConfigKeys {
         public static final String WHITELIST_ENABLED = "command-whitelist.whitelist-enabled";
         public static final String IS_BLACKLIST = "command-whitelist.treated-as-blacklist";
         public static final String COMMAND_WHITELIST = "command-whitelist.whitelist";
+
+        private CommandWhitelist() {
+        }
     }
 
     public static class Hooks {
@@ -68,11 +80,17 @@ public class MainConfigKeys {
         public static final String MULTIVERSE_CORE = "hooks.multiverse-core-hook";
         public static final String MULTIVERSE_INVENTORIES = "hooks.multiverse-inventories-hook";
         public static final String WORLDEDIT = "hooks.worldedit-hook";
+
+        private Hooks() {
+        }
     }
 
     public static class Deprecated {
 
         public static final String PREFIX_CHAT = "points.should-prefix-chat";
         public static final String CHAT_PREFIX = "points.chat-prefix";
+
+        private Deprecated() {
+        }
     }
 }

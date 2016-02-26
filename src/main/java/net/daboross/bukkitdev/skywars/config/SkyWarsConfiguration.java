@@ -415,6 +415,9 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
         private static final String MAIN = "main-config.yml";
         private static final String ARENAS = "arenas";
+
+        private Names() {
+        }
     }
 
     private static class Headers {
@@ -437,5 +440,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
                 + "For documentation, please visit %n"
                 + "https://dabo.guru/projects/skywars/configuring-arenas%n"
                 + "#######";
+
+        private Headers() {
+        }
     }
 }
