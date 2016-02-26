@@ -24,12 +24,12 @@ This way there is no long transfer period, and it supports all properly configur
  * SkyWars saves gamemode, health, hunger, potion status, and pretty much anything else you'd need to keep track of.
 * Use an unlimited number of arenas at the same time! The only limit is your server player capacity.
 * Use SkyWars's kit system to let players pay money each game for a kit, and give access to extra kits to donors through permissions support!
-* SkyWars is extremely customizable!
- * Creating a new arena has never been easier! No entering items into config files, just build the arena in game, fill starting chests, and use **/sws** to set spawn locations and save the arena!
- * Creating a new kit for players to use is as easy as filling your inventory, and using **/sws createkit**. (Note that this is only in 2.1.0, which hasn't been released!)
- * All messages sent to players by SkyWars are fully customizable. Give your server a unique feel by modifying messages, and message colors!
+* Craft your server's unique SkyWars experience!
+ * Create custom kits just by filling your inventory with the items you want!
+ * Create arenas without any entering items into config files! Just build the arena, set the spawns with **/sws** and [save it](https://dabo.guru/projects/skywars/creating-an-arena)!
+ * Change any and all messages sent by SkyWars to players in messages.yml!
 * Support for portals to step into and join the queue.
-* Economy rewards available for players who win games.
+* Custom economy rewards for winning games or killing in games.
 
 ## Installing SkyWars
 * Server must be running at least Java 7.
