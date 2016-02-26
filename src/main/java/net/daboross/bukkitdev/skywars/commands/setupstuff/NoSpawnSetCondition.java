@@ -35,13 +35,13 @@ public class NoSpawnSetCondition implements CommandPreCondition, CommandFilter {
 
     @Override
     public boolean canContinue(CommandSender sender, SubCommand subCommand) {
-        SetupData state = states.getSetupState(((Player)sender).getUniqueId());
+        SetupData state = states.getSetupState(((Player) sender).getUniqueId());
         return state == null || state.getSpawns().isEmpty();
     }
 
     @Override
     public boolean canContinue(CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        SetupData state = states.getSetupState(((Player)sender).getUniqueId());
+        SetupData state = states.getSetupState(((Player) sender).getUniqueId());
         return state == null || state.getSpawns().isEmpty();
     }
 

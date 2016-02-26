@@ -44,7 +44,7 @@ public class TestKitCommand extends SubCommand {
         if (kit == null) {
             sender.sendMessage(SkyTrans.get(TransKey.CMD_TESTKIT_UNKNOWN, subCommandArgs[0]));
         } else {
-            kit.applyTo((Player)sender);
+            kit.applyTo((Player) sender);
             sender.sendMessage(SkyTrans.get(TransKey.CMD_TESTKIT_APPLIED, subCommandArgs[0]));
         }
     }

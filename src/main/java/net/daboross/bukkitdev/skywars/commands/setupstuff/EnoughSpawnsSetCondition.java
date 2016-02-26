@@ -35,13 +35,13 @@ public class EnoughSpawnsSetCondition implements CommandPreCondition, CommandFil
 
     @Override
     public boolean canContinue(CommandSender sender, SubCommand subCommand) {
-        SetupData state = states.getSetupState(((Player)sender).getUniqueId());
+        SetupData state = states.getSetupState(((Player) sender).getUniqueId());
         return state != null && state.getSpawns().size() >= 2;
     }
 
     @Override
     public boolean canContinue(CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        SetupData state = states.getSetupState(((Player)sender).getUniqueId());
+        SetupData state = states.getSetupState(((Player) sender).getUniqueId());
         return state != null && state.getSpawns().size() >= 2;
     }
 

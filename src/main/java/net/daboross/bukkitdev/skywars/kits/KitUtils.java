@@ -35,5 +35,4 @@ public class KitUtils {
         }
         return builder.toString();
     }
-
 }

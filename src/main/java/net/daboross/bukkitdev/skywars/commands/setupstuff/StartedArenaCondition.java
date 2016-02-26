@@ -37,17 +37,17 @@ public class StartedArenaCondition implements CommandPreCondition, CommandFilter
 
     @Override
     public boolean canContinue(CommandSender sender, SubCommand subCommand) {
-        return (states.getSetupState(((Player)sender).getUniqueId()) == null) != started;
+        return (states.getSetupState(((Player) sender).getUniqueId()) == null) != started;
     }
 
     @Override
     public boolean canContinue(CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        return (states.getSetupState(((Player)sender).getUniqueId()) == null) != started;
+        return (states.getSetupState(((Player) sender).getUniqueId()) == null) != started;
     }
 
     @Override
     public String[] getDeniedMessage(CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        if (states.getSetupState(((Player)sender).getUniqueId()) == null) {
+        if (states.getSetupState(((Player) sender).getUniqueId()) == null) {
             return new String[]{SkyTrans.get(TransKey.SWS_NO_ARENA_STARTED)};
         } else {
             return new String[]{SkyTrans.get(TransKey.SWS_ARENA_ALREADY_STARTED)};
