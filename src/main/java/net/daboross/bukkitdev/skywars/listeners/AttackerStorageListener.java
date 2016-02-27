@@ -140,6 +140,8 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
                 plugin.getDistributor().distribute(new PlayerKillPlayerInfo(game.getId(), killerUuid, killerName, evt.getEntity()));
             }
             plugin.getGameHandler().removePlayerFromGame(evt.getEntity(), false, false);
+            evt.setDeathMessage(null);
+            // TODO: merge code with something else.
             evt.setDeathMessage(KillMessages.getMessage(name, killerUuid == uuid ? null : killerName, causedVoid.contains(uuid) ? KillMessages.KillReason.VOID : KillMessages.KillReason.OTHER, game.getArena()));
         } else if (plugin.getGameQueue().inQueue(uuid)) {
             plugin.getGameQueue().removePlayer(evt.getEntity());
