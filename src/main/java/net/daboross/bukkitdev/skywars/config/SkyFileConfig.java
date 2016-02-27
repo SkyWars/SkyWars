@@ -20,9 +20,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -149,9 +152,37 @@ public class SkyFileConfig {
         } else if (config.contains(path)) {
             throw new InvalidConfigurationException("Object " + config.get(path) + " found under " + path + " in file " + configFile + " is not a list");
         } else {
-            logger.log(Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, "an empty list", configFile});
+            logger.log(Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, defaultList, configFile});
             config.set(path, defaultList);
             return defaultList;
+        }
+    }
+
+    public Map<String, String> getSetSection(String path, Map<String, String> defaultValues) throws InvalidConfigurationException {
+        if (config.isConfigurationSection(path)) {
+            ConfigurationSection section = config.getConfigurationSection(path);
+            Map<String, Object> entries = section.getValues(false);
+            Map<String, String> values = new HashMap<>(entries.size());
+            for (Map.Entry<String, Object> entry : entries.entrySet()) {
+                Object obj = entry.getValue();
+                if (obj instanceof String) {
+                    values.put(entry.getKey(), (String) obj);
+                } else if (obj instanceof Double || obj instanceof Integer || obj instanceof Boolean) {
+                    values.put(entry.getKey(), obj.toString());
+                } else {
+                    throw new InvalidConfigurationException("Object " + obj + " found in map " + path + " in file " + configFile.toAbsolutePath() + " is not an integerr");
+                }
+            }
+            return values;
+        } else if (config.contains(path)) {
+            throw new InvalidConfigurationException("Object " + config.get(path) + " found under " + path + " in file " + configFile + " is not a map");
+        } else {
+            logger.log(Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, defaultValues, configFile});
+            ConfigurationSection section = config.createSection(path);
+            for (Map.Entry<String, String> entry : defaultValues.entrySet()) {
+                section.set(entry.getKey(), entry.getValue());
+            }
+            return defaultValues;
         }
     }
 

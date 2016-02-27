@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
@@ -98,7 +99,9 @@ public class SkyWorldHandler {
         arenaWorld.setAutoSave(false);
         arenaWorld.getBlockAt(-5000, 45, -5000).setType(Material.STONE);
         arenaWorld.setSpawnLocation(-5000, 50, -5000);
-        arenaWorld.setGameRuleValue("doDaylightCycle", "false");
+        for (Map.Entry<String, String> entry : plugin.getConfiguration().getArenaGamerules().entrySet()) {
+            arenaWorld.setGameRuleValue(entry.getKey(), entry.getValue());
+        }
         arenaWorld.setTime(4000);
     }
 

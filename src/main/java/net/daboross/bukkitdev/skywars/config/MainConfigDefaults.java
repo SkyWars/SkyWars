@@ -17,8 +17,11 @@
 package net.daboross.bukkitdev.skywars.config;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 
 public class MainConfigDefaults {
@@ -32,9 +35,16 @@ public class MainConfigDefaults {
     public static final boolean SAVE_INVENTORY = true;
     public static final int ARENA_DISTANCE_APART = 200;
     public static final String LOCALE = Locale.getDefault().getLanguage();
+    public static final Map<String, String> ARENA_GAMERULES;
     public static final boolean DEVELOPER_OPTIONS = false;
 //    public static final boolean PER_ARENA_DEATH_MESSAGES_ENABLED = true;
 //    public static final boolean PER_ARENA_WIN_MESSAGES_ENABLED = false;
+
+    static {
+        Map<String, String> defaultArenaGamerules = new HashMap<>(1);
+        defaultArenaGamerules.put("doDaylightCycle", "false");
+        ARENA_GAMERULES = Collections.unmodifiableMap(defaultArenaGamerules);
+    }
 
     private MainConfigDefaults() {
     }

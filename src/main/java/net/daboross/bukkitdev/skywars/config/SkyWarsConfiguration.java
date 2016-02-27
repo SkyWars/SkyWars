@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,6 +41,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
     private final SkyArenaConfigLoader arenaLoader = new SkyArenaConfigLoader();
     private List<SkyArenaConfig> enabledArenas;
+    private Map<String, String> arenaGamerules;
     private final SkyWars plugin;
     private Path arenaFolder;
     private ArenaOrder arenaOrder;
@@ -127,6 +129,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         }
 
         locale = mainConfig.getSetString(MainConfigKeys.LOCALE, MainConfigDefaults.LOCALE);
+
+        arenaGamerules = Collections.unmodifiableMap(mainConfig.getSetSection(MainConfigKeys.ARENA_GAMERULES, MainConfigDefaults.ARENA_GAMERULES));
 
         // Score
         enableScore = mainConfig.getSetBoolean(MainConfigKeys.Score.ENABLE, MainConfigDefaults.Score.ENABLE);
@@ -289,6 +293,11 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     @Override
     public boolean isEnableScore() {
         return enableScore;
+    }
+
+    @Override
+    public Map<String, String> getArenaGamerules() {
+        return arenaGamerules;
     }
 
     @Override
