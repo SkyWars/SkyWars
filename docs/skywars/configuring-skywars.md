@@ -64,6 +64,12 @@ enabled-arenas:
 - skyblock-warriors
 - water-warriors
 
+# A list of minecraft gamerules to set in the world where arenas are run. By default,
+# only 'doDaylightCycle' is set - this stops day and night from changing in the arena
+# world.
+skywars-arena-gamerules:
+  doDaylightCycle: 'false'
+
 # Locale to use for all player messages. Currently available locales:
 # cz, de, dk, en, es, fr, nl, pl, pt and ru.
 # Note that some translations are incomplete. You can also modify

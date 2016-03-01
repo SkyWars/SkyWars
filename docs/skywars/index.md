@@ -65,9 +65,9 @@ This way there is no long transfer period, and it supports all properly configur
 * [MCStats Statistics](http://mcstats.org/plugin/SkyWars)
 
 ### Translations / Localization
-* SkyWars is currently partway localized for 10 different languages, most are currently incomplete however!
-* SkyWars should automatically use the localization that your server is set to, if it supports it.
-* To help out SkyWars by translating it into your local language, go to [SkyWars-Translations/Translating](https://github.com/SkyWars/SkyWars-Translations/wiki/Translating).
+* All player messages fully translated to English and German, and partially translated to Spanish, French, Czech, Danish, Dutch, Polish, Portuguese and Russian. Partial translations were at one point complete, but don't have some of the newer messages translated.
+* Change the locale SkyWars uses by setting 'locale' in **main-config.yml**.
+* To help out SkyWars by translating it into your local language, go to [SkyWars-Translations/Translating](https://github.com/SkyWars/SkyWars-Translations/wiki/Translating). Test out your localization as well by copying into `messages.yml`!
 
 #### MCStats / Plugin metrics
 SkyWars uses plugin metrics to keep track of people using the plugin.
