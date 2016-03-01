@@ -124,8 +124,8 @@
         </dependency>
         <dependency>
             <groupId>net.daboross.json</groupId>
-            <artifactId>json</artifactId>
-            <version>1.0.3</version>
+            <artifactId>json-serialization</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>net.daboross.bukkitdev</groupId>
