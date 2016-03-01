@@ -21,6 +21,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -33,6 +34,7 @@ import net.daboross.bukkitdev.asyncsql.SQLConnectionInfo;
 import net.daboross.bukkitdev.asyncsql.SQLRunnable;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
+import net.daboross.bukkitdev.skywars.api.players.OfflineSkyPlayer;
 import net.daboross.bukkitdev.skywars.api.storage.ScoreCallback;
 import net.daboross.bukkitdev.skywars.api.storage.SkyStorageBackend;
 import net.daboross.bukkitdev.skywars.player.AbstractSkyPlayer;
@@ -128,6 +130,11 @@ public class SQLScoreStorage extends SkyStorageBackend {
         });
     }
 
+    @Override
+    public Collection<? extends OfflineSkyPlayer> getTopPlayers(final int count) {
+        return null;
+    }
+
     public void initUsername(final UUID uuid, final String username) {
         sql.run("set " + uuid + "'s username to" + username, new SQLRunnable() {
             @Override
@@ -221,6 +228,11 @@ public class SQLScoreStorage extends SkyStorageBackend {
         @Override
         public void addScore(final int diff) {
             cacheAdd(uuid, diff, false);
+        }
+
+        @Override
+        public int getRank() {
+            return 0;
         }
     }
 }
