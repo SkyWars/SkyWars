@@ -1,10 +1,14 @@
-### No longer updated
+### SkyWars 2.1.0 Update Info!
 
-SkyWars is no longer receiving dedicated updates and support.
+SkyWars is back! The first publicly released SkyWars plugin is now receiving intermittent updates, and has full support for Spigot's Minecraft 1.9 build!
 
-There are several people who have volunteered to take over, and are working on updating the plugin with new features as we speak.
+SkyWars 2.1.0 uses a new arena backend, which allows for faster arena creation, and no longer requires the SkyWarsBaseWorld to be loaded for the plugin to function.
 
-I am providing a limited number of support updates to ensure the plugin still works on the latest Spigot builds, but I may not have the time to answer questions in detail.
+If you have used SkyWars previously, and are updating from a version pre-2.1.0, please BACK UP ALL DATA before updating. The update should go smoothly, but it is impossible to test all possible server setups.
+
+SkyWars will also now use WorldEdit as a backend *if available*. To disable this, set **worldedit-hook** to **false** in **main-config.yml**.
+
+That said, 2.1.0 also adds many features which have been in development, including `/sws createkit`, and full support of Spigot's Minecraft 1.9 update!
 
 ### Update warning for v2.*
 
