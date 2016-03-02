@@ -160,7 +160,6 @@ public class JSONScoreStorage extends SkyStorageBackend {
         if (playerMap == null) {
             playerMap = new HashMap<>();
             playerMap.put("score", diff); // assume the default score is 0
-            updateRank(uuid, playerMap, true);
         } else {
             playerMap.put("score", getInt(playerMap, "score") + diff);
         }
