@@ -69,6 +69,10 @@
             <url>http://repo.daboross.net/mcstats/</url>
         </repository>
         <repository>
+            <id>repo-daboross-net-backup-mcstats-snapshots-mirror</id>
+            <url>http://repo.daboross.net/mcstats-snapshots/</url>
+        </repository>
+        <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
@@ -119,7 +123,7 @@
         <dependency>
             <groupId>org.mcstats.bukkit</groupId>
             <artifactId>metrics-lite</artifactId>
-            <version>R7</version>
+            <version>R8-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
