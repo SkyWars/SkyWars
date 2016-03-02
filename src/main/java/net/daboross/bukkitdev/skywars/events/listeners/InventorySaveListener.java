@@ -22,6 +22,7 @@ import net.daboross.bukkitdev.skywars.api.players.SkySavedInventory;
 import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerRespawnAfterGameEndInfo;
 import net.daboross.bukkitdev.skywars.player.SavedInventory;
+import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -36,10 +37,11 @@ public class InventorySaveListener {
 
     public void onGameStart(GameStartInfo info) {
         boolean save = plugin.getConfiguration().isInventorySaveEnabled();
+        boolean savePgh = plugin.getConfiguration().isPghSaveEnabled();
         for (Player p : info.getPlayers()) {
             if (save) {
                 SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(p);
-                skyPlayer.setSavedInventory(new SavedInventory(p));
+                skyPlayer.setSavedInventory(new SavedInventory(p, savePgh));
             }
             PlayerInventory inv = p.getInventory();
             inv.clear();
@@ -49,6 +51,8 @@ public class InventorySaveListener {
 
     public void onPlayerRespawn(PlayerRespawnAfterGameEndInfo info) {
         boolean save = plugin.getConfiguration().isInventorySaveEnabled();
+        boolean restoreExp = plugin.getConfiguration().isExperienceSaveEnabled();
+        boolean restorePgh = plugin.getConfiguration().isPghSaveEnabled();
         Player player = info.getPlayer();
         PlayerInventory inv = player.getInventory();
         inv.clear();
@@ -56,9 +60,9 @@ public class InventorySaveListener {
         if (save) {
             SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(player);
             SkySavedInventory savedInventory = skyPlayer.getSavedInventory();
-            if (savedInventory != null) {
-                savedInventory.apply(player);
-            }
+            Validate.notNull(savedInventory, "Saved inventory for " + skyPlayer.getName() + " was null!");
+            savedInventory.apply(player, restoreExp, restorePgh);
+            skyPlayer.setSavedInventory(null); // no need to keep this around
         }
     }
 }

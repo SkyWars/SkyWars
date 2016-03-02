@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014 Dabo Ross <http://www.daboross.net/>
+ * Copyright (C) 2013-2016 Dabo Ross <http://www.daboross.net/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,9 +23,11 @@ import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupData;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
+import net.daboross.bukkitdev.skywars.commands.setupstuff.WESetupData;
 import org.apache.commons.lang.Validate;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class StartNewArena extends SubCommand {
 
@@ -43,10 +45,15 @@ public class StartNewArena extends SubCommand {
 
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        SetupData state = new SetupData();
+        SetupData state;
+        if (plugin.getConfiguration().isWorldeditHookEnabled() && plugin.getServer().getPluginManager().isPluginEnabled("WorldEdit")) {
+            state = new WESetupData(plugin);
+        } else {
+            state = new SetupData(plugin);
+        }
         state.setArenaName(subCommandArgs[0]);
         state.setSaveFile(plugin.getConfiguration().getArenaFolder().resolve(subCommandArgs[0] + ".yml"));
-        states.setSetupState(sender.getName(), state);
+        states.setSetupState(((Player) sender).getUniqueId(), state);
         sender.sendMessage(SkyTrans.get(TransKey.SWS_START_CONFIRMATION, subCommandArgs[0]));
     }
 }

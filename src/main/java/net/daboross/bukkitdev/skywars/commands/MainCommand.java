@@ -32,6 +32,7 @@ import net.daboross.bukkitdev.skywars.commands.mainsubcommands.RemoveLastPortalC
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.SetLobbyCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.SetPortalCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.StatusCommand;
+import net.daboross.bukkitdev.skywars.commands.mainsubcommands.TestKitCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.VersionCommand;
 import org.bukkit.command.PluginCommand;
 
@@ -60,6 +61,7 @@ public class MainCommand {
         base.addSubCommand(new ConfigurationDebugCommand(plugin));
         base.addSubCommand(new ForceStartCommand(plugin));
         base.addSubCommand(new KitCommand(plugin));
+        base.addSubCommand(new TestKitCommand(plugin));
     }
 
     public void latchOnto(PluginCommand command) {

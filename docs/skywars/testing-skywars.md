@@ -68,6 +68,8 @@ And now, testing!
 * Confirm your score is increased when you kill someone
 * Confirm your score is decreased when you die in a game
 * Confirm your score is unaffected when you die outside of a game
+* Confirm enderpearls don't cause you to kill yourself
+ * It isn't a problem to get damage from enderpearls, only if you receive points from killing yourself.
 * Confirm you can't hit someone on your team
 * Confirm after you kill everyone the game ends
 * Confirm someone disconnecting from the server removes them from a game their playing
@@ -85,5 +87,11 @@ And now, testing!
  * Confirm games start correctly with `enable-points: true` and `use-sql: false`
  * Confirm games start correctly with `enable-points: true` and `use-sql: true`
  * Confirm games start correctly with `enable-points: false`
+ * Confirm position, game mode, health and hunger are all saved with `save-position-gamemode-health`.
+ * Confirm allowFlight is reset when joining game
+ * Confirm all team members are given economy and point rewards when using teams.
  * TODO: More encompassing config testing overview
 * TODO: Setup testing overview
+* Arena creation testing:
+ * Create an arena?
+ * TODO: finish this section.

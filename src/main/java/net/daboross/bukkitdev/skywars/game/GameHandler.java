@@ -80,12 +80,13 @@ public class GameHandler implements SkyGameHandler {
         GameIDHandler idh = plugin.getIDHandler();
         ArenaGame game = idh.getGame(id);
         game.removePlayer(playerUuid);
+        if (broadcast) {
+            // This needs to happen before destributing PlayerLeaveGame so as to still have attacker stored!
+            Bukkit.broadcastMessage(KillMessages.getMessage(player.getName(), plugin.getAttackerStorage().getKillerName(playerUuid), KillMessages.KillReason.LEFT, game.getArena()));
+        }
         plugin.getDistributor().distribute(new PlayerLeaveGameInfo(id, player));
         if (respawn) {
             respawnPlayer(player);
-        }
-        if (broadcast) {
-            Bukkit.broadcastMessage(KillMessages.getMessage(player.getName(), plugin.getAttackerStorage().getKillerName(playerUuid), KillMessages.KillReason.LEFT, game.getArena()));
         }
         if ((!gamesCurrentlyEnding.contains(id)) && isGameWon(game)) {
             gamesCurrentlyEnding.add(id);
@@ -131,7 +132,9 @@ public class GameHandler implements SkyGameHandler {
     @Override
     public void respawnPlayer(Player p) {
         Validate.notNull(p, "Player cannot be null");
-        p.teleport(plugin.getLocationStore().getLobbyPosition().toLocation());
+        if (!plugin.getConfiguration().isInventorySaveEnabled() || !plugin.getConfiguration().isPghSaveEnabled()) {
+            p.teleport(plugin.getLocationStore().getLobbyPosition().toLocation());
+        }
         plugin.getDistributor().distribute(new PlayerRespawnAfterGameEndInfo(p));
     }
 }

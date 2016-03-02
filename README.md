@@ -1,12 +1,16 @@
 ![SkyWars](https://dabo.guru/logo/SkyWars.png)
 
-### No longer updated
+### SkyWars 2.1.0 Update Info!
 
-SkyWars is no longer receiving dedicated updates and support.
+SkyWars is back! The first publicly released SkyWars plugin is now receiving intermittent updates, and has full support for Spigot's Minecraft 1.9 build!
 
-There are several people who have volunteered to take over, and are working on updating the plugin with new features as we speak.
+SkyWars 2.1.0 uses a new arena backend, which allows for faster arena creation, and no longer requires the SkyWarsBaseWorld to be loaded for the plugin to function.
 
-I am providing a limited number of support updates to ensure the plugin still works on the latest Spigot builds, but I may not have the time to answer questions in detail.
+If you have used SkyWars previously, and are updating from a version pre-2.1.0, please BACK UP ALL DATA before updating. The update should go smoothly, but it is impossible to test all possible server setups.
+
+SkyWars will also now use WorldEdit as a backend *if available*. To disable this, set **worldedit-hook** to **false** in **main-config.yml**.
+
+That said, 2.1.0 also adds many features which have been in development, including `/sws createkit`, and full support of Spigot's Minecraft 1.9 update!
 
 ### Update warning for v2.*
 
@@ -24,12 +28,12 @@ This way there is no long transfer period, and it supports all properly configur
  * SkyWars saves gamemode, health, hunger, potion status, and pretty much anything else you'd need to keep track of.
 * Use an unlimited number of arenas at the same time! The only limit is your server player capacity.
 * Use SkyWars's kit system to let players pay money each game for a kit, and give access to extra kits to donors through permissions support!
-* SkyWars is extremely customizable!
- * Creating a new arena has never been easier! No entering items into config files, just build the arena in game, fill starting chests, and use **/sws** to set spawn locations and save the arena!
- * Creating a new kit for players to use is as easy as filling your inventory, and using **/sws createkit**. (Note that this is only in 2.1.0, which hasn't been released!)
- * All messages sent to players by SkyWars are fully customizable. Give your server a unique feel by modifying messages, and message colors!
+* Craft your server's unique SkyWars experience!
+ * Create custom kits just by filling your inventory with the items you want!
+ * Create arenas without any entering items into config files! Just build the arena, set the spawns with **/sws** and [save it](https://dabo.guru/projects/skywars/creating-an-arena)!
+ * Change any and all messages sent by SkyWars to players in messages.yml!
 * Support for portals to step into and join the queue.
-* Economy rewards available for players who win games.
+* Custom economy rewards for winning games or killing in games.
 
 ### Installing SkyWars
 * Server must be running at least Java 7.
@@ -65,9 +69,9 @@ This way there is no long transfer period, and it supports all properly configur
 * [MCStats Statistics](http://mcstats.org/plugin/SkyWars)
 
 ### Translations / Localization
-* SkyWars is currently partway localized for 10 different languages, most are currently incomplete however!
-* SkyWars should automatically use the localization that your server is set to, if it supports it.
-* To help out SkyWars by translating it into your local language, go to [SkyWars-Translations/Translating](https://github.com/SkyWars/SkyWars-Translations/wiki/Translating).
+* All player messages fully translated to English and German, and partially translated to Spanish, French, Czech, Danish, Dutch, Polish, Portuguese and Russian. Partial translations were at one point complete, but don't have some of the newer messages translated.
+* Change the locale SkyWars uses by setting 'locale' in **main-config.yml**.
+* To help out SkyWars by translating it into your local language, go to [SkyWars-Translations/Translating](https://github.com/SkyWars/SkyWars-Translations/wiki/Translating). Test out your localization as well by copying into `messages.yml`!
 
 #### MCStats / Plugin metrics
 SkyWars uses plugin metrics to keep track of people using the plugin.

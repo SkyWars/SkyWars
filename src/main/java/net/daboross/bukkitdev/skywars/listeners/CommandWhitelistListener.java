@@ -20,6 +20,8 @@ import java.util.logging.Level;
 import java.util.regex.Pattern;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -35,15 +37,12 @@ public class CommandWhitelistListener implements Listener {
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent evt) {
         SkyConfiguration config = plugin.getConfiguration();
-        if (config.isCommandWhitelistEnabled()) {
-            if (plugin.getCurrentGameTracker().isInGame(evt.getPlayer().getUniqueId())) {
-                Pattern pattern = config.getCommandWhitelistCommandRegex();
-                if (pattern != null) {
-                    if (config.isCommandWhitelistABlacklist() == pattern.matcher(evt.getMessage()).find()) {
-                        plugin.getLogger().log(Level.INFO, "[CommandWhitelist] Blocked command ''{0}'' sent by {1}", new Object[]{evt.getMessage(), evt.getPlayer().getName()});
-                        evt.setCancelled(true);
-                    }
-                }
+        if (config.isCommandWhitelistEnabled() && plugin.getCurrentGameTracker().isInGame(evt.getPlayer().getUniqueId())) {
+            Pattern pattern = config.getCommandWhitelistCommandRegex();
+            if (pattern != null && config.isCommandWhitelistABlacklist() == pattern.matcher(evt.getMessage()).find()) {
+                plugin.getLogger().log(Level.INFO, "[CommandWhitelist] Blocked command ''{0}'' sent by {1}", new Object[]{evt.getMessage(), evt.getPlayer().getName()});
+                evt.getPlayer().sendMessage(SkyTrans.get(TransKey.GENERIC_IN_GAME));
+                evt.setCancelled(true);
             }
         }
     }

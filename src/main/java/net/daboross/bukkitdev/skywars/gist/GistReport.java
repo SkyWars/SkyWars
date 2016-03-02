@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014 Dabo Ross <http://www.daboross.net/>
+ * Copyright (C) 2013-2016 Dabo Ross <http://www.daboross.net/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,12 +24,16 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
@@ -37,12 +41,12 @@ import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
+import net.daboross.jsonserialization.JsonException;
+import net.daboross.jsonserialization.JsonParser;
+import net.daboross.jsonserialization.JsonSerialization;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONStringer;
 
 public class GistReport {
 
@@ -50,6 +54,9 @@ public class GistReport {
     private static final String GIST_API = "https://api.github.com/gists";
     private static URL GIST_API_URL;
     private static final String ISGD_API = "http://is.gd/create.php?format=simple&url=%s";
+
+    private GistReport() {
+    }
 
     /**
      * @param plugin plugin
@@ -85,7 +92,6 @@ public class GistReport {
             }
             appendArena(build, arena);
         }
-        appendArena(build.append("\n#### arena-parent.yml"), configuration.getParentArena());
         return build.toString();
     }
 
@@ -161,15 +167,18 @@ public class GistReport {
         connection.setDoOutput(true);
         connection.setDoInput(true);
         String jsonOutputString;
-        try {
-            jsonOutputString = new JSONStringer().object()
-                    .key("description").value(gistDescription)
-                    .key("public").value("false")
-                    .key("files").object()
-                    .key(gistFileName).object()
-                    .key("content").value(gistText)
-                    .endObject().endObject().endObject().toString();
-        } catch (JSONException ex) {
+        Map<String, Object> message = new HashMap<>();
+        message.put("description", gistDescription);
+        message.put("public", "false");
+        Map<String, Object> files = new HashMap<>();
+        Map<String, Object> file = new HashMap<>();
+        file.put("content", gistText);
+        files.put(gistFileName, file);
+        message.put("files", files);
+        try (Writer writer = new StringWriter()) {
+            JsonSerialization.writeJsonObject(writer, message, 0, 0);
+            jsonOutputString = writer.toString();
+        } catch (JsonException | IOException ex) {
             SkyStatic.getLogger().log(Level.FINE, "[SkyGistReport] Failed to encode report contents in JSON: {0}", ex.toString());
             return null;
         }
@@ -183,14 +192,14 @@ public class GistReport {
             return null;
         }
 
-        JSONObject inputJson;
+        Map<String, Object> input;
         try {
-            inputJson = new JSONObject(readConnection(connection));
-        } catch (JSONException | IOException ex) {
+            input = new JsonParser(readConnection(connection)).parseJsonObject();
+        } catch (JsonException | IOException ex) {
             SkyStatic.getLogger().log(Level.FINE, "[SkyGistReport] Failed to read response from gist: {0}", ex.toString());
             return null;
         }
-        return inputJson.optString("html_url", null);
+        return String.valueOf(input.get("html_url"));
     }
 
     /**

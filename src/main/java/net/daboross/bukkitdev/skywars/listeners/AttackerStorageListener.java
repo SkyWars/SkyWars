@@ -79,6 +79,7 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
                 } else {
                     lastHitUuid.remove(uuid);
                 }
+                //noinspection RedundantCast // for Bukkit 1.7.10
                 lastHitName.put(uuid, ((HumanEntity) damager).getName());
             } else if (damager instanceof Projectile) {
                 ProjectileSource shooter = ((Projectile) damager).getShooter();
@@ -100,6 +101,7 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
                     }
                 }
             } else if (damager instanceof LivingEntity) {
+                //noinspection RedundantCast // for Bukkit 1.7.10
                 String customName = ((LivingEntity) damager).getCustomName();
                 lastHitUuid.remove(uuid);
                 lastHitName.put(uuid, customName == null ? damager.getType().toString() : customName);
@@ -134,11 +136,13 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
             String killerName = lastHitName.get(uuid);
             UUID killerUuid = lastHitUuid.get(uuid);
             plugin.getDistributor().distribute(new PlayerDeathInArenaInfo(game.getId(), evt.getEntity()));
-            if (killerUuid != null) {
+            if (killerUuid != null && killerUuid != uuid) {
                 plugin.getDistributor().distribute(new PlayerKillPlayerInfo(game.getId(), killerUuid, killerName, evt.getEntity()));
             }
             plugin.getGameHandler().removePlayerFromGame(evt.getEntity(), false, false);
-            evt.setDeathMessage(KillMessages.getMessage(name, killerName, causedVoid.contains(uuid) ? KillMessages.KillReason.VOID : KillMessages.KillReason.OTHER, game.getArena()));
+            evt.setDeathMessage(null);
+            // TODO: merge code with something else.
+            evt.setDeathMessage(KillMessages.getMessage(name, killerUuid == uuid ? null : killerName, causedVoid.contains(uuid) ? KillMessages.KillReason.VOID : KillMessages.KillReason.OTHER, game.getArena()));
         } else if (plugin.getGameQueue().inQueue(uuid)) {
             plugin.getGameQueue().removePlayer(evt.getEntity());
             evt.getEntity().sendMessage(SkyTrans.get(TransKey.QUEUE_DEATH));

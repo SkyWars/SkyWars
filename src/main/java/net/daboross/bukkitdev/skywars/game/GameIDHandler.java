@@ -16,10 +16,9 @@
  */
 package net.daboross.bukkitdev.skywars.game;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.game.SkyGameHandler;
@@ -30,7 +29,7 @@ import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 public class GameIDHandler implements SkyIDHandler {
 
     private final Map<Integer, ArenaGame> currentGames = new HashMap<>();
-    private final List<Integer> currentIDs = new ArrayList<>();
+    private int nextId;
 
     @Override
     public boolean gameRunning(int id) {
@@ -43,37 +42,29 @@ public class GameIDHandler implements SkyIDHandler {
     }
 
     int getNextId() {
-        int id = 0;
-        while (currentGames.containsKey(id)) {
-            id++;
-        }
-        return id;
+        return nextId++;
     }
 
     public void onGameStart(GameStartInfo info) {
         ArenaGame game = info.getGame();
         currentGames.put(game.getId(), game);
-        currentIDs.add(game.getId());
     }
 
     public void onGameEnd(GameEndInfo info) {
         Integer idInteger = info.getGame().getId();
         currentGames.remove(idInteger);
-        currentIDs.remove(idInteger);
     }
 
     public void saveAndUnload(SkyWarsPlugin plugin) {
         SkyGameHandler handler = plugin.getGameHandler();
-        while (!currentIDs.isEmpty()) {
-            int id = currentIDs.get(0);
-            if (getGame(id) != null) {
-                handler.endGame(id, false);
-            }
+        while (!currentGames.isEmpty()) {
+            int id = currentGames.keySet().iterator().next();
+            handler.endGame(id, false);
         }
     }
 
     @Override
-    public List<Integer> getCurrentIDs() {
-        return Collections.unmodifiableList(currentIDs);
+    public Collection<Integer> getCurrentIDs() {
+        return Collections.unmodifiableCollection(currentGames.keySet());
     }
 }

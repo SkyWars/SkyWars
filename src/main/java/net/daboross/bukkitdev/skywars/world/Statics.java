@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014 Dabo Ross <http://www.daboross.net/>
+ * Copyright (C) 2013-2016 Dabo Ross <http://www.daboross.net/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,8 @@ package net.daboross.bukkitdev.skywars.world;
 
 public class Statics {
 
-    public static final String BASE_WORLD_NAME = "SkyWarsBaseWorld";
     public static final String ARENA_WORLD_NAME = "SkyWarsArenaWorld";
-    public static final String ZIP_FILE_PATH = "/SkyWarsBaseWorld.zip";
+
+    private Statics() {
+    }
 }

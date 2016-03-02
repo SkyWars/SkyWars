@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014 Dabo Ross <http://www.daboross.net/>
+ * Copyright (C) 2013-2016 Dabo Ross <http://www.daboross.net/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,13 +16,14 @@
  */
 package net.daboross.bukkitdev.skywars;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
-import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
 import net.daboross.bukkitdev.skywars.api.game.SkyGameHandler;
@@ -53,6 +54,7 @@ import net.daboross.bukkitdev.skywars.listeners.AttackerStorageListener;
 import net.daboross.bukkitdev.skywars.listeners.BuildingLimiter;
 import net.daboross.bukkitdev.skywars.listeners.CommandWhitelistListener;
 import net.daboross.bukkitdev.skywars.listeners.MobSpawnDisable;
+import net.daboross.bukkitdev.skywars.listeners.PlayerJoinInArenaWorldListener;
 import net.daboross.bukkitdev.skywars.listeners.PlayerStateListener;
 import net.daboross.bukkitdev.skywars.listeners.PortalListener;
 import net.daboross.bukkitdev.skywars.listeners.ScoreReplaceChatListener;
@@ -61,8 +63,6 @@ import net.daboross.bukkitdev.skywars.score.ScoreStorage;
 import net.daboross.bukkitdev.skywars.scoreboards.TeamScoreboardListener;
 import net.daboross.bukkitdev.skywars.storage.LocationStore;
 import net.daboross.bukkitdev.skywars.world.SkyWorldHandler;
-import net.daboross.bukkitdev.skywars.world.Statics;
-import net.daboross.bukkitdev.skywars.world.WorldUnzipper;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -134,12 +134,6 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
             getLogger().log(Level.SEVERE, "Download SkyWars v1.4.4 if you want to run on an older version of Minecraft.");
             throw new StartupFailedException("See above");
         }
-        for (SkyArena arena : configuration.getEnabledArenas()) {
-            if (arena.getBoundaries().getOrigin().world.equalsIgnoreCase(Statics.BASE_WORLD_NAME)) {
-                new WorldUnzipper().doWorldUnzip(getLogger());
-                break;
-            }
-        }
         try {
             translations = new TranslationsConfiguration(this);
         } catch (SkyConfigurationException ex) {
@@ -151,7 +145,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         broadcaster = new GameBroadcaster();
         worldHandler = new SkyWorldHandler(this);
         inventorySaveListener = new InventorySaveListener(this);
-        resetHealth = new ResetHealthListener();
+        resetHealth = new ResetHealthListener(this);
         locationStore = new LocationStore(this);
         gameQueue = new GameQueue(this);
         gameHandler = new GameHandler(this);
@@ -179,14 +173,14 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
             @Override
             public void run() {
                 worldHandler.create();
-                worldHandler.findAndLoadRequiredWorlds();
+                worldHandler.loadArenas();
             }
         }.runTask(this);
         new PermissionHandler().setupPermissions();
         setupCommand();
         PluginManager pm = getServer().getPluginManager();
         registerListeners(pm, attackerStorage, new PlayerStateListener(this),
-                new PortalListener(this),
+                new PortalListener(this), new PlayerJoinInArenaWorldListener(this),
                 new CommandWhitelistListener(this), new BuildingLimiter(this),
                 new MobSpawnDisable(), chatListener);
         enabledCorrectly = true;
@@ -202,9 +196,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         }
         String[] split = version.split("_");
         if (split.length != 3) {
-            getLogger().log(Level.SEVERE, "Package version specifier of unknown format found: '" + version + "' - this will prevent SkyWars from confirming server version.");
-            getLogger().log(Level.SEVERE, "Please confirm you are running CraftBukkit version 1.7.8 or newer, or the equivilant for your server software. If you have already done so, you can ignore this message.");
-            getLogger().log(Level.SEVERE, "Proceed with caution! SkyWars v" + SkyStatic.getVersion() + " will not function on minecraft versions below 1.7.8!");
+            broadcastUnknownVersionMessage(version);
             return true;
         }
         int first, second, third;
@@ -213,13 +205,18 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
             second = Integer.parseInt(split[1]);
             third = Integer.parseInt(split[2].substring(1)); // substring for R1 -> 1
         } catch (NumberFormatException ignored) {
-            getLogger().log(Level.SEVERE, "Package version specifier of unknown format found: '" + version + "' - this will prevent SkyWars from confirming server version.");
-            getLogger().log(Level.SEVERE, "Please confirm you are running CraftBukkit version 1.7.8 or newer, or the equivilant for your server software. If you have already done so, you can ignore this message.");
-            getLogger().log(Level.SEVERE, "Proceed with caution! SkyWars v" + SkyStatic.getVersion() + " will not function on minecraft versions below 1.7.8!");
+            broadcastUnknownVersionMessage(version);
             return true;
         }
         // if we're on minecraft v2.X, the other version parts don't matter
         return first > 1 || second > 7 || (second == 7 && third >= 3);
+    }
+
+    private void broadcastUnknownVersionMessage(String version) {
+        getLogger().log(Level.SEVERE, "Package version specifier of unknown format found: '" + version + "' - this will prevent SkyWars from confirming server version.");
+        getLogger().log(Level.SEVERE, "Please confirm you are running CraftBukkit version 1.7.8 or newer, or the equivilant for your server software. If you have already done so, you can ignore this message.");
+        getLogger().log(Level.SEVERE, "Proceed with caution! SkyWars v" + SkyStatic.getVersion() + " will not function on minecraft versions below 1.7.8!");
+        getLogger().log(Level.SEVERE, "If you wish to ignore this, and remove this message, set 'skip-uuid-version-check' to true in plugins/SkyWars/main-config.yml");
     }
 
     private void registerListeners(PluginManager pm, Listener... listeners) {
@@ -297,6 +294,22 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         translations = tempTrans;
         SkyTrans.setInstance(tempTrans);
         return true;
+    }
+
+    /**
+     * Acts exactly like getResource(), except for throwing a FileNotSoundException when not found
+     *
+     * @param filename Filename to get from internal jar
+     * @return InputStream for file
+     * @throws FileNotFoundException If the file doesn't exist in the jar
+     */
+    @Override
+    public InputStream getResourceAsStream(final String filename) throws FileNotFoundException {
+        InputStream resource = getResource(filename);
+        if (resource == null) {
+            throw new FileNotFoundException("No resource '" + filename + "' found.");
+        }
+        return resource;
     }
 
     @Override
@@ -393,7 +406,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         return ecoRewards;
     }
 
-    public TeamScoreboardListener getTeamListener() {
+    public TeamScoreboardListener getTeamScoreBoardListener() {
         return teamListener;
     }
 

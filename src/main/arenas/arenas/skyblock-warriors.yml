@@ -1,0 +1,36 @@
+config-version: 1
+spawns:
+- x: 46.5
+  y: 7.0
+  z: 44.5
+- x: 46.5
+  y: 7.0
+  z: 14.5
+- x: 10.5
+  y: 7.0
+  z: 14.5
+- x: 10.5
+  y: 7.0
+  z: 44.5
+num-teams: 4
+team-size: 1
+boundaries:
+  building:
+    min:
+      x: -2
+      y: -20
+      z: -2
+    max:
+      x: 58
+      y: 9
+      z: 60
+  clearing:
+    min:
+      x: -3
+      y: -21
+      z: -3
+    max:
+      x: 59
+      y: 10
+      z: 61
+placement-y: 20

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014 Dabo Ross <http://www.daboross.net/>
+ * Copyright (C) 2013-2016 Dabo Ross <http://www.daboross.net/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@ package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 import java.util.List;
 import java.util.UUID;
 import net.daboross.bukkitdev.commandexecutorbase.ArrayHelpers;
-import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -28,9 +27,9 @@ import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
 import net.daboross.bukkitdev.skywars.api.players.SkyPlayers;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import static net.daboross.bukkitdev.skywars.api.game.SkyGame.SkyGameTeam;
 
 public class StatusCommand extends SubCommand {
 
@@ -47,11 +46,14 @@ public class StatusCommand extends SubCommand {
         SkyIDHandler idh = plugin.getIDHandler();
         sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_HEADER));
         sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_IN_QUEUE,
-                ArrayHelpers.combinedWithSeperator(getNames(plugin.getGameQueue().getCopy()), SkyTrans.get(TransKey.CMD_STATUS_QUEUE_COMMA))));
+                ArrayHelpers.combinedWithSeperator(getNames(plugin.getGameQueue().getCopy()), SkyTrans.get(TransKey.CMD_STATUS_COMMA))));
         sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_ARENA_HEADER));
         for (Integer id : idh.getCurrentIDs()) {
             SkyGame game = idh.getGame(id);
-            sender.sendMessage(getPlayerString(game));
+            String playerString = getPlayerString(game);
+            if (playerString != null) {
+                sender.sendMessage(playerString);
+            }
         }
     }
 
@@ -65,36 +67,41 @@ public class StatusCommand extends SubCommand {
     }
 
     private String getPlayerString(SkyGame game) {
-        StringBuilder b = new StringBuilder();
-        b.append(ColorList.DATA).append(game.getId()).append(ColorList.REG).append(":");
         List<UUID> alive = game.getAlivePlayers();
+
+        if (alive.size() < 2) {
+            return null;
+        }
+
+
+        StringBuilder b = new StringBuilder();
         SkyPlayers skyPlayers = plugin.getPlayers(); // so we don't call this method once per player
-        switch (alive.size()) {
-            case 0:
-                b.append(ColorList.DATA).append(" -- ");
-                break;
-            case 1:
-                b.append(ChatColor.GREEN).append(skyPlayers.getPlayer(alive.get(0)).getName());
-                break;
-            default:
-                if (game.areTeamsEnabled()) {
-                    for (int team = 0; team < game.getNumTeams(); team++) {
-                        List<UUID> players = game.getAlivePlayersInTeam(team);
-                        if (!players.isEmpty()) {
-                            b.append("\n  ").append(ColorList.REG).append("Team ").append(ColorList.DATA).append(team).append(ColorList.REG).append(": ").append(ColorList.DATA).append(skyPlayers.getPlayer(players.get(0)).getName());
-                            for (int i = 1; i < players.size(); i++) {
-                                // I would use Bukkit.getPlayer(), but this uses a hashmap lookup, which is more efficient.
-                                b.append(ColorList.REG).append(", ").append(ColorList.DATA).append(skyPlayers.getPlayer(players.get(i)).getName());
-                            }
-                        }
-                    }
+
+        if (game.areTeamsEnabled()) {
+            b.append(SkyTrans.get(TransKey.CMD_STATUS_ARENA_LIST_PREFIX_TEAMS_LEFT, game.getId(), game.getAliveTeams(), game.getNumTeams()));
+            for (int teamId = 0; teamId < game.getNumTeams(); teamId++) {
+                SkyGameTeam team = game.getTeam(teamId);
+                List<UUID> players = team.getAlive();
+                b.append("\n");
+                if (players.isEmpty()) {
+                    b.append(SkyTrans.get(TransKey.CMD_STATUS_ARENA_TEAM_DEAD, team.getName()));
                 } else {
-                    b.append(" ").append(ChatColor.GREEN).append(skyPlayers.getPlayer(alive.get(0)).getName());
-                    for (int i = 1; i < alive.size(); i++) {
-                        b.append(ColorList.REG).append(", ").append(ChatColor.GREEN).append(skyPlayers.getPlayer(alive.get(i)).getName());
+                    b.append(SkyTrans.get(TransKey.CMD_STATUS_ARENA_TEAM_PREFIX, team.getName()));
+                    b.append(skyPlayers.getPlayer(players.get(0)).getName());
+                    for (int i = 1; i < players.size(); i++) {
+                        // I would use Bukkit.getPlayer(), but this uses a hashmap lookup, which is more efficient.
+                        b.append(SkyTrans.get(TransKey.CMD_STATUS_COMMA)).append(skyPlayers.getPlayer(players.get(i)).getName());
                     }
                 }
+            }
+        } else {
+            b.append(SkyTrans.get(TransKey.CMD_STATUS_ARENA_LIST_PREFIX_NO_TEAMS, game.getId()));
+            b.append(skyPlayers.getPlayer(alive.get(0)).getName());
+            for (int i = 1; i < alive.size(); i++) {
+                b.append(SkyTrans.get(TransKey.CMD_STATUS_COMMA)).append(skyPlayers.getPlayer(alive.get(i)).getName());
+            }
         }
+
         return b.toString();
     }
 }

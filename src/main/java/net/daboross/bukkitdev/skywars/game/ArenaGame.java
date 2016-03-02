@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014 Dabo Ross <http://www.daboross.net/>
+ * Copyright (C) 2013-2016 Dabo Ross <http://www.daboross.net/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ public class ArenaGame implements SkyGame {
     private SkyBlockLocationRange boundaries;
     private final boolean teamsEnabled;
     private final Map<UUID, Integer> playerTeams;
-    private final Map<Integer, List<UUID>> teamPlayers;
+    private final Team[] teams;
     private final int numTeams;
 
     public ArenaGame(SkyArena arena, int id, UUID[] originalPlayers) {
@@ -49,30 +49,28 @@ public class ArenaGame implements SkyGame {
         this.id = id;
         this.alivePlayers = new ArrayList<>(Arrays.asList(originalPlayers));
         this.deadPlayers = new ArrayList<>(originalPlayers.length);
-        int teamSize = arena.getTeamSize();
-        if (teamSize > 1) {
-            teamsEnabled = true;
+        int maxTeamNumber = arena.getNumTeams();
+        if (arena.getTeamSize() > 1) { // if teams are enabled (there is more than one person per team)
+            numTeams = maxTeamNumber > alivePlayers.size() ? alivePlayers.size() : maxTeamNumber;
+
+            this.teamsEnabled = true;
             this.playerTeams = new HashMap<>(alivePlayers.size());
-            this.teamPlayers = new HashMap<>(alivePlayers.size() / teamSize);
-            int team = 0;
-            List<UUID> currentTeamList = null;
-            for (int i = 0, lastTeam = -1; i < alivePlayers.size(); i++) {
-                team = i / teamSize;
-                if (team != lastTeam) {
-                    currentTeamList = new ArrayList<>(teamSize);
-                    teamPlayers.put(team, currentTeamList);
-                    lastTeam = team;
-                }
-                UUID uuid = alivePlayers.get(i);
-                playerTeams.put(uuid, team);
-                // This won't produce an NPE, because team!=lastTeam at the start of this loop.
-                //noinspection ConstantConditions
-                currentTeamList.add(uuid);
+            this.teams = new Team[numTeams];
+            for (int i = 0; i < numTeams; i++) {
+                teams[i] = new Team(i, String.valueOf(i + 1));
             }
-            numTeams = team + 1;
+            int nextTeam = 0;
+            for (UUID uuid : alivePlayers) {
+                playerTeams.put(uuid, nextTeam);
+                this.teams[nextTeam].addPlayer(uuid);
+                nextTeam += 1;
+                if (nextTeam >= numTeams) {
+                    nextTeam = 0;
+                }
+            }
         } else {
             playerTeams = null;
-            teamPlayers = null;
+            teams = null;
             teamsEnabled = false;
             numTeams = -1;
         }
@@ -134,34 +132,94 @@ public class ArenaGame implements SkyGame {
     }
 
     @Override
-    public List<UUID> getAlivePlayersInTeam(int teamNumber) {
+    public List<UUID> getAlivePlayersInTeam(int teamId) {
         if (!teamsEnabled) {
             throw new IllegalStateException("Teams aren't enabled");
         }
-        List<UUID> alive = new ArrayList<>(arena.getTeamSize());
-        List<UUID> all = teamPlayers.get(teamNumber);
-        if (all == null) {
-            return null;
+        if (teamId < 0 || teamId >= numTeams) {
+            throw new IllegalArgumentException("Invalid team id");
         }
-        for (UUID uuid : all) {
-            if (alivePlayers.contains(uuid)) {
-                alive.add(uuid);
-            }
-        }
-        return Collections.unmodifiableList(alive);
+        return teams[teamId].getAlive();
     }
 
     @Override
-    public List<UUID> getAllPlayersInTeam(int teamNumber) {
+    public List<UUID> getAllPlayersInTeam(int teamId) {
         if (!teamsEnabled) {
             throw new IllegalStateException("Teams aren't enabled");
         }
-        List<UUID> alive = teamPlayers.get(teamNumber);
-        return alive == null ? null : Collections.unmodifiableList(alive);
+        if (teamId < 0 || teamId >= numTeams) {
+            throw new IllegalArgumentException("Invalid team id");
+        }
+        return teams[teamId].getPlayers();
+    }
+
+    @Override
+    public SkyGameTeam getTeam(final int teamId) {
+        if (!teamsEnabled) {
+            throw new IllegalStateException("Teams aren't enabled");
+        }
+        if (teamId < 0 || teamId >= numTeams) {
+            throw new IllegalArgumentException("Invalid team id");
+        }
+        return teams[teamId];
     }
 
     @Override
     public int getNumTeams() {
         return numTeams;
+    }
+
+    @Override
+    public int getAliveTeams() {
+        int alive = 0;
+        for (Team team : teams) {
+            if (!team.getAlive().isEmpty()) {
+                alive += 1;
+            }
+        }
+        return alive;
+    }
+
+    public class Team implements SkyGameTeam {
+
+        private final List<UUID> players;
+        private final int id;
+        private final String name;
+
+        public Team(int id, String name) {
+            this.players = new ArrayList<>();
+            this.id = id;
+            this.name = name;
+        }
+
+        private void addPlayer(UUID uuid) {
+            players.add(uuid);
+        }
+
+        @Override
+        public List<UUID> getAlive() {
+            List<UUID> alive = new ArrayList<>(arena.getTeamSize());
+            for (UUID uuid : players) {
+                if (alivePlayers.contains(uuid)) {
+                    alive.add(uuid);
+                }
+            }
+            return alive;
+        }
+
+        @Override
+        public List<UUID> getPlayers() {
+            return Collections.unmodifiableList(players);
+        }
+
+        @Override
+        public int getId() {
+            return id;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
     }
 }

@@ -47,12 +47,3 @@ SkyWars:
 SkyWars-Translations:
 * Add red color to the error `/sw forcestart` displays if there are less than 2 players in the queue.
 * Bump message version to 4 - this will update your messages.yml file with the latest messages
-
-Changes since 1.4.2
--------------------
-
-SkyWars:
-* Fix players being able to use kits without permission.
-
-SkyWars-Translations:
-* Add german translation (de)

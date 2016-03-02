@@ -36,6 +36,7 @@ public class SkyEconomyGameRewards {
     }
 
     public void onPlayerKillPlayer(PlayerKillPlayerInfo info) {
+        // TODO: Should we have rewards on forfeit?
         int reward = plugin.getConfiguration().getEconomyKillReward();
         UUID killerUuid = info.getKillerUuid();
         if (plugin.getConfiguration().areEconomyRewardMessagesEnabled()) {

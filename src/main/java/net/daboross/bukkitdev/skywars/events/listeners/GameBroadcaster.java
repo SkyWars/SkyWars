@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014 Dabo Ross <http://www.daboross.net/>
+ * Copyright (C) 2013-2016 Dabo Ross <http://www.daboross.net/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,8 +16,10 @@
  */
 package net.daboross.bukkitdev.skywars.events.listeners;
 
+import java.util.ArrayList;
 import java.util.List;
-import net.daboross.bukkitdev.commandexecutorbase.ColorList;
+import java.util.UUID;
+import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.events.events.GameEndInfo;
@@ -29,18 +31,47 @@ public class GameBroadcaster {
 
     public void broadcastStart(GameStartInfo info) {
         List<Player> players = info.getPlayers();
-        StringBuilder playerNames = new StringBuilder();
-        for (int i = 0; i < players.size(); i++) {
-            String name = players.get(i).getName();
-            if (i == 0) {
-                playerNames.append(ColorList.NAME).append(name);
-            } else if (i == players.size() - 1) {
-                playerNames.append(ColorList.BROADCAST).append(" and ").append(ColorList.NAME).append(name);
+        StringBuilder playerNames = new StringBuilder(players.get(0).getName());
+        for (int i = 1; i < players.size(); i++) {
+            if (i == players.size() - 1) {
+                playerNames.append(SkyTrans.get(TransKey.GAME_STARTING_GAMESTARTING_FINAL_COMMA));
             } else {
-                playerNames.append(ColorList.BROADCAST).append(SkyTrans.get(TransKey.GAME_STARTING_GAMESTARTING_COMMA)).append(ColorList.NAME).append(name);
+                playerNames.append(SkyTrans.get(TransKey.GAME_STARTING_GAMESTARTING_COMMA));
             }
+            playerNames.append(players.get(i).getName());
         }
         Bukkit.broadcastMessage(SkyTrans.get(TransKey.GAME_STARTING_GAMESTARTING, playerNames));
+        // TODO: should team message broadcasts really be in here?
+        SkyGame game = info.getGame();
+        if (game.areTeamsEnabled()) {
+            // probably a much more efficient way to do this than all these loops, but
+            // this seems the least convoluted way to broadcast team messages.
+            for (int teamId = 0; teamId < game.getNumTeams(); teamId++) {
+                SkyGame.SkyGameTeam team = game.getTeam(teamId);
+                List<Player> teamPlayers = new ArrayList<>(team.getPlayers().size());
+                for (UUID uuid : team.getPlayers()) {
+                    teamPlayers.add(Bukkit.getPlayer(uuid));
+                }
+                for (Player p : teamPlayers) {
+                    List<String> teamNames = new ArrayList<>(teamPlayers.size() - 1);
+                    for (Player teamPlayer : teamPlayers) {
+                        if (teamPlayer != p) {
+                            teamNames.add(teamPlayer.getName());
+                        }
+                    }
+                    StringBuilder nameBuilder = new StringBuilder(teamNames.get(0));
+                    for (int i = 1; i < teamNames.size(); i++) {
+                        if (i < teamNames.size() - 1) {
+                            nameBuilder.append(SkyTrans.get(TransKey.GAME_STARTING_TEAM_COMMA));
+                        } else {
+                            nameBuilder.append(SkyTrans.get(TransKey.GAME_STARTING_TEAM_FINAL_COMMA));
+                        }
+                        nameBuilder.append(teamNames.get(i));
+                    }
+                    p.sendMessage(SkyTrans.get(TransKey.GAME_STARTING_TEAM_MESSAGE, team.getName(), nameBuilder));
+                }
+            }
+        }
     }
 
     public void broadcastEnd(GameEndInfo info) {
@@ -55,7 +86,7 @@ public class GameBroadcaster {
                 StringBuilder winnerBuilder = new StringBuilder(winners.get(0).getName());
                 for (int i = 1; i < winners.size(); i++) {
                     if (i == winners.size() - 1) {
-                        winnerBuilder.append(" and ");
+                        winnerBuilder.append(SkyTrans.get(TransKey.GAME_WINNING_MULTI_WON_FINAL_COMMA));
                     } else {
                         winnerBuilder.append(SkyTrans.get(TransKey.GAME_WINNING_MULTI_WON_COMMA));
                     }

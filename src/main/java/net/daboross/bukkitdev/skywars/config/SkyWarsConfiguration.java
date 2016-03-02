@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014 Dabo Ross <http://www.daboross.net/>
+ * Copyright (C) 2013-2016 Dabo Ross <http://www.daboross.net/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,13 +41,15 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
     private final SkyArenaConfigLoader arenaLoader = new SkyArenaConfigLoader();
     private List<SkyArenaConfig> enabledArenas;
+    private Map<String, String> arenaGamerules;
     private final SkyWars plugin;
     private Path arenaFolder;
-    private SkyArenaConfig parentArena;
     private ArenaOrder arenaOrder;
     private boolean skipUuidCheck;
     private String messagePrefix;
     private boolean inventorySaveEnabled;
+    private boolean experienceSaveEnabled;
+    private boolean pghSaveEnabled;
     private boolean enableScore;
     private int deathScoreDiff;
     private int winScoreDiff;
@@ -68,11 +71,13 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private String locale;
     private boolean disableReport;
     private boolean economyRewardMessages;
+    //
 //    private boolean perArenaDeathMessagesEnabled;
 //    private boolean perArenaWinMessagesEnabled;
     private boolean multiverseCoreHookEnabled;
     private boolean multiverseInventoriesHookEnabled;
     private boolean worldeditHookEnabled;
+    private boolean developerOptions;
 
     public SkyWarsConfiguration(SkyWars plugin) throws IOException, InvalidConfigurationException, SkyConfigurationException {
         this.plugin = plugin;
@@ -111,6 +116,11 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         messagePrefix = ConfigColorCode.translateCodes(mainConfig.getSetString(MainConfigKeys.MESSAGE_PREFIX, MainConfigDefaults.MESSAGE_PREFIX));
         mainConfig.setStringIfNot(MainConfigKeys.MESSAGE_PREFIX, messagePrefix);
         inventorySaveEnabled = mainConfig.getSetBoolean(MainConfigKeys.SAVE_INVENTORY, MainConfigDefaults.SAVE_INVENTORY);
+        experienceSaveEnabled = mainConfig.getSetBoolean(MainConfigKeys.SAVE_EXPERIENCE, inventorySaveEnabled);
+        pghSaveEnabled = mainConfig.getSetBoolean(MainConfigKeys.SAVE_POSITION_GAMEMODE_HEALTH, inventorySaveEnabled);
+        if ((pghSaveEnabled || experienceSaveEnabled) && !inventorySaveEnabled) {
+            throw new SkyConfigurationException("Inventory saving must be enabled to enable experience saving or position-health-gamemode saving!");
+        }
 
         List<String> enabledArenaNames = mainConfig.getSetStringList(MainConfigKeys.ENABLED_ARENAS, MainConfigDefaults.ENABLED_ARENAS);
         enabledArenas = new ArrayList<>(enabledArenaNames.size());
@@ -119,6 +129,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         }
 
         locale = mainConfig.getSetString(MainConfigKeys.LOCALE, MainConfigDefaults.LOCALE);
+
+        arenaGamerules = Collections.unmodifiableMap(mainConfig.getSetSection(MainConfigKeys.ARENA_GAMERULES, MainConfigDefaults.ARENA_GAMERULES));
 
         // Score
         enableScore = mainConfig.getSetBoolean(MainConfigKeys.Score.ENABLE, MainConfigDefaults.Score.ENABLE);
@@ -153,9 +165,15 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 //        perArenaWinMessagesEnabled = mainConfig.getSetBoolean(MainConfigKeys.PER_ARENA_WIN_MESSAGES_ENABLED, MainConfigDefaults.PER_ARENA_WIN_MESSAGES_ENABLED);
 
         // Hooks
-//        multiverseCoreHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.MULTIVERSE_CORE, MainConfigDefaults.Hooks.MULTIVERSE_CORE);
-//        multiverseInventoriesHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.MULTIVERSE_INVENTORIES, MainConfigDefaults.Hooks.MULTIVERSE_INVENTORIES);
-//        worldeditHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.WORLDEDIT, MainConfigDefaults.Hooks.WORLDEDIT);
+        multiverseCoreHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.MULTIVERSE_CORE, MainConfigDefaults.Hooks.MULTIVERSE_CORE);
+        multiverseInventoriesHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.MULTIVERSE_INVENTORIES, MainConfigDefaults.Hooks.MULTIVERSE_INVENTORIES);
+        worldeditHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.WORLDEDIT, MainConfigDefaults.Hooks.WORLDEDIT);
+
+        // Developer options
+        developerOptions = mainConfig.getConfig().getBoolean(MainConfigKeys.DEVELOPER_OPTIONS, MainConfigDefaults.DEVELOPER_OPTIONS);
+        if (developerOptions) {
+            plugin.getLogger().info("Enabling developer options.");
+        }
 
         // Remove deprecated values
         mainConfig.removeValues(MainConfigKeys.Deprecated.CHAT_PREFIX, MainConfigKeys.Deprecated.PREFIX_CHAT);
@@ -164,7 +182,6 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         mainConfig.save(String.format(Headers.CONFIG));
 
         // Arenas
-        loadParent();
         for (String arenaName : enabledArenaNames) {
             loadArena(arenaName);
         }
@@ -202,26 +219,9 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             }
         }
         SkyArenaConfig arenaConfig = arenaLoader.loadArena(file, name, messagePrefix);
-        arenaConfig.setParent(parentArena);
         enabledArenas.add(arenaConfig);
 
         saveArena(file, arenaConfig, String.format(Headers.ARENA, name));
-    }
-
-    private void loadParent() throws SkyConfigurationException {
-        Path path = plugin.getDataFolder().toPath().resolve("arena-parent.yml");
-        if (!Files.exists(path)) {
-            String fileName = "arena-parent.yml";
-            try {
-                plugin.saveResource(fileName, false);
-            } catch (IllegalArgumentException ex) {
-                throw new SkyConfigurationException("arena-parent.yml could not be found in plugin jar.", ex);
-            }
-        }
-        SkyArenaConfig arenaConfig = arenaLoader.loadArena(path, "parent-arena", messagePrefix);
-        parentArena = arenaConfig;
-        parentArena.confirmAllValuesExist();
-        saveArena(path, arenaConfig, String.format(Headers.PARENT));
     }
 
     public void saveArena(Path path, SkyArenaConfig arenaConfig, String header) {
@@ -237,7 +237,6 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
     @Override
     public void saveArena(SkyArenaConfig arena) {
-        arena.setParent(parentArena);
         saveArena(arena.getFile(), arena, String.format(Headers.ARENA, arena.getArenaName()));
     }
 
@@ -267,11 +266,6 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     }
 
     @Override
-    public SkyArenaConfig getParentArena() {
-        return parentArena;
-    }
-
-    @Override
     public ArenaOrder getArenaOrder() {
         return arenaOrder;
     }
@@ -287,8 +281,23 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     }
 
     @Override
+    public boolean isExperienceSaveEnabled() {
+        return experienceSaveEnabled;
+    }
+
+    @Override
+    public boolean isPghSaveEnabled() {
+        return pghSaveEnabled;
+    }
+
+    @Override
     public boolean isEnableScore() {
         return enableScore;
+    }
+
+    @Override
+    public Map<String, String> getArenaGamerules() {
+        return arenaGamerules;
     }
 
     @Override
@@ -406,10 +415,18 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         return skipUuidCheck;
     }
 
+    @Override
+    public boolean areDeveloperOptionsEnabled() {
+        return developerOptions;
+    }
+
     private static class Names {
 
         private static final String MAIN = "main-config.yml";
         private static final String ARENAS = "arenas";
+
+        private Names() {
+        }
     }
 
     private static class Headers {
@@ -432,14 +449,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
                 + "For documentation, please visit %n"
                 + "https://dabo.guru/projects/skywars/configuring-arenas%n"
                 + "#######";
-        private static final String PARENT = "####### arena-parent.yml ###%n"
-                + "Any settings that an individual arena config leaves out will be inherited%n"
-                + " from this arena config.%n"
-                + "%n"
-                + "All comment changes will be removed.%n"
-                + "%n"
-                + "For documentation, please visit %n"
-                + "https://dabo.guru/projects/skywars/configuring-parent%n"
-                + "#######";
+
+        private Headers() {
+        }
     }
 }

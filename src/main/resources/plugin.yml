@@ -4,7 +4,7 @@ version: ${project.version}
 author: Dabo Ross
 description: ${project.description}
 url: ${project.url}
-softdepend: [Vault]
+softdepend: [Vault, WorldEdit]
 commands:
   skywars:
     aliases: [sw]

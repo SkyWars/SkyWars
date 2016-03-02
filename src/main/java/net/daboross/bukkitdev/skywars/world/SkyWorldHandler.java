@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014 Dabo Ross <http://www.daboross.net/>
+ * Copyright (C) 2013-2016 Dabo Ross <http://www.daboross.net/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,9 +16,15 @@
  */
 package net.daboross.bukkitdev.skywars.world;
 
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
@@ -30,6 +36,8 @@ import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
 import net.daboross.bukkitdev.skywars.events.events.GameEndInfo;
 import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.game.ArenaGame;
+import net.daboross.bukkitdev.skywars.world.providers.ProtobufStorageProvider;
+import net.daboross.bukkitdev.skywars.world.providers.WorldEditProtobufStorageProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -41,63 +49,87 @@ import org.bukkit.entity.Player;
 public class SkyWorldHandler {
 
     private final SkyWars plugin;
-    private final WorldCopier copier;
+    private final WorldProvider provider;
+    private World arenaWorld;
 
     public SkyWorldHandler(SkyWars plugin) {
         this.plugin = plugin;
-        this.copier = new WorldCopier();
-    }
-
-    public void findAndLoadRequiredWorlds() {
-        for (SkyArena arena : plugin.getConfiguration().getEnabledArenas()) {
-            loadWorld(arena.getBoundaries().getOrigin().world, arena.getArenaName());
+        if (plugin.getConfiguration().isWorldeditHookEnabled() && plugin.getServer().getPluginManager().isPluginEnabled("WorldEdit")) {
+            plugin.getLogger().info("Using WorldEdit hook for arena creation.");
+            this.provider = new WorldEditProtobufStorageProvider(plugin);
+        } else {
+            plugin.getLogger().info("Using slower non-worldedit backend for arena creation.");
+            this.provider = new ProtobufStorageProvider(plugin);
         }
     }
 
+    public void loadArenas() {
+        for (SkyArena arena : plugin.getConfiguration().getEnabledArenas()) {
+            try {
+                provider.loadArena(arena);
+            } catch (IOException e) {
+                plugin.getLogger().log(Level.SEVERE, "Failed to load arena '" + arena.getArenaName() + "':", e);
+                plugin.getServer().getPluginManager().disablePlugin(plugin);
+            }
+        }
+    }
+
+    /**
+     * This method loads a new arena into the current cache - useful for creating caches for new arenas after saving the
+     * .yml files.
+     */
+    public void loadNewArena(SkyArena arena) throws IOException {
+        provider.loadArena(arena);
+    }
+
     public void create() {
-        World world = plugin.getServer().getWorld(Statics.ARENA_WORLD_NAME);
-        if (world == null) {
+        arenaWorld = plugin.getServer().getWorld(Statics.ARENA_WORLD_NAME);
+        if (arenaWorld == null) {
             plugin.getLogger().info("Loading world '" + Statics.ARENA_WORLD_NAME + "'.");
             WorldCreator arenaWorldCreator = new WorldCreator(Statics.ARENA_WORLD_NAME);
             arenaWorldCreator.generateStructures(false);
             arenaWorldCreator.generator(new VoidGenerator());
             arenaWorldCreator.type(WorldType.FLAT);
             arenaWorldCreator.seed(0);
-            world = arenaWorldCreator.createWorld();
+            arenaWorld = arenaWorldCreator.createWorld();
             plugin.getLogger().info("Done loading world '" + Statics.ARENA_WORLD_NAME + "'.");
         } else {
             plugin.getLogger().info("The world '" + Statics.ARENA_WORLD_NAME + "' was already loaded.");
         }
-        world.setAutoSave(false);
-        world.getBlockAt(-5000, 45, -5000).setType(Material.STONE);
-        world.setSpawnLocation(-5000, 50, -5000);
+        arenaWorld.setAutoSave(false);
+        arenaWorld.getBlockAt(-5000, 45, -5000).setType(Material.STONE);
+        arenaWorld.setSpawnLocation(-5000, 50, -5000);
+        for (Map.Entry<String, String> entry : plugin.getConfiguration().getArenaGamerules().entrySet()) {
+            arenaWorld.setGameRuleValue(entry.getKey(), entry.getValue());
+        }
+        arenaWorld.setTime(4000);
     }
 
     public void destroyArenaWorld() {
-        World world = plugin.getServer().getWorld(Statics.ARENA_WORLD_NAME);
-        Bukkit.unloadWorld(world, false);
-    }
-
-    public void loadWorld(String worldName, String arenaNameRequiring) {
-        if (plugin.getServer().getWorld(worldName) == null) {
-            plugin.getLogger().log(Level.INFO, "The arena ''{1}'' requires the world ''{0}'' to be loaded. Loading it now.", new Object[]{worldName, arenaNameRequiring});
-            WorldCreator baseWorldCreator = new WorldCreator(worldName);
-            baseWorldCreator.generateStructures(false);
-            baseWorldCreator.generator(new VoidGenerator());
-            baseWorldCreator.type(WorldType.FLAT);
-            baseWorldCreator.seed(0);
-            baseWorldCreator.createWorld();
-            plugin.getLogger().log(Level.INFO, "Done loading world ''{0}''.", worldName);
-        } else {
-            plugin.getLogger().log(Level.INFO, "The arena ''{1}'' requires the world ''{0}'' to be loaded. It is already loaded.", new Object[]{worldName, arenaNameRequiring});
+        Path worldFolder = arenaWorld.getWorldFolder().toPath();
+        Bukkit.unloadWorld(arenaWorld, false);
+        arenaWorld = null;
+        if (Files.exists(worldFolder)) {
+            plugin.getLogger().info("Cleaning up: Deleting " + worldFolder);
+            try {
+                deletePath(worldFolder);
+            } catch (IOException e) {
+                plugin.getLogger().log(Level.SEVERE, "Failed to delete " + worldFolder, e);
+            }
         }
     }
 
-    public void onGameStart(GameStartInfo info) {
+    public void onGameStart0(GameStartInfo info) {
+        // Copy arena *first* before doing anything else.
         ArenaGame game = info.getGame();
         SkyBlockLocation min = getMinLocation(game);
         game.setMin(min);
-        copier.copyArena(min, game.getArena().getBoundaries().getOrigin());
+        provider.copyArena(arenaWorld, game.getArena(), min);
+    }
+
+    public void onGameStart1(GameStartInfo info) {
+        ArenaGame game = info.getGame();
+        SkyBlockLocation min = getMinLocation(game);
         List<SkyPlayerLocation> spawns = new ArrayList<>(game.getArena().getSpawns());
         Collections.shuffle(spawns);
         if (game.areTeamsEnabled()) {
@@ -129,7 +161,7 @@ public class SkyWorldHandler {
 
     public void onGameEnd(GameEndInfo info) {
         SkyBlockLocation min = info.getGame().getMin();
-        copier.destroyArena(min, info.getGame().getArena().getBoundaries().getClearing());
+        provider.destroyArena(arenaWorld, info.getGame().getArena(), min);
     }
 
     private SkyBlockLocation getMinLocation(SkyGame game) {
@@ -142,5 +174,23 @@ public class SkyWorldHandler {
         int modZ = (id / 2) * distanceApart;
         int modY = arena.getPlacementY();
         return new SkyBlockLocation(modX, modY, modZ, Statics.ARENA_WORLD_NAME);
+    }
+
+    public static void deletePath(final Path path) throws IOException {
+        if (Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS)) {
+            cleanDirectory(path);
+        }
+        Files.deleteIfExists(path);
+    }
+
+    public static void cleanDirectory(final Path path) throws IOException {
+        if (!Files.isDirectory(path, LinkOption.NOFOLLOW_LINKS)) {
+            return;
+        }
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
+            for (Path entry : stream) {
+                deletePath(entry);
+            }
+        }
     }
 }

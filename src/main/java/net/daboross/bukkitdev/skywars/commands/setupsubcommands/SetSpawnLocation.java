@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014 Dabo Ross <http://www.daboross.net/>
+ * Copyright (C) 2013-2016 Dabo Ross <http://www.daboross.net/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,8 +44,8 @@ public class SetSpawnLocation extends SubCommand {
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         Player p = (Player) sender;
-        SetupData state = states.getSetupState(p.getName());
-        SkyPlayerLocation pos = new SkyPlayerLocation(p.getLocation()).subtract(state.getOriginMin());
+        SetupData state = states.getSetupState(p.getUniqueId());
+        SkyPlayerLocation pos = new SkyPlayerLocation(p.getLocation());
         sender.sendMessage(SkyTrans.get(TransKey.SWS_ADDSPAWN_CONFIRMATION, pos.toString()));
         state.getSpawns().add(pos);
     }

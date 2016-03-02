@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014 Dabo Ross <http://www.daboross.net/>
+ * Copyright (C) 2013-2016 Dabo Ross <http://www.daboross.net/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,11 +24,13 @@ import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.events.events.GameEndInfo;
 import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveGameInfo;
+import net.daboross.bukkitdev.skywars.util.CrossVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
+import static net.daboross.bukkitdev.skywars.api.game.SkyGame.SkyGameTeam;
 
 public class TeamScoreboardListener {
 
@@ -41,16 +43,18 @@ public class TeamScoreboardListener {
             SkyStatic.debug("Setting up teams for game %s", game.getId());
             Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
             scoreboards.put(game.getId(), board);
-            for (int teamNum = 0, max = game.getNumTeams(); teamNum < max; teamNum++) {
-                String teamName = "Team " + teamNum;
+            for (int teamId = 0, max = game.getNumTeams(); teamId < max; teamId++) {
+                SkyGameTeam gameTeam = game.getTeam(teamId);
+                String teamName = gameTeam.getName();
                 Team team = board.registerNewTeam(teamName);
                 team.setAllowFriendlyFire(false);
                 team.setCanSeeFriendlyInvisibles(true);
-                team.setPrefix(ChatColor.GRAY + "[" + ChatColor.DARK_RED + teamNum + ChatColor.GRAY + "]" + ChatColor.WHITE + " ");
-                for (UUID uuid : game.getAllPlayersInTeam(teamNum)) {
-                    SkyStatic.debug("Adding (uuid: %s) to team %s", uuid, teamName);
+                team.setPrefix(ChatColor.GRAY + "[" + ChatColor.DARK_RED + teamName + ChatColor.GRAY + "]" + ChatColor.WHITE + " ");
+
+                for (UUID uuid : gameTeam.getAlive()) {
+                    SkyStatic.debug("Adding (uuid: %s) to scoreboard team %s", uuid, teamName);
                     Player player = Bukkit.getPlayer(uuid);
-                    team.addPlayer(player);
+                    CrossVersion.addPlayerToTeam(team, player);
                     teams.put(uuid, team);
                     player.setScoreboard(board);
                 }
@@ -61,7 +65,7 @@ public class TeamScoreboardListener {
     public void onPlayerLeaveGame(PlayerLeaveGameInfo info) {
         Team team = teams.remove(info.getPlayer().getUniqueId());
         if (team != null) {
-            team.removePlayer(info.getPlayer());
+            CrossVersion.removePlayerFromTeam(team, info.getPlayer());
         }
     }
 

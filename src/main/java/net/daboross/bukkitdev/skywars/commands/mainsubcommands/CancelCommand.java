@@ -31,7 +31,7 @@ public class CancelCommand extends SubCommand {
 
     public CancelCommand(SkyWars plugin) {
         super("cancel", true, "skywars.cancel", SkyTrans.get(TransKey.CMD_CANCEL_DESCRIPTION));
-        addArgumentNames("ID");
+        addArgumentNames(SkyTrans.get(TransKey.CMD_CANCEL_ARGUMENT));
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.LESS_THAN, 2, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.GREATER_THAN, 0, SkyTrans.get(TransKey.NOT_ENOUGH_PARAMS)));
         this.plugin = plugin;
@@ -43,7 +43,7 @@ public class CancelCommand extends SubCommand {
         try {
             id = Integer.parseInt(subCommandArgs[0]);
         } catch (NumberFormatException ex) {
-            sender.sendMessage(SkyTrans.get(TransKey.CMD_CANCEL_NOT_AN_INT, subCommandArgs[0]));
+            sender.sendMessage(SkyTrans.get(TransKey.NOT_AN_INTEGER, subCommandArgs[0]));
             return;
         }
         SkyIDHandler idh = plugin.getIDHandler();

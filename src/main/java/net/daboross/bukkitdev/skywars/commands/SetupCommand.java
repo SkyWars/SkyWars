@@ -21,6 +21,7 @@ import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
+import net.daboross.bukkitdev.skywars.commands.setupsubcommands.NewKit;
 import net.daboross.bukkitdev.skywars.commands.setupsubcommands.SaveCurrentArena;
 import net.daboross.bukkitdev.skywars.commands.setupsubcommands.SetPos1;
 import net.daboross.bukkitdev.skywars.commands.setupsubcommands.SetPos2;
@@ -42,6 +43,7 @@ public class SetupCommand {
     }
 
     private void initCommands() {
+        base.addSubCommand(new NewKit(plugin));
         base.addSubCommand(new StartNewArena(plugin, states));
         base.addSubCommand(new SetPos1(states));
         base.addSubCommand(new SetPos2(states));

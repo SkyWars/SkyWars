@@ -17,26 +17,26 @@
 package net.daboross.bukkitdev.skywars.commands.setupstuff;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 public class SetupStates {
 
-    private final Map<String, SetupData> setupStates;
+    private final Map<UUID, SetupData> setupStates;
 
     public SetupStates() {
         this.setupStates = new HashMap<>();
     }
 
-    public SetupData getSetupState(String user) {
-        return setupStates.get(user.toLowerCase(Locale.ENGLISH));
+    public SetupData getSetupState(UUID userUuid) {
+        return setupStates.get(userUuid);
     }
 
-    public void setSetupState(String user, SetupData state) {
+    public void setSetupState(UUID userUuid, SetupData state) {
         if (state == null) {
-            setupStates.remove(user.toLowerCase(Locale.ENGLISH));
+            setupStates.remove(userUuid);
         } else {
-            setupStates.put(user.toLowerCase(Locale.ENGLISH), state);
+            setupStates.put(userUuid, state);
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014 Dabo Ross <http://www.daboross.net/>
+ * Copyright (C) 2013-2016 Dabo Ross <http://www.daboross.net/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,12 +16,14 @@
  */
 package net.daboross.bukkitdev.skywars.commands.setupstuff;
 
-import net.daboross.bukkitdev.commandexecutorbase.ColorList;
 import net.daboross.bukkitdev.commandexecutorbase.CommandFilter;
 import net.daboross.bukkitdev.commandexecutorbase.CommandPreCondition;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class StartedArenaCondition implements CommandPreCondition, CommandFilter {
 
@@ -35,20 +37,20 @@ public class StartedArenaCondition implements CommandPreCondition, CommandFilter
 
     @Override
     public boolean canContinue(CommandSender sender, SubCommand subCommand) {
-        return (states.getSetupState(sender.getName()) == null) != started;
+        return (states.getSetupState(((Player) sender).getUniqueId()) == null) != started;
     }
 
     @Override
     public boolean canContinue(CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        return (states.getSetupState(sender.getName()) == null) != started;
+        return (states.getSetupState(((Player) sender).getUniqueId()) == null) != started;
     }
 
     @Override
     public String[] getDeniedMessage(CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        if (states.getSetupState(sender.getName()) == null) {
-            return new String[]{ColorList.ERR + "You haven't started creating an arena yet"};
+        if (states.getSetupState(((Player) sender).getUniqueId()) == null) {
+            return new String[]{SkyTrans.get(TransKey.SWS_NO_ARENA_STARTED)};
         } else {
-            return new String[]{ColorList.ERR + "You already started creating an arena"};
+            return new String[]{SkyTrans.get(TransKey.SWS_ARENA_ALREADY_STARTED)};
         }
     }
 }

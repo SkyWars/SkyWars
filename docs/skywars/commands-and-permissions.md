@@ -16,6 +16,7 @@ Commands and Permissions
 | **/sw** **report**    | skywars.report     | Generates and submits a report.                      |
 | **/sw** **forcestart**| skywars.forcestart | Force starts a game with the people in the queue.    |
 | **/sw** **kit**       | skywars.kit        | Lists kits, and lets you choose one                  |
+| **/sw** **testkit**   | skywars.testkit    | Overwrites your current inventory with a kit, to test. This immediately replaces your inventory with the kit, with no regard for what world you are in - this is for testing kits after you create them to ensure they function properly, without having to join a game |
 
 * Note: /sw report will submit Server Software, Server Version, plugin information and all configuration information to gist.github.com, then give you a URL link to the data. This is useful when debugging.
 
@@ -28,8 +29,12 @@ Commands and Permissions
 | **/sws** **setpos2**  | skywars.setup      | Sets the position opposite from the first position to copy the arena from. |
 | **/sws** **addspawn** | skywars.setup      | Adds a spawn position to the arena at your current location. |
 | **/sws** **save**     | skywars.setup      | Saves the configuration to file under the name you started with. |
+| **/sws** **createkit**    | skywars.setup  | Creates a kit from your current inventory. |
 
-* Note: The /sws command descriptions are brief. If you want a guide on how to use them, check out [Setting up a new arena](https://dabo.guru/projects/skywars/creating-an-arena).
+For a full guide on using the setup commands, check out [Setting up a new arena](https://dabo.guru/projects/skywars/creating-an-arena).
+
+For a full guide on **/sws createkit**, check out [Creating a new kit](https://dabo.guru/projects/skywars/creating-a-new-kit)
+
 
 ### Permissions
 | Permission        | Defaults to       |

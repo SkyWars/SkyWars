@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014 Dabo Ross <http://www.daboross.net/>
+ * Copyright (C) 2013-2016 Dabo Ross <http://www.daboross.net/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ import net.daboross.bukkitdev.skywars.api.players.SkyPlayer;
 import net.daboross.bukkitdev.skywars.api.players.SkyPlayerState;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
+import net.daboross.bukkitdev.skywars.kits.KitUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -35,6 +36,7 @@ public class KitCommand extends SubCommand {
 
     public KitCommand(SkyWars plugin) {
         super("kit", false, "skywars.kit", SkyTrans.get(TransKey.CMD_KIT_DESCRIPTION));
+        addArgumentNames(SkyTrans.get(TransKey.CMD_KIT_ARGUMENT));
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.LESS_THAN, 2, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
         this.plugin = plugin;
     }
@@ -108,30 +110,10 @@ public class KitCommand extends SubCommand {
     }
 
     private String getAvailableKitList(List<SkyKit> availableKits) {
-        String comma = SkyTrans.get(TransKey.KITS_KIT_LIST_COMMA);
-        StringBuilder result = new StringBuilder();
-        for (SkyKit kit : availableKits) {
-            if (kit.getCost() == 0) {
-                result.append(kit.getName());
-            } else {
-                result.append(SkyTrans.get(TransKey.KITS_KIT_LIST_COST_ITEM, kit.getName(), kit.getCost()));
-            }
-            result.append(comma);
-        }
-        return SkyTrans.get(TransKey.KITS_KIT_LIST, result);
+        return SkyTrans.get(TransKey.KITS_KIT_LIST, KitUtils.formatKitList(availableKits));
     }
 
     private String getUnavailableKitList(List<SkyKit> unavailableKits) {
-        String comma = SkyTrans.get(TransKey.KITS_KIT_LIST_COMMA);
-        StringBuilder result = new StringBuilder();
-        for (SkyKit kit : unavailableKits) {
-            if (kit.getCost() == 0) {
-                result.append(kit.getName());
-            } else {
-                result.append(SkyTrans.get(TransKey.KITS_KIT_LIST_COST_ITEM, kit.getName(), kit.getCost()));
-            }
-            result.append(comma);
-        }
-        return SkyTrans.get(TransKey.CMD_KIT_UNAVAILABLE_KITS, result);
+        return SkyTrans.get(TransKey.CMD_KIT_UNAVAILABLE_KITS, KitUtils.formatKitList(unavailableKits));
     }
 }
