@@ -1,5 +1,3 @@
-    [//] # (If you have a feature request, please ignore and delete this template)
-
 #### Issue / Bug / Crash:
 
 Server Version:
@@ -13,3 +11,7 @@ What happened?:
 Output url from `/sw report`:
 
 Any errors in console?:
+
+#### Feature Request:
+
+What would you like to be added?:
