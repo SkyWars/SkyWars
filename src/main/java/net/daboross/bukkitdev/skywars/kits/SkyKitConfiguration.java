@@ -93,7 +93,7 @@ public class SkyKitConfiguration implements SkyKits {
     public void addKit(SkyKit kit) {
         Validate.notNull(kit);
         Validate.isTrue(!kits.containsKey(kit.getName()), "Kit already exists!");
-        kits.put(kit.getName(), kit);
+        kits.put(kit.getName().toLowerCase(), kit);
     }
 
     @Override
