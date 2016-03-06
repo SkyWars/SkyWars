@@ -18,7 +18,7 @@ A few guidelines:
   Search your server.log file for errors, and include those.
 * For everything you take out of the server.log file, please put it into a [gist](http://gist.github.com) and copy the
   link here. Also include 10 lines above and below the error/output you are capturing.
-* Include the output of the **/sw report** comman in the ticket. This gives information on your configuration.
+* Include the output of the **/sw report** command in the ticket. This gives information on your configuration.
   If you are using version 1.3.0 or below, please use **/sw cfgdebug -p** instead of **/sw report**.
 
 ## Actually submitting
