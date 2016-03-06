@@ -52,49 +52,27 @@ public class SkyKitEnconder {
         }
         List<Map<String, Object>> itemList = new ArrayList<>(inventory.size());
         for (SkyKitItem item : inventory) {
-            itemList.add(encodeItemToMap(item));
+            itemList.add(encodeItem(item));
         }
         kitRoot.set("items", itemList);
     }
 
     private static void encodeArmorToConfig(List<SkyKitItem> armor, ConfigurationSection section) {
         if (armor.get(3) != null) {
-            encodeArmorItemToConfig(armor.get(3), section.createSection("helmet"));
+            section.set("helmet", encodeItem(armor.get(3)));
         }
         if (armor.get(2) != null) {
-            encodeArmorItemToConfig(armor.get(2), section.createSection("chestplate"));
+            section.set("chestplate", encodeItem(armor.get(2)));
         }
         if (armor.get(1) != null) {
-            encodeArmorItemToConfig(armor.get(1), section.createSection("leggings"));
+            section.set("leggings", encodeItem(armor.get(1)));
         }
         if (armor.get(0) != null) {
-            encodeArmorItemToConfig(armor.get(0), section.createSection("boots"));
+            section.set("boots", encodeItem(armor.get(0)));
         }
     }
 
-    /**
-     * This is like decodeItemMap, but is used for armor sections (where the item is a ConfigurationSection instead of a
-     * Map).
-     * <p/>
-     * This method also does not decode potions and other item metadata besides enchantments, as it seems unlikely to be
-     * neccessary for armor.
-     */
-    public static void encodeArmorItemToConfig(SkyKitItem item, ConfigurationSection armorSection) {
-        armorSection.set("type", item.getMaterial().name());
-        if (item.getAmount() != 1) {
-            armorSection.set("amount", item.getAmount());
-        }
-
-        Map<Enchantment, Integer> enchantments = item.getEnchantments();
-        if (enchantments != null) {
-            ConfigurationSection enchantmentSection = armorSection.createSection("enchantments");
-            for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
-                enchantmentSection.set(entry.getKey().getName(), entry.getValue());
-            }
-        }
-    }
-
-    public static Map<String, Object> encodeItemToMap(SkyKitItem item) {
+    public static Map<String, Object> encodeItem(SkyKitItem item) {
         Map<String, Object> result = new HashMap<>();
         result.put("type", item.getMaterial().name());
         if (item.getAmount() != 1) {
