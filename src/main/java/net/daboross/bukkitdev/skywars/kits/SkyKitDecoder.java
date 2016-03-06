@@ -69,7 +69,7 @@ public class SkyKitDecoder {
             for (Object o : items) {
                 if (o instanceof Map) {
                     //noinspection unchecked
-                    result.add(decodeItemMap((Map<String, Object>) o));
+                    result.add(decodeItem(new MapMapSection((Map<String, Object>) o)));
                 } else {
                     throw new SkyConfigurationException("Invalid thing in items list '" + o + "'.");
                 }
@@ -87,7 +87,7 @@ public class SkyKitDecoder {
                 throw new SkyConfigurationException("Invalid helmet");
             } else {
                 try {
-                    armor[3] = decodeArmorItemConfig(section.getConfigurationSection("helmet"));
+                    armor[3] = decodeItem(new ConfigurationMapSection(section.getConfigurationSection("helmet")));
                 } catch (SkyConfigurationException ex) {
                     throw new SkyConfigurationException("Invalid helmet: " + ex.getMessage());
                 }
@@ -98,7 +98,7 @@ public class SkyKitDecoder {
                 throw new SkyConfigurationException("Invalid chestplate");
             } else {
                 try {
-                    armor[2] = decodeArmorItemConfig(section.getConfigurationSection("chestplate"));
+                    armor[2] = decodeItem(new ConfigurationMapSection(section.getConfigurationSection("chestplate")));
                 } catch (SkyConfigurationException ex) {
                     throw new SkyConfigurationException("Invalid chestplate: " + ex.getMessage());
                 }
@@ -109,7 +109,7 @@ public class SkyKitDecoder {
                 throw new SkyConfigurationException("Invalid leggings");
             } else {
                 try {
-                    armor[1] = decodeArmorItemConfig(section.getConfigurationSection("leggings"));
+                    armor[1] = decodeItem(new ConfigurationMapSection(section.getConfigurationSection("leggings")));
                 } catch (SkyConfigurationException ex) {
                     throw new SkyConfigurationException("Invalid leggings: " + ex.getMessage());
                 }
@@ -120,7 +120,7 @@ public class SkyKitDecoder {
                 throw new SkyConfigurationException("Invalid boots");
             } else {
                 try {
-                    armor[0] = decodeArmorItemConfig(section.getConfigurationSection("boots"));
+                    armor[0] = decodeItem(new ConfigurationMapSection(section.getConfigurationSection("boots")));
                 } catch (SkyConfigurationException ex) {
                     throw new SkyConfigurationException("Invalid boots: " + ex.getMessage());
                 }
@@ -129,126 +129,53 @@ public class SkyKitDecoder {
         return armor;
     }
 
-    /**
-     * This is like decodeItemMap, but is used for armor sections (where the item is a ConfigurationSection instead of a
-     * Map).
-     * <p/>
-     * This method also does not decode potions and other item metadata besides enchantments, as it seems unlikely to be
-     * neccessary for armor.
-     */
-    public static SkyKitItem decodeArmorItemConfig(ConfigurationSection section) throws SkyConfigurationException {
-        if (!section.isString("type")) {
-            throw new SkyConfigurationException("The item does not define a type");
-        }
-        String typeString = section.getString("type");
-        int amount = section.isInt("amount") ? section.getInt("amount") : 1;
-        Material type;
-        type = Material.matchMaterial(typeString);
-        if (type == null) {
-            throw new SkyConfigurationException("The type string '" + typeString + "' is not valid. Check https://dabo.guru/projects/skywars/configuring-kits for a list of valid material names.");
-        }
-        Map<Enchantment, Integer> enchantments = null;
-        if (section.contains("enchantments")) {
-            if (section.isConfigurationSection("enchantments")) {
-                ConfigurationSection enchantmentSection = section.getConfigurationSection("enchantments");
-                Set<String> keys = enchantmentSection.getKeys(false);
-                enchantments = new HashMap<>(keys.size());
-                for (String key : keys) {
-                    Enchantment enchantment = Enchantment.getByName(key.toUpperCase());
-                    if (enchantment == null) {
-                        throw new SkyConfigurationException("Invalid enchantment '" + key + "'. Check https://dabo.guru/projects/skywars/configuring-kits for a list of valid enchantments.");
-                    }
-                    if (enchantmentSection.isInt(key)) {
-                        enchantments.put(enchantment, enchantmentSection.getInt(key));
-                    } else {
-                        throw new SkyConfigurationException("Invalid enchantment level '" + enchantmentSection.get(key) + "'. Not an integer.");
-                    }
-                }
-            } else {
-                throw new SkyConfigurationException("Enchantments invalid!");
-            }
-        }
-        return new SkyKitItemConfig(type, amount, enchantments, Collections.<SkyItemMeta>emptyList());
-    }
-
     @SuppressWarnings("unchecked")
-    public static SkyKitItem decodeItemMap(Map<String, Object> map) throws SkyConfigurationException {
-        Object typeO = map.get("type");
-        if (typeO == null) {
-            throw new SkyConfigurationException("The item does not define a type");
-        } else if (!(typeO instanceof String)) {
-            throw new SkyConfigurationException("The item type is not a string");
-        }
-        String typeString = (String) typeO;
-        int amount = getMapInt(map, "amount", 1, "Item amount is not an integer");
+    public static SkyKitItem decodeItem(MapSection map) throws SkyConfigurationException {
+        String typeString = map.getTypeString("The item");
+        int amount = map.getInt("amount", 1, "Item amount is not an integer");
         Material type;
         type = Material.matchMaterial(typeString);
         if (type == null) {
             throw new SkyConfigurationException("The type string '" + typeString + "' is not valid. Check https://dabo.guru/projects/skywars/configuring-kits for a list of valid material names.");
         }
         Map<Enchantment, Integer> enchantments = null;
-        Object enchantmentO = map.get("enchantments");
-        if (enchantmentO != null) {
-            if (enchantmentO instanceof Map) {
-                Map<String, Object> enchantmentMap = (Map<String, Object>) enchantmentO;
-                enchantments = new HashMap<>(enchantmentMap.size());
-                for (String key : enchantmentMap.keySet()) {
-                    Object val = enchantmentMap.get(key);
-                    Enchantment enchantment = Enchantment.getByName(key.toUpperCase());
-                    if (enchantment == null) {
-                        throw new SkyConfigurationException("Invalid enchantment '" + key + "'. Check https://dabo.guru/projects/skywars/configuring-kits for a list of valid enchantments.");
-                    }
-                    if (val instanceof Integer) {
-                        enchantments.put(enchantment, (Integer) val);
-                    } else {
-                        throw new SkyConfigurationException("Invalid enchantment level '" + val + "'. Not an integer.");
-                    }
+        MapSection enchantmentMap = map.getSection("enchantments", "Enchantments invalid: not a section!");
+        if (enchantmentMap != null) {
+            enchantments = new HashMap<>(enchantmentMap.size());
+            for (String key : enchantmentMap.keySet()) {
+                Enchantment enchantment = Enchantment.getByName(key.toUpperCase());
+                if (enchantment == null) {
+                    throw new SkyConfigurationException("Invalid enchantment '" + key + "'. Check https://dabo.guru/projects/skywars/configuring-kits for a list of valid enchantments.");
                 }
-            } else {
-                throw new SkyConfigurationException("Enchantments invalid (not a section)!");
+                int value = enchantmentMap.getInt(key, "Invalid enchantment level `%s`: not an integer.");
+                enchantments.put(enchantment, value);
             }
         }
         List<SkyItemMeta> meta = new ArrayList<>();
-        Object potionO = map.get("potion");
-        if (potionO != null) {
-            if (potionO instanceof Map) {
-                meta.add(new SkyPotionMeta(decodePotion((Map) potionO)));
-            } else {
-                throw new SkyConfigurationException("Potion invalid (not a map)!");
-            }
+        MapSection potionMap = map.getSection("potion", "Item potion section invalid: not a map!");
+        if (potionMap != null) {
+            meta.add(new SkyPotionMeta(decodePotion(potionMap)));
         }
-        Object effectsO = map.get("extra-effects");
-        if (effectsO != null) {
-            List<PotionEffect> effects;
-            if (effectsO instanceof List) {
-                List<?> effectsList = (List) effectsO;
-                effects = new ArrayList<>(effectsList.size());
-                for (Object obj : effectsList) {
-                    if (obj instanceof Map) {
-                        effects.add(decodePotionEffect((Map) obj));
-                    } else {
-                        throw new SkyConfigurationException("Invalid thing in items list '" + obj + "'.");
-                    }
+
+        List<Object> effectsList = map.getList("extra-effects", "Effects invalid: not a list!");
+        if (effectsList != null) {
+            List<PotionEffect> effects = new ArrayList<>(effectsList.size());
+            for (Object obj : effectsList) {
+                if (obj instanceof Map) {
+                    effects.add(decodePotionEffect(new MapMapSection((Map) obj)));
+                } else {
+                    throw new SkyConfigurationException("Invalid thing in items list '" + obj + "'.");
                 }
-            } else {
-                throw new SkyConfigurationException("Effects invalid (not a list)!");
             }
             meta.add(new SkyExtraEffectsMeta(effects));
         }
         return new SkyKitItemConfig(type, amount, enchantments, meta);
     }
 
-    @SuppressWarnings("unchecked")
-    public static PotionEffect decodePotionEffect(Map<String, Object> map) throws SkyConfigurationException {
-        Object typeO = map.get("type");
-        if (typeO == null) {
-            throw new SkyConfigurationException("The potion effect does not define a type");
-        } else if (!(typeO instanceof String)) {
-            throw new SkyConfigurationException("The potion effect type is not a string");
-        }
-        String typeString = (String) typeO;
-        int amplifier = getMapInt(map, "amplifier", 0, "Potion effect power is not an integer");
-        int duration = getMapInt(map, "duration", 60, "Potion effect duration is not an integer");
+    public static PotionEffect decodePotionEffect(MapSection map) throws SkyConfigurationException {
+        String typeString = map.getTypeString("The potion effect");
+        int amplifier = map.getInt("amplifier", 0, "Potion effect power is not an integer");
+        int duration = map.getInt("duration", 60, "Potion effect duration is not an integer");
 
         PotionEffectType type;
         type = PotionEffectType.getByName(typeString.toUpperCase());
@@ -258,26 +185,18 @@ public class SkyKitDecoder {
         return type.createEffect(duration, amplifier);
     }
 
-    public static Potion decodePotion(Map<String, Object> map) throws SkyConfigurationException {
-        Object potionTypeO = map.get("type");
-        if (potionTypeO == null) {
-            throw new SkyConfigurationException("The potion does not define a type");
-        } else if (!(potionTypeO instanceof String)) {
-            throw new SkyConfigurationException("The potion type is not a string");
-        }
-        String typeName = ((String) potionTypeO).replace(' ', '_').toUpperCase();
+    public static Potion decodePotion(MapSection map) throws SkyConfigurationException {
+        String typeName = map.getTypeString("The potion");
         PotionType type = PotionType.getByEffect(PotionEffectType.getByName(typeName));
         if (type == null) {
             type = PotionType.valueOf(typeName);
             if (type == null) {
-                throw new SkyConfigurationException("Unknown potion type: " + potionTypeO);
+                throw new SkyConfigurationException("Unknown potion type: " + typeName);
             }
         }
-        Object extendedO = map.get("extended");
-        boolean extended = extendedO instanceof Boolean ? (Boolean) extendedO : false;
-        Object splashO = map.get("splash");
-        boolean splash = splashO instanceof Boolean ? (Boolean) splashO : false;
-        int level = getMapInt(map, "level", 1, "Potion level is not an integer!");
+        boolean extended = map.getBoolean("extended", false);
+        boolean splash = map.getBoolean("splash", false);
+        int level = map.getInt("level", 1, "Potion level is not an integer!");
         if (level < 1 || level > 2) {
             throw new SkyConfigurationException("Potion level must be either 1 or 2. Use extra-effects for effects with higher amplifiers");
         }
@@ -292,16 +211,127 @@ public class SkyKitDecoder {
         return potion;
     }
 
-    private static int getMapInt(Map<String, Object> map, String key, int def, String error) throws SkyConfigurationException {
-        Object object = map.get(key);
-        int value;
-        if (object == null) {
-            value = def;
-        } else if (object instanceof Integer) {
-            value = (Integer) object;
-        } else {
-            throw new SkyConfigurationException(error);
+    private static abstract class MapSection {
+
+        public abstract int size();
+
+        public abstract Object get(String key);
+
+        public abstract Set<String> keySet();
+
+        public boolean getBoolean(final String key, final boolean def) {
+            Object object = get(key);
+            return object instanceof Boolean ? (Boolean) object : def;
         }
-        return value;
+
+        public int getInt(final String key, final String error) throws SkyConfigurationException {
+            Object object = get(key);
+            if (object instanceof Number) {
+                return ((Number) object).intValue();
+            } else {
+                throw new SkyConfigurationException(String.format(error, object));
+            }
+        }
+
+        public int getInt(final String key, final int def, String error) throws SkyConfigurationException {
+            Object object = get(key);
+            int value;
+            if (object == null) {
+                value = def;
+            } else if (object instanceof Number) {
+                value = ((Number) object).intValue();
+            } else {
+                throw new SkyConfigurationException(String.format(error, object));
+            }
+            return value;
+        }
+
+        public MapSection getSection(final String key, String error) throws SkyConfigurationException {
+            Object object = get(key);
+            if (object == null) {
+                return null;
+            } else if (object instanceof Map) {
+                //noinspection unchecked
+                return new MapMapSection((Map<String, Object>) object);
+            } else {
+                throw new SkyConfigurationException(String.format(error, object));
+            }
+        }
+
+        public List<Object> getList(final String key, final String error) throws SkyConfigurationException {
+            Object object = get(key);
+            if (object == null) {
+                return null;
+            } else if (object instanceof List) {
+                //noinspection unchecked
+                return (List<Object>) object;
+            } else {
+                throw new SkyConfigurationException(String.format(error, object));
+            }
+        }
+
+        /**
+         * @param sectionName Name to use in error.
+         * @return The string stored at "type". If null, throws an exception - this will never return null.
+         * @throws SkyConfigurationException "%s does not define a type!" or "%s type is not a string"
+         */
+
+        public String getTypeString(final String sectionName) throws SkyConfigurationException {
+            Object type = get("type");
+            if (type == null) {
+                throw new SkyConfigurationException(String.format("%s does not define a type", sectionName));
+            } else if (!(type instanceof String)) {
+                throw new SkyConfigurationException(String.format("%s type is not a string", sectionName));
+            }
+            return ((String) type).replace(' ', '_').toUpperCase();
+        }
+    }
+
+    private static class MapMapSection extends MapSection {
+
+        private final Map<String, Object> map;
+
+        private MapMapSection(final Map<String, Object> map) {
+            this.map = map;
+        }
+
+        @Override
+        public int size() {
+            return map.size();
+        }
+
+        @Override
+        public Object get(final String key) {
+            return map.get(key);
+        }
+
+        @Override
+        public Set<String> keySet() {
+            return map.keySet();
+        }
+    }
+
+    private static class ConfigurationMapSection extends MapSection {
+
+        private final ConfigurationSection section;
+
+        private ConfigurationMapSection(final ConfigurationSection section) {
+            this.section = section;
+        }
+
+        @Override
+        public int size() {
+            return section.getKeys(false).size();
+        }
+
+        @Override
+        public Object get(final String key) {
+            return section.get(key);
+        }
+
+        @Override
+        public Set<String> keySet() {
+            return section.getKeys(false);
+        }
     }
 }
