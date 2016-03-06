@@ -68,7 +68,7 @@ public class SetupData {
         List<SkyPlayerLocation> processedSpawns = new ArrayList<>();
         for (SkyPlayerLocation spawn : spawns) {
             spawn = spawn.subtract(originRange.min);
-            spawn = new SkyPlayerLocation(Math.round(spawn.x - 0.5) + 0.5, Math.round(spawn.y), Math.round(spawn.z - 0.5) + 0.5, 0, 0, null);
+            spawn = new SkyPlayerLocation(Math.round(spawn.x - 0.5) + 0.5, Math.round(spawn.y), Math.round(spawn.z - 0.5) + 0.5, null);
             processedSpawns.add(spawn);
         }
         SkyArenaConfig config = new SkyArenaConfig(arenaName,
