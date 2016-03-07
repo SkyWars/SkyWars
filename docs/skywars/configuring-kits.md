@@ -34,7 +34,8 @@ bowman:
 whacker:
   cost: 20
   items:
-    - {type: STICK, enchantments: {KNOCKBACK: 3}}
+    - {type: STICK, enchantments: {KNOCKBACK: 3},
+        name: "Whacking Stick", lore: ["&2Whacking", "&4and hacking"]}
 potions:
   # This kit demonstrates how to enter potions into kits.
   cost: 100

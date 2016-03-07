@@ -27,10 +27,15 @@ import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
 import net.daboross.bukkitdev.skywars.api.kits.SkyItemMeta;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKitItem;
+import net.daboross.bukkitdev.skywars.api.kits.impl.SkyArmorColorMeta;
+import net.daboross.bukkitdev.skywars.api.kits.impl.SkyDurabilityMeta;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyExtraEffectsMeta;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyKitConfig;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyKitItemConfig;
+import net.daboross.bukkitdev.skywars.api.kits.impl.SkyNameLoreMeta;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyPotionMeta;
+import net.daboross.bukkitdev.skywars.api.kits.impl.SkyRawDataMeta;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
@@ -152,6 +157,46 @@ public class SkyKitDecoder {
             }
         }
         List<SkyItemMeta> meta = new ArrayList<>();
+
+        Integer durability = map.getNullableInt("durability", "Item durability invalid: not an integer!");
+        if (durability != null) {
+            meta.add(new SkyDurabilityMeta(durability.shortValue()));
+        }
+        Integer rawData = map.getNullableInt("raw-data", "Item raw data invalid: not an integer!");
+        if (rawData != null) {
+            meta.add(new SkyRawDataMeta(rawData.byteValue()));
+        }
+
+        String name = map.getString("name", "Item name invalid: not a string!");
+        List<String> lore = null;
+        Object loreObject = map.get("lore");
+        if (loreObject != null) {
+            if (loreObject instanceof Map) {
+                throw new SkyConfigurationException("Item lore invalid: not a list!");
+            } else if (loreObject instanceof List) {
+                List<Object> loreList = (List<Object>) loreObject;
+                lore = new ArrayList<>(loreList.size());
+                for (Object listObject : loreList) {
+                    if (listObject instanceof Map || listObject instanceof List || listObject == null) {
+                        throw new SkyConfigurationException("Item lore list item invalid: not a string!");
+                    } else {
+                        lore.add(listObject.toString());
+                    }
+                }
+            } else {
+                lore = Collections.singletonList(loreObject.toString());
+            }
+        }
+
+        if (name != null || lore != null) {
+            meta.add(new SkyNameLoreMeta(name, lore));
+        }
+
+        String armorColor = map.getString("armor-color", "Item armor color invalid: not a string!");
+        if (armorColor != null) {
+            meta.add(new SkyArmorColorMeta(Color.fromRGB(Integer.parseInt(armorColor, 16))));
+        }
+
         MapSection potionMap = map.getSection("potion", "Item potion section invalid: not a map!");
         if (potionMap != null) {
             meta.add(new SkyPotionMeta(decodePotion(potionMap)));
@@ -233,30 +278,40 @@ public class SkyKitDecoder {
             }
         }
 
-        public int getInt(final String key, final int def, String error) throws SkyConfigurationException {
-            Object object = get(key);
-            int value;
-            if (object == null) {
-                value = def;
-            } else if (object instanceof Number) {
-                value = ((Number) object).intValue();
-            } else {
-                throw new SkyConfigurationException(String.format(error, object));
-            }
-            return value;
-        }
-
-        public MapSection getSection(final String key, String error) throws SkyConfigurationException {
+        public Integer getNullableInt(final String key, final String error) throws SkyConfigurationException {
             Object object = get(key);
             if (object == null) {
                 return null;
-            } else if (object instanceof Map) {
-                //noinspection unchecked
-                return new MapMapSection((Map<String, Object>) object);
+            } else if (object instanceof Number) {
+                return ((Number) object).intValue();
             } else {
                 throw new SkyConfigurationException(String.format(error, object));
             }
         }
+
+        public int getInt(final String key, final int def, String error) throws SkyConfigurationException {
+            Object object = get(key);
+            if (object == null) {
+                return def;
+            } else if (object instanceof Number) {
+                return ((Number) object).intValue();
+            } else {
+                throw new SkyConfigurationException(String.format(error, object));
+            }
+        }
+
+        public String getString(final String key, final String error) throws SkyConfigurationException {
+            Object object = get(key);
+            if (object == null) {
+                return null;
+            } else if (object instanceof List || object instanceof Map) {
+                throw new SkyConfigurationException(String.format(error, object));
+            } else {
+                return object.toString();
+            }
+        }
+
+        public abstract MapSection getSection(final String key, String error) throws SkyConfigurationException;
 
         public List<Object> getList(final String key, final String error) throws SkyConfigurationException {
             Object object = get(key);
@@ -309,6 +364,19 @@ public class SkyKitDecoder {
         public Set<String> keySet() {
             return map.keySet();
         }
+
+        @Override
+        public MapSection getSection(final String key, String error) throws SkyConfigurationException {
+            Object object = get(key);
+            if (object == null) {
+                return null;
+            } else if (object instanceof Map) {
+                //noinspection unchecked
+                return new MapMapSection((Map<String, Object>) object);
+            } else {
+                throw new SkyConfigurationException(String.format(error, object));
+            }
+        }
     }
 
     private static class ConfigurationMapSection extends MapSection {
@@ -332,6 +400,17 @@ public class SkyKitDecoder {
         @Override
         public Set<String> keySet() {
             return section.getKeys(false);
+        }
+
+        @Override
+        public MapSection getSection(final String key, String error) throws SkyConfigurationException {
+            if (!section.contains(key)) {
+                return null;
+            } else if (section.isConfigurationSection(key)) {
+                return new ConfigurationMapSection(section.getConfigurationSection(key));
+            } else {
+                throw new SkyConfigurationException(String.format(error, section.get(key)));
+            }
         }
     }
 }

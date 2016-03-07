@@ -74,6 +74,10 @@ And now, testing!
 * Confirm after you kill everyone the game ends
 * Confirm someone disconnecting from the server removes them from a game their playing
 * Confirm it's always daylight in the game
+* Kits:
+ * Create and apply a kit with named items
+ * Create and apply a kit with colored leather armor both in inventory and in armor slots
+ * Create and apply a kit with damaged items
 * Config testing:
  * Confirm you keep your inventory after dying with `save-inventory: true`
  * Confirm you loose your inventory after dying with `save-inventory: false`

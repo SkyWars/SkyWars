@@ -23,8 +23,13 @@ import java.util.Map;
 import net.daboross.bukkitdev.skywars.api.kits.SkyItemMeta;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKitItem;
+import net.daboross.bukkitdev.skywars.api.kits.impl.SkyArmorColorMeta;
+import net.daboross.bukkitdev.skywars.api.kits.impl.SkyDurabilityMeta;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyExtraEffectsMeta;
+import net.daboross.bukkitdev.skywars.api.kits.impl.SkyNameLoreMeta;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyPotionMeta;
+import net.daboross.bukkitdev.skywars.api.kits.impl.SkyRawDataMeta;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.potion.Potion;
@@ -99,6 +104,28 @@ public class SkyKitEnconder {
                         effectsList.add(encodePotionEffect(effect));
                     }
                     result.put("extra-effects", effectsList);
+                    break;
+                case RAW_DATA:
+                    result.put("raw-data", ((SkyRawDataMeta) meta).getData());
+                    break;
+                case DURABILITY:
+                    result.put("durability", ((SkyDurabilityMeta) meta).getDurability());
+                    break;
+                case NAME_LORE:
+                    SkyNameLoreMeta nameLoreMeta = (SkyNameLoreMeta) meta;
+                    if (nameLoreMeta.getName() != null) {
+                        result.put("name", nameLoreMeta.getName().replace(ChatColor.COLOR_CHAR, '&'));
+                    }
+                    if (nameLoreMeta.getLore() != null) {
+                        List<String> encodedLore = new ArrayList<>(nameLoreMeta.getLore().size());
+                        for (String line : nameLoreMeta.getLore()) {
+                            encodedLore.add(line.replace(ChatColor.COLOR_CHAR, '&'));
+                        }
+                        result.put("lore", encodedLore);
+                    }
+                    break;
+                case ARMOR_COLOR:
+                    result.put("armor-color", String.format("%06X", (0xFFFFFF & ((SkyArmorColorMeta) meta).getColor().asRGB())));
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown meta type: " + meta);

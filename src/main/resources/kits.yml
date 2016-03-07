@@ -22,7 +22,8 @@ bowman:
 whacker:
   cost: 20
   items:
-    - {type: STICK, enchantments: {KNOCKBACK: 3}}
+    - {type: STICK, enchantments: {KNOCKBACK: 3},
+        name: "Whacking Stick", lore: ["&2Whacking", "&4and hacking"]}
 potions:
   # This kit demonstrates how to enter potions into kits.
   cost: 100
@@ -67,6 +68,9 @@ diamond-swordsman:
   permission: server.donor
   items:
     - {type: DIAMOND_SWORD, amount: 1}
+  chestplate:
+    type: LEATHER_CHESTPLATE
+    armor-color: CC7700
 full-donor-armor:
   # This kit is only available to donors, but it also costs $500 each game!
   permission: server.donor
