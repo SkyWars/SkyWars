@@ -60,7 +60,7 @@ public class ProtobufStorageProvider implements WorldProvider {
     @Override
     public void loadArena(final SkyArena arena) throws IOException {
         if (cache.containsKey(arena.getArenaName())) {
-            plugin.getLogger().log(Level.WARNING, "Overwriting already existing cache for arena named '{}'.", arena.getArenaName());
+            plugin.getLogger().log(Level.WARNING, "Updating arena blocks cache for arena '{}'.", arena.getArenaName());
         }
         Path cachePath = plugin.getArenaPath().resolve(arena.getArenaName() + ".blocks");
         BlockStorage.BlockArea area;
@@ -89,6 +89,7 @@ public class ProtobufStorageProvider implements WorldProvider {
     private BlockStorage.BlockArea createCache(SkyArena source) {
         SkyBlockLocationRange origin = source.getBoundaries().getOrigin();
         if (origin == null) {
+            // this message needs to contain "Origin location" as it is checked for in the UpdateArena command.
             throw new IllegalStateException("Failed to load arena " + source.getArenaName() + ": Origin location not listed in configuration.");
         }
         String worldName = origin.world;
