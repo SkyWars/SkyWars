@@ -48,6 +48,11 @@ And now, testing!
 * Confirm `/sw kit` will apply a kit that costs money, and that your money decreases
 * Confirm kit is removed after you run out of money (when you join, not just when the game starts)
 * Confirm permission kit isn't applied if you loose the permission (when you join, not just when the game starts)
+* Kits (`/sws createkit` and `/sw testkit`):
+ * Create and apply a kit with named items
+ * Create and apply a kit with colored leather armor both in inventory and in armor slots
+ * Create and apply a kit with damaged items
+ * Create and apply a kit with different spawn eggs.
 * Confirm `/me` isn't blocked in-game
 * Confirm `/gamemode` is blocked in-game
 * Confirm `/sw leave` works from the queue
@@ -74,10 +79,6 @@ And now, testing!
 * Confirm after you kill everyone the game ends
 * Confirm someone disconnecting from the server removes them from a game their playing
 * Confirm it's always daylight in the game
-* Kits:
- * Create and apply a kit with named items
- * Create and apply a kit with colored leather armor both in inventory and in armor slots
- * Create and apply a kit with damaged items
 * Config testing:
  * Confirm you keep your inventory after dying with `save-inventory: true`
  * Confirm you loose your inventory after dying with `save-inventory: false`
@@ -98,4 +99,7 @@ And now, testing!
 * TODO: Setup testing overview
 * Arena creation testing:
  * Create an arena?
- * TODO: finish this section.
+ * Confirm the following are correctly stored in chests:
+   * Colored leather armor
+   * Different spawn eggs
+   * Potions with and without custom effects
