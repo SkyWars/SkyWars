@@ -52,7 +52,6 @@ public class StartNewArena extends SubCommand {
             state = new SetupData(plugin);
         }
         state.setArenaName(subCommandArgs[0]);
-        state.setSaveFile(plugin.getConfiguration().getArenaFolder().resolve(subCommandArgs[0] + ".yml"));
         states.setSetupState(((Player) sender).getUniqueId(), state);
         sender.sendMessage(SkyTrans.get(TransKey.SWS_START_CONFIRMATION, subCommandArgs[0]));
     }

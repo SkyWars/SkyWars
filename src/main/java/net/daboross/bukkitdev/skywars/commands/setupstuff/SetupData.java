@@ -16,9 +16,11 @@
  */
 package net.daboross.bukkitdev.skywars.commands.setupstuff;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyBoundariesConfig;
@@ -33,7 +35,6 @@ public class SetupData {
 
     private final SkyWars plugin;
     private String arenaName;
-    private Path saveFile;
     private SkyBlockLocation originPos1;
     private SkyBlockLocation originPos2;
     private SkyBlockLocationRange originRange;
@@ -60,6 +61,16 @@ public class SetupData {
     }
 
     public SkyArenaConfig convertToArenaConfig() {
+        Path arenaFolder = plugin.getConfiguration().getArenaFolder();
+        int additionToName = 0;
+        String finalArenaName = arenaName;
+        while (Files.exists(arenaFolder.resolve(finalArenaName + ".yml"))) {
+            finalArenaName = arenaName + ++additionToName;
+        }
+        if (!finalArenaName.equals(arenaName)) {
+            plugin.getLogger().log(Level.INFO, String.format("New arena `%s` saved as `%s` (to avoid conflict with `%s`).", arenaName, finalArenaName, arenaName));
+        }
+        Path saveFile = arenaFolder.resolve(finalArenaName + ".yml");
         setOriginBoundaries();
         if (originRange == null) {
             throw new IllegalStateException("Origin not defined.");
@@ -71,7 +82,7 @@ public class SetupData {
             spawn = new SkyPlayerLocation(Math.round(spawn.x - 0.5) + 0.5, Math.round(spawn.y), Math.round(spawn.z - 0.5) + 0.5, null);
             processedSpawns.add(spawn);
         }
-        SkyArenaConfig config = new SkyArenaConfig(arenaName,
+        SkyArenaConfig config = new SkyArenaConfig(finalArenaName,
                 processedSpawns,
                 spawns.size(), // Number of teams
                 1, // Team size
@@ -145,10 +156,6 @@ public class SetupData {
         return arenaName;
     }
 
-    public Path getSaveFile() {
-        return saveFile;
-    }
-
     public SkyBlockLocation getOriginPos1() {
         return originPos1;
     }
@@ -165,16 +172,11 @@ public class SetupData {
         this.arenaName = arenaName;
     }
 
-    public void setSaveFile(final Path saveFile) {
-        this.saveFile = saveFile;
-    }
-
     @Override
     public String toString() {
         return "SetupData{" +
                 "plugin=" + plugin +
                 ", arenaName='" + arenaName + '\'' +
-                ", saveFile=" + saveFile +
                 ", originPos1=" + originPos1 +
                 ", originPos2=" + originPos2 +
                 ", originRange=" + originRange +
@@ -190,24 +192,24 @@ public class SetupData {
 
         SetupData data = (SetupData) o;
 
-        if (!arenaName.equals(data.arenaName)) return false;
-        if (originRange != null ? !originRange.equals(data.originRange) : data.originRange != null) return false;
+        if (!plugin.equals(data.plugin)) return false;
+        if (arenaName != null ? !arenaName.equals(data.arenaName) : data.arenaName != null) return false;
         if (originPos1 != null ? !originPos1.equals(data.originPos1) : data.originPos1 != null) return false;
         if (originPos2 != null ? !originPos2.equals(data.originPos2) : data.originPos2 != null) return false;
-        if (saveFile != null ? !saveFile.equals(data.saveFile) : data.saveFile != null) return false;
-        if (!spawns.equals(data.spawns)) return false;
+        if (originRange != null ? !originRange.equals(data.originRange) : data.originRange != null) return false;
+        if (spawns != null ? !spawns.equals(data.spawns) : data.spawns != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = arenaName.hashCode();
-        result = 31 * result + (saveFile != null ? saveFile.hashCode() : 0);
+        int result = plugin.hashCode();
+        result = 31 * result + (arenaName != null ? arenaName.hashCode() : 0);
         result = 31 * result + (originPos1 != null ? originPos1.hashCode() : 0);
         result = 31 * result + (originPos2 != null ? originPos2.hashCode() : 0);
         result = 31 * result + (originRange != null ? originRange.hashCode() : 0);
-        result = 31 * result + spawns.hashCode();
+        result = 31 * result + (spawns != null ? spawns.hashCode() : 0);
         return result;
     }
 }
