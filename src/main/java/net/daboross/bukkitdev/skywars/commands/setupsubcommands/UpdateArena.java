@@ -32,7 +32,7 @@ public class UpdateArena extends SubCommand {
     private final SkyWarsPlugin plugin;
 
     public UpdateArena(final SkyWarsPlugin plugin) {
-        super("update-arena", false, null, SkyTrans.get(TransKey.SWS_UPDATEARENA_DESCRIPTION));
+        super("update-arena", true, null, SkyTrans.get(TransKey.SWS_UPDATEARENA_DESCRIPTION));
         addArgumentNames(SkyTrans.get(TransKey.SWS_UPDATEARENA_ARENA_ARGUMENT));
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.LESS_THAN, 1, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.GREATER_THAN, 1, SkyTrans.get(TransKey.NOT_ENOUGH_PARAMS)));
