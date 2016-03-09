@@ -42,10 +42,11 @@ For a full guide on **/sws createkit**, check out [Creating a new kit](https://d
 | :---------------- | :---------------- |
 | skywars.join      | Everyone          |
 | skywars.leave     | Everyone          |
-| skywars.lobby     | Everyone          |
 | skywars.version   | Everyone          |
 | skywars.status    | Everyone          |
 | skywars.kit       | OP Only           |
+| skywars.lobby     | OP Only           |
+| skywars.testkit   | OP Only           |
 | skywars.setlobby  | OP Only           |
 | skywars.setportal | OP Only           |
 | skywars.cancel    | OP Only           |
