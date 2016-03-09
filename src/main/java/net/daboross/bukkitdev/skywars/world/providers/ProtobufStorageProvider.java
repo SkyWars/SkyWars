@@ -75,7 +75,15 @@ public class ProtobufStorageProvider implements WorldProvider {
                 }
                 plugin.getLogger().log(Level.INFO, "Loaded pre-built blocks cache file for arena {0}", arena.getArenaName());
             } catch (FileNotFoundException ex) {
-                area = createCache(arena);
+                try {
+                    area = createCache(arena);
+                } catch (IllegalStateException ex1) {
+                    if (ex1.getMessage().contains("Origin location not listed in configuration")) {
+                        throw new IOException("No origin listed in configuration, but no blocks file found in jar file!", ex);
+                    } else {
+                        throw ex1;
+                    }
+                }
             }
             try (OutputStream outputStream = new FileOutputStream(cachePath.toFile())) {
                 try (GZIPOutputStream gzipOutputStream = new GZIPOutputStream(outputStream)) {
@@ -89,6 +97,7 @@ public class ProtobufStorageProvider implements WorldProvider {
     private BlockStorage.BlockArea createCache(SkyArena source) {
         SkyBlockLocationRange origin = source.getBoundaries().getOrigin();
         if (origin == null) {
+            // "Origin location not listed in configuration" is checked for in the method above as well.
             throw new IllegalStateException("Failed to load arena " + source.getArenaName() + ": Origin location not listed in configuration.");
         }
         String worldName = origin.world;
