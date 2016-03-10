@@ -30,6 +30,7 @@ Commands and Permissions
 | **/sws** **addspawn** | skywars.setup      | Adds a spawn position to the arena at your current location. |
 | **/sws** **save**     | skywars.setup      | Saves the configuration to file under the name you started with. |
 | **/sws** **createkit**    | skywars.setup  | Creates a kit from your current inventory. |
+| **/sws** **update-arena** `<Name>` | skywars.setup | Updates an arena's "block cache". See Setting up a new arena for more information |
 
 For a full guide on using the setup commands, check out [Setting up a new arena](https://dabo.guru/projects/skywars/creating-an-arena).
 
@@ -41,10 +42,11 @@ For a full guide on **/sws createkit**, check out [Creating a new kit](https://d
 | :---------------- | :---------------- |
 | skywars.join      | Everyone          |
 | skywars.leave     | Everyone          |
-| skywars.lobby     | Everyone          |
 | skywars.version   | Everyone          |
 | skywars.status    | Everyone          |
 | skywars.kit       | OP Only           |
+| skywars.lobby     | OP Only           |
+| skywars.testkit   | OP Only           |
 | skywars.setlobby  | OP Only           |
 | skywars.setportal | OP Only           |
 | skywars.cancel    | OP Only           |

@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -60,7 +59,7 @@ public class ProtobufStorageProvider implements WorldProvider {
     @Override
     public void loadArena(final SkyArena arena) throws IOException {
         if (cache.containsKey(arena.getArenaName())) {
-            plugin.getLogger().log(Level.WARNING, "Overwriting already existing cache for arena named '{}'.", arena.getArenaName());
+            plugin.getLogger().log(Level.WARNING, "Updating arena blocks cache for arena '{}'.", arena.getArenaName());
         }
         Path cachePath = plugin.getArenaPath().resolve(arena.getArenaName() + ".blocks");
         BlockStorage.BlockArea area;
@@ -69,13 +68,21 @@ public class ProtobufStorageProvider implements WorldProvider {
                 area = BlockStorage.BlockArea.parseFrom(gzipInputStream);
             }
         } catch (FileNotFoundException e) {
-            try (InputStream inputStream = plugin.getResourceAsStream(Paths.get("arenas", arena.getArenaName() + ".blocks").toString())) {
+            try (InputStream inputStream = plugin.getResourceAsStream("arenas/" + arena.getArenaName() + ".blocks")) {
                 try (GZIPInputStream gzipInputStream = new GZIPInputStream(inputStream)) {
                     area = BlockStorage.BlockArea.parseFrom(gzipInputStream);
                 }
                 plugin.getLogger().log(Level.INFO, "Loaded pre-built blocks cache file for arena {0}", arena.getArenaName());
             } catch (FileNotFoundException ex) {
-                area = createCache(arena);
+                try {
+                    area = createCache(arena);
+                } catch (IllegalStateException ex1) {
+                    if (ex1.getMessage().contains("Origin location not listed in configuration")) {
+                        throw new IOException("No origin listed in configuration, but no blocks file found in SkyWars jar file either!", ex);
+                    } else {
+                        throw ex1;
+                    }
+                }
             }
             try (OutputStream outputStream = new FileOutputStream(cachePath.toFile())) {
                 try (GZIPOutputStream gzipOutputStream = new GZIPOutputStream(outputStream)) {
@@ -89,6 +96,8 @@ public class ProtobufStorageProvider implements WorldProvider {
     private BlockStorage.BlockArea createCache(SkyArena source) {
         SkyBlockLocationRange origin = source.getBoundaries().getOrigin();
         if (origin == null) {
+            // this message needs to contain "Origin location" as it is checked for in the UpdateArena command.
+            // "Origin location not listed in configuration" is checked for in the method above as well.
             throw new IllegalStateException("Failed to load arena " + source.getArenaName() + ": Origin location not listed in configuration.");
         }
         String worldName = origin.world;
