@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -69,7 +68,7 @@ public class ProtobufStorageProvider implements WorldProvider {
                 area = BlockStorage.BlockArea.parseFrom(gzipInputStream);
             }
         } catch (FileNotFoundException e) {
-            try (InputStream inputStream = plugin.getResourceAsStream(Paths.get("arenas", arena.getArenaName() + ".blocks").toString())) {
+            try (InputStream inputStream = plugin.getResourceAsStream("arenas/" + arena.getArenaName() + ".blocks")) {
                 try (GZIPInputStream gzipInputStream = new GZIPInputStream(inputStream)) {
                     area = BlockStorage.BlockArea.parseFrom(gzipInputStream);
                 }
@@ -79,7 +78,7 @@ public class ProtobufStorageProvider implements WorldProvider {
                     area = createCache(arena);
                 } catch (IllegalStateException ex1) {
                     if (ex1.getMessage().contains("Origin location not listed in configuration")) {
-                        throw new IOException("No origin listed in configuration, but no blocks file found in jar file!", ex);
+                        throw new IOException("No origin listed in configuration, but no blocks file found in SkyWars jar file either!", ex);
                     } else {
                         throw ex1;
                     }
