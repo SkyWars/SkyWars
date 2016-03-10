@@ -103,3 +103,5 @@ And now, testing!
    * Colored leather armor
    * Different spawn eggs
    * Potions with and without custom effects
+* Test starting up from a fresh server on Linux and Windows to ensure there are no OS dependencies
+ * No need to do a full test on both, just be sure to test that there are no immediate crashes when first loading arenas.
