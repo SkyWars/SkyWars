@@ -19,6 +19,8 @@ package net.daboross.bukkitdev.skywars;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -63,6 +65,7 @@ import net.daboross.bukkitdev.skywars.score.ScoreStorage;
 import net.daboross.bukkitdev.skywars.scoreboards.TeamScoreboardListener;
 import net.daboross.bukkitdev.skywars.storage.LocationStore;
 import net.daboross.bukkitdev.skywars.world.SkyWorldHandler;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -296,20 +299,20 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         return true;
     }
 
-    /**
-     * Acts exactly like getResource(), except for throwing a FileNotSoundException when not found
-     *
-     * @param filename Filename to get from internal jar
-     * @return InputStream for file
-     * @throws FileNotFoundException If the file doesn't exist in the jar
-     */
     @Override
-    public InputStream getResourceAsStream(final String filename) throws FileNotFoundException {
-        InputStream resource = getResource(filename);
-        if (resource == null) {
+    public InputStream getResourceAsStream(final String filename) throws IOException {
+        // copied from JavaPlugin.java, and modified to actually give useful errors.
+        Validate.notNull(filename, "Filename cannot be null");
+
+        URL url = getClassLoader().getResource(filename);
+        if (url == null) {
             throw new FileNotFoundException("No resource '" + filename + "' found.");
         }
-        return resource;
+
+        URLConnection connection = url.openConnection();
+        connection.setUseCaches(false);
+
+        return connection.getInputStream();
     }
 
     @Override

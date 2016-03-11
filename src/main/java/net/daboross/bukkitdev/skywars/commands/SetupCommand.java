@@ -17,7 +17,7 @@
 package net.daboross.bukkitdev.skywars.commands;
 
 import net.daboross.bukkitdev.commandexecutorbase.CommandExecutorBase;
-import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.commands.setupstuff.SetupStates;
@@ -27,15 +27,16 @@ import net.daboross.bukkitdev.skywars.commands.setupsubcommands.SetPos1;
 import net.daboross.bukkitdev.skywars.commands.setupsubcommands.SetPos2;
 import net.daboross.bukkitdev.skywars.commands.setupsubcommands.SetSpawnLocation;
 import net.daboross.bukkitdev.skywars.commands.setupsubcommands.StartNewArena;
+import net.daboross.bukkitdev.skywars.commands.setupsubcommands.UpdateArena;
 import org.bukkit.command.PluginCommand;
 
 public class SetupCommand {
 
-    private final SkyWars plugin;
+    private final SkyWarsPlugin plugin;
     private final CommandExecutorBase base;
     private final SetupStates states;
 
-    public SetupCommand(SkyWars plugin) {
+    public SetupCommand(SkyWarsPlugin plugin) {
         this.plugin = plugin;
         this.base = new CommandExecutorBase("skywars.setup");
         this.states = new SetupStates();
@@ -44,6 +45,7 @@ public class SetupCommand {
 
     private void initCommands() {
         base.addSubCommand(new NewKit(plugin));
+        base.addSubCommand(new UpdateArena(plugin));
         base.addSubCommand(new StartNewArena(plugin, states));
         base.addSubCommand(new SetPos1(states));
         base.addSubCommand(new SetPos2(states));

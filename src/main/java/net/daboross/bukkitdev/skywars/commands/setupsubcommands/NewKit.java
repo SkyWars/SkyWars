@@ -86,9 +86,9 @@ public class NewKit extends SubCommand {
 
         StringBuilder message; // use message builder for optionally appending cost message to end.
         if (permission == null) {
-            message = new StringBuilder(SkyTrans.get(TransKey.SWS_CREATEKIT_SAVED, kitName));
+            message = new StringBuilder(SkyTrans.get(TransKey.SWS_CREATEKIT_SAVED, kitName.toLowerCase()));
         } else {
-            message = new StringBuilder(SkyTrans.get(TransKey.SWS_CREATEKIT_SAVED_PERMISSION, kitName, permission));
+            message = new StringBuilder(SkyTrans.get(TransKey.SWS_CREATEKIT_SAVED_PERMISSION, kitName.toLowerCase(), permission));
         }
         if (cost > 0) {
             message.append(SkyTrans.get(TransKey.SWS_CREATEKIT_COST_TO_USE, cost));

@@ -23,8 +23,13 @@ import java.util.Map;
 import net.daboross.bukkitdev.skywars.api.kits.SkyItemMeta;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKitItem;
+import net.daboross.bukkitdev.skywars.api.kits.impl.SkyArmorColorMeta;
+import net.daboross.bukkitdev.skywars.api.kits.impl.SkyDurabilityMeta;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyExtraEffectsMeta;
+import net.daboross.bukkitdev.skywars.api.kits.impl.SkyNameLoreMeta;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyPotionMeta;
+import net.daboross.bukkitdev.skywars.api.kits.impl.SkyRawDataMeta;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.potion.Potion;
@@ -52,49 +57,27 @@ public class SkyKitEnconder {
         }
         List<Map<String, Object>> itemList = new ArrayList<>(inventory.size());
         for (SkyKitItem item : inventory) {
-            itemList.add(encodeItemToMap(item));
+            itemList.add(encodeItem(item));
         }
         kitRoot.set("items", itemList);
     }
 
     private static void encodeArmorToConfig(List<SkyKitItem> armor, ConfigurationSection section) {
         if (armor.get(3) != null) {
-            encodeArmorItemToConfig(armor.get(3), section.createSection("helmet"));
+            section.set("helmet", encodeItem(armor.get(3)));
         }
         if (armor.get(2) != null) {
-            encodeArmorItemToConfig(armor.get(2), section.createSection("chestplate"));
+            section.set("chestplate", encodeItem(armor.get(2)));
         }
         if (armor.get(1) != null) {
-            encodeArmorItemToConfig(armor.get(1), section.createSection("leggings"));
+            section.set("leggings", encodeItem(armor.get(1)));
         }
         if (armor.get(0) != null) {
-            encodeArmorItemToConfig(armor.get(0), section.createSection("boots"));
+            section.set("boots", encodeItem(armor.get(0)));
         }
     }
 
-    /**
-     * This is like decodeItemMap, but is used for armor sections (where the item is a ConfigurationSection instead of a
-     * Map).
-     * <p/>
-     * This method also does not decode potions and other item metadata besides enchantments, as it seems unlikely to be
-     * neccessary for armor.
-     */
-    public static void encodeArmorItemToConfig(SkyKitItem item, ConfigurationSection armorSection) {
-        armorSection.set("type", item.getMaterial().name());
-        if (item.getAmount() != 1) {
-            armorSection.set("amount", item.getAmount());
-        }
-
-        Map<Enchantment, Integer> enchantments = item.getEnchantments();
-        if (enchantments != null) {
-            ConfigurationSection enchantmentSection = armorSection.createSection("enchantments");
-            for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
-                enchantmentSection.set(entry.getKey().getName(), entry.getValue());
-            }
-        }
-    }
-
-    public static Map<String, Object> encodeItemToMap(SkyKitItem item) {
+    public static Map<String, Object> encodeItem(SkyKitItem item) {
         Map<String, Object> result = new HashMap<>();
         result.put("type", item.getMaterial().name());
         if (item.getAmount() != 1) {
@@ -121,6 +104,28 @@ public class SkyKitEnconder {
                         effectsList.add(encodePotionEffect(effect));
                     }
                     result.put("extra-effects", effectsList);
+                    break;
+                case RAW_DATA:
+                    result.put("raw-data", ((SkyRawDataMeta) meta).getData());
+                    break;
+                case DURABILITY:
+                    result.put("durability", ((SkyDurabilityMeta) meta).getDurability());
+                    break;
+                case NAME_LORE:
+                    SkyNameLoreMeta nameLoreMeta = (SkyNameLoreMeta) meta;
+                    if (nameLoreMeta.getName() != null) {
+                        result.put("name", nameLoreMeta.getName().replace(ChatColor.COLOR_CHAR, '&'));
+                    }
+                    if (nameLoreMeta.getLore() != null) {
+                        List<String> encodedLore = new ArrayList<>(nameLoreMeta.getLore().size());
+                        for (String line : nameLoreMeta.getLore()) {
+                            encodedLore.add(line.replace(ChatColor.COLOR_CHAR, '&'));
+                        }
+                        result.put("lore", encodedLore);
+                    }
+                    break;
+                case ARMOR_COLOR:
+                    result.put("armor-color", String.format("%06X", (0xFFFFFF & ((SkyArmorColorMeta) meta).getColor().asRGB())));
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown meta type: " + meta);

@@ -1,6 +1,20 @@
 Changelog
 =========
 
+2.1.1
+-----
+
+### SkyWars:
+- Add support for item names, item lore, colored leather armor and raw data in kits.
+  - This also adds support for spawn eggs, mob heads, etc. - anything which has multiple versions. There are only now a few things missing from kits, such as custom fireworks.
+- Fix colored leather armor not saving color when in chests in arenas.
+- Fix SkyWars only working on Unix systems - SkyWars now runs correctly on Windows as well.
+- Add a '/sws update-arena' command which recreates the template for an arena from the original area where it was added.
+- Remove default player access to '/sw lobby'. This is to follow SkyWars using lobby a lot less with the position saving mechanism.
+
+SkyWars-Translations:
+- Now **fully translated** to Dutch thanks to @MisterGiant!
+
 2.1.0
 -----
 

@@ -41,6 +41,7 @@ public class SkyKitConfiguration implements SkyKits {
 
     private final SkyWars plugin;
     private final Map<String, SkyKit> kits = new LinkedHashMap<>();
+    private final List<SkyKit> disabledKits = new ArrayList<>();
 
     public SkyKitConfiguration(SkyWars plugin) {
         this.plugin = plugin;
@@ -60,11 +61,14 @@ public class SkyKitConfiguration implements SkyKits {
                 try {
                     kit = SkyKitDecoder.decodeKit(config.getConfigurationSection(key), key);
                 } catch (SkyConfigurationException ex) {
+                    plugin.getLogger().log(Level.SEVERE, "Error loading kit! " + key + " won't be accessible until this is fixed!");
                     plugin.getLogger().log(Level.SEVERE, ex.getMessage());
+                    plugin.getLogger().log(Level.SEVERE, "If you use `/sws createkit` before fixing this and restarting the server, this kit WILL BE ERASED!");
                     continue;
                 }
                 if (kit.getCost() != 0 && plugin.getEconomyHook() == null) {
                     plugin.getLogger().log(Level.WARNING, "Not enabling kit {0} due to it having a cost and economy support not being enabled.", key);
+                    disabledKits.add(kit);
                     continue;
                 }
                 kits.put(key.toLowerCase(), kit);
@@ -85,6 +89,9 @@ public class SkyKitConfiguration implements SkyKits {
         for (SkyKit kit : kits.values()) {
             SkyKitEnconder.encodeKit(kit, config);
         }
+        for (SkyKit kit : disabledKits) {
+            SkyKitEnconder.encodeKit(kit, config);
+        }
         config.options().header(String.format(KIT_HEADER)).indent(2);
         config.save(kitFile.toFile());
     }
@@ -93,7 +100,7 @@ public class SkyKitConfiguration implements SkyKits {
     public void addKit(SkyKit kit) {
         Validate.notNull(kit);
         Validate.isTrue(!kits.containsKey(kit.getName()), "Kit already exists!");
-        kits.put(kit.getName(), kit);
+        kits.put(kit.getName().toLowerCase(), kit);
     }
 
     @Override
