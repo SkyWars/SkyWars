@@ -7,20 +7,19 @@ A few guidelines:
 
 * Include a detailed description of the feature requested.
 * Include why the feature would be a good thing to have.
-* Do **not** group multiple feature requests together.
-  If you have two ideas, make two tickets. Don't put them both into one.
-
 
 ## Bug report guidelines
 
-* Include your server version and your SkyWars version. Version numbers, never say 'latest'.
+* Run **/sw report** on your server if you are able to. Include the output url in your ticket.
 * Include a detailed description of what is happening.
-  Search your server.log file for errors, and include those.
-* For everything you take out of the server.log file, please put it into a [gist](http://gist.github.com) and copy the
-  link here. Also include 10 lines above and below the error/output you are capturing.
-* Include the output of the **/sw report** command in the ticket. This gives information on your configuration.
-  If you are using version 1.3.0 or below, please use **/sw cfgdebug -p** instead of **/sw report**.
+* Search your server log file for errors, and include any of those.
+
+## Questions
+
+Feel free to also delete the template in the ticket submission area, and just ask a question if you want to! There's no need for it to be a bug report or feature request for it to be a valid ticket.
 
 ## Actually submitting
 
-When you have all the information ready, go [here](https://github.com/daboross/SkyWars/issues/new) to submit it.
+When you have all the information ready, go [here](https://github.com/daboross/SkyWars/issues/new) to submit the ticket.
+
+You will need a GitHub account - this can be created using any email address, and is an incredibly quick process.
