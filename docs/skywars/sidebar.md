@@ -7,7 +7,7 @@ Index
 * [Commands and Permissions](https://dabo.guru/projects/skywars/commands-and-permissions)
 * [Configuring SkyWars](https://dabo.guru/projects/skywars/configuring-skywars)
 * [SkyWars Score System](https://dabo.guru/projects/skywars/score)
-* [FAQ / Troubleshooting](This has been moved to [FAQ](https://dabo.guru/projects/skywars/faq))
+* [FAQ / Troubleshooting](https://dabo.guru/projects/skywars/faq)
 
 #### Customization
 * [Creating a new Kit](https://dabo.guru/projects/skywars/creating-a-new-kit)
