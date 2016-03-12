@@ -3,12 +3,9 @@ Configuring SkyWars - main-config.yml
 
 This is documentation for configuring `plugins/SkyWars/main-config.yml`.
 
-For documentation on configuring a file in the `arenas/` directory, see https://dabo.guru/projects/skywars/configuring-arenas.
+To create a new kit, go to https://dabo.guru/projects/skywars/creating-a-new-kit.
 
-For documentation on configuring `arena-parent.yml`, see https://dabo.guru/projects/skywars/configuring-parent.
-
-For documentation on configuring `kits.yml`, see https://dabo.guru/projects/skywars/configuring-kits.
-
+To create a new arena, go to https://dabo.guru/projects/skywars/creating-an-arena.
 
 ```yaml
 # This is the configuration version. Unless you really want to mess up your
@@ -16,9 +13,8 @@ For documentation on configuring `kits.yml`, see https://dabo.guru/projects/skyw
 config-version: 2
 
 # Whether or not to enable debug mode. In debug mode, SkyWars will print a huge
-#  amount of information too the server console.
-# There is no need to enable this unless you are asked to by SkyWars support
-#  (daboross).
+#  amount of information to the server console.
+# There is no need to enable this unless you are asked to by support.
 debug: false
 
 # This represents the order that the arenas are started in. Whenever enough
@@ -28,7 +24,7 @@ debug: false
 # enabled arena be started in sequence.
 arena-order: RANDOM
 
-# This is the string that will prefix all SkyWars messages sent to players.
+# This is the string that will prefix all SkyWars announcements.
 message-prefix: '&8[&cSkyWars&8]&a '
 
 # Whether or not to save inventories of players who are joining SkyWars games.
