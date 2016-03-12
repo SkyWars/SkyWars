@@ -3,9 +3,7 @@ Configuring Kits - kits.yml
 
 This file is located at `plugins/SkyWars/kits.yml`.
 
-Note: This document is on how to manually type in new kits into the config.
-
-For a much simpler way to do this in game just using your inventory, check out [Creating a new kit](https://dabo.guru/projects/skywars/creating-a-new-kit).
+Note: This document is on how to manually type in new kits into the config. To much more quickly create kits just from items in your inventory, check out [Creating a new kit](https://dabo.guru/projects/skywars/creating-a-new-kit).
 
 The following is a version of the default kits.yml config, annotated with comments. For a complete reference of all possible values, see the [kits.yml reference](https://dabo.guru/projects/skywars/reference/kits/).
 

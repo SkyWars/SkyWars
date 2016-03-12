@@ -1,26 +1,16 @@
 [IMG]https://dabo.guru/logo/SkyWars.png[/IMG]
 
-[SIZE=5][B]SkyWars 2.1.0 Update Info![/B][/SIZE]
+[SIZE=5][B]SkyWars is back![/B][/SIZE]
 
-SkyWars is back! The first publicly released SkyWars plugin is now receiving intermittent updates, and has full support for Spigot's Minecraft 1.9 build!
+SkyWars is back! The first publicly released SkyWars plugin is now receiving intermittent updates, and has full support for Minecraft 1.9.
 
-SkyWars 2.1.0 uses a new arena backend, which allows for faster arena creation, and no longer requires the SkyWarsBaseWorld to be loaded for the plugin to function.
+SkyWars v2.1.0 and above use a new arena backend, which comes with faster arena creation, and no longer requires SkyWarsBaseWorld.
 
-If you have used SkyWars previously, and are updating from a version pre-2.1.0, please BACK UP ALL DATA before updating. The update should go smoothly, but it is impossible to test all possible server setups.
+If you were previously using SkyWars v2.0.1 or earlier, SkyWars will transfer all custom arenas to the new backend, so please [B]back up all SkyWars and arena data[/B] before updating. If you were previously using SkyWars v1.4.5 or earlier, the update will also convert all user data from name-base to UUID-based storage.
 
-SkyWars will also now use WorldEdit as a backend *if available*. To disable this, set [B]worldedit-hook[/B] to [B]false[/B] in [B]main-config.yml[/B].
+[SIZE=5][B]PSA: Vote on new features[/B][/SIZE]
 
-That said, 2.1.0 also adds many features which have been in development, including [B]/sws createkit[/B], and full support of Spigot's Minecraft 1.9 update!
-
-[SIZE=5][B]Update warning for v2.*[/B][/SIZE]
-
-SkyWars v2.* adds UUID support.
-
-SkyWars v2.* builds require Minecraft version of 1.7.8 or higher.
-If you need to use an earlier version of Minecraft, please download SkyWars v1.4.4 instead.
-
-After updating to v2.*, SkyWars will migrate its storage from names to UUIDs as users log into your server.
-This way there is no long transfer period, and it supports all properly configured proxies (bungeecord, lilypad, etc.).
+If you use SkyWars, or plan on using SkyWars, please [URL=https://strawpoll.me/7055798]vote[/URL] on what you most want to be added!
 
 [SIZE=5][B]Features[/B][/SIZE]
 [LIST]
@@ -34,7 +24,7 @@ This way there is no long transfer period, and it supports all properly configur
 [*]Craft your server's unique SkyWars experience!
 [LIST]
 [*]Create custom kits just by filling your inventory with the items you want!
-[*]Create arenas without any entering items into config files! Just build the arena, set the spawns with **/sws** and [save it](https://dabo.guru/projects/skywars/creating-an-arena)!
+[*]Create arenas without any entering items into config files! Just build the arena, set the spawns with [B]/sws[/B] and [URL='https://dabo.guru/projects/skywars/creating-an-arena']save it[/URL]!
 [*]Change any and all messages sent by SkyWars to players in messages.yml!
 [/LIST]
 [*]Support for portals to step into and join the queue.
@@ -44,18 +34,18 @@ This way there is no long transfer period, and it supports all properly configur
 [SIZE=5][B]Installing SkyWars[/B][/SIZE]
 [LIST]
 [*]Server must be running at least Java 7.
-[*]For SkyWars v2.0.0 and higher, server must be at least Minecraft version 1.7.8
-[*]Download SkyWars from BukkitDev, SpigotMC or GitHub Releases, links below.
+[*]Server must be at least Minecraft version 1.7.8.
+[*]Download SkyWars from this page.
 [*]Put SkyWars.jar into your plugins directory, and restart the server.
-[*]Customize SkyWars by creating new kits and arenas unique to your server! See the links below for more information.
+[*]SkyWars is now functional with the two default arenas!
 [/LIST]
-
 
 [SIZE=5][B]Documentation[/B][/SIZE]
 [LIST]
 [*][URL='https://dabo.guru/projects/skywars/commands-and-permissions']Commands and Permissions[/URL]
 [*][URL='https://dabo.guru/projects/skywars/configuring-skywars']Configuring SkyWars[/URL]
-[*][URL='https://dabo.guru/projects/skywars/score']SkyWars's limited score system[/URL]
+[*][URL='https://dabo.guru/projects/skywars/score']SkyWars Score System[/URL]
+[*][URL='https://dabo.guru/projects/skywars/faq']FAQ / Troubleshooting[/URL]
 [/LIST]
 
 [SIZE=5][B]Customization[/B][/SIZE]
@@ -64,29 +54,21 @@ This way there is no long transfer period, and it supports all properly configur
 [*][URL='https://dabo.guru/projects/skywars/creating-an-arena']Creating a new Arena[/URL]
 [/LIST]
 
-[SIZE=5][B]Debugging[/B][/SIZE]
-[LIST]
-[*][URL='https://dabo.guru/projects/skywars/skywars-worlds']SkyWars Worlds[/URL]
-[*][URL='https://dabo.guru/projects/skywars/troubleshooting']Troubleshooting SkyWars[/URL]
-[*][URL='https://dabo.guru/projects/skywars/submitting-a-ticket']Submitting a ticket[/URL]
-[*][URL='https://dabo.guru/projects/skywars/changelog']Version Changes[/URL]
-[/LIST]
-
-[SIZE=5][B]For developers[/B][/SIZE]
+[SIZE=5][B]Other links[/B][/SIZE]
 [LIST]
 [*][URL='https://github.com/SkyWars/SkyWars']GitHub/SkyWars[/URL]
-[*][URL='https://dabo.guru/projects/skywars/api-overview']SkyWars API Overview[/URL]
-[*][URL='https://dabo.guru/projects/skywars/testing-skywars]Testing SkyWars[/URL]
 [*][URL='http://mcstats.org/plugin/SkyWars']MCStats Statistics[/URL]
+[*][URL='https://dabo.guru/projects/skywars/changelog']Full Changelog[/URL]
+[*][URL='https://dabo.guru/projects/skywars/reference/kits/']Full kits.yml Reference of valid values[/URL]
+[*][URL='https://dabo.guru/projects/skywars/testing-skywars']Testing SkyWars (for developers)[/URL]
 [/LIST]
-
 
 [SIZE=5][B]Translations / Localization[/B][/SIZE]
-[LIST]
-[*]SkyWars is currently partway localized for 10 different languages, most are currently incomplete however!
-[*]SkyWars should automatically use the localization that your server is set to, if it supports it.
-[*]To help out SkyWars by translating it into your local language, go to [URL='https://github.com/SkyWars/SkyWars-Translations/wiki/Translating']SkyWars-Translations/Translating[/URL].
-[/LIST]
+All player messages fully translated to English and German, and partially translated to Spanish, French, Czech, Danish, Dutch, Polish, Portuguese and Russian. Partial translations were at one point complete, but don't have some of the newer messages translated.
+
+Change the locale SkyWars uses by setting [B]locale[/B] in [B]main-config.yml[/B].
+
+To help out SkyWars by translating it into your local language, go to [URL='https://github.com/SkyWars/SkyWars-Translations/wiki/Translating']SkyWars-Translations/Translating[/URL]. Test out your localization as well by copying into [B]messages.yml[/B]!
 
 [B][SIZE=5]MCStats / Plugin metrics[/SIZE][/B]
 SkyWars uses plugin metrics to keep track of people using the plugin. All gathered data can be viewed at [URL]http://mcstats.org/plugin/SkyWars[/URL]. To opt out, change opt-out: false to opt-out: true inplugins/PluginMetrics/config.yml
@@ -100,9 +82,7 @@ Please use the SkyWars issue tracker for all bug reports, feature requests and g
 See [URL='https://dabo.guru/projects/skywars/submitting-a-ticket']submitting a ticket[/URL] for instructions on how to do this.
 
 [SIZE=5][B]Map Credit[/B][/SIZE]
-Full credit for the default map, Skyblock Warriors, goes to [URL='http://www.youtube.com/user/SwipeShot']SwipeShot[/URL].
+Both default maps, Skyblock Warriors and Water Warriors, were created by [URL='http://www.youtube.com/user/SwipeShot']SwipeShot[/URL].
 
 [SIZE=5][B]Sponsors[/B][/SIZE]
-We would like to thank JetBrains for their support of this project.
-
-[URL='http://www.jetbrains.com/idea/'][IMG]https://www.jetbrains.com/idea/docs/logo_intellij_idea.png[/IMG][/URL]
+We would like to thank [URL='http://www.jetbrains.com/idea/']JetBrains[/URL] for their support of this project.

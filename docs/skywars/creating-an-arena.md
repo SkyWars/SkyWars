@@ -5,21 +5,21 @@ Setting up a new arena
 
    Generally this should be all lower-case and contain only 0-9, a-z and -.
 
-2. Stand at one of the corners of the arena, so that your head is at the very edge of the arena on 3 sides.
+2. Ensure your arena has some air blocks around it (it isn't connected to the ground). This will make it a lot easier to set up.
 
-   At that position, use **/sws setpos1**. This probably will require flying, as you need to be outside of the arena.
+3. Fly so that you are all the way past one corner of the arena, and completely under it. Your position will be the lower bound of what is copied. At that position, use **/sws setpos1**.
 
-3. Stand at the corner *opposite* the corner you just stood at. Then use **/sws setpos2**
+4. Fly to the opposite corner, and fly so you are completely above the arena. This will be your upper bound. At this position, use **/sws setpos2**.
 
-4. Go to every place where a player should spawn, and use **/sws addspawn**.
+5. Fly to and stand above/in each location where a player should spawn. Once in each location, use **/sws addspawn**.
 
-5. When you have added all the spawns you want, use **/sws save** to save your arena.
-   This will create a .yml file in the **plugins/SkyWars/arenas** folder.
+6. When you have added all the spawns you want, use **/sws save** to save your arena.
 
-6. If you want to enable teams, or have a different number of players in the game than spawns there are, you should edit the **plugins/SkyWars/arenas/<arena name>.yml** file. You can enable teams by changing **team-size** to something other than 1.
+7. To enable teams, or have a small maximum player number than the number of spawns there edit the **plugins/SkyWars/arenas/<arena name>.yml** file. You can enable teams by changing **team-size** to something other than 1.
 
-7. Enable the arena in main-config.yml. This can be done by adding the arena name that you used in step 1 to the **enabled-arenas** list.
+8. Add the arena name to the **enabled-arenas:** list in **main-config.yml**.
 
+0. Restart the server. Your arena has now been added!
 
 #### Updating
 
