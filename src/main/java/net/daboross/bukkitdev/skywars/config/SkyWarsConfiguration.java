@@ -145,6 +145,14 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         scoreSqlDatabase = mainConfig.getSetString(MainConfigKeys.Score.SQL_DATABASE, MainConfigDefaults.Score.SQL_DATABASE);
         scoreSqlUsername = mainConfig.getSetString(MainConfigKeys.Score.SQL_USERNAME, MainConfigDefaults.Score.SQL_USERNAME);
         scoreSqlPassword = mainConfig.getSetString(MainConfigKeys.Score.SQL_PASSWORD, MainConfigDefaults.Score.SQL_PASSWORD);
+
+        // Ensure the user has adjusted save interval to a sensible value when adjusting sql use.
+        // If this was done on purpose, it just needs to be set to a non-default value (301/31 works)
+        if (scoreSaveInterval == MainConfigDefaults.Score.SAVE_INTERVAL && scoreUseSql) {
+            mainConfig.overwriteValue(MainConfigKeys.Score.SAVE_INTERVAL, MainConfigDefaults.Score.SAVE_INTERVAL_WITH_SQL);
+        } else if (scoreSaveInterval == MainConfigDefaults.Score.SAVE_INTERVAL_WITH_SQL && !scoreUseSql) {
+            mainConfig.overwriteValue(MainConfigKeys.Score.SAVE_INTERVAL, MainConfigDefaults.Score.SAVE_INTERVAL);
+        }
         // Economy
         economyEnabled = mainConfig.getSetBoolean(MainConfigKeys.Economy.ENABLE, MainConfigDefaults.Economy.ENABLE);
         economyKillReward = mainConfig.getSetInt(MainConfigKeys.Economy.KILL_REWARD, MainConfigDefaults.Economy.KILL_REWARD);

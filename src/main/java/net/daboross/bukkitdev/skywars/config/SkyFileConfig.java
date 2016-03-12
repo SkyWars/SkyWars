@@ -186,6 +186,11 @@ public class SkyFileConfig {
         }
     }
 
+    public void overwriteValue(String path, Object value) {
+        logger.log(Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, value, configFile});
+        config.set(path, value);
+    }
+
     public void removeValues(String... paths) {
         for (String path : paths) {
             removeValue(path);

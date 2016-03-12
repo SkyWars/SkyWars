@@ -16,13 +16,15 @@
  */
 package net.daboross.bukkitdev.skywars.score;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import net.daboross.bukkitdev.asyncsql.AsyncSQL;
@@ -31,8 +33,10 @@ import net.daboross.bukkitdev.asyncsql.ResultRunnable;
 import net.daboross.bukkitdev.asyncsql.ResultSQLRunnable;
 import net.daboross.bukkitdev.asyncsql.SQLConnectionInfo;
 import net.daboross.bukkitdev.asyncsql.SQLRunnable;
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
+import net.daboross.bukkitdev.skywars.api.players.OfflineSkyPlayer;
 import net.daboross.bukkitdev.skywars.api.storage.ScoreCallback;
 import net.daboross.bukkitdev.skywars.api.storage.SkyStorageBackend;
 import net.daboross.bukkitdev.skywars.player.AbstractSkyPlayer;
@@ -41,6 +45,7 @@ import org.bukkit.entity.Player;
 public class SQLScoreStorage extends SkyStorageBackend {
 
     private final Map<UUID, Integer> scoreCache = new HashMap<>();
+    private final ArrayList<CachedOfflineSqlPlayer> topPlayers = new ArrayList<>();
     private final HashSet<UUID> unsavedValues = new HashSet<>();
     private final AsyncSQL sql;
     private final String tableName = "skywars_user";
@@ -74,7 +79,7 @@ public class SQLScoreStorage extends SkyStorageBackend {
             @Override
             public void run(final Connection connection) throws SQLException {
                 try (PreparedStatement statement = connection.prepareStatement(
-                        "INSERT INTO `" + tableName + "` (uuid, user_score) VALUES (?, ?) ON DUPLICATE KEY UPDATE `user_score` = `user_score` + ?;"
+                        "INSERT INTO `" + tableName + "` (uuid, user_score) VALUES (?, ?) ON DUPLICATE KEY UPDATE user_score = user_score + ?;"
                 )) {
                     statement.setString(1, uuid.toString());
                     statement.setInt(2, diff);
@@ -92,7 +97,7 @@ public class SQLScoreStorage extends SkyStorageBackend {
             @Override
             public void run(final Connection connection) throws SQLException {
                 try (PreparedStatement statement = connection.prepareStatement(
-                        "INSERT INTO `" + tableName + "` (uuid, user_score) VALUES (?, ?) ON DUPLICATE KEY UPDATE `user_score` = ?;"
+                        "INSERT INTO `" + tableName + "` (uuid, user_score) VALUES (?, ?) ON DUPLICATE KEY UPDATE user_score = ?;"
                 )) {
                     statement.setString(1, uuid.toString());
                     statement.setInt(2, score);
@@ -109,7 +114,7 @@ public class SQLScoreStorage extends SkyStorageBackend {
             @Override
             public void run(final Connection connection, final ResultHolder<Integer> result) throws SQLException {
                 try (PreparedStatement statement = connection.prepareStatement(
-                        "SELECT `user_score` FROM `" + tableName + "` WHERE `uuid` = ?")) {
+                        "SELECT user_score FROM `" + tableName + "` WHERE uuid = ?;")) {
                     statement.setString(1, uuid.toString());
                     try (ResultSet set = statement.executeQuery()) {
                         if (!set.first()) {
@@ -128,13 +133,50 @@ public class SQLScoreStorage extends SkyStorageBackend {
         });
     }
 
+    @Override
+    public void getRank(final UUID uuid, final ScoreCallback callback) {
+        sql.run("get rank for" + uuid, new ResultSQLRunnable<Integer>() {
+            @Override
+            public void run(final Connection connection, final ResultHolder<Integer> result) throws SQLException {
+                // Order by UUID if equal scores
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "SELECT ranked_user.position" +
+                                " FROM (SELECT uuid, @rownum := @rownum + 1 AS position" +
+                                "     FROM `" + tableName + "`" +
+                                "     JOIN (SELECT @rownum := 0) r" +
+                                "   ORDER BY user_score DESC, uuid) ranked_user" +
+                                " WHERE ranked_user.uuid = ?;"
+                )) {
+                    statement.setString(1, uuid.toString());
+                    try (ResultSet set = statement.executeQuery()) {
+                        if (!set.first()) {
+                            result.set(0);
+                            return;
+                        }
+                        result.set(set.getInt("position"));
+                    }
+                }
+            }
+        }, new ResultRunnable<Integer>() {
+            @Override
+            public void runWithResult(final Integer value) {
+                callback.scoreGetCallback(value);
+            }
+        });
+    }
+
+    @Override
+    public List<? extends OfflineSkyPlayer> getTopPlayers(final int count) {
+        return topPlayers;
+    }
+
     public void initUsername(final UUID uuid, final String username) {
         sql.run("set " + uuid + "'s username to" + username, new SQLRunnable() {
             @Override
             public void run(final Connection connection) throws SQLException {
                 try (PreparedStatement statement = connection.prepareStatement(
                         // I'm assuming that the default value should be 0 here
-                        "INSERT INTO `" + tableName + "` (uuid, username, user_score) VALUES (?, ?, 0) ON DUPLICATE KEY UPDATE `username` = ?;"
+                        "INSERT INTO `" + tableName + "` (uuid, username, user_score) VALUES (?, ?, 0) ON DUPLICATE KEY UPDATE username = ?;"
                 )) {
                     statement.setString(1, uuid.toString());
                     statement.setString(2, username);
@@ -146,10 +188,42 @@ public class SQLScoreStorage extends SkyStorageBackend {
     }
 
     @Override
-    public void save() throws IOException {
-        for (UUID unsavedUuid : unsavedValues) {
+    public void save() {
+        ArrayList<UUID> unsavedValuesCopy;
+        synchronized (scoreCache) {
+            unsavedValuesCopy = new ArrayList<>(unsavedValues);
+            unsavedValues.clear();
+        }
+        for (UUID unsavedUuid : unsavedValuesCopy) {
             setScore(unsavedUuid, cacheGet(unsavedUuid));
         }
+    }
+
+    @Override
+    public void updateLeaderboard() {
+        sql.run("select top 10 leaderboard scores", new SQLRunnable() {
+            @Override
+            public void run(final Connection connection) throws SQLException {
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "SELECT uuid, username, user_score FROM `" + tableName + "` ORDER BY user_score DESC, uuid LIMIT 10;"
+                )) {
+                    try (ResultSet resultSet = statement.executeQuery()) {
+                        topPlayers.clear();
+                        int rankNumber = 1;
+                        while (resultSet.next()) {
+                            UUID uuid = UUID.fromString(resultSet.getString("uuid"));
+                            String username = resultSet.getString("username");
+                            int score = resultSet.getInt("user_score");
+                            int rank = rankNumber++;
+                            topPlayers.add(new CachedOfflineSqlPlayer(uuid, username, score, rank));
+                        }
+                        if (topPlayers.isEmpty()) {
+                            SkyStatic.debug("Warning: leaderboard is empty, no scores found.");
+                        }
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -222,5 +296,46 @@ public class SQLScoreStorage extends SkyStorageBackend {
         public void addScore(final int diff) {
             cacheAdd(uuid, diff, false);
         }
+
+        @Override
+        public int getRank() {
+            return 0;
+        }
+    }
+
+    public class CachedOfflineSqlPlayer implements OfflineSkyPlayer {
+
+        private final UUID uuid;
+        private final String name;
+        private final int score;
+        private final int rank;
+
+        public CachedOfflineSqlPlayer(final UUID uuid, final String name, final int score, final int rank) {
+            this.uuid = uuid;
+            this.name = name;
+            this.score = score;
+            this.rank = rank;
+        }
+
+        @Override
+        public UUID getUuid() {
+            return uuid;
+        }
+
+        @Override
+        public int getScore() {
+            return score;
+        }
+
+        @Override
+        public int getRank() {
+            return rank;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
     }
 }

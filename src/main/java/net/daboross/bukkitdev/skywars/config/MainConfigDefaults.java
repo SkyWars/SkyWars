@@ -56,6 +56,7 @@ public class MainConfigDefaults {
         public static final int WIN_DIFF = 7;
         public static final int KILL_DIFF = 1;
         public static final long SAVE_INTERVAL = 300;
+        public static final long SAVE_INTERVAL_WITH_SQL = 30;
         public static final boolean USE_SQL = false;
         public static final String SQL_HOST = "127.0.0.1";
         public static final int SQL_PORT = 3306;

@@ -12,6 +12,7 @@ Commands and Permissions
 | **/sw** **setportal** | skywars.setportal  | Sets a new portal at your current location           |
 | **/sw** **version**   | skywars.version    | Displays information about this plugin               |
 | **/sw** **status**    | skywars.status     | Displays information on the current status           |
+| **/sw** **top**       | skywars.top        | Shows top 10 players with most score |
 | **/sw** **cancel**    | skywars.cancel     | Force stops a currently running game of the given ID |
 | **/sw** **report**    | skywars.report     | Generates and submits a report.                      |
 | **/sw** **forcestart**| skywars.forcestart | Force starts a game with the people in the queue.    |
@@ -44,6 +45,7 @@ For a full guide on **/sws createkit**, check out [Creating a new kit](https://d
 | skywars.leave     | Everyone          |
 | skywars.version   | Everyone          |
 | skywars.status    | Everyone          |
+| skywars.top       | Everyone          |
 | skywars.kit       | OP Only           |
 | skywars.lobby     | OP Only           |
 | skywars.testkit   | OP Only           |
