@@ -22,13 +22,13 @@ import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.CancelAllCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.CancelCommand;
-import net.daboross.bukkitdev.skywars.commands.mainsubcommands.ConfigurationDebugCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.ForceStartCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.JoinCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.KitCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.LeaveCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.LobbyCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.RemoveLastPortalCommand;
+import net.daboross.bukkitdev.skywars.commands.mainsubcommands.ReportCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.SetLobbyCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.SetPortalCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.StatusCommand;
@@ -50,19 +50,19 @@ public class MainCommand {
 
     private void initCommands() {
         base.addSubCommand(new JoinCommand(plugin));
+        base.addSubCommand(new KitCommand(plugin));
         base.addSubCommand(new LeaveCommand(plugin));
+        base.addSubCommand(new StatusCommand(plugin));
         base.addSubCommand(new TopCommand(plugin));
+        base.addSubCommand(new VersionCommand());
         base.addSubCommand(new SetLobbyCommand(plugin));
+        base.addSubCommand(new LobbyCommand(plugin));
         base.addSubCommand(new SetPortalCommand(plugin));
         base.addSubCommand(new RemoveLastPortalCommand(plugin));
         base.addSubCommand(new CancelCommand(plugin));
-        base.addSubCommand(new StatusCommand(plugin));
-        base.addSubCommand(new VersionCommand());
-        base.addSubCommand(new LobbyCommand(plugin));
         base.addSubCommand(new CancelAllCommand(plugin));
-        base.addSubCommand(new ConfigurationDebugCommand(plugin));
+        base.addSubCommand(new ReportCommand(plugin));
         base.addSubCommand(new ForceStartCommand(plugin));
-        base.addSubCommand(new KitCommand(plugin));
         base.addSubCommand(new TestKitCommand(plugin));
     }
 
