@@ -22,9 +22,11 @@ Commands and Permissions
 | **/sw** **cancel**    | skywars.cancel     | Force stops a currently running game of the given ID |
 | **/sw** **report**    | skywars.report     | Generates and submits a report. |
 | **/sw** **forcestart**| skywars.forcestart | Force starts a game with the people in the queue. |
-| **/sw** **testkit**   | skywars.testkit    | Overwrites your current inventory with a kit, to test. This immediately replaces your inventory with the kit, with no regard for what world you are in - this is for testing kits after you create them to ensure they function properly, without having to join a game |
+| **/sw** **testkit**   | skywars.testkit    | Replaces your inventory with a kit. |
 
-* Note: /sw report will submit Server Software, Server Version, plugin information and all configuration information to gist.github.com, then give you a URL link to the data. This is useful when debugging.
+Note: **/sw testkit** will immediately replaces your inventory with the kit, with no regard for what world you are in.
+
+Note: **/sw report** will submit Server Software, Server Version, plugin information and all configuration information to gist.github.com, then give you a URL link to the data. This is useful when debugging.
 
 ### Setup Commands
 | Command               | Permission         | Description         |
