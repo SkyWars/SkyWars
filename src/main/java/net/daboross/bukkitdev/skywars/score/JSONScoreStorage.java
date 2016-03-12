@@ -28,9 +28,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -84,7 +84,7 @@ public class JSONScoreStorage extends SkyStorageBackend {
 
             players.add(new OfflineJsonPlayer(uuid, map));
         }
-        Collections.sort(players);
+        Collections.sort(players, Collections.<OfflineJsonPlayer>reverseOrder());
         for (int i = 0; i < players.size(); i++) {
             players.get(i).setRank(i);
         }
@@ -152,6 +152,11 @@ public class JSONScoreStorage extends SkyStorageBackend {
     }
 
     @Override
+    public void updateLeaderboard() {
+        // Nothing needs to be done here
+    }
+
+    @Override
     public SkyInternalPlayer loadPlayer(final Player player) {
         String uuid = player.getUniqueId().toString();
         String name = player.getName();
@@ -189,20 +194,27 @@ public class JSONScoreStorage extends SkyStorageBackend {
             topPlayers.add(offline);
         } else {
             offline = topPlayers.get(getInt(playerMap, "rank"));
-            Validate.isTrue(offline.getUuid() == uuid);
+            if (!uuid.equals(offline.getUuid())) {
+                SkyStatic.debug("Found offline player %s for rank of uuid %s (map: %s)", offline, uuid, playerMap);
+            }
+            Validate.isTrue(uuid.equals(offline.getUuid()));
         }
+        SkyStatic.debug("Updating rank for %s", uuid, offline.getName());
         int rank = offline.getRank();
         int score = offline.getScore();
-        while (rank > 1 && topPlayers.get(rank - 1).getScore() < score) {
+        while (rank > 0 && topPlayers.get(rank - 1).getScore() < score) {
+            SkyStatic.debug("Moving %1$s down (now at %3$s), moving %2$s up (now at %4$s)", topPlayers.get(rank - 1).getName(), offline.getName(), rank, rank - 1);
             topPlayers.get(rank - 1).setRank(rank);
             Collections.swap(topPlayers, rank, rank - 1);
             rank--;
         }
         while (rank < topPlayers.size() - 1 && topPlayers.get(rank + 1).getScore() > score) {
+            SkyStatic.debug("Moving %s up, moving %s down", topPlayers.get(rank + 1).getName(), offline.getName(), rank, rank + 1);
             topPlayers.get(rank + 1).setRank(rank);
             Collections.swap(topPlayers, rank, rank + 1);
             rank++;
         }
+        offline.setRank(rank);
     }
 
     @Override
@@ -240,8 +252,25 @@ public class JSONScoreStorage extends SkyStorageBackend {
         callback.scoreGetCallback(getScore(uuid));
     }
 
+    /**
+     * Gets the rank of an **OFFLINE** player. The scorecallback will be called with rank instead of score, the highest
+     * rank being rank 1.
+     *
+     * @param uuid     Player UUID
+     * @param callback Callback to give rank to
+     */
     @Override
-    public Collection<? extends OfflineSkyPlayer> getTopPlayers(final int count) {
+    public void getRank(final UUID uuid, final ScoreCallback callback) {
+        Map<String, Object> playerMap = getMap(uuidToStoredPlayer, uuid.toString());
+        if (playerMap != null) {
+            callback.scoreGetCallback(getInt(playerMap, "rank", -1));
+            return;
+        }
+        callback.scoreGetCallback(-1);
+    }
+
+    @Override
+    public List<? extends OfflineSkyPlayer> getTopPlayers(final int count) {
         return Collections.unmodifiableList(topPlayers);
     }
 
@@ -307,13 +336,13 @@ public class JSONScoreStorage extends SkyStorageBackend {
             return uuid;
         }
 
+        private void setRank(int rank) {
+            map.put("rank", rank);
+        }
+
         @Override
         public int getScore() {
             return getInt(map, "score");
-        }
-
-        private void setRank(int rank) {
-            map.put("rank", rank);
         }
 
         @Override
@@ -340,6 +369,15 @@ public class JSONScoreStorage extends SkyStorageBackend {
         public int compareTo(final OfflineJsonPlayer o) {
             return Integer.compare(getScore(), o.getScore());
         }
+
+        @Override
+        public String toString() {
+            return "OfflineJsonPlayer{" +
+                    "map=" + map +
+                    ", name='" + name + '\'' +
+                    ", uuid=" + uuid +
+                    '}';
+        }
     }
 
     private Map<String, Object> getMap(Map<String, Object> map, String key) {
@@ -352,6 +390,10 @@ public class JSONScoreStorage extends SkyStorageBackend {
     }
 
     private int getInt(Map<String, Object> map, String key) {
+        return getInt(map, key, 0);
+    }
+
+    private int getInt(Map<String, Object> map, String key, int def) {
         Object object = map.get(key);
         if (object instanceof Number) {
             return ((Number) object).intValue();
@@ -363,7 +405,7 @@ public class JSONScoreStorage extends SkyStorageBackend {
                 throw new NullArgumentException("Invalid score found in score data: not a number! (" + map + ").");
             }
         }
-        return 0;
+        return def;
     }
 
     private boolean isInt(Map<String, Object> map, String key) {

@@ -128,5 +128,10 @@ public class OnlineSkyPlayers implements SkyPlayers {
         public void addScore(final int diff) {
             throw new UnsupportedOperationException("Score storage is not enabled.");
         }
+
+        @Override
+        public int getRank() {
+            throw new UnsupportedOperationException("Score storage is not enabled.");
+        }
     }
 }

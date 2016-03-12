@@ -91,9 +91,17 @@ points:
   kill-point-diff: 1
 
   # Number of seconds between saving the score to hard disk
+  # In JSON storage, this is the number of seconds between saving the entire score
+  # file to the hard disk.
+  # In SQL storage, this is the number of seconds between saving only uncommitted data
+  # to the SQL server. In SQL, this is also the number of seconds between leaderboard updates.
+  # Recommended to be set to values 10-30 if using SQL. 200-500 for JSON.
   max-save-interval: 300
 
   # If true, use the SQL storage backend. If false, the JSON storage is used.
+  # Note: When using SQL backend, for most efficiency, set max-save-interval to 20
+  # SQL saving works differently than json saving, so max-save-interval values from
+  # 20-100 seconds work best.
   use-sql: true
 
   # SQL login info

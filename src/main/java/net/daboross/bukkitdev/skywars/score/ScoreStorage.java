@@ -28,6 +28,7 @@ import net.daboross.bukkitdev.skywars.StartupFailedException;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
+import net.daboross.bukkitdev.skywars.api.players.OfflineSkyPlayer;
 import net.daboross.bukkitdev.skywars.api.players.SkyPlayer;
 import net.daboross.bukkitdev.skywars.api.storage.ScoreCallback;
 import net.daboross.bukkitdev.skywars.api.storage.SkyInternalPlayer;
@@ -67,10 +68,11 @@ public class ScoreStorage extends SkyStorage {
         }
         long saveInterval = plugin.getConfiguration().getScoreSaveInterval();
         if (saveInterval > 0) {
-            timer = new SaveTimer(plugin, new SaveRunnable(), TimeUnit.SECONDS, plugin.getConfiguration().getScoreSaveInterval(), true);
+            timer = new SaveTimer(plugin, new SaveAndLeaderboardUpdateRunnable(), TimeUnit.SECONDS, plugin.getConfiguration().getScoreSaveInterval(), true);
         } else {
             timer = null;
         }
+        updateLeaderboard();
     }
 
     public void onKill(PlayerKillPlayerInfo info) {
@@ -128,6 +130,16 @@ public class ScoreStorage extends SkyStorage {
     }
 
     @Override
+    public void getRank(final UUID uuid, final ScoreCallback callback) {
+        SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(uuid);
+        if (skyPlayer != null) {
+            callback.scoreGetCallback(skyPlayer.getRank());
+        } else {
+            backend.getRank(uuid, callback);
+        }
+    }
+
+    @Override
     public SkyInternalPlayer loadPlayer(final Player player) {
         return backend.loadPlayer(player);
     }
@@ -139,21 +151,33 @@ public class ScoreStorage extends SkyStorage {
         }
     }
 
+    @Override
+    public List<? extends OfflineSkyPlayer> getTopPlayers(final int count) {
+        return backend.getTopPlayers(count);
+    }
+
     public synchronized void save() throws IOException {
         backend.save();
     }
 
-    private class SaveRunnable implements Runnable {
+    public synchronized void updateLeaderboard() {
+        backend.updateLeaderboard();
+    }
+
+    private class SaveAndLeaderboardUpdateRunnable implements Runnable {
 
         @Override
         public void run() {
-            SkyStatic.debug("AutoSaving score");
+            SkyStatic.debug("Saving score");
             try {
                 save();
             } catch (IOException ex) {
                 plugin.getLogger().log(Level.SEVERE, "Failed to save score storage backend", ex);
             }
-            SkyStatic.debug("Done AutoSaving score");
+            SkyStatic.debug("Done saving score");
+            SkyStatic.debug("Updating score leaderboard");
+            updateLeaderboard();
+            SkyStatic.debug("Done updating score leaderboard");
         }
     }
 }
