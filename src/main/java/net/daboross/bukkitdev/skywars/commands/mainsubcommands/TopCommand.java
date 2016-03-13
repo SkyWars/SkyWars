@@ -47,7 +47,7 @@ public class TopCommand extends SubCommand {
 
         sender.sendMessage(SkyTrans.get(TransKey.CMD_TOP_TITLE, got));
         for (OfflineSkyPlayer player : topList.subList(0, got)) {
-            sender.sendMessage(SkyTrans.get(TransKey.CMD_TOP_FORMAT, player.getName(), player.getScore(), player.getRank()));
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_TOP_FORMAT, player.getName(), player.getScore(), player.getRank() + 1));
         }
     }
 }

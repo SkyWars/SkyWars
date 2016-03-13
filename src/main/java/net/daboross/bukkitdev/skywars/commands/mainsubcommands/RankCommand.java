@@ -66,7 +66,7 @@ public class RankCommand extends SubCommand {
 
     private void displayResult(CommandSender sender, OfflineSkyPlayer playerToDisplay) {
         sender.sendMessage(SkyTrans.get(TransKey.CMD_RANK_HEADER, playerToDisplay.getName()));
-        sender.sendMessage(SkyTrans.get(TransKey.CMD_RANK_RANK, playerToDisplay.getRank()));
+        sender.sendMessage(SkyTrans.get(TransKey.CMD_RANK_RANK, playerToDisplay.getRank() + 1));
         sender.sendMessage(SkyTrans.get(TransKey.CMD_RANK_SCORE, playerToDisplay.getScore()));
     }
 }

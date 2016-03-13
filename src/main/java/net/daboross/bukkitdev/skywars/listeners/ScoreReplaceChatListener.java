@@ -38,7 +38,7 @@ public class ScoreReplaceChatListener implements Listener {
         SkyPlayers players = plugin.getPlayers();
         if (players.storageEnabled()) {
             evt.setFormat(evt.getFormat().replaceAll(SCORE_TRIGGER, String.valueOf(players.getPlayer(evt.getPlayer()).getScore())));
-            evt.setFormat(evt.getFormat().replaceAll(RANK_TRIGGER, String.valueOf(players.getPlayer(evt.getPlayer()).getRank())));
+            evt.setFormat(evt.getFormat().replaceAll(RANK_TRIGGER, String.valueOf(players.getPlayer(evt.getPlayer()).getRank() + 1)));
         }
     }
 }
