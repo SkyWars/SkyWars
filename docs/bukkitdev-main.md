@@ -72,7 +72,9 @@ To opt out, change **opt-out: false** to **opt-out: true** in **plugins/PluginMe
 
 ### SkyWars Report
 
-SkyWars has the ability to use gist.github.com to generate a debug report for your server. When you use the **/sw report** command, SkyWars will gather information about your server, post it to gist.github.com, and give you a URL. SkyWars does not communicate with gist.github.com unless an admin uses the **/sw report** command. If you want to make it so that no one can use the **/sw report** command, add the following line to your **main-config.yml** file: **disable-report: true**.
+When the **/sw report** command is used, SkyWars will submit a debug report for your server including server version, a list of all plugins, and other information to **gist.github.com**.
+
+SkyWars will not publicly post information about your server to gist.github.com unless an admin uses the **/sw report** command. If you want to completely disable this functionality, add the following line to your **main-config.yml** file: **disable-report: true**.
 
 ## Credits
 

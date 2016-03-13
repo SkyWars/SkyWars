@@ -74,7 +74,10 @@ To help out SkyWars by translating it into your local language, go to [URL='http
 SkyWars uses plugin metrics to keep track of people using the plugin. All gathered data can be viewed at [URL]http://mcstats.org/plugin/SkyWars[/URL]. To opt out, change opt-out: false to opt-out: true inplugins/PluginMetrics/config.yml
 
 [B][SIZE=5]SkyWars Report[/SIZE][/B]
-SkyWars has the ability to use gist.github.com to generate a debug report for your server. When you use the /sw report command, SkyWars will gather information about your server, post it to gist.github.com, and give you a URL. SkyWars does not communicate with gist.github.com unless an admin uses the /sw report command. If you want to make it so that no one can use the /sw report command, add the following line to your main-config.ymlfile: disable-report: true
+When the [B]/sw report[/B] command is used, SkyWars will submit a debug report for your server including server version, a list of all plugins, and other information to [B]gist.github.com[/B].
+
+SkyWars will not publicly post information about your server to gist.github.com unless an admin uses the [B]/sw report[/B] command. If you want to completely disable this functionality, add the following line to your [B]main-config.yml[/B] file: [B]disable-report: true[/B].
+
 
 [SIZE=5][B]Bug reports, Feature requests and other Questions[/B][/SIZE]
 Please use the SkyWars issue tracker for all bug reports, feature requests and general questions.
