@@ -30,6 +30,7 @@ import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.players.OfflineSkyPlayer;
 import net.daboross.bukkitdev.skywars.api.players.SkyPlayer;
+import net.daboross.bukkitdev.skywars.api.storage.Callback;
 import net.daboross.bukkitdev.skywars.api.storage.ScoreCallback;
 import net.daboross.bukkitdev.skywars.api.storage.SkyInternalPlayer;
 import net.daboross.bukkitdev.skywars.api.storage.SkyStorage;
@@ -43,7 +44,8 @@ public class ScoreStorage extends SkyStorage {
 
     private final SkyWarsPlugin plugin;
     private final SkyStorageBackend backend;
-    private final SaveTimer timer;
+    private final SaveTimer saveTimer;
+    private final SaveTimer updateIndividualRanksTimer;
 
     @SuppressWarnings("UseSpecificCatch")
     public ScoreStorage(SkyWarsPlugin plugin) throws StartupFailedException {
@@ -68,9 +70,15 @@ public class ScoreStorage extends SkyStorage {
         }
         long saveInterval = plugin.getConfiguration().getScoreSaveInterval();
         if (saveInterval > 0) {
-            timer = new SaveTimer(plugin, new SaveAndLeaderboardUpdateRunnable(), TimeUnit.SECONDS, plugin.getConfiguration().getScoreSaveInterval(), true);
+            saveTimer = new SaveTimer(plugin, new SaveAndUpdateLeaderboardRunnable(), TimeUnit.SECONDS, saveInterval, true);
         } else {
-            timer = null;
+            saveTimer = null;
+        }
+        long updateIndividualRanksInterval = plugin.getConfiguration().getScoreIndividualRankUpdateInterval();
+        if (backendClass != JSONScoreStorage.class && updateIndividualRanksInterval > 0) {
+            updateIndividualRanksTimer = new SaveTimer(plugin, new UpdateOnlinePlayerRanksRunnable(), TimeUnit.SECONDS, updateIndividualRanksInterval, true);
+        } else {
+            updateIndividualRanksTimer = null;
         }
         updateLeaderboard();
     }
@@ -145,9 +153,36 @@ public class ScoreStorage extends SkyStorage {
     }
 
     @Override
+    public void getOfflinePlayer(final UUID uuid, final Callback<OfflineSkyPlayer> callback) {
+        SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(uuid);
+        if (skyPlayer != null) {
+            callback.call(skyPlayer);
+        } else {
+            backend.getOfflinePlayer(uuid, callback);
+        }
+    }
+
+    @Override
+    public void getOfflinePlayer(final String name, final Callback<OfflineSkyPlayer> callback) {
+        SkyPlayer skyPlayer = null;
+        Player bukkitPlayer = plugin.getServer().getPlayerExact(name);
+        if (bukkitPlayer != null) {
+            skyPlayer = plugin.getPlayers().getPlayer(bukkitPlayer);
+        }
+        if (skyPlayer != null) {
+            callback.call(skyPlayer);
+        } else {
+            backend.getOfflinePlayer(name, callback);
+        }
+    }
+
+    @Override
     public void dataChanged() {
-        if (timer != null) {
-            timer.dataChanged();
+        if (saveTimer != null) {
+            saveTimer.dataChanged();
+        }
+        if (updateIndividualRanksTimer != null) {
+            updateIndividualRanksTimer.dataChanged();
         }
     }
 
@@ -164,7 +199,11 @@ public class ScoreStorage extends SkyStorage {
         backend.updateLeaderboard();
     }
 
-    private class SaveAndLeaderboardUpdateRunnable implements Runnable {
+    public synchronized void updateIndividualRanks() {
+        backend.updateOnlineIndividualRanks();
+    }
+
+    private class SaveAndUpdateLeaderboardRunnable implements Runnable {
 
         @Override
         public void run() {
@@ -178,6 +217,23 @@ public class ScoreStorage extends SkyStorage {
             SkyStatic.debug("Updating score leaderboard");
             updateLeaderboard();
             SkyStatic.debug("Done updating score leaderboard");
+        }
+    }
+
+    private class UpdateOnlinePlayerRanksRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            SkyStatic.debug("Saving score");
+            try {
+                save();
+            } catch (IOException ex) {
+                plugin.getLogger().log(Level.SEVERE, "Failed to save score storage backend", ex);
+            }
+            SkyStatic.debug("Done saving score");
+            SkyStatic.debug("Updating online individual ranks");
+            updateIndividualRanks();
+            SkyStatic.debug("Done updating online individual ranks");
         }
     }
 }

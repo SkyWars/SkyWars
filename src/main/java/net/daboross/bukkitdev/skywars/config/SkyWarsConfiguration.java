@@ -61,6 +61,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private String scoreSqlUsername;
     private String scoreSqlPassword;
     private long scoreSaveInterval;
+    private long scoreIndividualRankUpdateInterval;
     private int arenaDistanceApart;
     private boolean commandWhitelistEnabled;
     private boolean commandWhitelistABlacklist;
@@ -145,6 +146,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         scoreSqlDatabase = mainConfig.getSetString(MainConfigKeys.Score.SQL_DATABASE, MainConfigDefaults.Score.SQL_DATABASE);
         scoreSqlUsername = mainConfig.getSetString(MainConfigKeys.Score.SQL_USERNAME, MainConfigDefaults.Score.SQL_USERNAME);
         scoreSqlPassword = mainConfig.getSetString(MainConfigKeys.Score.SQL_PASSWORD, MainConfigDefaults.Score.SQL_PASSWORD);
+        scoreIndividualRankUpdateInterval = mainConfig.getSetLong(MainConfigKeys.Score.SQL_UPDATE_INDIVIDUALS_RANK_INTERVAL, MainConfigDefaults.Score.SQL_UPDATE_INDIVIDUALS_RANK_INTERVAL);
 
         // Ensure the user has adjusted save interval to a sensible value when adjusting sql use.
         // If this was done on purpose, it just needs to be set to a non-default value (301/31 works)
@@ -401,6 +403,11 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     @Override
     public String getScoreSqlDatabase() {
         return scoreSqlDatabase;
+    }
+
+    @Override
+    public long getScoreIndividualRankUpdateInterval() {
+        return scoreIndividualRankUpdateInterval;
     }
 
     @Override

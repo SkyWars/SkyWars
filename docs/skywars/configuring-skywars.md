@@ -119,6 +119,13 @@ points:
     # Password to login with.
     password: aComplexPassword
 
+    # Time in seconds between updating the ranks of each individual. This is the
+    # rank shown in `/sw rank`, and this will update the ranks of everyone on
+    # the server at the given interval. However, updating each individual's rank is
+    # a more costly operation than updating the top 10 ranks, so it is done on a
+    # separate timer. (top 10 ranks are updated according to max-save-interval).
+    individual-rank-update-interval: 120
+
 # Subsection for the economy Vault hook
 economy:
 

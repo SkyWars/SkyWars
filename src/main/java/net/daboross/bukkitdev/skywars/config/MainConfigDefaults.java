@@ -63,6 +63,7 @@ public class MainConfigDefaults {
         public static final String SQL_DATABASE = "minecraft";
         public static final String SQL_USERNAME = "root";
         public static final String SQL_PASSWORD = "aComplexPassword";
+        public static final long SQL_UPDATE_INDIVIDUALS_RANK_INTERVAL = 60;
 
         private Score() {
         }

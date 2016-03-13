@@ -50,6 +50,7 @@ public class MainConfigKeys {
         public static final String SQL_DATABASE = "points.sql.database";
         public static final String SQL_USERNAME = "points.sql.username";
         public static final String SQL_PASSWORD = "points.sql.password";
+        public static final String SQL_UPDATE_INDIVIDUALS_RANK_INTERVAL = "points.sql.individual-rank-update-interval";
 
         private Score() {
         }

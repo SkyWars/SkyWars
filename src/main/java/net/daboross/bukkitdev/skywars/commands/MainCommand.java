@@ -27,6 +27,7 @@ import net.daboross.bukkitdev.skywars.commands.mainsubcommands.JoinCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.KitCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.LeaveCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.LobbyCommand;
+import net.daboross.bukkitdev.skywars.commands.mainsubcommands.RankCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.RemoveLastPortalCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.ReportCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.SetLobbyCommand;
@@ -53,6 +54,7 @@ public class MainCommand {
         base.addSubCommand(new KitCommand(plugin));
         base.addSubCommand(new LeaveCommand(plugin));
         base.addSubCommand(new StatusCommand(plugin));
+        base.addSubCommand(new RankCommand(plugin));
         base.addSubCommand(new TopCommand(plugin));
         base.addSubCommand(new VersionCommand());
         base.addSubCommand(new SetLobbyCommand(plugin));

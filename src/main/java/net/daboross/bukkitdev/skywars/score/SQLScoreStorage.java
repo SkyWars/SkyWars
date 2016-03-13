@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 import net.daboross.bukkitdev.asyncsql.AsyncSQL;
 import net.daboross.bukkitdev.asyncsql.ResultHolder;
 import net.daboross.bukkitdev.asyncsql.ResultRunnable;
@@ -37,6 +38,8 @@ import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.players.OfflineSkyPlayer;
+import net.daboross.bukkitdev.skywars.api.players.SkyPlayer;
+import net.daboross.bukkitdev.skywars.api.storage.Callback;
 import net.daboross.bukkitdev.skywars.api.storage.ScoreCallback;
 import net.daboross.bukkitdev.skywars.api.storage.SkyStorageBackend;
 import net.daboross.bukkitdev.skywars.player.AbstractSkyPlayer;
@@ -128,7 +131,7 @@ public class SQLScoreStorage extends SkyStorageBackend {
         }, new ResultRunnable<Integer>() {
             @Override
             public void runWithResult(final Integer value) {
-                callback.scoreGetCallback(value);
+                callback.scoreGetCallback(value == null ? 0 : value);
             }
         });
     }
@@ -150,7 +153,7 @@ public class SQLScoreStorage extends SkyStorageBackend {
                     statement.setString(1, uuid.toString());
                     try (ResultSet set = statement.executeQuery()) {
                         if (!set.first()) {
-                            result.set(0);
+                            result.set(-1);
                             return;
                         }
                         result.set(set.getInt("position"));
@@ -160,7 +163,79 @@ public class SQLScoreStorage extends SkyStorageBackend {
         }, new ResultRunnable<Integer>() {
             @Override
             public void runWithResult(final Integer value) {
-                callback.scoreGetCallback(value);
+                callback.scoreGetCallback(value == null ? -1 : value);
+            }
+        });
+    }
+
+    @Override
+    public void getOfflinePlayer(final UUID uuid, final Callback<OfflineSkyPlayer> callback) {
+        sql.run("get offline player with uuid " + uuid, new ResultSQLRunnable<OfflineSkyPlayer>() {
+            @Override
+            public void run(final Connection connection, final ResultHolder<OfflineSkyPlayer> result) throws SQLException {
+                // Order by UUID if equal scores
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "SELECT ranked_user.uuid, ranked_user.username, ranked_user.user_score, ranked_user.position" +
+                                " FROM (SELECT uuid, username, user_score, @rownum := @rownum + 1 AS position" +
+                                "     FROM `" + tableName + "`" +
+                                "     JOIN (SELECT @rownum := 0) r" +
+                                "   ORDER BY user_score DESC, uuid) ranked_user" +
+                                " WHERE ranked_user.uuid = ?;"
+                )) {
+                    statement.setString(1, uuid.toString());
+                    try (ResultSet set = statement.executeQuery()) {
+                        if (!set.first()) {
+                            result.set(null);
+                            return;
+                        }
+                        result.set(new CachedOfflineSqlPlayer(
+                                uuid,
+                                set.getString("username"),
+                                set.getInt("user_score"),
+                                set.getInt("position")));
+                    }
+                }
+            }
+        }, new ResultRunnable<OfflineSkyPlayer>() {
+            @Override
+            public void runWithResult(final OfflineSkyPlayer result) {
+                callback.call(result);
+            }
+        });
+    }
+
+    @Override
+    public void getOfflinePlayer(final String name, final Callback<OfflineSkyPlayer> callback) {
+        sql.run("get offline player with name " + name, new ResultSQLRunnable<OfflineSkyPlayer>() {
+            @Override
+            public void run(final Connection connection, final ResultHolder<OfflineSkyPlayer> result) throws SQLException {
+                // Order by UUID if equal scores
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "SELECT ranked_user.uuid, ranked_user.username, ranked_user.user_score, ranked_user.position" +
+                                " FROM (SELECT uuid, username, user_score, @rownum := @rownum + 1 AS position" +
+                                "     FROM `" + tableName + "`" +
+                                "     JOIN (SELECT @rownum := 0) r" +
+                                "   ORDER BY user_score DESC, uuid) ranked_user" +
+                                " WHERE UPPER(ranked_user.username) = UPPER(?);"
+                )) {
+                    statement.setString(1, name);
+                    try (ResultSet set = statement.executeQuery()) {
+                        if (!set.first()) {
+                            result.set(null);
+                            return;
+                        }
+                        result.set(new CachedOfflineSqlPlayer(
+                                UUID.fromString(set.getString("uuid")),
+                                set.getString("username"),
+                                set.getInt("user_score"),
+                                set.getInt("position")));
+                    }
+                }
+            }
+        }, new ResultRunnable<OfflineSkyPlayer>() {
+            @Override
+            public void runWithResult(final OfflineSkyPlayer result) {
+                callback.call(result);
             }
         });
     }
@@ -170,10 +245,10 @@ public class SQLScoreStorage extends SkyStorageBackend {
         return topPlayers;
     }
 
-    public void initUsername(final UUID uuid, final String username) {
-        sql.run("set " + uuid + "'s username to" + username, new SQLRunnable() {
+    public void initPlayerInDatabase(final UUID uuid, final String username, final Callback<?> callback) {
+        sql.run("set " + uuid + "'s username to" + username, new ResultSQLRunnable<Object>() {
             @Override
-            public void run(final Connection connection) throws SQLException {
+            public void run(final Connection connection, final ResultHolder result) throws SQLException {
                 try (PreparedStatement statement = connection.prepareStatement(
                         // I'm assuming that the default value should be 0 here
                         "INSERT INTO `" + tableName + "` (uuid, username, user_score) VALUES (?, ?, 0) ON DUPLICATE KEY UPDATE username = ?;"
@@ -182,6 +257,14 @@ public class SQLScoreStorage extends SkyStorageBackend {
                     statement.setString(2, username);
                     statement.setString(3, username);
                     statement.execute();
+                }
+                // No need to set the result here, as we don't use it
+            }
+        }, new ResultRunnable<Object>() {
+            @Override
+            public void runWithResult(final Object ignored) {
+                if (callback != null) {
+                    callback.call(null);
                 }
             }
         });
@@ -195,31 +278,95 @@ public class SQLScoreStorage extends SkyStorageBackend {
             unsavedValues.clear();
         }
         for (UUID unsavedUuid : unsavedValuesCopy) {
-            setScore(unsavedUuid, cacheGet(unsavedUuid));
+            Integer score = cacheGet(unsavedUuid);
+            if (score != null) {
+                setScore(unsavedUuid, score);
+            }
         }
     }
 
     @Override
     public void updateLeaderboard() {
-        sql.run("select top 10 leaderboard scores", new SQLRunnable() {
+        sql.run("select top 10 leaderboard scores", new ResultSQLRunnable<ArrayList<CachedOfflineSqlPlayer>>() {
             @Override
-            public void run(final Connection connection) throws SQLException {
+            public void run(final Connection connection, final ResultHolder<ArrayList<CachedOfflineSqlPlayer>> result) throws SQLException {
                 try (PreparedStatement statement = connection.prepareStatement(
                         "SELECT uuid, username, user_score FROM `" + tableName + "` ORDER BY user_score DESC, uuid LIMIT 10;"
                 )) {
                     try (ResultSet resultSet = statement.executeQuery()) {
-                        topPlayers.clear();
                         int rankNumber = 1;
+                        ArrayList<CachedOfflineSqlPlayer> newTopPlayers = new ArrayList<>(10);
                         while (resultSet.next()) {
                             UUID uuid = UUID.fromString(resultSet.getString("uuid"));
                             String username = resultSet.getString("username");
                             int score = resultSet.getInt("user_score");
                             int rank = rankNumber++;
-                            topPlayers.add(new CachedOfflineSqlPlayer(uuid, username, score, rank));
+                            newTopPlayers.add(new CachedOfflineSqlPlayer(uuid, username, score, rank));
                         }
-                        if (topPlayers.isEmpty()) {
-                            SkyStatic.debug("Warning: leaderboard is empty, no scores found.");
+                        result.set(newTopPlayers);
+                    }
+                }
+            }
+        }, new ResultRunnable<ArrayList<CachedOfflineSqlPlayer>>() {
+            @Override
+            public void runWithResult(final ArrayList<CachedOfflineSqlPlayer> players) {
+                if (players == null) {
+                    SkyStatic.log(Level.WARNING, "Top 10 leaderboard not updated!");
+                    return;
+                }
+                topPlayers.clear();
+                topPlayers.addAll(players);
+                if (topPlayers.isEmpty()) {
+                    SkyStatic.debug("Warning: leaderboard is empty, no scores found.");
+                }
+            }
+        });
+    }
+
+    @Override
+    public void updateOnlineIndividualRanks() {
+        Collection<? extends Player> onlinePlayers = skywars.getServer().getOnlinePlayers();
+        List<String> uuidList = new ArrayList<>(onlinePlayers.size());
+        for (Player player : onlinePlayers) {
+            uuidList.add(player.getUniqueId().toString());
+        }
+        final String[] uuidArray = uuidList.toArray(new String[uuidList.size()]);
+        sql.run("update ranks for all online players", new ResultSQLRunnable<Map<UUID, Integer>>() {
+            @Override
+            public void run(final Connection connection, final ResultHolder<Map<UUID, Integer>> result) throws SQLException {
+                // Order by UUID if equal scores
+                try (PreparedStatement statement = connection.prepareStatement(
+                        "SELECT ranked_user.uuid, ranked_user.position" +
+                                " FROM (SELECT uuid, @rownum := @rownum + 1 AS position" +
+                                "     FROM `" + tableName + "`" +
+                                "     JOIN (SELECT @rownum := 0) r" +
+                                "   ORDER BY user_score DESC, uuid) ranked_user" +
+                                " WHERE ranked_user.uuid IN (?);"
+                )) {
+                    statement.setArray(1, connection.createArrayOf("VARCHAR(36)", uuidArray));
+                    try (ResultSet set = statement.executeQuery()) {
+                        Map<UUID, Integer> resultMap = new HashMap<>(uuidArray.length);
+
+                        while (set.next()) {
+                            resultMap.put(UUID.fromString(set.getString("uuid")), set.getInt("position"));
                         }
+
+                        result.set(resultMap);
+                    }
+                }
+            }
+        }, new ResultRunnable<Map<UUID, Integer>>() {
+            @Override
+            public void runWithResult(final Map<UUID, Integer> map) {
+                if (map == null) {
+                    SkyStatic.log(Level.SEVERE, "Online player ranks not updated!");
+                    return;
+                }
+                SkyStatic.debug("Updating all cached online player ranks");
+                for (Map.Entry<UUID, Integer> rankEntry : map.entrySet()) {
+                    SkyPlayer player = skywars.getPlayers().getPlayer(rankEntry.getKey());
+                    if (player instanceof SQLSkyPlayer) { // this also checks for null (offline)
+                        ((SQLSkyPlayer) player).setCachedRank(rankEntry.getValue());
                     }
                 }
             }
@@ -235,7 +382,25 @@ public class SQLScoreStorage extends SkyStorageBackend {
                 cacheSet(uuid, score, true); // true because this score is saved.
             }
         });
-        initUsername(uuid, player.getName()); // be sure to set their name
+        // be sure to set their name
+        initPlayerInDatabase(uuid, player.getName(), new Callback<Object>() {
+            @Override
+            public void call(final Object ignored) {
+                // We need to ensure they are in the database before we try and get their rank
+                // (hence having this inside the result callable for initPlayerInDatabase()).
+                getRank(uuid, new ScoreCallback() {
+                    @Override
+                    public void scoreGetCallback(final int rank) {
+                        SkyPlayer player = skywars.getPlayers().getPlayer(uuid);
+                        if (player instanceof SQLSkyPlayer) { // this also checks for null (offline)
+                            ((SQLSkyPlayer) player).setCachedRank(rank);
+                        } else {
+                            SkyStatic.debug("Was going to initially set rank for player, but player is no longer online!");
+                        }
+                    }
+                });
+            }
+        });
         return new SQLSkyPlayer(player);
     }
 
@@ -273,18 +438,25 @@ public class SQLScoreStorage extends SkyStorageBackend {
 
     private class SQLSkyPlayer extends AbstractSkyPlayer {
 
+        private int cachedRank = -1;
+
         public SQLSkyPlayer(final Player player) {
             super(player);
         }
 
         @Override
         public void loggedOut() {
-            SQLScoreStorage.this.setScore(uuid, cacheGet(uuid));
+            Integer score = cacheGet(uuid);
+            if (score != null) {
+                SQLScoreStorage.this.setScore(uuid, score);
+                SQLScoreStorage.this.scoreCache.remove(uuid);
+            }
         }
 
         @Override
         public int getScore() {
-            return cacheGet(uuid);
+            Integer score = cacheGet(uuid);
+            return score == null ? -1 : score;
         }
 
         @Override
@@ -299,7 +471,11 @@ public class SQLScoreStorage extends SkyStorageBackend {
 
         @Override
         public int getRank() {
-            return 0;
+            return cachedRank;
+        }
+
+        public void setCachedRank(final Integer cachedRank) {
+            this.cachedRank = cachedRank;
         }
     }
 
@@ -336,6 +512,5 @@ public class SQLScoreStorage extends SkyStorageBackend {
         public String getName() {
             return name;
         }
-
     }
 }

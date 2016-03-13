@@ -10,6 +10,7 @@ Commands and Permissions
 | **/sw** **kit**       | skywars.kit        | Lists kits, and lets you choose one |
 | **/sw** **status**    | skywars.status     | Displays information on current games and queue status |
 | **/sw** **version**   | skywars.version    | Displays the plugin's version |
+| **/sw** **rank** `<name>` | skywars.rank   | Displays player stats for yourself or someone else |
 | **/sw** **top**       | skywars.top        | Shows top 10 players with most score |
 
 ### Admin Commands
@@ -46,19 +47,21 @@ For a full guide on **/sws createkit**, check out [Creating a new kit](https://d
 
 
 ### Permissions
-| Permission        | Defaults to       |
-| :---------------- | :---------------- |
-| skywars.join      | Everyone          |
-| skywars.leave     | Everyone          |
-| skywars.version   | Everyone          |
-| skywars.status    | Everyone          |
-| skywars.top       | Everyone          |
-| skywars.kit       | OP Only           |
-| skywars.lobby     | OP Only           |
-| skywars.testkit   | OP Only           |
-| skywars.setlobby  | OP Only           |
-| skywars.setportal | OP Only           |
-| skywars.cancel    | OP Only           |
-| skywars.report    | OP Only           |
-| skywars.setup     | OP Only           |
-| skywars.forcestart| OP Only           |
+| Permission        | Defaults to       | Function              |
+| :---------------- | :---------------- | :-------------------- |
+| skywars.join      | Everyone          | **/sw join**          |
+| skywars.leave     | Everyone          | **/sw leave**         |
+| skywars.version   | Everyone          | **/sw version**       |
+| skywars.status    | Everyone          | **/sw status**        |
+| skywars.top       | Everyone          | **/sw top**           |
+| skywars.rank      | Everyone          | **/sw rank**          |
+| skywars.rank.other | Everyone         | **/sw rank <name>**   |
+| skywars.kit       | OP Only           | **/sw kit**           |
+| skywars.lobby     | OP Only           | **/sw lobby**         |
+| skywars.testkit   | OP Only           | **/sw testkit**       |
+| skywars.setlobby  | OP Only           | **/sw setlobby**      |
+| skywars.setportal | OP Only           | **/sw setportal**     |
+| skywars.cancel    | OP Only           | **/sw cancel**        |
+| skywars.report    | OP Only           | **/sw report**        |
+| skywars.setup     | OP Only           | **/sw setup**         |
+| skywars.forcestart| OP Only           | **/sw forcestart**    |
