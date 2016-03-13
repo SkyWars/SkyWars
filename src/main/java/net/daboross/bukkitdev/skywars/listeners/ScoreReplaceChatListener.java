@@ -25,7 +25,8 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class ScoreReplaceChatListener implements Listener {
 
-    private static final String REPLACEMENT = "(?i)\\{SKYWARS\\.USER(SCORE|POINTS)\\}";
+    private static final String SCORE_TRIGGER = "(?i)\\{SKYWARS\\.USER(SCORE|POINTS)\\}";
+    private static final String RANK_TRIGGER = "(?i)\\{SKYWARS\\.USERRANK\\}";
     private final SkyWars plugin;
 
     public ScoreReplaceChatListener(final SkyWars plugin) {
@@ -36,7 +37,8 @@ public class ScoreReplaceChatListener implements Listener {
     public void onChat(AsyncPlayerChatEvent evt) {
         SkyPlayers players = plugin.getPlayers();
         if (players.storageEnabled()) {
-            evt.setFormat(evt.getFormat().replaceAll(REPLACEMENT, String.valueOf(players.getPlayer(evt.getPlayer()).getScore())));
+            evt.setFormat(evt.getFormat().replaceAll(SCORE_TRIGGER, String.valueOf(players.getPlayer(evt.getPlayer()).getScore())));
+            evt.setFormat(evt.getFormat().replaceAll(RANK_TRIGGER, String.valueOf(players.getPlayer(evt.getPlayer()).getRank())));
         }
     }
 }
