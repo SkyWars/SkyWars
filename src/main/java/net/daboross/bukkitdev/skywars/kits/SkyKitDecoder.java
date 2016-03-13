@@ -54,13 +54,13 @@ public class SkyKitDecoder {
         try {
             armor = decodeArmor(section);
         } catch (SkyConfigurationException ex) {
-            throw new SkyConfigurationException(String.format("Invalid armor for SkyKit %s: %s", name, ex.getMessage()));
+            throw new SkyConfigurationException(String.format("Invalid armor in kit %s: %s", name, ex.getMessage()));
         }
         List<SkyKitItem> items;
         try {
             items = decodeInventory(section);
         } catch (SkyConfigurationException ex) {
-            throw new SkyConfigurationException(String.format("Invalid inventory for SkyKit %s: %s", name, ex.getMessage()));
+            throw new SkyConfigurationException(String.format("Invalid inventory in kit %s: %s", name, ex.getMessage()));
         }
         String permission = section.getString("permission");
         int cost = section.getInt("cost");
@@ -134,14 +134,17 @@ public class SkyKitDecoder {
         return armor;
     }
 
-    @SuppressWarnings("unchecked")
-    public static SkyKitItem decodeItem(MapSection map) throws SkyConfigurationException {
+    public static SkyKitItem decodeItem(Map<String, Object> map) throws SkyConfigurationException {
+        return decodeItem(new MapMapSection(map));
+    }
+
+    private static SkyKitItem decodeItem(MapSection map) throws SkyConfigurationException {
         String typeString = map.getTypeString("The item");
         int amount = map.getInt("amount", 1, "Item amount is not an integer");
         Material type;
         type = Material.matchMaterial(typeString);
         if (type == null) {
-            throw new SkyConfigurationException("The type string '" + typeString + "' is not valid. Check https://dabo.guru/projects/skywars/configuring-kits for a list of valid material names.");
+            throw new SkyConfigurationException("The type string '" + typeString + "' is not valid. Check https://dabo.guru/projects/skywars/configuring-kits for a list of valid material names (at the bottom of the page).");
         }
         Map<Enchantment, Integer> enchantments = null;
         MapSection enchantmentMap = map.getSection("enchantments", "Enchantments invalid: not a section!");
@@ -150,7 +153,7 @@ public class SkyKitDecoder {
             for (String key : enchantmentMap.keySet()) {
                 Enchantment enchantment = Enchantment.getByName(key.toUpperCase());
                 if (enchantment == null) {
-                    throw new SkyConfigurationException("Invalid enchantment '" + key + "'. Check https://dabo.guru/projects/skywars/configuring-kits for a list of valid enchantments.");
+                    throw new SkyConfigurationException("Invalid enchantment '" + key + "'. Check https://dabo.guru/projects/skywars/configuring-kits for a list of valid enchantments (at the bottom of the page).");
                 }
                 int value = enchantmentMap.getInt(key, "Invalid enchantment level `%s`: not an integer.");
                 enchantments.put(enchantment, value);
@@ -217,7 +220,7 @@ public class SkyKitDecoder {
         return new SkyKitItemConfig(type, amount, enchantments, meta);
     }
 
-    public static PotionEffect decodePotionEffect(MapSection map) throws SkyConfigurationException {
+    private static PotionEffect decodePotionEffect(MapSection map) throws SkyConfigurationException {
         String typeString = map.getTypeString("The potion effect");
         int amplifier = map.getInt("amplifier", 0, "Potion effect power is not an integer");
         int duration = map.getInt("duration", 60, "Potion effect duration is not an integer");
@@ -230,7 +233,7 @@ public class SkyKitDecoder {
         return type.createEffect(duration, amplifier);
     }
 
-    public static Potion decodePotion(MapSection map) throws SkyConfigurationException {
+    private static Potion decodePotion(MapSection map) throws SkyConfigurationException {
         String typeName = map.getTypeString("The potion");
         PotionType type = PotionType.getByEffect(PotionEffectType.getByName(typeName));
         if (type == null) {

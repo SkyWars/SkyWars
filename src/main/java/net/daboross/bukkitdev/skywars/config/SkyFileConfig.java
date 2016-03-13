@@ -158,7 +158,7 @@ public class SkyFileConfig {
         }
     }
 
-    public Map<String, String> getSetSection(String path, Map<String, String> defaultValues) throws InvalidConfigurationException {
+    public Map<String, String> getSetStringMap(String path, Map<String, String> defaultValues) throws InvalidConfigurationException {
         if (config.isConfigurationSection(path)) {
             ConfigurationSection section = config.getConfigurationSection(path);
             Map<String, Object> entries = section.getValues(false);
@@ -183,6 +183,21 @@ public class SkyFileConfig {
                 section.set(entry.getKey(), entry.getValue());
             }
             return defaultValues;
+        }
+    }
+
+    public ConfigurationSection getSetSection(String path, Map<String, String> defaultValues) throws InvalidConfigurationException {
+        if (config.isConfigurationSection(path)) {
+            return config.getConfigurationSection(path);
+        } else if (config.contains(path)) {
+            throw new InvalidConfigurationException("Object " + config.get(path) + " found under " + path + " in file " + configFile + " is not a configuration section");
+        } else {
+            logger.log(Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, defaultValues, configFile});
+            ConfigurationSection section = config.createSection(path);
+            for (Map.Entry<String, String> entry : defaultValues.entrySet()) {
+                section.set(entry.getKey(), entry.getValue());
+            }
+            return section;
         }
     }
 

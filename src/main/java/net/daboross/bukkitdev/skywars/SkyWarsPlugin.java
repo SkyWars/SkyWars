@@ -36,6 +36,7 @@ import net.daboross.bukkitdev.skywars.api.translations.SkyTranslations;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.commands.MainCommand;
 import net.daboross.bukkitdev.skywars.commands.SetupCommand;
+import net.daboross.bukkitdev.skywars.config.RandomChestConfiguration;
 import net.daboross.bukkitdev.skywars.config.SkyWarsConfiguration;
 import net.daboross.bukkitdev.skywars.config.TranslationsConfiguration;
 import net.daboross.bukkitdev.skywars.economy.EconomyFailedException;
@@ -80,6 +81,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
 
     private SkyTranslations translations;
     private SkyConfiguration configuration;
+    private RandomChestConfiguration chestConfiguration;
     private SkyLocationStore locationStore;
     private SkyGameHandler gameHandler;
     private SkyWorldHandler worldHandler;
@@ -168,6 +170,11 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
             } catch (EconomyFailedException ex) {
                 getLogger().log(Level.WARNING, "{0}. Couldn't enable economy hook.", ex.getMessage());
             }
+        }
+        try {
+            chestConfiguration = new RandomChestConfiguration(this);
+        } catch (IOException | InvalidConfigurationException | SkyConfigurationException ex) {
+            throw new StartupFailedException("Failed to load chest configuration", ex);
         }
         kits = new SkyKitConfiguration(this);
         kitQueueNotifier = new KitQueueNotifier(this);
@@ -323,6 +330,11 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     @Override
     public SkyConfiguration getConfiguration() {
         return configuration;
+    }
+
+    @Override
+    public RandomChestConfiguration getChestRandomizer() {
+        return chestConfiguration;
     }
 
     @Override

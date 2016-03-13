@@ -131,7 +131,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
         locale = mainConfig.getSetString(MainConfigKeys.LOCALE, MainConfigDefaults.LOCALE);
 
-        arenaGamerules = Collections.unmodifiableMap(mainConfig.getSetSection(MainConfigKeys.ARENA_GAMERULES, MainConfigDefaults.ARENA_GAMERULES));
+        arenaGamerules = Collections.unmodifiableMap(mainConfig.getSetStringMap(MainConfigKeys.ARENA_GAMERULES, MainConfigDefaults.ARENA_GAMERULES));
 
         // Score
         enableScore = mainConfig.getSetBoolean(MainConfigKeys.Score.ENABLE, MainConfigDefaults.Score.ENABLE);
