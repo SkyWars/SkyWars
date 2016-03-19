@@ -55,8 +55,20 @@ public class SkyWorldHandler {
     public SkyWorldHandler(SkyWars plugin) {
         this.plugin = plugin;
         if (plugin.getConfiguration().isWorldeditHookEnabled() && plugin.getServer().getPluginManager().isPluginEnabled("WorldEdit")) {
-            plugin.getLogger().info("Using WorldEdit hook for arena creation.");
-            this.provider = new WorldEditProtobufStorageProvider(plugin);
+            boolean upToDate;
+            try {
+                Class.forName("com.sk89q.worldedit.world.AbstractWorld");
+                upToDate = true;
+            } catch (ClassNotFoundException ignored) {
+                upToDate = false;
+            }
+            if (upToDate) {
+                plugin.getLogger().info("Using WorldEdit hook for arena creation.");
+                this.provider = new WorldEditProtobufStorageProvider(plugin);
+            } else {
+                plugin.getLogger().info("WorldEdit outdated! Using slower non-worldedit backend for arena creation.");
+                this.provider = new ProtobufStorageProvider(plugin);
+            }
         } else {
             plugin.getLogger().info("Using slower non-worldedit backend for arena creation.");
             this.provider = new ProtobufStorageProvider(plugin);
