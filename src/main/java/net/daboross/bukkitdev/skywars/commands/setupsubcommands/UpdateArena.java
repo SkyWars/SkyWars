@@ -64,7 +64,7 @@ public class UpdateArena extends SubCommand {
             }
         }
         try {
-            plugin.getWorldHandler().loadNewArena(realArena);
+            plugin.getWorldHandler().loadNewArena(realArena, true);
         } catch (IOException e) {
             plugin.getLogger().log(Level.SEVERE, "Failed to update arena blocks cache for " + realArena.getArenaName() + "!", e);
             sender.sendMessage(SkyTrans.get(TransKey.SWS_UPDATEARENA_FAILED, realArena.getArenaName()));

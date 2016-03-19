@@ -87,7 +87,7 @@ public class SetupData {
                 spawns.size(), // Number of teams
                 1, // Team size
                 20, // Placement Y
-                boundaries);
+                boundaries, null);
         config.setFile(saveFile);
         return config;
     }

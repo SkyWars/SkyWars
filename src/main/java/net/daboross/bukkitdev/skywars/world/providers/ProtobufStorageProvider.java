@@ -23,7 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
@@ -31,8 +33,12 @@ import java.util.zip.GZIPOutputStream;
 import net.daboross.bukkitdev.bukkitstorageprotobuf.MemoryBlockArea;
 import net.daboross.bukkitdev.bukkitstorageprotobuf.ProtobufStorage;
 import net.daboross.bukkitdev.bukkitstorageprotobuf.compiled.BlockStorage;
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
+import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaChest;
+import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaChestConfig;
+import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
 import net.daboross.bukkitdev.skywars.util.CrossVersion;
@@ -57,17 +63,22 @@ public class ProtobufStorageProvider implements WorldProvider {
     }
 
     @Override
-    public void loadArena(final SkyArena arena) throws IOException {
-        if (cache.containsKey(arena.getArenaName())) {
+    public void loadArena(final SkyArenaConfig arena, final boolean forceReload) throws IOException {
+        if (forceReload || cache.containsKey(arena.getArenaName())) {
             plugin.getLogger().log(Level.WARNING, "Updating arena blocks cache for arena '{}'.", arena.getArenaName());
         }
+        boolean createdNewCache = false;
         Path cachePath = plugin.getArenaPath().resolve(arena.getArenaName() + ".blocks");
-        BlockStorage.BlockArea area;
-        try (InputStream inputStream = new FileInputStream(cachePath.toFile())) {
-            try (GZIPInputStream gzipInputStream = new GZIPInputStream(inputStream)) {
-                area = BlockStorage.BlockArea.parseFrom(gzipInputStream);
+        BlockStorage.BlockArea area = null;
+        if (!forceReload) {
+            try (InputStream inputStream = new FileInputStream(cachePath.toFile())) {
+                try (GZIPInputStream gzipInputStream = new GZIPInputStream(inputStream)) {
+                    area = BlockStorage.BlockArea.parseFrom(gzipInputStream);
+                }
+            } catch (FileNotFoundException ignored) {
             }
-        } catch (FileNotFoundException e) {
+        }
+        if (area == null) {
             try (InputStream inputStream = plugin.getResourceAsStream("arenas/" + arena.getArenaName() + ".blocks")) {
                 try (GZIPInputStream gzipInputStream = new GZIPInputStream(inputStream)) {
                     area = BlockStorage.BlockArea.parseFrom(gzipInputStream);
@@ -76,6 +87,7 @@ public class ProtobufStorageProvider implements WorldProvider {
             } catch (FileNotFoundException ex) {
                 try {
                     area = createCache(arena);
+                    createdNewCache = true;
                 } catch (IllegalStateException ex1) {
                     if (ex1.getMessage().contains("Origin location not listed in configuration")) {
                         throw new IOException("No origin listed in configuration, but no blocks file found in SkyWars jar file either!", ex);
@@ -90,7 +102,32 @@ public class ProtobufStorageProvider implements WorldProvider {
                 }
             }
         }
-        cache.put(arena.getArenaName(), new MemoryBlockArea(area));// We turn the BlockStorage.BlockArea into a StoredBlockArea here, not above, because StoredBlockArea can't write to a file.
+
+        // We turn the BlockStorage.BlockArea into a StoredBlockArea here, not above, because StoredBlockArea can't write to a file.
+        MemoryBlockArea memoryBlockArea = new MemoryBlockArea(area);
+
+        if (createdNewCache || arena.getChestConfiguration() == null) {
+            loadChests(arena, memoryBlockArea);
+        }
+        cache.put(arena.getArenaName(), memoryBlockArea);
+    }
+
+    private void loadChests(final SkyArenaConfig arena, final MemoryBlockArea area) {
+        SkyStatic.debug("Creating chest configuration for arena %s.", arena.getArenaName());
+        List<SkyArenaChest> chests = new ArrayList<>();
+        for (int y = 0; y < area.lengthY; y++) {
+            for (int x = 0; x < area.lengthX; x++) {
+                for (int z = 0; z < area.lengthZ; z++) {
+                    BlockStorage.Block block = area.blocks[y][x][z];
+                    //noinspection deprecation
+                    if (block.getId() == Material.CHEST.getId()) {
+                        chests.add(new SkyArenaChestConfig(new SkyBlockLocation(x, y, z, null)));
+                    }
+                }
+            }
+        }
+        arena.setChests(chests);
+        plugin.getConfiguration().saveArena(arena);
     }
 
     private BlockStorage.BlockArea createCache(SkyArena source) {

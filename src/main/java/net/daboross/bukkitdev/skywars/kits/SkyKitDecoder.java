@@ -237,8 +237,9 @@ public class SkyKitDecoder {
         String typeName = map.getTypeString("The potion");
         PotionType type = PotionType.getByEffect(PotionEffectType.getByName(typeName));
         if (type == null) {
-            type = PotionType.valueOf(typeName);
-            if (type == null) {
+            try {
+                type = PotionType.valueOf(typeName);
+            } catch (IllegalArgumentException ex) {
                 throw new SkyConfigurationException("Unknown potion type: " + typeName);
             }
         }

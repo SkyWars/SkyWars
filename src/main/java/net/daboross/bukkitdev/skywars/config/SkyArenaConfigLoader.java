@@ -54,7 +54,10 @@ public class SkyArenaConfigLoader {
             version0To1(config);
             version = 1;
         }
-        return version == 1;
+        if (version == 1) {
+            version1To2(config);
+        }
+        return version == 2;
     }
 
     private void version0To1(ConfigurationSection config) {
@@ -64,5 +67,9 @@ public class SkyArenaConfigLoader {
         config.set("placement-y", config.get("placement.placement-y"));
         config.set("num-players", null);
         config.set("placement", null);
+    }
+
+    private void version1To2(final ConfigurationSection config) {
+        config.set("config-version", 2);
     }
 }

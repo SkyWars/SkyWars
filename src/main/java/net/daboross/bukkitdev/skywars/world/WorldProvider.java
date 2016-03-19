@@ -18,12 +18,13 @@ package net.daboross.bukkitdev.skywars.world;
 
 import java.io.IOException;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
+import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import org.bukkit.World;
 
 public interface WorldProvider {
 
-    void loadArena(SkyArena arena) throws IOException;
+    void loadArena(SkyArenaConfig arena, boolean forceReload) throws IOException;
 
     void clearLoadedArenas();
 
