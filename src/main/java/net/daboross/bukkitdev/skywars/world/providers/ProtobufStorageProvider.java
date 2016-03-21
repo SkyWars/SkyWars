@@ -42,6 +42,7 @@ import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
 import net.daboross.bukkitdev.skywars.util.CrossVersion;
+import net.daboross.bukkitdev.skywars.world.RandomChestProvider;
 import net.daboross.bukkitdev.skywars.world.VoidGenerator;
 import net.daboross.bukkitdev.skywars.world.WorldProvider;
 import org.apache.commons.lang.Validate;
@@ -107,6 +108,8 @@ public class ProtobufStorageProvider implements WorldProvider {
         MemoryBlockArea memoryBlockArea = new MemoryBlockArea(area);
 
         if (createdNewCache || arena.getChestConfiguration() == null) {
+            if (!arena.getChests().isEmpty()) {
+            }
             loadChests(arena, memoryBlockArea);
         }
         cache.put(arena.getArenaName(), memoryBlockArea);
@@ -114,14 +117,26 @@ public class ProtobufStorageProvider implements WorldProvider {
 
     private void loadChests(final SkyArenaConfig arena, final MemoryBlockArea area) {
         SkyStatic.debug("Creating chest configuration for arena %s.", arena.getArenaName());
+        List<SkyArenaChest> originalChests = arena.getChests();
         List<SkyArenaChest> chests = new ArrayList<>();
         for (int y = 0; y < area.lengthY; y++) {
             for (int x = 0; x < area.lengthX; x++) {
+                length_z:
                 for (int z = 0; z < area.lengthZ; z++) {
                     BlockStorage.Block block = area.blocks[y][x][z];
                     //noinspection deprecation
                     if (block.getId() == Material.CHEST.getId()) {
-                        chests.add(new SkyArenaChestConfig(new SkyBlockLocation(x, y, z, null)));
+                        SkyBlockLocation location = new SkyBlockLocation(x, y, z, null);
+
+                        // Check for existing configurations for this chest, and keep them if they exist.
+                        for (SkyArenaChest testOldChest : originalChests) {
+                            if (location.equals(testOldChest.getLocation())) {
+                                chests.add(testOldChest);
+                                continue length_z;
+                            }
+                        }
+                        // If there isn't an existing configuration, just add a new one with default values
+                        chests.add(new SkyArenaChestConfig(location));
                     }
                 }
             }
@@ -166,8 +181,7 @@ public class ProtobufStorageProvider implements WorldProvider {
         MemoryBlockArea area = cache.get(arena.getArenaName());
         Validate.notNull(area, "Arena " + arena.getArenaName() + " not loaded.");
 
-
-        area.apply(arenaWorld, target.x, target.y, target.z);
+        area.apply(arenaWorld, target.x, target.y, target.z, new RandomChestProvider(plugin.getChestRandomizer(), arena));
     }
 
     @Override

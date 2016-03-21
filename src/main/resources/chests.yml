@@ -40,7 +40,7 @@ items:
   - type: LEATHER_CHESTPLATE
   - type: LEATHER_LEGGINGS
   - type: LEATHER_BOOTS
-  - type: PORK, amount: 3
+  - {type: PORK, amount: 3}
   - {type: RAW_FISH, amount: 3}
   - {type: APPLE, amount: 3}
   - {type: ARROW, amount: 7}

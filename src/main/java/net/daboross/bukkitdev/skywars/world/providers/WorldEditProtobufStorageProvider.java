@@ -24,6 +24,7 @@ import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
 import net.daboross.bukkitdev.skywars.util.CrossVersion;
+import net.daboross.bukkitdev.skywars.world.RandomChestProvider;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -49,7 +50,7 @@ public class WorldEditProtobufStorageProvider extends ProtobufStorageProvider {
         Validate.notNull(area, "Arena " + arena.getArenaName() + " not loaded.");
 
 
-        area.applyWorldEdit(arenaWorld, editWorld, target.x, target.y, target.z);
+        area.applyWorldEdit(arenaWorld, editWorld, target.x, target.y, target.z, new RandomChestProvider(plugin.getChestRandomizer(), arena));
     }
 
     @Override

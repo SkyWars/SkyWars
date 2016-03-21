@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +39,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 public class RandomChestConfiguration implements RandomChests {
 
@@ -94,7 +96,7 @@ public class RandomChestConfiguration implements RandomChests {
                 }
                 int itemValue = levelSection.getInt("item-value");
                 int chance = levelSection.getInt("chance");
-                incompleteLevels.put(key, new ChestLevel(itemValue, chance, null));
+                incompleteLevels.put(key, new ChestLevel(key, itemValue, chance, null));
             } else {
                 throw new SkyConfigurationException("Invalid chests.yml: non-map thing in levels: " + levelsSection.get(key));
             }
@@ -140,7 +142,7 @@ public class RandomChestConfiguration implements RandomChests {
                 if (itemList.isEmpty()) {
                     throw new SkyConfigurationException("Invalid chests.yml: level `" + key + "` items list is empty!");
                 }
-                levels.add(new ChestLevel(incompleteLevel.itemValue, incompleteLevel.chance, itemList));
+                levels.add(new ChestLevel(key, incompleteLevel.itemValue, incompleteLevel.chance, itemList));
             } else {
                 throw new SkyConfigurationException("Invalid chests.yml: non-list thing in items: " + itemsSection.get(key));
             }
@@ -156,9 +158,10 @@ public class RandomChestConfiguration implements RandomChests {
     }
 
     @Override
-    public void fillChest(final Inventory inventory, final int chestLevel, final int minValue, final int maxValue) {
+    public ItemStack[] getItems(final int size, final int chestLevel, final int minValue, final int maxValue) {
+        SkyStatic.debug("Filling with size: %s, level: %s, min: %s, max: %s", size, chestLevel, minValue, maxValue);
         int totalChance = 0;
-        List<ChestLevel> acceptableLevels = new ArrayList<>(levels);
+        List<ChestLevel> acceptableLevels = new ArrayList<>();
         for (ChestLevel level : levels) {
             if (level.itemValue >= minValue && level.itemValue <= maxValue) {
                 acceptableLevels.add(level);
@@ -167,9 +170,11 @@ public class RandomChestConfiguration implements RandomChests {
         }
         if (acceptableLevels.isEmpty()) {
             SkyStatic.log(Level.SEVERE, "Warning: No acceptable chest levels found when filling chest with minValue={0}, maxValue={1}! Chest will be completely empty.", minValue, maxValue);
-            return;
+            return new ItemStack[size];
         }
+        SkyStatic.debug("[RandomChests] Found acceptable levels: %s", acceptableLevels);
         int totalValue = 0;
+        List<ItemStack> inventory = new ArrayList<>();
         while (totalValue <= chestLevel) {
             ChestLevel level = null;
             int chanceIndex = random.nextInt(totalChance);
@@ -183,23 +188,40 @@ public class RandomChestConfiguration implements RandomChests {
                 }
             }
             Validate.notNull(level, "Never null"); // should never be null
+            SkyStatic.debug("[RandomChests] Choosing level %s", level);
             SkyKitItem item = level.items.get(random.nextInt(level.items.size()));
-            inventory.addItem(item.toItem());
+            inventory.add(item.toItem());
 
             totalValue += level.itemValue;
         }
+
+        ItemStack[] result;
+        if (inventory.size() > size) {
+            result = inventory.subList(0, size).toArray(new ItemStack[size]);
+        } else {
+            result = inventory.toArray(new ItemStack[size]);
+        }
+        Collections.shuffle(Arrays.asList(result));
+        return result;
     }
 
     private static class ChestLevel {
 
+        private final String name;
         private final int itemValue;
         private final int chance;
         private final List<SkyKitItem> items;
 
-        private ChestLevel(final int itemValue, final int chance, final List<SkyKitItem> items) {
+        private ChestLevel(final String name, final int itemValue, final int chance, final List<SkyKitItem> items) {
+            this.name = name;
             this.itemValue = itemValue;
             this.chance = chance;
             this.items = items;
+        }
+
+        @Override
+        public String toString() {
+            return name;
         }
     }
 }

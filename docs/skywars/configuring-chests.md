@@ -85,4 +85,86 @@ items:
 
 #### Example arena configuration:
 
-TODO
+This is an example configuration modified from the default arena, skyblock-warriors.
+
+The 4 chests players spawn to have total-level: 30, and allow all levels.
+
+The 4 chests between players have total-level: 45, and also have the same levels.
+
+The center chest has only total-level: 25, but doesn't allow any low-level items - only the highest 3 levels.
+
+```yaml
+chests:
+- location:
+    x: 0
+    y: 3
+    z: 29
+  randomize: true
+  total-level: 45
+  min-item-value: 0
+  max-item-value: 6
+- location:
+    x: 10
+    y: 3
+    z: 16
+  randomize: true
+  total-level: 30
+  min-item-value: 0
+  max-item-value: 30
+- location:
+    x: 10
+    y: 3
+    z: 42
+  randomize: true
+  total-level: 30
+  min-item-value: 0
+  max-item-value: 30
+- location:
+    x: 28
+    y: 3
+    z: 0
+  randomize: true
+  total-level: 45
+  min-item-value: 0
+  max-item-value: 30
+- location:
+    x: 28
+    y: 3
+    z: 29
+  randomize: true
+  total-level: 25
+  min-item-value: 5
+  max-item-value: 30
+- location:
+    x: 28
+    y: 3
+    z: 58
+  randomize: true
+  total-level: 45
+  min-item-value: 0
+  max-item-value: 30
+- location:
+    x: 46
+    y: 3
+    z: 16
+  randomize: true
+  total-level: 30
+  min-item-value: 0
+  max-item-value: 30
+- location:
+    x: 46
+    y: 3
+    z: 42
+  randomize: true
+  total-level: 30
+  min-item-value: 0
+  max-item-value: 30
+- location:
+    x: 56
+    y: 3
+    z: 29
+  randomize: true
+  total-level: 30
+  min-item-value: 0
+  max-item-value: 30
+```
