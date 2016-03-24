@@ -20,10 +20,11 @@ Before testing:
 * Set online-mode to false in server.properties
 * Set allow-nether to false in server.properties
 * Set allow-end to false in bukkit.yml
-* Delete world_nether and world_the_end
+* Delete `world_nether` and `world_the_end`
 * Install Vault of the version you're testing for
-* Install BOSEconomy to test economy
- * BOSEconomy is the most simple economy plugin I've found to test with. If someone else has a better suggestion, I'm open to it!
+* Install a test economy.
+ * BOSEconomy works for pre-1.9 minecraft versions, and is simple to test and work with.
+ * RoyalEconomy requires manual compilation, as it isn't a released plugin. However, it's an open source project, and it works well.
 * Set `economy.enabled` to `true` in `plugins/SkyWars/main-config.yml`
 * Add `skywars.kit:\n    default: true` to `permissions.yml` to enable usage of `/sw kit` by non-ops
 
