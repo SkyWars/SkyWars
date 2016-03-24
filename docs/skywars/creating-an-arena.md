@@ -1,6 +1,8 @@
 Setting up a new arena
 ======================
 
+Notes before you begin: All positions are set to the location where your head is, not to the block you are looking at. This includes **/sws setpos1**, **/sws setpos2** and **/sws addspawn**.
+
 1. Build your arena somewhere safe **in your main world**. You will need to keep this original arena template if you want to edit it again, but if you don't want to edit it in the future you can delete it after this.
 
 2. If you build your arena in the "SkyWarsArenaWorld" it **will not be saved**! SkyWars deletes this world after every server shutdown. It is only for running games, not for arena templates.
