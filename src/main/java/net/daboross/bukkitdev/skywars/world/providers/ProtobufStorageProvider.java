@@ -66,7 +66,7 @@ public class ProtobufStorageProvider implements WorldProvider {
     @Override
     public void loadArena(final SkyArenaConfig arena, final boolean forceReload) throws IOException {
         if (forceReload || cache.containsKey(arena.getArenaName())) {
-            plugin.getLogger().log(Level.WARNING, "Updating arena blocks cache for arena '{}'.", arena.getArenaName());
+            plugin.getLogger().log(Level.WARNING, "Updating arena blocks cache for arena ''{0}''.", arena.getArenaName());
         }
         boolean createdNewCache = false;
         Path cachePath = plugin.getArenaPath().resolve(arena.getArenaName() + ".blocks");
@@ -80,21 +80,21 @@ public class ProtobufStorageProvider implements WorldProvider {
             }
         }
         if (area == null) {
-            try (InputStream inputStream = plugin.getResourceAsStream("arenas/" + arena.getArenaName() + ".blocks")) {
-                try (GZIPInputStream gzipInputStream = new GZIPInputStream(inputStream)) {
-                    area = BlockStorage.BlockArea.parseFrom(gzipInputStream);
-                }
-                plugin.getLogger().log(Level.INFO, "Loaded pre-built blocks cache file for arena {0}", arena.getArenaName());
-            } catch (FileNotFoundException ex) {
-                try {
-                    area = createCache(arena);
-                    createdNewCache = true;
-                } catch (IllegalStateException ex1) {
-                    if (ex1.getMessage().contains("Origin location not listed in configuration")) {
+            try {
+                area = createCache(arena);
+                createdNewCache = true;
+            } catch (IllegalStateException ex1) {
+                if (ex1.getMessage().contains("Origin location not listed in configuration")) {
+                    try (InputStream inputStream = plugin.getResourceAsStream("arenas/" + arena.getArenaName() + ".blocks")) {
+                        try (GZIPInputStream gzipInputStream = new GZIPInputStream(inputStream)) {
+                            area = BlockStorage.BlockArea.parseFrom(gzipInputStream);
+                        }
+                        plugin.getLogger().log(Level.INFO, "Loaded pre-built blocks cache file for arena {0}.", arena.getArenaName());
+                    } catch (FileNotFoundException ex) {
                         throw new IOException("No origin listed in configuration, but no blocks file found in SkyWars jar file either!", ex);
-                    } else {
-                        throw ex1;
                     }
+                } else {
+                    throw ex1;
                 }
             }
             try (OutputStream outputStream = new FileOutputStream(cachePath.toFile())) {
@@ -108,8 +108,6 @@ public class ProtobufStorageProvider implements WorldProvider {
         MemoryBlockArea memoryBlockArea = new MemoryBlockArea(area);
 
         if (createdNewCache || arena.getChestConfiguration() == null) {
-            if (!arena.getChests().isEmpty()) {
-            }
             loadChests(arena, memoryBlockArea);
         }
         cache.put(arena.getArenaName(), memoryBlockArea);

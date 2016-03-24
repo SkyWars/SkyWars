@@ -34,8 +34,8 @@ public class UpdateArena extends SubCommand {
     public UpdateArena(final SkyWarsPlugin plugin) {
         super("update-arena", true, null, SkyTrans.get(TransKey.SWS_UPDATEARENA_DESCRIPTION));
         addArgumentNames(SkyTrans.get(TransKey.SWS_UPDATEARENA_ARENA_ARGUMENT));
-        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.LESS_THAN, 1, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
-        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.GREATER_THAN, 1, SkyTrans.get(TransKey.NOT_ENOUGH_PARAMS)));
+        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.LESS_THAN, 2, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
+        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.GREATER_THAN, 0, SkyTrans.get(TransKey.NOT_ENOUGH_PARAMS)));
         this.plugin = plugin;
     }
 
@@ -72,12 +72,13 @@ public class UpdateArena extends SubCommand {
         } catch (IllegalArgumentException e) {
             if (e.getMessage().contains("Origin location")) {
                 sender.sendMessage(SkyTrans.get(TransKey.SWS_UPDATEARENA_BUILTIN, realArena.getArenaName()));
+                return;
             } else {
                 plugin.getLogger().log(Level.SEVERE, "Failed to update arena blocks cache for " + realArena.getArenaName() + "!", e);
                 sender.sendMessage(SkyTrans.get(TransKey.SWS_UPDATEARENA_FAILED, realArena.getArenaName()));
             }
             return;
         }
-        sender.sendMessage(SkyTrans.get(TransKey.SWS_UPDATEARENA_COMPLETED));
+        sender.sendMessage(SkyTrans.get(TransKey.SWS_UPDATEARENA_COMPLETED, realArena.getArenaName()));
     }
 }
