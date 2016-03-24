@@ -27,6 +27,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+@SuppressWarnings("deprecation")
 public class SkyEconomyHook implements SkyEconomyAbstraction {
 
     private final Economy economy;

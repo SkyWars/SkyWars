@@ -113,6 +113,7 @@ public class ProtobufStorageProvider implements WorldProvider {
         cache.put(arena.getArenaName(), memoryBlockArea);
     }
 
+    @SuppressWarnings("deprecation")
     private void loadChests(final SkyArenaConfig arena, final MemoryBlockArea area) {
         SkyStatic.debug("Creating chest configuration for arena %s.", arena.getArenaName());
         List<SkyArenaChest> originalChests = arena.getChests();
@@ -122,7 +123,6 @@ public class ProtobufStorageProvider implements WorldProvider {
                 length_z:
                 for (int z = 0; z < area.lengthZ; z++) {
                     BlockStorage.Block block = area.blocks[y][x][z];
-                    //noinspection deprecation
                     if (block.getId() == Material.CHEST.getId()) {
                         SkyBlockLocation location = new SkyBlockLocation(x, y, z, null);
 

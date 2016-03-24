@@ -16,9 +16,9 @@
  */
 package net.daboross.bukkitdev.skywars.commands.setupstuff;
 
-import com.sk89q.worldedit.LocalWorld;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
+import com.sk89q.worldedit.world.AbstractWorld;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
@@ -40,7 +40,7 @@ public class WESetupData extends SetupData {
         if (bukkitWorld == null) {
             throw new IllegalStateException("Origin world '" + min.world + "' no longer loaded.");
         }
-        LocalWorld world = new BukkitWorld(bukkitWorld);
+        AbstractWorld world = new BukkitWorld(bukkitWorld);
 
         int minX = min.x;
         int minY = min.y;
@@ -91,7 +91,7 @@ public class WESetupData extends SetupData {
         return new SkyBlockLocationRange(new SkyBlockLocation(minX, minY, minZ, world.getName()), new SkyBlockLocation(maxX, maxY, maxZ, world.getName()), world.getName());
     }
 
-    private static boolean isClear(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, LocalWorld world) {
+    private static boolean isClear(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, AbstractWorld world) {
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++) {

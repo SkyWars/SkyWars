@@ -73,8 +73,9 @@ public class SkyKitDecoder {
             List<SkyKitItem> result = new ArrayList<>(items.size());
             for (Object o : items) {
                 if (o instanceof Map) {
-                    //noinspection unchecked
-                    result.add(decodeItem(new MapMapSection((Map<String, Object>) o)));
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> map = (Map<String, Object>) o;
+                    result.add(decodeItem(new MapMapSection(map)));
                 } else {
                     throw new SkyConfigurationException("Invalid thing in items list '" + o + "'.");
                 }
@@ -177,6 +178,7 @@ public class SkyKitDecoder {
             if (loreObject instanceof Map) {
                 throw new SkyConfigurationException("Item lore invalid: not a list!");
             } else if (loreObject instanceof List) {
+                @SuppressWarnings("unchecked")
                 List<Object> loreList = (List<Object>) loreObject;
                 lore = new ArrayList<>(loreList.size());
                 for (Object listObject : loreList) {
@@ -205,12 +207,14 @@ public class SkyKitDecoder {
             meta.add(new SkyPotionMeta(decodePotion(potionMap)));
         }
 
-        List<Object> effectsList = map.getList("extra-effects", "Effects invalid: not a list!");
+        List<?> effectsList = map.getList("extra-effects", "Effects invalid: not a list!");
         if (effectsList != null) {
             List<PotionEffect> effects = new ArrayList<>(effectsList.size());
             for (Object obj : effectsList) {
                 if (obj instanceof Map) {
-                    effects.add(decodePotionEffect(new MapMapSection((Map) obj)));
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> potionEffectMap = (Map<String, Object>) obj;
+                    effects.add(decodePotionEffect(new MapMapSection(potionEffectMap)));
                 } else {
                     throw new SkyConfigurationException("Invalid thing in items list '" + obj + "'.");
                 }
@@ -317,13 +321,13 @@ public class SkyKitDecoder {
 
         public abstract MapSection getSection(final String key, String error) throws SkyConfigurationException;
 
-        public List<Object> getList(final String key, final String error) throws SkyConfigurationException {
+        public List<?> getList(final String key, final String error) throws SkyConfigurationException {
             Object object = get(key);
             if (object == null) {
                 return null;
             } else if (object instanceof List) {
-                //noinspection unchecked
-                return (List<Object>) object;
+
+                return (List<?>) object;
             } else {
                 throw new SkyConfigurationException(String.format(error, object));
             }
@@ -375,8 +379,9 @@ public class SkyKitDecoder {
             if (object == null) {
                 return null;
             } else if (object instanceof Map) {
-                //noinspection unchecked
-                return new MapMapSection((Map<String, Object>) object);
+                @SuppressWarnings("unchecked")
+                Map<String, Object> map = (Map<String, Object>) object;
+                return new MapMapSection(map);
             } else {
                 throw new SkyConfigurationException(String.format(error, object));
             }

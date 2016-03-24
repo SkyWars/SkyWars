@@ -47,7 +47,7 @@ public class CommandExecutorBase implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        SubCommand subCommand = getSubCommand(sender, cmd, label, args);
+        SubCommand subCommand = getSubCommand(sender, label, args);
         if (subCommand != null) {
             String[] subCommandArgs = ArrayHelpers.getSubArray(args, 1, args.length - 1);
             if (checkFilters(sender, cmd, subCommand, label, args[0], subCommandArgs)) {
@@ -102,7 +102,7 @@ public class CommandExecutorBase implements TabExecutor {
         sender.sendMessage(SkyTrans.get(TransKey.NO_PERMISSION, SkyTrans.get(TransKey.COLORED_CMD, label)));
     }
 
-    SubCommand getSubCommand(CommandSender sender, Command cmd, String label, String[] args) {
+    SubCommand getSubCommand(CommandSender sender, String label, String[] args) {
         if (!hasPermission(sender)) {
             sendNoPermissionMessage(sender, label);
             return null;

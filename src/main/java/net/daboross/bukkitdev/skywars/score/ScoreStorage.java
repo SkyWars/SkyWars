@@ -163,6 +163,7 @@ public class ScoreStorage extends SkyStorage {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void getOfflinePlayer(final String name, final Callback<OfflineSkyPlayer> callback) {
         SkyPlayer skyPlayer = null;
         Player bukkitPlayer = plugin.getServer().getPlayerExact(name);

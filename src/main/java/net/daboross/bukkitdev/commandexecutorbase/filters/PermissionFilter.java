@@ -34,7 +34,7 @@ public class PermissionFilter implements CommandFilter {
 
     @Override
     public String[] getDeniedMessage(CommandSender sender, Command baseCommand, SubCommand subCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        return new String[] {
+        return new String[]{
                 SkyTrans.get(TransKey.NO_PERMISSION, SkyTrans.get(TransKey.COLORED_CMD_SUBCMD, baseCommandLabel, subCommandLabel))
         };
     }

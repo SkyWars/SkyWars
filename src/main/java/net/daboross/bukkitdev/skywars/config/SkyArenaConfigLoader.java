@@ -58,7 +58,6 @@ public class SkyArenaConfigLoader {
             version1To2(config);
             version = 2;
         }
-        System.out.println("version: " + version + " is 2? " + (version == 2));
         return version == 2;
     }
 

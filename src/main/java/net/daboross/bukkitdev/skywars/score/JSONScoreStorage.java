@@ -432,10 +432,10 @@ public class JSONScoreStorage extends SkyStorageBackend {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private Map<String, Object> getMap(Map<String, Object> map, String key) {
         Object object = map.get(key);
         if (object instanceof Map) {
-            //noinspection unchecked
             return (Map<String, Object>) object;
         }
         return null;

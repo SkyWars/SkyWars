@@ -62,7 +62,7 @@ public class SkyKitConfiguration implements SkyKits {
                     kit = SkyKitDecoder.decodeKit(config.getConfigurationSection(key), key);
                 } catch (SkyConfigurationException ex) {
                     plugin.getLogger().log(Level.SEVERE, "Error loading kit! " + key + " won't be accessible until this is fixed!");
-                     continue;
+                    continue;
                 }
                 if (kit.getCost() != 0 && plugin.getEconomyHook() == null) {
                     plugin.getLogger().log(Level.FINE, "Not enabling kit {0} due to it having a cost and economy support not being enabled.", key);

@@ -45,7 +45,7 @@ public class RandomChestConfiguration implements RandomChests {
 
     private final SkyWars plugin;
     private final Random random;
-    private List<ChestLevel> levels = new ArrayList<>();
+    private final List<ChestLevel> levels = new ArrayList<>();
 
     public RandomChestConfiguration(final SkyWars plugin) throws IOException, InvalidConfigurationException, SkyConfigurationException {
         this.plugin = plugin;
@@ -112,8 +112,9 @@ public class RandomChestConfiguration implements RandomChests {
                 List<SkyKitItem> itemList = new ArrayList<>(objectList.size());
                 for (Object o : objectList) {
                     if (o instanceof Map) {
-                        //noinspection unchecked
-                        itemList.add(SkyKitDecoder.decodeItem((Map<String, Object>) o));
+                        @SuppressWarnings("unchecked")
+                        SkyKitItem item = SkyKitDecoder.decodeItem((Map<String, Object>) o);
+                        itemList.add(item);
                     } else if (o instanceof String) {
                         String string = o.toString();
                         String materialString;
