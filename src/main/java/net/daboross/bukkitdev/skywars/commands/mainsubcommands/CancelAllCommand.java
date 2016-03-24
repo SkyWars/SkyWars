@@ -39,9 +39,13 @@ public class CancelAllCommand extends SubCommand {
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         SkyIDHandler idh = plugin.getIDHandler();
-        for (int id : new ArrayList<>(idh.getCurrentIDs())) {
-            sender.sendMessage(SkyTrans.get(TransKey.CMD_CANCELALL_CANCELING, id));
-            plugin.getGameHandler().endGame(id, true);
+        if (!idh.getCurrentIDs().isEmpty()) {
+            for (int id : new ArrayList<>(idh.getCurrentIDs())) {
+                sender.sendMessage(SkyTrans.get(TransKey.CMD_CANCELALL_CANCELING, id));
+                plugin.getGameHandler().endGame(id, true);
+            }
+        } else {
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_CANCELALL_NO_GAMES));
         }
     }
 }
