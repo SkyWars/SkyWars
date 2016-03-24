@@ -52,6 +52,7 @@ import org.bukkit.entity.Player;
 
 public class JSONScoreStorage extends SkyStorageBackend {
 
+    private final Object topPlayersLock = new Object();
     private final Path saveFileBuffer;
     private final Path saveFile;
     private final Path oldSaveFile;
@@ -213,47 +214,56 @@ public class JSONScoreStorage extends SkyStorageBackend {
     }
 
     private void updateRank(final UUID uuid, Map<String, Object> playerMap, boolean newPlayer) {
-        OfflineJsonPlayer offline;
-        if (newPlayer) {
-            offline = new OfflineJsonPlayer(uuid, playerMap);
-            topPlayers.add(offline);
-        } else {
-            offline = topPlayers.get(getInt(playerMap, "rank"));
-            if (!uuid.equals(offline.getUuid())) {
-                SkyStatic.debug("Found offline player %s for rank of uuid %s (map: %s)", offline, uuid, playerMap);
+        synchronized (topPlayersLock) {
+            OfflineJsonPlayer offline;
+            if (newPlayer) {
+                offline = new OfflineJsonPlayer(uuid, playerMap);
+                topPlayers.add(offline);
+            } else {
+                offline = topPlayers.get(getInt(playerMap, "rank"));
+                if (!uuid.equals(offline.getUuid())) {
+                    SkyStatic.debug("Found offline player %s for rank of uuid %s (map: %s)", offline, uuid, playerMap);
+                    if (skywars.getConfiguration().isRecoverFromScoreErrors()) {
+                        skywars.getLogger().log(Level.WARNING, "Found player {0} at {1}'s rank! If this happens often, please report it.", new Object[]{offline, uuid});
+                        skywars.getLogger().log(Level.INFO, "Rebuilding top players list.");
+                        topPlayers = createTopPlayers();
+                        return;
+                    } else {
+                        throw new IllegalStateException("Not equal! " + uuid + " and " + offline + " should match!");
+                    }
+                }
             }
-            Validate.isTrue(uuid.equals(offline.getUuid()));
+            SkyStatic.debug("Updating rank for %s", uuid, offline.getName());
+            int rank = offline.getRank();
+            int score = offline.getScore();
+            while (rank > 0 && topPlayers.get(rank - 1).getScore() < score) {
+                SkyStatic.debug("Moving %1$s down (now at %3$s), moving %2$s up (now at %4$s)", topPlayers.get(rank - 1).getName(), offline.getName(), rank, rank - 1);
+                topPlayers.get(rank - 1).setRank(rank);
+                Collections.swap(topPlayers, rank, rank - 1);
+                rank--;
+            }
+            if (rank > 0) {
+                SkyStatic.debug("Finished moving up: %s (rank: %s, score: %s) has a higher score than %s (rank: %s, score: %s)",
+                        topPlayers.get(rank - 1).getName(), rank - 1, topPlayers.get(rank - 1).getScore(),
+                        offline.getName(), rank, score);
+            } else {
+                SkyStatic.debug("Finished moving up: rank is 0");
+            }
+            while (rank < topPlayers.size() - 1 && topPlayers.get(rank + 1).getScore() > score) {
+                SkyStatic.debug("Moving %2$s down (now at %4$s), moving %1$s up (now at %3$s)", topPlayers.get(rank + 1).getName(), offline.getName(), rank, rank + 1);
+                topPlayers.get(rank + 1).setRank(rank);
+                Collections.swap(topPlayers, rank, rank + 1);
+                rank++;
+            }
+            if (rank > 0) {
+                SkyStatic.debug("Finished moving down: %s (rank: %s, score: %s) has a lower score than %s (rank: %s, score: %s)",
+                        topPlayers.get(rank + 1).getName(), rank + 1, topPlayers.get(rank + 1).getScore(),
+                        offline.getName(), rank, score);
+            } else {
+                SkyStatic.debug("Finished moving up: rank is bottom");
+            }
+            offline.setRank(rank);
         }
-        SkyStatic.debug("Updating rank for %s", uuid, offline.getName());
-        int rank = offline.getRank();
-        int score = offline.getScore();
-        while (rank > 0 && topPlayers.get(rank - 1).getScore() < score) {
-            SkyStatic.debug("Moving %1$s down (now at %3$s), moving %2$s up (now at %4$s)", topPlayers.get(rank - 1).getName(), offline.getName(), rank, rank - 1);
-            topPlayers.get(rank - 1).setRank(rank);
-            Collections.swap(topPlayers, rank, rank - 1);
-            rank--;
-        }
-        if (rank > 0) {
-            SkyStatic.debug("Finished moving up: %s (rank: %s, score: %s) has a higher score than %s (rank: %s, score: %s)",
-                    topPlayers.get(rank - 1).getName(), rank - 1, topPlayers.get(rank - 1).getScore(),
-                    offline.getName(), rank, score);
-        } else {
-            SkyStatic.debug("Finished moving up: rank is 0");
-        }
-        while (rank < topPlayers.size() - 1 && topPlayers.get(rank + 1).getScore() > score) {
-            SkyStatic.debug("Moving %2$s down (now at %4$s), moving %1$s up (now at %3$s)", topPlayers.get(rank + 1).getName(), offline.getName(), rank, rank + 1);
-            topPlayers.get(rank + 1).setRank(rank);
-            Collections.swap(topPlayers, rank, rank + 1);
-            rank++;
-        }
-        if (rank > 0) {
-            SkyStatic.debug("Finished moving down: %s (rank: %s, score: %s) has a lower score than %s (rank: %s, score: %s)",
-                    topPlayers.get(rank + 1).getName(), rank + 1, topPlayers.get(rank + 1).getScore(),
-                    offline.getName(), rank, score);
-        } else {
-            SkyStatic.debug("Finished moving up: rank is bottom");
-        }
-        offline.setRank(rank);
     }
 
     @Override

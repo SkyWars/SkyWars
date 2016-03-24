@@ -71,6 +71,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private int economyKillReward;
     private String locale;
     private boolean disableReport;
+    private boolean recoverFromScoreErrors;
     private boolean economyRewardMessages;
     //
 //    private boolean perArenaDeathMessagesEnabled;
@@ -168,7 +169,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         commandWhitelistCommandRegex = createCommandRegex(mainConfig.getSetStringList(MainConfigKeys.CommandWhitelist.COMMAND_WHITELIST, MainConfigDefaults.CommandWhitelist.COMMAND_WHITELIST));
 
         // Report disable
-        disableReport = mainConfig.getConfig().getBoolean("disable-report", false);
+        disableReport = mainConfig.getConfig().getBoolean(MainConfigKeys.DISABLE_REPORT, MainConfigDefaults.DISABLE_REPORT);
+        recoverFromScoreErrors = !mainConfig.getConfig().getBoolean(MainConfigKeys.DISABLE_SCORE_RECOVERY, MainConfigDefaults.DISABLE_SCORE_RECOVERY);
 
         // per-arena messages
 //        perArenaDeathMessagesEnabled = mainConfig.getSetBoolean(MainConfigKeys.PER_ARENA_DEATH_MESSAGES_ENABLED, MainConfigDefaults.PER_ARENA_DEATH_MESSAGES_ENABLED);
@@ -433,6 +435,10 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     @Override
     public boolean areDeveloperOptionsEnabled() {
         return developerOptions;
+    }
+
+    public boolean isRecoverFromScoreErrors() {
+        return recoverFromScoreErrors;
     }
 
     private static class Names {

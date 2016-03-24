@@ -37,6 +37,8 @@ public class MainConfigDefaults {
     public static final String LOCALE = Locale.getDefault().getLanguage();
     public static final Map<String, String> ARENA_GAMERULES;
     public static final boolean DEVELOPER_OPTIONS = false;
+    public static final boolean DISABLE_REPORT = false;
+    public static final boolean DISABLE_SCORE_RECOVERY = false;
 //    public static final boolean PER_ARENA_DEATH_MESSAGES_ENABLED = true;
 //    public static final boolean PER_ARENA_WIN_MESSAGES_ENABLED = false;
 
