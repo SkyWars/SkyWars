@@ -28,7 +28,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class SkyArenaConfigLoader {
 
-    public SkyArenaConfig loadArena(Path file, String name, String messagePrefix) throws SkyConfigurationException {
+    public SkyArenaConfig loadArena(Path file, String name) throws SkyConfigurationException {
         FileConfiguration config = new YamlConfiguration();
         try {
             config.load(file.toFile());
@@ -56,7 +56,9 @@ public class SkyArenaConfigLoader {
         }
         if (version == 1) {
             version1To2(config);
+            version = 2;
         }
+        System.out.println("version: " + version + " is 2? " + (version == 2));
         return version == 2;
     }
 

@@ -228,7 +228,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
                 throw new SkyConfigurationException(name + " is in " + MainConfigKeys.ENABLED_ARENAS + " but file " + file.toAbsolutePath() + " could not be found.");
             }
         }
-        SkyArenaConfig arenaConfig = arenaLoader.loadArena(file, name, messagePrefix);
+        SkyArenaConfig arenaConfig = arenaLoader.loadArena(file, name);
         enabledArenas.add(arenaConfig);
 
         saveArena(file, arenaConfig, String.format(Headers.ARENA, name));
