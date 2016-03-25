@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.score;
 
+import com.google.common.base.Strings;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -326,9 +327,12 @@ public class SQLScoreStorage extends SkyStorageBackend {
     @Override
     public void updateOnlineIndividualRanks() {
         Collection<? extends Player> onlinePlayers = skywars.getServer().getOnlinePlayers();
-        List<String> uuidList = new ArrayList<>(onlinePlayers.size());
+        final List<String> uuidList = new ArrayList<>(onlinePlayers.size());
         for (Player player : onlinePlayers) {
             uuidList.add(player.getUniqueId().toString());
+        }
+        if (uuidList.isEmpty()) {
+            return;
         }
         final String[] uuidArray = uuidList.toArray(new String[uuidList.size()]);
         sql.run("update ranks for all online players", new ResultSQLRunnable<Map<UUID, Integer>>() {
@@ -341,9 +345,13 @@ public class SQLScoreStorage extends SkyStorageBackend {
                                 "     FROM `" + tableName + "`" +
                                 "     JOIN (SELECT @rownum := 0) r" +
                                 "   ORDER BY user_score DESC, uuid) ranked_user" +
-                                " WHERE ranked_user.uuid IN (?);"
+                                " WHERE ranked_user.uuid IN (" + Strings.repeat("?, ", uuidList.size() - 1) + "?);"
                 )) {
-                    statement.setArray(1, connection.createArrayOf("VARCHAR(36)", uuidArray));
+                    // This is avoiding using statement.setArray(connection.createArrayOf()), which is not supported by jdbc.
+                    int parameterNum = 1;
+                    for (String uuid : uuidList) {
+                        statement.setString(parameterNum++, uuid);
+                    }
                     try (ResultSet set = statement.executeQuery()) {
                         Map<UUID, Integer> resultMap = new HashMap<>(uuidArray.length);
 
