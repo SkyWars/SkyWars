@@ -78,14 +78,8 @@ public class SetupData {
             throw new IllegalStateException("Origin not defined.");
         }
         SkyBoundariesConfig boundaries = new SkyBoundariesConfig(originRange);
-        List<SkyPlayerLocation> processedSpawns = new ArrayList<>();
-        for (SkyPlayerLocation spawn : spawns) {
-            spawn = spawn.subtract(originRange.min);
-            spawn = new SkyPlayerLocation(Math.round(spawn.x - 0.5) + 0.5, Math.round(spawn.y), Math.round(spawn.z - 0.5) + 0.5, null);
-            processedSpawns.add(spawn);
-        }
         SkyArenaConfig config = new SkyArenaConfig(finalArenaName,
-                processedSpawns,
+                new ArrayList<SkyPlayerLocation>(spawns),
                 spawns.size(), // Number of teams
                 1, // Team size
                 20, // Placement Y
