@@ -21,14 +21,18 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import net.daboross.bukkitdev.skywars.api.game.LeaveGameReason;
 import net.daboross.bukkitdev.skywars.api.game.SkyCurrentGameTracker;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.api.game.SkyGameHandler;
 import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
+import net.daboross.bukkitdev.skywars.api.players.SkyPlayer;
+import net.daboross.bukkitdev.skywars.api.players.SkyPlayerState;
 import net.daboross.bukkitdev.skywars.events.events.GameEndInfo;
 import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveGameInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerRespawnAfterGameEndInfo;
+import net.daboross.bukkitdev.skywars.util.ForceRespawn;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -54,8 +58,15 @@ public class GameHandler implements SkyGameHandler {
         ArenaGame game = plugin.getIDHandler().getGame(id);
         GameEndInfo gameEndInfo = new GameEndInfo(game, broadcast);
         for (Player player : gameEndInfo.getAlivePlayers()) {
-            plugin.getDistributor().distribute(new PlayerLeaveGameInfo(id, player));
+            plugin.getDistributor().distribute(new PlayerLeaveGameInfo(id, player, LeaveGameReason.GAME_ENDED));
             respawnPlayer(player);
+        }
+        for (UUID uuid : gameEndInfo.getGame().getDeadPlayers()) {
+            SkyPlayer player = plugin.getPlayers().getPlayer(uuid);
+            if (player != null && player.getState() == SkyPlayerState.DEAD_WAITING_FOR_RESPAWN) {
+                // force respawn all players waiting to be respawned.
+                ForceRespawn.forceRespawn(player.getPlayer());
+            }
         }
         // All PlayerLeaveGameInfos MUST be distributed before the GameEndInfo is
         plugin.getDistributor().distribute(gameEndInfo);
@@ -63,15 +74,15 @@ public class GameHandler implements SkyGameHandler {
     }
 
     @Override
-    public void removePlayerFromGame(UUID playerUuid, boolean respawn, boolean broadcast) {
+    public void removePlayerFromGame(UUID playerUuid, LeaveGameReason reason, boolean respawn, boolean broadcast) {
         Validate.notNull(playerUuid, "Player uuid cannot be nuller");
         Player p = plugin.getServer().getPlayer(playerUuid);
         Validate.isTrue(p != null, String.format("Player (uuid: %s) not online", playerUuid));
-        this.removePlayerFromGame(p, respawn, broadcast);
+        this.removePlayerFromGame(p, reason, respawn, broadcast);
     }
 
     @Override
-    public void removePlayerFromGame(Player player, boolean respawn, boolean broadcast) {
+    public void removePlayerFromGame(Player player, LeaveGameReason reason, boolean respawn, boolean broadcast) {
         Validate.notNull(player, "Player cannot be null");
         UUID playerUuid = player.getUniqueId();
         SkyCurrentGameTracker cg = plugin.getCurrentGameTracker();
@@ -84,7 +95,7 @@ public class GameHandler implements SkyGameHandler {
             // This needs to happen before destributing PlayerLeaveGame so as to still have attacker stored!
             Bukkit.broadcastMessage(KillMessages.getMessage(player.getName(), plugin.getAttackerStorage().getKillerName(playerUuid), KillMessages.KillReason.LEFT));
         }
-        plugin.getDistributor().distribute(new PlayerLeaveGameInfo(id, player));
+        plugin.getDistributor().distribute(new PlayerLeaveGameInfo(id, player, reason));
         if (respawn) {
             respawnPlayer(player);
         }

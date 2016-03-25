@@ -19,6 +19,7 @@ package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.game.LeaveGameReason;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.command.Command;
@@ -41,7 +42,7 @@ public class LeaveCommand extends SubCommand {
             plugin.getGameQueue().removePlayer((Player) sender);
             sender.sendMessage(SkyTrans.get(TransKey.CMD_LEAVE_REMOVED_FROM_QUEUE));
         } else if (plugin.getCurrentGameTracker().isInGame(((Player) sender).getUniqueId())) {
-            plugin.getGameHandler().removePlayerFromGame((Player) sender, true, true);
+            plugin.getGameHandler().removePlayerFromGame((Player) sender, LeaveGameReason.LEAVE_COMMAND, true, true);
             sender.sendMessage(SkyTrans.get(TransKey.CMD_LEAVE_REMOVED_FROM_GAME));
         } else {
             sender.sendMessage(SkyTrans.get(TransKey.CMD_LEAVE_NOT_IN));

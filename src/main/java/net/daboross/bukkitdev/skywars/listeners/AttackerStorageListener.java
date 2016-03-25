@@ -21,7 +21,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import net.daboross.bukkitdev.skywars.api.game.LeaveGameReason;
 import net.daboross.bukkitdev.skywars.api.game.SkyAttackerStorage;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.api.players.SkyPlayer;
@@ -136,8 +138,7 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
             if (killerUuid != null && killerUuid != uuid) {
                 plugin.getDistributor().distribute(new PlayerKillPlayerInfo(game.getId(), killerUuid, killerName, evt.getEntity()));
             }
-            plugin.getGameHandler().removePlayerFromGame(evt.getEntity(), false, false);
-            evt.setDeathMessage(null);
+            plugin.getGameHandler().removePlayerFromGame(evt.getEntity(), LeaveGameReason.DIED, false, false);
             // TODO: merge code with something else.
             evt.setDeathMessage(KillMessages.getMessage(name, killerUuid == uuid ? null : killerName, causedVoid.contains(uuid) ? KillMessages.KillReason.VOID : KillMessages.KillReason.OTHER));
         } else if (plugin.getGameQueue().inQueue(uuid)) {
@@ -167,15 +168,19 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onRespawn(PlayerRespawnEvent evt) {
         SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(evt.getPlayer());
-        if (skyPlayer != null && skyPlayer.getState() == SkyPlayerState.WAITING_FOR_RESPAWN) {
-            evt.setRespawnLocation(plugin.getLocationStore().getLobbyPosition().toLocation());
-            final Player p = evt.getPlayer();
-            plugin.getServer().getScheduler().runTask(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    plugin.getGameHandler().respawnPlayer(p);
-                }
-            });
+        if (skyPlayer != null) {
+            if (skyPlayer.getState() == SkyPlayerState.DEAD_WAITING_FOR_RESPAWN) {
+                evt.setRespawnLocation(plugin.getLocationStore().getLobbyPosition().toLocation());
+                final Player p = evt.getPlayer();
+                plugin.getServer().getScheduler().runTask(plugin, new Runnable() {
+                    @Override
+                    public void run() {
+                        plugin.getGameHandler().respawnPlayer(p);
+                    }
+                });
+            } else if (skyPlayer.getState() == SkyPlayerState.WAITING_FOR_RESPAWN) {
+                plugin.getLogger().log(Level.SEVERE, "Player respawned when SkyWars took them to be alive! If this happens, please report it!");
+            }
         }
     }
 }

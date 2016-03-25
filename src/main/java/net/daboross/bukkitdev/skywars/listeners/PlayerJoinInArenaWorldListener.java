@@ -37,7 +37,7 @@ public class PlayerJoinInArenaWorldListener implements Listener {
         if (evt.getPlayer().getWorld().getName().equalsIgnoreCase(Statics.ARENA_WORLD_NAME)) {
             String name = evt.getPlayer().getName();
             SkyStatic.log(Level.SEVERE, "A player has logged in and is in the arena world! (%s)", name);
-            SkyStatic.log(Level.SEVERE, "This should not happen under normal circumstances, and is likely the result of a server crash.");
+            SkyStatic.log(Level.SEVERE, "This should not happen under normal circumstances, and is likely the result of a server crash, or SkyWars failing to force respawn a player.");
             SkyStatic.log(Level.SEVERE, "SkyWars does not save inventories to disk, so if you have set SkyWars to save inventories, %s's inventory has likely been lost", name);
             SkyStatic.log(Level.SEVERE, "Teleporting %s to the lobby location.", name);
             evt.getPlayer().teleport(plugin.getLocationStore().getLobbyPosition().toLocation());

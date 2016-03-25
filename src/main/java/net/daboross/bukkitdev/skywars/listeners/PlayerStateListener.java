@@ -16,8 +16,11 @@
  */
 package net.daboross.bukkitdev.skywars.listeners;
 
+import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.game.LeaveGameReason;
 import net.daboross.bukkitdev.skywars.api.players.SkyPlayer;
+import net.daboross.bukkitdev.skywars.util.ForceRespawn;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -46,11 +49,20 @@ public class PlayerStateListener implements Listener {
                 plugin.getGameQueue().removePlayer(player);
                 break;
             case IN_RUNNING_GAME:
-                plugin.getGameHandler().removePlayerFromGame(player, true, true);
+                plugin.getGameHandler().removePlayerFromGame(player, LeaveGameReason.DISCONNECTED, true, true);
                 break;
             case WAITING_FOR_RESPAWN:
                 plugin.getGameHandler().respawnPlayer(player);
                 break;
+            case DEAD_WAITING_FOR_RESPAWN:
+                // Force respawn player.
+                boolean success = ForceRespawn.forceRespawn(player);
+                if (!success) {
+                    // try to I guess? This probably won't work, and then the player will loose their inventory.
+                    plugin.getGameHandler().respawnPlayer(player);
+                    plugin.getLogger().log(Level.SEVERE, "Player left game without respawning, and SkyWars failed to force respawn.");
+                    plugin.getLogger().log(Level.SEVERE, "This will likely result in the {0} loosing their saved inventory and position (if saved in the first place).", player.getName());
+                }
             default:
                 break;
         }

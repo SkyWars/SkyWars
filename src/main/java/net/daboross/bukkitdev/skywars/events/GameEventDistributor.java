@@ -114,7 +114,7 @@ public class GameEventDistributor {
             plugin.getCurrentGameTracker().onPlayerLeaveGame(info);
             plugin.getTeamScoreBoardListener().onPlayerLeaveGame(info);
             // -- After --
-            plugin.getServer().getPluginManager().callEvent(new LeaveGameEvent(plugin, info.getId(), info.getPlayer()));
+            plugin.getServer().getPluginManager().callEvent(new LeaveGameEvent(plugin, info.getId(), info.getPlayer(), info.getReason()));
         } catch (Throwable t) {
             plugin.getLogger().log(Level.SEVERE, String.format(errorFormat, "PlayerLeaveGame"), t);
         }
