@@ -255,12 +255,12 @@ public class JSONScoreStorage extends SkyStorageBackend {
                 Collections.swap(topPlayers, rank, rank + 1);
                 rank++;
             }
-            if (rank > 0) {
+            if (rank < topPlayers.size() - 1) {
                 SkyStatic.debug("Finished moving down: %s (rank: %s, score: %s) has a lower score than %s (rank: %s, score: %s)",
                         topPlayers.get(rank + 1).getName(), rank + 1, topPlayers.get(rank + 1).getScore(),
                         offline.getName(), rank, score);
             } else {
-                SkyStatic.debug("Finished moving up: rank is bottom");
+                SkyStatic.debug("Finished moving down: rank is bottom");
             }
             offline.setRank(rank);
         }
