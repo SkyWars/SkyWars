@@ -54,6 +54,7 @@ And now, testing!
  * Create and apply a kit with colored leather armor both in inventory and in armor slots
  * Create and apply a kit with damaged items
  * Create and apply a kit with different spawn eggs.
+ * Confirm kit with all of the above works after restarting the server (testing serialization/deserialization)
 * Confirm `/me` isn't blocked in-game
 * Confirm `/gamemode` is blocked in-game
 * Confirm `/sw leave` works from the queue
@@ -78,13 +79,13 @@ And now, testing!
  * It isn't a problem to get damage from enderpearls, only if you receive points from killing yourself.
 * Confirm you can't hit someone on your team
 * Confirm after you kill everyone the game ends
-* Confirm someone disconnecting from the server removes them from a game their playing
+* Confirm someone disconnecting from the server removes them from a game they're playing
 * Confirm it's always daylight in the game
 * Config testing:
  * Confirm you keep your inventory after dying with `save-inventory: true`
  * Confirm you loose your inventory after dying with `save-inventory: false`
  * Confirm the `/sw` help message changes after setting `locale: es` (or any other language)
- * Confirm SkyWars starts up correctly with locale set to `cz`, `de`, `dk, `en`, `es`, `fr`, `nl`, `pl`, `pt` and `ru`
+ * Confirm SkyWars starts up correctly with locale set to `cz`, `de`, `dk`, `en`, `es`, `fr`, `nl`, `pl`, `pt` and `ru`
  * Confirm messages.yml updates after changing locale when auto-update is set to true
  * Confirm messages.new.yml is created after changing locale when auto-update is set to false
  * Confirm messages.yml *does not* update after changing locale when auto-update is set to false
