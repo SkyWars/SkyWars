@@ -28,9 +28,9 @@ import net.daboross.bukkitdev.skywars.api.players.SkyPlayer;
 import net.daboross.bukkitdev.skywars.api.players.SkyPlayerState;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
+import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerDeathInArenaInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerKillPlayerInfo;
-import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveGameInfo;
 import net.daboross.bukkitdev.skywars.game.KillMessages;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
@@ -66,7 +66,7 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
         causedVoid.remove(uuid);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onDamage(EntityDamageByEntityEvent evt) {
         if (evt.getEntity() instanceof Player) {
             Player p = (Player) evt.getEntity();
@@ -109,13 +109,10 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
                 lastHitUuid.remove(uuid);
                 lastHitName.put(uuid, evt.getDamager().getType().toString());
             }
-            if (plugin.getCurrentGameTracker().isInGame(uuid)) {
-                evt.setCancelled(false);
-            }
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onDamage(EntityDamageEvent evt) {
         if (evt.getEntity() instanceof Player) {
             UUID uuid = evt.getEntity().getUniqueId();
@@ -127,7 +124,7 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onDeath(PlayerDeathEvent evt) {
         String name = evt.getEntity().getName();
         UUID uuid = evt.getEntity().getUniqueId();
@@ -149,10 +146,12 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
         }
     }
 
-    public void onPlayerLeaveGame(PlayerLeaveGameInfo info) {
-        UUID uuid = info.getPlayer().getUniqueId();
-        lastHitName.remove(uuid);
-        lastHitUuid.remove(uuid);
+    public void onGameStart(GameStartInfo info) {
+        for (Player player : info.getPlayers()) {
+            UUID uuid = player.getUniqueId();
+            lastHitName.remove(uuid);
+            lastHitUuid.remove(uuid);
+        }
     }
 
     @Override

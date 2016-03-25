@@ -62,6 +62,7 @@ public class GameEventDistributor {
             plugin.getCurrentGameTracker().onGameStart(info);
             plugin.getBroadcaster().broadcastStart(info);
             plugin.getTeamScoreBoardListener().onGameStart(info);
+            plugin.getAttackerStorage().onGameStart(info);
             // -- Before gameStart1 --
             plugin.getWorldHandler().onGameStart0(info);
             // -- After gameStart0 --
@@ -111,7 +112,6 @@ public class GameEventDistributor {
             // -- Normal --
             plugin.getPlayers().onLeaveGame(info);
             plugin.getCurrentGameTracker().onPlayerLeaveGame(info);
-            plugin.getAttackerStorage().onPlayerLeaveGame(info);
             plugin.getTeamScoreBoardListener().onPlayerLeaveGame(info);
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new LeaveGameEvent(plugin, info.getId(), info.getPlayer()));
