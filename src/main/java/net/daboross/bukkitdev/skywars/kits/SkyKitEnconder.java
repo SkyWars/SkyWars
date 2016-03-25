@@ -45,8 +45,8 @@ public class SkyKitEnconder {
         if (permission != null) {
             kitRoot.set("permission", permission);
         }
-        String cost = config.getPermission();
-        if (cost != null) {
+        int cost = config.getCost();
+        if (cost != 0) {
             kitRoot.set("cost", cost);
         }
     }
