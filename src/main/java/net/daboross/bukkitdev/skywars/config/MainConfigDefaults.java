@@ -95,7 +95,6 @@ public class MainConfigDefaults {
     public static class Hooks {
 
         public static final boolean MULTIVERSE_CORE = true;
-        public static final boolean MULTIVERSE_INVENTORIES = true;
         public static final boolean WORLDEDIT = true;
 
         private Hooks() {

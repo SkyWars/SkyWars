@@ -82,7 +82,6 @@ public class MainConfigKeys {
     public static class Hooks {
 
         public static final String MULTIVERSE_CORE = "hooks.multiverse-core-hook";
-        public static final String MULTIVERSE_INVENTORIES = "hooks.multiverse-inventories-hook";
         public static final String WORLDEDIT = "hooks.worldedit-hook";
 
         private Hooks() {

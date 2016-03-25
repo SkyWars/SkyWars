@@ -77,7 +77,6 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 //    private boolean perArenaDeathMessagesEnabled;
 //    private boolean perArenaWinMessagesEnabled;
     private boolean multiverseCoreHookEnabled;
-    private boolean multiverseInventoriesHookEnabled;
     private boolean worldeditHookEnabled;
     private boolean developerOptions;
 
@@ -178,7 +177,6 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
         // Hooks
         multiverseCoreHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.MULTIVERSE_CORE, MainConfigDefaults.Hooks.MULTIVERSE_CORE);
-        multiverseInventoriesHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.MULTIVERSE_INVENTORIES, MainConfigDefaults.Hooks.MULTIVERSE_INVENTORIES);
         worldeditHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.WORLDEDIT, MainConfigDefaults.Hooks.WORLDEDIT);
 
         // Developer options
@@ -415,11 +413,6 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     @Override
     public boolean isMultiverseCoreHookEnabled() {
         return multiverseCoreHookEnabled;
-    }
-
-    @Override
-    public boolean isMultiverseInventoriesHookEnabled() {
-        return multiverseInventoriesHookEnabled;
     }
 
     @Override
