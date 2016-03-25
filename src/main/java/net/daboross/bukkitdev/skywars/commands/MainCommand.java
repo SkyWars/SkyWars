@@ -54,8 +54,10 @@ public class MainCommand {
         base.addSubCommand(new KitCommand(plugin));
         base.addSubCommand(new LeaveCommand(plugin));
         base.addSubCommand(new StatusCommand(plugin));
-        base.addSubCommand(new RankCommand(plugin));
-        base.addSubCommand(new TopCommand(plugin));
+        if (plugin.getConfiguration().isEnableScore()) {
+            base.addSubCommand(new RankCommand(plugin));
+            base.addSubCommand(new TopCommand(plugin));
+        }
         base.addSubCommand(new VersionCommand());
         base.addSubCommand(new SetLobbyCommand(plugin));
         base.addSubCommand(new LobbyCommand(plugin));
