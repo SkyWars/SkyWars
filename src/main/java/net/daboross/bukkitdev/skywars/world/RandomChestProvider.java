@@ -46,6 +46,10 @@ public class RandomChestProvider implements ChestProvider {
         if (chest == null) {
             return null;
         }
+        if (!chest.isRandomizationEnabled()) {
+            SkyStatic.debug("Not randomly filling chest at x: %s, y: %s, z: %s", x, y, z);
+            return null;
+        }
         SkyStatic.debug("Filling chest at x: %s, y: %s, z: %s", x, y, z);
         return configuration.getItems(size, chest.getChestLevel(), chest.getMinItemValue(), chest.getMaxItemValue());
     }
