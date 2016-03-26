@@ -1,3 +1,33 @@
+Changes since 2.1.1
+-------------------
+
+SkyWars:
+- Add score leaderboard system!
+- Add `/sw top` command to show top 10 highest ranked players (with most score).
+- Add `/sw rank` command to view your own or someone else's score and rank.
+  - Add new configuration option for how often personal rank is updated when using SQL score backend.
+- Add support for replacing `{skywars.userrank}` with rank in any chat format (added to chat format via separate chat plugin).
+- Add chest randomization, with new `chests.yml` configuration file.
+  - Chest randomization is not enabled at all by default.
+  - Default `chests.yml` contains a minimal number of items this update. It is recommended to add more items if you enable it.
+- Add enabling chest randomizer per-chest with configuration options in each `arena-name.yml` file.
+  - Chests are identified by their relative x, y and z positions in the arena.
+- Add ability to configure items with different chance to occur and different values in chest randomization, and ability to set total "value" each chest will contain when using randomizer.
+- Remove unused multiverse-inventories hook configuration option.
+- Fix `/sws update-arena` to actually successfully run.
+- Fix bug where all kit costs were removed when using `/sws createkit`.
+- Fix inaccurate death messages when player is damaged before entering a match, and then jumps into void.
+- Fix NullPointerException which occurs after using `/reload` or a plugin manager to reload SkyWars.
+
+SkyWars-API:
+- Add easy-to-access API method for getting top players with most score.
+
+SkyWars-Translations:
+- Update Dutch translations - thanks @riassmismans!
+- Add new translations for `/sw top` and `/sw rank`.
+- Add message to `/sw cancelall` for when there are no arenas running.
+- Modify English `/sws` messages to be less confusing, changes not translated yet.
+
 Changes since 2.1.0
 -------------------
 
@@ -53,18 +83,3 @@ SkyWars-Translations:
 - Add translatable messages for all new commands
 - Add translatable strings for previously non-translatable messages such as the No permission message!
 - Now **fully translated** to German thanks to @Androkai!
-
-Changes since 2.0.0
--------------------
-
-SkyWars:
-* Fix broken end-game message when multiple people are still alive
-* Fix NullPointerException after player leaves server when in game
-* Fix `/sw status` showing UUIDs instead of player names in queue
-* Fix ORDERED arena configuration status only ever playing one arena.
-* Remove support for per-arena-configuration messages. Now all messages are configured in messages.yml.
-* Add a message to `/sw kit` explaining how to remove a kit.
-* Check to see if a player is out of money to use a kit when they join the queue, not just when a game starts.
-
-* Lots of documentation fixes, and configuration documentation fixes
-* Fix plugin compiling when the http://repo.daboross.net nexus server is offline
