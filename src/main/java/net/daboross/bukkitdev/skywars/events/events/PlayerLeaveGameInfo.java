@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.events.events;
 
+import net.daboross.bukkitdev.skywars.api.game.LeaveGameReason;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 
@@ -23,8 +24,10 @@ public class PlayerLeaveGameInfo {
 
     private final int id;
     private final Player player;
+    private final LeaveGameReason reason;
 
-    public PlayerLeaveGameInfo(final int id, final Player player) {
+    public PlayerLeaveGameInfo(final int id, final Player player, final LeaveGameReason reason) {
+        this.reason = reason;
         Validate.notNull(player, "Player cannot be null");
         this.id = id;
         this.player = player;
@@ -36,5 +39,9 @@ public class PlayerLeaveGameInfo {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public LeaveGameReason getReason() {
+        return reason;
     }
 }

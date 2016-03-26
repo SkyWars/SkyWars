@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.game.LeaveGameReason;
 import net.daboross.bukkitdev.skywars.api.players.SkyPlayerState;
 import net.daboross.bukkitdev.skywars.api.players.SkyPlayers;
 import net.daboross.bukkitdev.skywars.api.storage.SkyInternalPlayer;
@@ -62,7 +63,11 @@ public class OnlineSkyPlayers implements SkyPlayers {
 
     public void onLeaveGame(PlayerLeaveGameInfo info) {
         SkyInternalPlayer skyPlayer = getPlayer(info.getPlayer());
-        skyPlayer.setState(SkyPlayerState.WAITING_FOR_RESPAWN);
+        if (info.getReason() == LeaveGameReason.DIED) {
+            skyPlayer.setState(SkyPlayerState.DEAD_WAITING_FOR_RESPAWN);
+        } else {
+            skyPlayer.setState(SkyPlayerState.WAITING_FOR_RESPAWN);
+        }
     }
 
     public void onRespawn(PlayerRespawnAfterGameEndInfo info) {
