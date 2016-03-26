@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
+import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
@@ -55,8 +56,20 @@ public class SkyWorldHandler {
     public SkyWorldHandler(SkyWars plugin) {
         this.plugin = plugin;
         if (plugin.getConfiguration().isWorldeditHookEnabled() && plugin.getServer().getPluginManager().isPluginEnabled("WorldEdit")) {
-            plugin.getLogger().info("Using WorldEdit hook for arena creation.");
-            this.provider = new WorldEditProtobufStorageProvider(plugin);
+            boolean upToDate;
+            try {
+                Class.forName("com.sk89q.worldedit.world.AbstractWorld");
+                upToDate = true;
+            } catch (ClassNotFoundException ignored) {
+                upToDate = false;
+            }
+            if (upToDate) {
+                plugin.getLogger().info("Using WorldEdit hook for arena creation.");
+                this.provider = new WorldEditProtobufStorageProvider(plugin);
+            } else {
+                plugin.getLogger().info("WorldEdit outdated! Using slower non-worldedit backend for arena creation.");
+                this.provider = new ProtobufStorageProvider(plugin);
+            }
         } else {
             plugin.getLogger().info("Using slower non-worldedit backend for arena creation.");
             this.provider = new ProtobufStorageProvider(plugin);
@@ -64,9 +77,9 @@ public class SkyWorldHandler {
     }
 
     public void loadArenas() {
-        for (SkyArena arena : plugin.getConfiguration().getEnabledArenas()) {
+        for (SkyArenaConfig arena : plugin.getConfiguration().getEnabledArenas()) {
             try {
-                provider.loadArena(arena);
+                provider.loadArena(arena, false);
             } catch (IOException e) {
                 plugin.getLogger().log(Level.SEVERE, "Failed to load arena '" + arena.getArenaName() + "':", e);
                 plugin.getServer().getPluginManager().disablePlugin(plugin);
@@ -78,8 +91,8 @@ public class SkyWorldHandler {
      * This method loads a new arena into the current cache - useful for creating caches for new arenas after saving the
      * .yml files.
      */
-    public void loadNewArena(SkyArena arena) throws IOException {
-        provider.loadArena(arena);
+    public void loadNewArena(SkyArenaConfig arena, boolean forceReload) throws IOException {
+        provider.loadArena(arena, forceReload);
     }
 
     public void create() {

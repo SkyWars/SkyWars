@@ -47,6 +47,7 @@ import net.daboross.jsonserialization.JsonSerialization;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
 
 public class GistReport {
 
@@ -72,7 +73,12 @@ public class GistReport {
                 .append("|\n|Implementation version|").append(SkyStatic.getImplementationVersion())
                 .append("|\n|Server software|").append(Bukkit.getName())
                 .append("|\n|Server version|").append(Bukkit.getVersion())
-                .append("|\n\n#### main-config.yml\n```\n");
+                .append("|\n\n|Server Plugins||\n|---|---");
+        for (Plugin otherPlugin : plugin.getServer().getPluginManager().getPlugins()) {
+            build.append("|\n|").append(otherPlugin.getName()).append("|").append(otherPlugin.getDescription().getVersion());
+        }
+
+        build.append("|\n\n#### main-config.yml\n```\n");
         appendRawConfig(build, plugin);
 
         build.append("\n```\n\n#### kits.yml\n```\n");

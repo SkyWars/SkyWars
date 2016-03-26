@@ -9,10 +9,10 @@ Changelog
   - This also adds support for spawn eggs, mob heads, etc. - anything which has multiple versions. There are only now a few things missing from kits, such as custom fireworks.
 - Fix colored leather armor not saving color when in chests in arenas.
 - Fix SkyWars only working on Unix systems - SkyWars now runs correctly on Windows as well.
-- Add a '/sws update-arena' command which recreates the template for an arena from the original area where it was added.
-- Remove default player access to '/sw lobby'. This is to follow SkyWars using lobby a lot less with the position saving mechanism.
+- Add a `/sws update-arena` command which recreates the template for an arena from the original area where it was added.
+- Remove default player access to `/sw lobby`. This is to follow SkyWars using lobby a lot less with the position saving mechanism.
 
-SkyWars-Translations:
+### SkyWars-Translations:
 - Now **fully translated** to Dutch thanks to @MisterGiant!
 
 2.1.0
@@ -25,7 +25,7 @@ SkyWars-Translations:
 - Add support for saving player position, experience, gamemode, health, hunger and other survival variables when entering the arena, and restoring upon exiting!
 - Add support for potions in kits
 - Add a `/sws createkit` command to create a kit from all items in your current inventory
-- Add a '/sw testkit' command for operators to test out a kit without entering a game.
+- Add a `/sw testkit` command for operators to test out a kit without entering a game.
 - Update default kits.yml with more reasonable starting kits
 - Fix possible bug where score data wouldn't save to SQL
 - Fix bug where items would sometimes be found in arenas from past games

@@ -82,7 +82,7 @@ public class GameHandler implements SkyGameHandler {
         game.removePlayer(playerUuid);
         if (broadcast) {
             // This needs to happen before destributing PlayerLeaveGame so as to still have attacker stored!
-            Bukkit.broadcastMessage(KillMessages.getMessage(player.getName(), plugin.getAttackerStorage().getKillerName(playerUuid), KillMessages.KillReason.LEFT, game.getArena()));
+            Bukkit.broadcastMessage(KillMessages.getMessage(player.getName(), plugin.getAttackerStorage().getKillerName(playerUuid), KillMessages.KillReason.LEFT));
         }
         plugin.getDistributor().distribute(new PlayerLeaveGameInfo(id, player));
         if (respawn) {

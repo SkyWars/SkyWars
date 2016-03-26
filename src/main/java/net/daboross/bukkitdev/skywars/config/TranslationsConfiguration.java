@@ -42,6 +42,7 @@ public class TranslationsConfiguration implements SkyTranslations {
     private final SkyWars plugin;
     private final Path configFile;
     private final Path newConfigFile;
+    private int messagesVersion;
     private String language;
     private Map<TransKey, String> values;
 
@@ -64,7 +65,7 @@ public class TranslationsConfiguration implements SkyTranslations {
         FileConfiguration config = loadMain();
         Map<TransKey, String> internal = loadInternal();
         if (!config.contains("messages-version")) {
-            config.set("messages-version", TransKey.VERSION);
+            config.set("messages-version", messagesVersion);
         }
         if (!config.contains("messages-locale")) {
             config.set("messages-locale", language);
@@ -74,9 +75,9 @@ public class TranslationsConfiguration implements SkyTranslations {
             config.set("auto-update", true);
         }
         boolean autoUpdate = config.getBoolean("auto-update");
-        boolean autoUpdating = autoUpdate && (version != TransKey.VERSION || !config.getString("messages-locale").equals(language));
+        boolean autoUpdating = autoUpdate && (version != messagesVersion || !config.getString("messages-locale").equals(language));
         if (autoUpdating) {
-            config.set("messages-version", TransKey.VERSION);
+            config.set("messages-version", messagesVersion);
             config.set("messages-locale", language);
             this.values = internal;
         } else {
@@ -108,9 +109,19 @@ public class TranslationsConfiguration implements SkyTranslations {
         } catch (IOException ex) {
             plugin.getLogger().log(Level.WARNING, "Failed to save translations config file", ex);
         }
-        if ((version != TransKey.VERSION || !config.getString("messages-locale").equals(language)) && !autoUpdate) {
+        if ((version != messagesVersion || !config.getString("messages-locale").equals(language)) && !autoUpdate) {
             FileConfiguration newConfig = new YamlConfiguration();
-            newConfig.options().pathSeparator('%').header(String.format(NEW_MESSAGES_FILE_HEADER, TransKey.VERSION));
+            String header;
+            if (version != messagesVersion) {
+                if (!config.getString("messages-locale").equals(language)) {
+                    header = String.format(NEW_MESSAGES_FILE_HEADER_BOTH_DIFFERENT, language, messagesVersion);
+                } else {
+                    header = String.format(NEW_MESSAGES_FILE_HEADER_VERSION_DIFFERENT, messagesVersion);
+                }
+            } else {
+                header = String.format(NEW_MESSAGES_FILE_HEADER_LANGUAGE_DIFFERENT, language);
+            }
+            newConfig.options().pathSeparator('%').header(header);
             for (TransKey key : TransKey.values()) {
                 newConfig.set(key.key, internal.get(key));
             }
@@ -168,6 +179,7 @@ public class TranslationsConfiguration implements SkyTranslations {
         } catch (InvalidConfigurationException ex) {
             throw new SkyConfigurationException("Couldn't load internal translation yaml file " + file, ex);
         }
+        messagesVersion = config.getInt("messages-version");
         Map<TransKey, String> internal = new EnumMap<>(TransKey.class);
         for (TransKey key : TransKey.values()) {
             if (config.contains(key.key)) {
@@ -197,12 +209,30 @@ public class TranslationsConfiguration implements SkyTranslations {
             + "available, no matter what the setting of auto-update is. The messages-locale is\n"
             + "also automatic, you should edit the locale in main-config.yml if you want to change\n"
             + "it.";
-    private static final String NEW_MESSAGES_FILE_HEADER = "### messages.new.yml ###\n"
+    private static final String NEW_MESSAGES_FILE_HEADER_LANGUAGE_DIFFERENT = "### messages.new.yml ###\n"
+            + "This file was generated because you have auto-update set to false in the\n"
+            + "messages.yml file, and there are updated messages available.\n"
+            + "\n"
+            + "If you've updated the configuration to your desire, you can set the\n"
+            + "messages-locale in messages.yml to %s to stop this file from re-generating,\n"
+            + "then delete it.\n"
+            + "\n"
+            + "No changes to this file will persist!";
+    private static final String NEW_MESSAGES_FILE_HEADER_VERSION_DIFFERENT = "### messages.new.yml ###\n"
             + "This file was generated because you have auto-update set to false in the\n"
             + "messages.yml file, and there are updated messages available.\n"
             + "\n"
             + "If you've updated the configuration to your desire, you can set the\n"
             + "config-version in messages.yml to %s to stop this file from re-generating,\n"
+            + "then delete it.\n"
+            + "\n"
+            + "No changes to this file will persist!";
+    private static final String NEW_MESSAGES_FILE_HEADER_BOTH_DIFFERENT = "### messages.new.yml ###\n"
+            + "This file was generated because you have auto-update set to false in the\n"
+            + "messages.yml file, and there are updated messages available.\n"
+            + "\n"
+            + "If you've updated the configuration to your desire, you can set\n"
+            + "messages-locale to %s and config-version to %s in messages.yml to stop this file from re-generating,\n"
             + "then delete it.\n"
             + "\n"
             + "No changes to this file will persist!";

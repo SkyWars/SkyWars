@@ -30,7 +30,9 @@ public class MainConfigKeys {
     public static final String ARENA_DISTANCE_APART = "arena-distance-apart";
     public static final String LOCALE = "locale";
     public static final String ARENA_GAMERULES = "skywars-arena-gamerules";
+    public static final String DISABLE_REPORT = "disable-report";
     public static final String DEVELOPER_OPTIONS = "developer-options";
+    public static final String DISABLE_SCORE_RECOVERY = "disable-score-recovery";
 //    public static final String PER_ARENA_DEATH_MESSAGES_ENABLED = "enable-per-arena-death-messages";
 //    public static final String PER_ARENA_WIN_MESSAGES_ENABLED = "enable-per-arena-win-messages";
 
@@ -50,6 +52,7 @@ public class MainConfigKeys {
         public static final String SQL_DATABASE = "points.sql.database";
         public static final String SQL_USERNAME = "points.sql.username";
         public static final String SQL_PASSWORD = "points.sql.password";
+        public static final String SQL_UPDATE_INDIVIDUALS_RANK_INTERVAL = "points.sql.individual-rank-update-interval";
 
         private Score() {
         }
@@ -79,7 +82,6 @@ public class MainConfigKeys {
     public static class Hooks {
 
         public static final String MULTIVERSE_CORE = "hooks.multiverse-core-hook";
-        public static final String MULTIVERSE_INVENTORIES = "hooks.multiverse-inventories-hook";
         public static final String WORLDEDIT = "hooks.worldedit-hook";
 
         private Hooks() {

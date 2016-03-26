@@ -23,6 +23,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Path;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -36,6 +37,7 @@ import net.daboross.bukkitdev.skywars.api.translations.SkyTranslations;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.commands.MainCommand;
 import net.daboross.bukkitdev.skywars.commands.SetupCommand;
+import net.daboross.bukkitdev.skywars.config.RandomChestConfiguration;
 import net.daboross.bukkitdev.skywars.config.SkyWarsConfiguration;
 import net.daboross.bukkitdev.skywars.config.TranslationsConfiguration;
 import net.daboross.bukkitdev.skywars.economy.EconomyFailedException;
@@ -70,6 +72,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -80,6 +83,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
 
     private SkyTranslations translations;
     private SkyConfiguration configuration;
+    private RandomChestConfiguration chestConfiguration;
     private SkyLocationStore locationStore;
     private SkyGameHandler gameHandler;
     private SkyWorldHandler worldHandler;
@@ -160,6 +164,10 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
             score = new ScoreStorage(this);
             chatListener = new ScoreReplaceChatListener(this);
         }
+        // For supporting /reload or plugin manager reloading.
+        for (Player online : getServer().getOnlinePlayers()) {
+            inGame.loadPlayer(online);
+        }
         if (configuration.isEconomyEnabled()) {
             SkyStatic.debug("Enabling economy support");
             try {
@@ -168,6 +176,11 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
             } catch (EconomyFailedException ex) {
                 getLogger().log(Level.WARNING, "{0}. Couldn't enable economy hook.", ex.getMessage());
             }
+        }
+        try {
+            chestConfiguration = new RandomChestConfiguration(this);
+        } catch (IOException | InvalidConfigurationException | SkyConfigurationException ex) {
+            throw new StartupFailedException("Failed to load chest configuration", ex);
         }
         kits = new SkyKitConfiguration(this);
         kitQueueNotifier = new KitQueueNotifier(this);
@@ -235,6 +248,12 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         if (enabledCorrectly) {
             locationStore.save();
             idHandler.saveAndUnload(this);
+            // For better transparency when using /reload.
+            for (UUID uuid : gameQueue.getCopy()) {
+                Player player = getServer().getPlayer(uuid);
+                gameQueue.removePlayer(player);
+                player.sendMessage(SkyTrans.get(TransKey.CMD_LEAVE_REMOVED_FROM_QUEUE));
+            }
             if (score != null) {
                 try {
                     score.save();
@@ -323,6 +342,11 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     @Override
     public SkyConfiguration getConfiguration() {
         return configuration;
+    }
+
+    @Override
+    public RandomChestConfiguration getChestRandomizer() {
+        return chestConfiguration;
     }
 
     @Override

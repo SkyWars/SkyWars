@@ -37,6 +37,8 @@ public class MainConfigDefaults {
     public static final String LOCALE = Locale.getDefault().getLanguage();
     public static final Map<String, String> ARENA_GAMERULES;
     public static final boolean DEVELOPER_OPTIONS = false;
+    public static final boolean DISABLE_REPORT = false;
+    public static final boolean DISABLE_SCORE_RECOVERY = false;
 //    public static final boolean PER_ARENA_DEATH_MESSAGES_ENABLED = true;
 //    public static final boolean PER_ARENA_WIN_MESSAGES_ENABLED = false;
 
@@ -56,12 +58,14 @@ public class MainConfigDefaults {
         public static final int WIN_DIFF = 7;
         public static final int KILL_DIFF = 1;
         public static final long SAVE_INTERVAL = 300;
+        public static final long SAVE_INTERVAL_WITH_SQL = 30;
         public static final boolean USE_SQL = false;
         public static final String SQL_HOST = "127.0.0.1";
         public static final int SQL_PORT = 3306;
         public static final String SQL_DATABASE = "minecraft";
         public static final String SQL_USERNAME = "root";
         public static final String SQL_PASSWORD = "aComplexPassword";
+        public static final long SQL_UPDATE_INDIVIDUALS_RANK_INTERVAL = 60;
 
         private Score() {
         }
@@ -91,7 +95,6 @@ public class MainConfigDefaults {
     public static class Hooks {
 
         public static final boolean MULTIVERSE_CORE = true;
-        public static final boolean MULTIVERSE_INVENTORIES = true;
         public static final boolean WORLDEDIT = true;
 
         private Hooks() {

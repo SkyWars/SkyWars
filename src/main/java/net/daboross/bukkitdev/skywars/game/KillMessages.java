@@ -17,13 +17,12 @@
 package net.daboross.bukkitdev.skywars.game;
 
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
-import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 
 public class KillMessages {
 
-    public static String getMessage(String player, String damager, KillReason reason, SkyArena arena) {
+    public static String getMessage(String player, String damager, KillReason reason) {
         SkyStatic.debug("Getting death message for player %s killed by damager %s with reason %s", player, damager, reason);
         if (damager == null) {
             switch (reason) {

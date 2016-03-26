@@ -29,11 +29,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-public class ConfigurationDebugCommand extends SubCommand {
+public class ReportCommand extends SubCommand {
 
     private final SkyWars plugin;
 
-    public ConfigurationDebugCommand(SkyWars plugin) {
+    public ReportCommand(SkyWars plugin) {
         super("report", true, "skywars.report", SkyTrans.get(TransKey.CMD_REPORT_DESCRIPTION));
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
         this.plugin = plugin;

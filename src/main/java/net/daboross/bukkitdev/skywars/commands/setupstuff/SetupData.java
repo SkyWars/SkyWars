@@ -27,6 +27,7 @@ import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyBoundariesConfig;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
 import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -41,6 +42,7 @@ public class SetupData {
     private final List<SkyPlayerLocation> spawns = new ArrayList<>();
 
     public SetupData(final SkyWars plugin) {
+        Validate.notNull(plugin);
         this.plugin = plugin;
     }
 
@@ -76,18 +78,12 @@ public class SetupData {
             throw new IllegalStateException("Origin not defined.");
         }
         SkyBoundariesConfig boundaries = new SkyBoundariesConfig(originRange);
-        List<SkyPlayerLocation> processedSpawns = new ArrayList<>();
-        for (SkyPlayerLocation spawn : spawns) {
-            spawn = spawn.subtract(originRange.min);
-            spawn = new SkyPlayerLocation(Math.round(spawn.x - 0.5) + 0.5, Math.round(spawn.y), Math.round(spawn.z - 0.5) + 0.5, null);
-            processedSpawns.add(spawn);
-        }
         SkyArenaConfig config = new SkyArenaConfig(finalArenaName,
-                processedSpawns,
+                new ArrayList<SkyPlayerLocation>(spawns),
                 spawns.size(), // Number of teams
                 1, // Team size
                 20, // Placement Y
-                boundaries);
+                boundaries, null);
         config.setFile(saveFile);
         return config;
     }
@@ -197,7 +193,7 @@ public class SetupData {
         if (originPos1 != null ? !originPos1.equals(data.originPos1) : data.originPos1 != null) return false;
         if (originPos2 != null ? !originPos2.equals(data.originPos2) : data.originPos2 != null) return false;
         if (originRange != null ? !originRange.equals(data.originRange) : data.originRange != null) return false;
-        if (spawns != null ? !spawns.equals(data.spawns) : data.spawns != null) return false;
+        if (!spawns.equals(data.spawns)) return false;
 
         return true;
     }
@@ -209,7 +205,7 @@ public class SetupData {
         result = 31 * result + (originPos1 != null ? originPos1.hashCode() : 0);
         result = 31 * result + (originPos2 != null ? originPos2.hashCode() : 0);
         result = 31 * result + (originRange != null ? originRange.hashCode() : 0);
-        result = 31 * result + (spawns != null ? spawns.hashCode() : 0);
+        result = 31 * result + spawns.hashCode();
         return result;
     }
 }

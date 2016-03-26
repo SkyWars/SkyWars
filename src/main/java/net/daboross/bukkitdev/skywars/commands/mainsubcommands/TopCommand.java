@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014 Dabo Ross <http://www.daboross.net/>
+ * Copyright (C) 2016 Dabo Ross <http://www.daboross.net/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,36 +16,38 @@
  */
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
-import java.util.ArrayList;
+import java.util.List;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
-import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
-import net.daboross.bukkitdev.skywars.api.game.SkyIDHandler;
+import net.daboross.bukkitdev.skywars.api.players.OfflineSkyPlayer;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-public class CancelAllCommand extends SubCommand {
+public class TopCommand extends SubCommand {
 
     private final SkyWars plugin;
 
-    public CancelAllCommand(SkyWars plugin) {
-        super("cancelall", true, "skywars.cancelall", SkyTrans.get(TransKey.CMD_CANCELALL_DESCRIPTION));
-        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
+    public TopCommand(final SkyWars plugin) {
+        super("top", true, "skywars.top", SkyTrans.get(TransKey.CMD_TOP_DESCRIPTION));
         this.plugin = plugin;
     }
 
     @Override
-    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        SkyIDHandler idh = plugin.getIDHandler();
-        if (!idh.getCurrentIDs().isEmpty()) {
-            for (int id : new ArrayList<>(idh.getCurrentIDs())) {
-                sender.sendMessage(SkyTrans.get(TransKey.CMD_CANCELALL_CANCELING, id));
-                plugin.getGameHandler().endGame(id, true);
-            }
-        } else {
-            sender.sendMessage(SkyTrans.get(TransKey.CMD_CANCELALL_NO_GAMES));
+    public void runCommand(final CommandSender sender, final Command baseCommand, final String baseCommandLabel, final String subCommandLabel, final String[] subCommandArgs) {
+        int toGet = 10; // TODO: Parameter?
+        List<? extends OfflineSkyPlayer> topList = plugin.getScore().getTopPlayers(toGet);
+        if (topList.isEmpty()) {
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_TOP_NO_PLAYERS));
+            return;
+        }
+
+        int got = Math.min(toGet, topList.size());
+
+        sender.sendMessage(SkyTrans.get(TransKey.CMD_TOP_TITLE, got));
+        for (OfflineSkyPlayer player : topList.subList(0, got)) {
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_TOP_FORMAT, player.getName(), player.getScore(), player.getRank() + 1));
         }
     }
 }

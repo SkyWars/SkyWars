@@ -57,7 +57,7 @@ public class SaveCurrentArena extends SubCommand {
         SkyArenaConfig config = states.getSetupState(((Player) sender).getUniqueId()).convertToArenaConfig();
         plugin.getConfiguration().saveArena(config);
         try {
-            ((SkyWarsPlugin) plugin).getWorldHandler().loadNewArena(config);
+            ((SkyWarsPlugin) plugin).getWorldHandler().loadNewArena(config, true);
         } catch (IOException e) {
             sender.sendMessage(SkyTrans.get(TransKey.SWS_SAVE_FAILED));
             return;

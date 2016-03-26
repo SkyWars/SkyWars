@@ -61,6 +61,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private String scoreSqlUsername;
     private String scoreSqlPassword;
     private long scoreSaveInterval;
+    private long scoreIndividualRankUpdateInterval;
     private int arenaDistanceApart;
     private boolean commandWhitelistEnabled;
     private boolean commandWhitelistABlacklist;
@@ -70,12 +71,12 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private int economyKillReward;
     private String locale;
     private boolean disableReport;
+    private boolean recoverFromScoreErrors;
     private boolean economyRewardMessages;
     //
 //    private boolean perArenaDeathMessagesEnabled;
 //    private boolean perArenaWinMessagesEnabled;
     private boolean multiverseCoreHookEnabled;
-    private boolean multiverseInventoriesHookEnabled;
     private boolean worldeditHookEnabled;
     private boolean developerOptions;
 
@@ -130,7 +131,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
         locale = mainConfig.getSetString(MainConfigKeys.LOCALE, MainConfigDefaults.LOCALE);
 
-        arenaGamerules = Collections.unmodifiableMap(mainConfig.getSetSection(MainConfigKeys.ARENA_GAMERULES, MainConfigDefaults.ARENA_GAMERULES));
+        arenaGamerules = Collections.unmodifiableMap(mainConfig.getSetStringMap(MainConfigKeys.ARENA_GAMERULES, MainConfigDefaults.ARENA_GAMERULES));
 
         // Score
         enableScore = mainConfig.getSetBoolean(MainConfigKeys.Score.ENABLE, MainConfigDefaults.Score.ENABLE);
@@ -145,6 +146,15 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         scoreSqlDatabase = mainConfig.getSetString(MainConfigKeys.Score.SQL_DATABASE, MainConfigDefaults.Score.SQL_DATABASE);
         scoreSqlUsername = mainConfig.getSetString(MainConfigKeys.Score.SQL_USERNAME, MainConfigDefaults.Score.SQL_USERNAME);
         scoreSqlPassword = mainConfig.getSetString(MainConfigKeys.Score.SQL_PASSWORD, MainConfigDefaults.Score.SQL_PASSWORD);
+        scoreIndividualRankUpdateInterval = mainConfig.getSetLong(MainConfigKeys.Score.SQL_UPDATE_INDIVIDUALS_RANK_INTERVAL, MainConfigDefaults.Score.SQL_UPDATE_INDIVIDUALS_RANK_INTERVAL);
+
+        // Ensure the user has adjusted save interval to a sensible value when adjusting sql use.
+        // If this was done on purpose, it just needs to be set to a non-default value (301/31 works)
+        if (scoreSaveInterval == MainConfigDefaults.Score.SAVE_INTERVAL && scoreUseSql) {
+            mainConfig.overwriteValue(MainConfigKeys.Score.SAVE_INTERVAL, MainConfigDefaults.Score.SAVE_INTERVAL_WITH_SQL);
+        } else if (scoreSaveInterval == MainConfigDefaults.Score.SAVE_INTERVAL_WITH_SQL && !scoreUseSql) {
+            mainConfig.overwriteValue(MainConfigKeys.Score.SAVE_INTERVAL, MainConfigDefaults.Score.SAVE_INTERVAL);
+        }
         // Economy
         economyEnabled = mainConfig.getSetBoolean(MainConfigKeys.Economy.ENABLE, MainConfigDefaults.Economy.ENABLE);
         economyKillReward = mainConfig.getSetInt(MainConfigKeys.Economy.KILL_REWARD, MainConfigDefaults.Economy.KILL_REWARD);
@@ -158,7 +168,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         commandWhitelistCommandRegex = createCommandRegex(mainConfig.getSetStringList(MainConfigKeys.CommandWhitelist.COMMAND_WHITELIST, MainConfigDefaults.CommandWhitelist.COMMAND_WHITELIST));
 
         // Report disable
-        disableReport = mainConfig.getConfig().getBoolean("disable-report", false);
+        disableReport = mainConfig.getConfig().getBoolean(MainConfigKeys.DISABLE_REPORT, MainConfigDefaults.DISABLE_REPORT);
+        recoverFromScoreErrors = !mainConfig.getConfig().getBoolean(MainConfigKeys.DISABLE_SCORE_RECOVERY, MainConfigDefaults.DISABLE_SCORE_RECOVERY);
 
         // per-arena messages
 //        perArenaDeathMessagesEnabled = mainConfig.getSetBoolean(MainConfigKeys.PER_ARENA_DEATH_MESSAGES_ENABLED, MainConfigDefaults.PER_ARENA_DEATH_MESSAGES_ENABLED);
@@ -166,7 +177,6 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
         // Hooks
         multiverseCoreHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.MULTIVERSE_CORE, MainConfigDefaults.Hooks.MULTIVERSE_CORE);
-        multiverseInventoriesHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.MULTIVERSE_INVENTORIES, MainConfigDefaults.Hooks.MULTIVERSE_INVENTORIES);
         worldeditHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.WORLDEDIT, MainConfigDefaults.Hooks.WORLDEDIT);
 
         // Developer options
@@ -218,7 +228,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
                 throw new SkyConfigurationException(name + " is in " + MainConfigKeys.ENABLED_ARENAS + " but file " + file.toAbsolutePath() + " could not be found.");
             }
         }
-        SkyArenaConfig arenaConfig = arenaLoader.loadArena(file, name, messagePrefix);
+        SkyArenaConfig arenaConfig = arenaLoader.loadArena(file, name);
         enabledArenas.add(arenaConfig);
 
         saveArena(file, arenaConfig, String.format(Headers.ARENA, name));
@@ -396,13 +406,13 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     }
 
     @Override
-    public boolean isMultiverseCoreHookEnabled() {
-        return multiverseCoreHookEnabled;
+    public long getScoreIndividualRankUpdateInterval() {
+        return scoreIndividualRankUpdateInterval;
     }
 
     @Override
-    public boolean isMultiverseInventoriesHookEnabled() {
-        return multiverseInventoriesHookEnabled;
+    public boolean isMultiverseCoreHookEnabled() {
+        return multiverseCoreHookEnabled;
     }
 
     @Override
@@ -418,6 +428,10 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     @Override
     public boolean areDeveloperOptionsEnabled() {
         return developerOptions;
+    }
+
+    public boolean isRecoverFromScoreErrors() {
+        return recoverFromScoreErrors;
     }
 
     private static class Names {
