@@ -496,7 +496,7 @@ public class SQLScoreStorage extends SkyStorageBackend {
 
         public CachedOfflineSqlPlayer(final UUID uuid, final String name, final int score, final int rank) {
             this.uuid = uuid;
-            this.name = name;
+            this.name = name == null ? "<Unknown>" : name;
             this.score = score;
             this.rank = rank;
         }
