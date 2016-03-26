@@ -22,6 +22,7 @@ If you use SkyWars, or plan on using SkyWars, please [vote](https://strawpoll.me
  * Create custom kits just by filling your inventory with the items you want!
  * Create arenas without any entering items into config files! Just build the arena, set the spawns with **/sws** and [save it](https://dabo.guru/projects/skywars/creating-an-arena)!
  * Change any and all messages sent by SkyWars to players in messages.yml!
+* Support for randomly filled chests!
 * Support for portals to step into and join the queue.
 * Custom economy rewards for winning games or killing in games.
 
@@ -41,6 +42,7 @@ If you use SkyWars, or plan on using SkyWars, please [vote](https://strawpoll.me
 #### Customization
 * [Creating a new Kit](https://dabo.guru/projects/skywars/creating-a-new-kit)
 * [Creating a new Arena](https://dabo.guru/projects/skywars/creating-an-arena)
+* [Adding chest randomization](https://dabo.guru/projects/skywars/configuring-chests)
 
 #### Download Releases
 * [BukkitDev/SkyWars](http://dev.bukkit.org/bukkit-plugins/skywars/)

@@ -7,6 +7,8 @@ To create a new kit, go to https://dabo.guru/projects/skywars/creating-a-new-kit
 
 To create a new arena, go to https://dabo.guru/projects/skywars/creating-an-arena.
 
+To configure randomized chests, go to https://dabo.guru/projects/skywars/configuring-chests.
+
 ```yaml
 # This is the configuration version. Unless you really want to mess up your
 #  configuration, you should not change this.

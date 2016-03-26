@@ -12,6 +12,8 @@
 
 [Custom Arenas](https://dabo.guru/projects/skywars/creating-an-arena)
 
+[Random Chests](https://dabo.guru/projects/skywars/configuring-chests)
+
 [Download](http://dev.bukkit.org/bukkit-plugins/skywars/)
 
 [GitHub](https://github.com/SkyWars/SkyWars/)

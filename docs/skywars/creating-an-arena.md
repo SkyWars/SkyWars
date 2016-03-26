@@ -27,6 +27,8 @@ Notes before you begin: All positions are set to the location where your head is
 
 11. Restart the server. Your arena has now been added!
 
+To enable chest randomization for your arena, check out [Configuring Chests](https://dabo.guru/projects/skywars/configuring-chests).
+
 #### Updating
 
 In SkyWars v2.1.0 and above, SkyWars will store a "block cache" .blocks file for all arenas it uses.
