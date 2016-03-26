@@ -23,6 +23,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Path;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -71,6 +72,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -162,6 +164,10 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
             score = new ScoreStorage(this);
             chatListener = new ScoreReplaceChatListener(this);
         }
+        // For supporting /reload or plugin manager reloading.
+        for (Player online : getServer().getOnlinePlayers()) {
+            inGame.loadPlayer(online);
+        }
         if (configuration.isEconomyEnabled()) {
             SkyStatic.debug("Enabling economy support");
             try {
@@ -242,6 +248,12 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         if (enabledCorrectly) {
             locationStore.save();
             idHandler.saveAndUnload(this);
+            // For better transparency when using /reload.
+            for (UUID uuid : gameQueue.getCopy()) {
+                Player player = getServer().getPlayer(uuid);
+                gameQueue.removePlayer(player);
+                player.sendMessage(SkyTrans.get(TransKey.CMD_LEAVE_REMOVED_FROM_QUEUE));
+            }
             if (score != null) {
                 try {
                     score.save();
