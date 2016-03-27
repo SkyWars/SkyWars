@@ -68,6 +68,12 @@ enabled-arenas:
 skywars-arena-gamerules:
   doDaylightCycle: 'false'
 
+# Whether or not players should be immediately respawned after dying. If true, the death/respawn
+# screen is skipped and players are teleported immediately after dying. If false, players will
+# have the respawn screen shown as normal. When false, players will still be force respawned when
+# the game ends if they haven't clicked the respawn button by then.
+skip-respawn-screen: true
+
 # Locale to use for all player messages. Currently available locales:
 # cz, de, dk, en, es, fr, nl, pl, pt and ru.
 # Note that some translations are incomplete. You can also modify
