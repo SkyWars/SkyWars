@@ -63,5 +63,6 @@ public class SaveCurrentArena extends SubCommand {
             return;
         }
         sender.sendMessage(SkyTrans.get(TransKey.SWS_SAVE_SAVED));
+        sender.sendMessage(SkyTrans.get(TransKey.SWS_SAVE_SAVED_LINE_TWO, config.getArenaName()));
     }
 }
