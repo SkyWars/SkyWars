@@ -34,6 +34,7 @@ import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerDeathInArenaInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerKillPlayerInfo;
 import net.daboross.bukkitdev.skywars.game.KillMessages;
+import net.daboross.bukkitdev.skywars.util.CrossVersion;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.LivingEntity;
@@ -48,6 +49,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class AttackerStorageListener implements Listener, SkyAttackerStorage {
 
@@ -141,6 +143,22 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
             plugin.getGameHandler().removePlayerFromGame(evt.getEntity(), LeaveGameReason.DIED, false, false);
             // TODO: merge code with something else.
             evt.setDeathMessage(KillMessages.getMessage(name, killerUuid == uuid ? null : killerName, causedVoid.contains(uuid) ? KillMessages.KillReason.VOID : KillMessages.KillReason.OTHER));
+            if (plugin.getConfiguration().isRespawnPlayersImmediately()) {
+                final Player player = evt.getEntity();
+                final SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(player);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        if (skyPlayer.getState() == SkyPlayerState.DEAD_WAITING_FOR_RESPAWN) {
+                            // Health is set anyways with respawnPlayer, but setting health before teleporting
+                            // *might* be neccessary to cleanly remove the respawn screen?
+                            // I'm unsure if that's really the case, but can't hurt to do it cleany.
+                            CrossVersion.setHealth(player, 20);
+                            plugin.getGameHandler().respawnPlayer(player);
+                        }
+                    }
+                }.runTaskLater(plugin, 1);
+            }
         } else if (plugin.getGameQueue().inQueue(uuid)) {
             plugin.getGameQueue().removePlayer(evt.getEntity());
             evt.getEntity().sendMessage(SkyTrans.get(TransKey.QUEUE_DEATH));
@@ -172,10 +190,13 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
             if (skyPlayer.getState() == SkyPlayerState.DEAD_WAITING_FOR_RESPAWN) {
                 evt.setRespawnLocation(plugin.getLocationStore().getLobbyPosition().toLocation());
                 final Player p = evt.getPlayer();
+                final SkyPlayer sP = skyPlayer;
                 plugin.getServer().getScheduler().runTask(plugin, new Runnable() {
                     @Override
                     public void run() {
-                        plugin.getGameHandler().respawnPlayer(p);
+                        if (sP.getState() == SkyPlayerState.DEAD_WAITING_FOR_RESPAWN) {
+                            plugin.getGameHandler().respawnPlayer(p);
+                        }
                     }
                 });
             } else if (skyPlayer.getState() == SkyPlayerState.WAITING_FOR_RESPAWN) {

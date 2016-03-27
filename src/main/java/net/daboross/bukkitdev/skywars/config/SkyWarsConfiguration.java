@@ -70,14 +70,15 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private int economyWinReward;
     private int economyKillReward;
     private String locale;
-    private boolean disableReport;
-    private boolean recoverFromScoreErrors;
+    private boolean respawnPlayersImmediately;
     private boolean economyRewardMessages;
     //
 //    private boolean perArenaDeathMessagesEnabled;
 //    private boolean perArenaWinMessagesEnabled;
     private boolean multiverseCoreHookEnabled;
     private boolean worldeditHookEnabled;
+    private boolean disableReport;
+    private boolean recoverFromScoreErrors;
     private boolean developerOptions;
 
     public SkyWarsConfiguration(SkyWars plugin) throws IOException, InvalidConfigurationException, SkyConfigurationException {
@@ -132,6 +133,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         locale = mainConfig.getSetString(MainConfigKeys.LOCALE, MainConfigDefaults.LOCALE);
 
         arenaGamerules = Collections.unmodifiableMap(mainConfig.getSetStringMap(MainConfigKeys.ARENA_GAMERULES, MainConfigDefaults.ARENA_GAMERULES));
+
+        respawnPlayersImmediately = mainConfig.getSetBoolean(MainConfigKeys.RESPAWN_PLAYERS_IMMEDIATELY, MainConfigDefaults.RESPAWN_PLAYERS_IMMEDIATELY);
 
         // Score
         enableScore = mainConfig.getSetBoolean(MainConfigKeys.Score.ENABLE, MainConfigDefaults.Score.ENABLE);
@@ -430,8 +433,14 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         return developerOptions;
     }
 
+    @Override
     public boolean isRecoverFromScoreErrors() {
         return recoverFromScoreErrors;
+    }
+
+    @Override
+    public boolean isRespawnPlayersImmediately() {
+        return respawnPlayersImmediately;
     }
 
     private static class Names {

@@ -39,6 +39,7 @@ public class MainConfigDefaults {
     public static final boolean DEVELOPER_OPTIONS = false;
     public static final boolean DISABLE_REPORT = false;
     public static final boolean DISABLE_SCORE_RECOVERY = false;
+    public static final boolean RESPAWN_PLAYERS_IMMEDIATELY = false;
 //    public static final boolean PER_ARENA_DEATH_MESSAGES_ENABLED = true;
 //    public static final boolean PER_ARENA_WIN_MESSAGES_ENABLED = false;
 

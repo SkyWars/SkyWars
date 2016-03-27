@@ -30,6 +30,7 @@ public class MainConfigKeys {
     public static final String ARENA_DISTANCE_APART = "arena-distance-apart";
     public static final String LOCALE = "locale";
     public static final String ARENA_GAMERULES = "skywars-arena-gamerules";
+    public static final String RESPAWN_PLAYERS_IMMEDIATELY = "skip-respawn-screen";
     public static final String DISABLE_REPORT = "disable-report";
     public static final String DEVELOPER_OPTIONS = "developer-options";
     public static final String DISABLE_SCORE_RECOVERY = "disable-score-recovery";
