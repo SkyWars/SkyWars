@@ -1,6 +1,17 @@
 Changelog
 =========
 
+2.1.3
+-----
+
+### SkyWars:
+- Add configuration option to skip respawn screen when players in game die.
+- Fix `/sws save` not saving spawn locations in the right places. This bug was introduced in v2.1.2.
+- Fix SkyWars not filling up chests.yml with default values if it's an empty file.
+
+### SkyWars-Translations:
+- Add a second line to the `/sws save` saved message, to clarify when SkyWars renames arena to avoid naming conflict.
+
 2.1.2
 -----
 
