@@ -16,7 +16,11 @@
  */
 package net.daboross.bukkitdev.skywars.config;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -67,6 +71,7 @@ public class RandomChestConfiguration implements RandomChests {
         if (version > 1) {
             throw new InvalidConfigurationException("Future version in chests.yml!");
         }
+        config.set("version", 1);
 
         levels.clear();
 
@@ -74,6 +79,24 @@ public class RandomChestConfiguration implements RandomChests {
 
         ConfigurationSection levelsSection = config.getConfigurationSection("levels");
         ConfigurationSection itemsSection = config.getConfigurationSection("items");
+        if (levelsSection == null || itemsSection == null) {
+            YamlConfiguration defaultConfig = new YamlConfiguration();
+            try (InputStream stream = plugin.getResourceAsStream("chests.yml");
+                 Reader reader = new InputStreamReader(stream);
+                 BufferedReader bufferedReader = new BufferedReader(reader)) {
+                defaultConfig.load(bufferedReader);
+            }
+            if (levelsSection == null) {
+                levelsSection = defaultConfig.getConfigurationSection("levels");
+                config.set("levels", levelsSection);
+            }
+            if (itemsSection == null) {
+                itemsSection = defaultConfig.getConfigurationSection("items");
+                config.set("items", itemsSection);
+            }
+            config.options().header(defaultConfig.options().header());
+            config.save(chestsFile.toFile());
+        }
         if (levelsSection == null) {
             plugin.getLogger().log(Level.WARNING, "Not loading chests.yml: no levels section found");
             return;
