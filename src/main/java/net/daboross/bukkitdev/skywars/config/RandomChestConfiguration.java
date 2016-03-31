@@ -79,18 +79,19 @@ public class RandomChestConfiguration implements RandomChests {
 
         ConfigurationSection levelsSection = config.getConfigurationSection("levels");
         ConfigurationSection itemsSection = config.getConfigurationSection("items");
-        if (levelsSection == null || itemsSection == null) {
+        if (levelsSection == null || itemsSection == null ||
+                levelsSection.getKeys(false).isEmpty() || itemsSection.getKeys(false).isEmpty()) {
             YamlConfiguration defaultConfig = new YamlConfiguration();
             try (InputStream stream = plugin.getResourceAsStream("chests.yml");
                  Reader reader = new InputStreamReader(stream);
                  BufferedReader bufferedReader = new BufferedReader(reader)) {
                 defaultConfig.load(bufferedReader);
             }
-            if (levelsSection == null) {
+            if (levelsSection == null || levelsSection.getKeys(false).isEmpty()) {
                 levelsSection = defaultConfig.getConfigurationSection("levels");
                 config.set("levels", levelsSection);
             }
-            if (itemsSection == null) {
+            if (itemsSection == null || itemsSection.getKeys(false).isEmpty()) {
                 itemsSection = defaultConfig.getConfigurationSection("items");
                 config.set("items", itemsSection);
             }
