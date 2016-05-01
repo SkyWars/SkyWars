@@ -10,7 +10,7 @@ If you were previously using SkyWars v2.0.1 or earlier, SkyWars will transfer al
 
 ### PSA: Vote on new features
 
-If you use SkyWars, or plan on using SkyWars, please [vote](https://strawpoll.me/7055798) on what you most want to be added!
+I haven't been completely active lately with updates, but I'll be adding things when I can! This [poll](https://strawpoll.me/7055798) will help decide what exactly I work on first, so if you've used SkyWars, or plan to, please vote!
 
 ### Features
 * Integrates seamlessly into any server, survival, creative or otherwise.
