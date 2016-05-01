@@ -15,6 +15,10 @@ Try setting 'spawn-protection' in server.properties to 0 and restarting the serv
 
 If that doesn't work, please submit a ticket below for additional help!
 
+### Help! Iron doors aren't place correctly!
+
+If you are using WorldEdit support, please ensure that your WorldEdit version is up to date, and that you are using the latest development version if you are using Minecraft 1.9+. There is a bug in some earlier WorldEdit versions which causes doors to not be placed correctly.
+
 ### Help! UnsupportedClassVersionError unsupported major.minor version ...
 
 You need Java 7 to run SkyWars. Please update your server's Java version.

@@ -14,7 +14,6 @@ I haven't been completely active lately with updates, but I'll be adding things 
 
 ## Features
 
-
 * Integrates seamlessly into any server, survival, creative or otherwise.
  * Join the SkyWars queue from any world, and you'll be transported back exactly where you came from once the game ends!
  * SkyWars saves gamemode, health, hunger, potion status, and pretty much anything else you'd need to keep track of.
