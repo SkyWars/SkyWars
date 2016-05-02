@@ -19,6 +19,12 @@ If that doesn't work, please submit a ticket below for additional help!
 
 If you are using WorldEdit support, please ensure that your WorldEdit version is up to date, and that you are using the latest development version if you are using Minecraft 1.9+. There is a bug in some earlier WorldEdit versions which causes doors to not be placed correctly.
 
+### Help! My players are spawning and falling into the void, in my custom arena.
+
+The arena you've added may have been cut off when you created it. If this is the case, and the players spawn where it was cut off, they will fall directly into the void rather than landing on solid ground.
+
+To fix this, you need to repeat setting up your arena, but be sure to look directly along the north/south and east/west directions before you set each position to make sure you aren't going to cut off any of the arena!
+
 ### Help! UnsupportedClassVersionError unsupported major.minor version ...
 
 You need Java 7 to run SkyWars. Please update your server's Java version.
