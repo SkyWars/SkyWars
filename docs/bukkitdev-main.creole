@@ -41,6 +41,7 @@ I haven't been completely active lately with updates, but I'll be adding things 
 * [[https://dabo.guru/projects/skywars/configuring-skywars|Configuring SkyWars]]
 * [[https://dabo.guru/projects/skywars/score|SkyWars Score System]]
 * [[https://dabo.guru/projects/skywars/faq|FAQ / Troubleshooting]]
+* [[https://dabo.guru/projects/skywars/signs-and-portals|Join Signs & Portals]]
 
 === Customization
 

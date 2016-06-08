@@ -61,8 +61,8 @@ For a full guide on **/sws createkit**, check out [Creating a new kit](https://d
 | skywars.lobby     | OP Only           | **/sw lobby**         |
 | skywars.testkit   | OP Only           | **/sw testkit**       |
 | skywars.setlobby  | OP Only           | **/sw setlobby**      |
-| skywars.delportal | OP Only           | **/sw delportal**     |
 | skywars.setportal | OP Only           | **/sw setportal**     |
+| skywars.delportal | OP Only           | **/sw delportal**     |
 | skywars.cancel    | OP Only           | **/sw cancel**        |
 | skywars.report    | OP Only           | **/sw report**        |
 | skywars.setup     | OP Only           | **/sws**              |
