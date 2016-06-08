@@ -34,6 +34,7 @@ public class MainConfigKeys {
     public static final String DISABLE_REPORT = "disable-report";
     public static final String DEVELOPER_OPTIONS = "developer-options";
     public static final String DISABLE_SCORE_RECOVERY = "disable-score-recovery";
+    public static final String JOIN_SIGN_LINES = "join-sign-lines";
 //    public static final String PER_ARENA_DEATH_MESSAGES_ENABLED = "enable-per-arena-death-messages";
 //    public static final String PER_ARENA_WIN_MESSAGES_ENABLED = "enable-per-arena-win-messages";
 

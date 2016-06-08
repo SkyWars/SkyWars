@@ -40,6 +40,12 @@ public class MainConfigDefaults {
     public static final boolean DISABLE_REPORT = false;
     public static final boolean DISABLE_SCORE_RECOVERY = false;
     public static final boolean RESPAWN_PLAYERS_IMMEDIATELY = false;
+    public static final String[] JOIN_SIGN_LINES = new String[]{
+            "&8[&cSkyWars&8]",
+            "&8Next Game: &c{name}",
+            "&8Players: &2{count}&3/&2{max}",
+            "&cClick to join!",
+    };
 //    public static final boolean PER_ARENA_DEATH_MESSAGES_ENABLED = true;
 //    public static final boolean PER_ARENA_WIN_MESSAGES_ENABLED = false;
 

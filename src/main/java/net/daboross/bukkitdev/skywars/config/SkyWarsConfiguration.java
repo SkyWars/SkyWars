@@ -72,6 +72,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private String locale;
     private boolean respawnPlayersImmediately;
     private boolean economyRewardMessages;
+    private String[] joinSignLines;
     //
 //    private boolean perArenaDeathMessagesEnabled;
 //    private boolean perArenaWinMessagesEnabled;
@@ -169,6 +170,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         commandWhitelistEnabled = mainConfig.getSetBoolean(MainConfigKeys.CommandWhitelist.WHITELIST_ENABLED, MainConfigDefaults.CommandWhitelist.WHITELIST_ENABLED);
         commandWhitelistABlacklist = mainConfig.getSetBoolean(MainConfigKeys.CommandWhitelist.IS_BLACKLIST, MainConfigDefaults.CommandWhitelist.IS_BLACKLIST);
         commandWhitelistCommandRegex = createCommandRegex(mainConfig.getSetStringList(MainConfigKeys.CommandWhitelist.COMMAND_WHITELIST, MainConfigDefaults.CommandWhitelist.COMMAND_WHITELIST));
+
+        joinSignLines = mainConfig.getSetFixedArray(MainConfigKeys.JOIN_SIGN_LINES, MainConfigDefaults.JOIN_SIGN_LINES);
 
         // Report disable
         disableReport = mainConfig.getConfig().getBoolean(MainConfigKeys.DISABLE_REPORT, MainConfigDefaults.DISABLE_REPORT);
@@ -441,6 +444,11 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     @Override
     public boolean isRespawnPlayersImmediately() {
         return respawnPlayersImmediately;
+    }
+
+    @Override
+    public String[] getJoinSignLines() {
+        return joinSignLines;
     }
 
     private static class Names {

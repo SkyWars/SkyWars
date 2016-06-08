@@ -20,6 +20,7 @@ Commands and Permissions
 | **/sw** **setlobby**  | skywars.setlobby   | Sets the lobby location |
 | **/sw** **lobby**     | skywars.lobby      | Teleports you to the lobby location |
 | **/sw** **setportal** | skywars.setportal  | Sets a new portal at your current location |
+| **/sw** **delportal** | skywars.delportal  | Removes one portal, in order of last added |
 | **/sw** **cancel**    | skywars.cancel     | Force stops a currently running game of the given ID |
 | **/sw** **report**    | skywars.report     | Generates and submits a report. |
 | **/sw** **forcestart**| skywars.forcestart | Force starts a game with the people in the queue. |
@@ -60,8 +61,10 @@ For a full guide on **/sws createkit**, check out [Creating a new kit](https://d
 | skywars.lobby     | OP Only           | **/sw lobby**         |
 | skywars.testkit   | OP Only           | **/sw testkit**       |
 | skywars.setlobby  | OP Only           | **/sw setlobby**      |
+| skywars.delportal | OP Only           | **/sw delportal**     |
 | skywars.setportal | OP Only           | **/sw setportal**     |
 | skywars.cancel    | OP Only           | **/sw cancel**        |
 | skywars.report    | OP Only           | **/sw report**        |
-| skywars.setup     | OP Only           | **/sw setup**         |
+| skywars.setup     | OP Only           | **/sws**              |
 | skywars.forcestart| OP Only           | **/sw forcestart**    |
+| skywars.setsign   | OP Only           | Placing join signs    |

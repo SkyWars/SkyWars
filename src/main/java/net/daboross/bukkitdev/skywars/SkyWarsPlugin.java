@@ -49,6 +49,7 @@ import net.daboross.bukkitdev.skywars.events.listeners.InventorySaveListener;
 import net.daboross.bukkitdev.skywars.events.listeners.KitApplyListener;
 import net.daboross.bukkitdev.skywars.events.listeners.KitQueueNotifier;
 import net.daboross.bukkitdev.skywars.events.listeners.ResetHealthListener;
+import net.daboross.bukkitdev.skywars.events.listeners.SignListener;
 import net.daboross.bukkitdev.skywars.game.CurrentGames;
 import net.daboross.bukkitdev.skywars.game.GameHandler;
 import net.daboross.bukkitdev.skywars.game.GameIDHandler;
@@ -97,6 +98,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     private GameEventDistributor distributor;
     private ScoreStorage score;
     private KitQueueNotifier kitQueueNotifier;
+    private SignListener signListener;
 
     private OnlineSkyPlayers inGame;
     private TeamScoreboardListener teamListener;
@@ -153,13 +155,18 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         worldHandler = new SkyWorldHandler(this);
         inventorySaveListener = new InventorySaveListener(this);
         resetHealth = new ResetHealthListener(this);
-        locationStore = new LocationStore(this);
+        try {
+            locationStore = new LocationStore(this);
+        } catch (SkyConfigurationException ex) {
+            throw new StartupFailedException("Failed to load locations", ex);
+        }
         gameQueue = new GameQueue(this);
         gameHandler = new GameHandler(this);
         attackerStorage = new AttackerStorageListener(this);
         distributor = new GameEventDistributor(this);
         teamListener = new TeamScoreboardListener();
         inGame = new OnlineSkyPlayers(this);
+        signListener = new SignListener(this);
         if (configuration.isEnableScore()) {
             score = new ScoreStorage(this);
             chatListener = new ScoreReplaceChatListener(this);
@@ -198,7 +205,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         registerListeners(pm, attackerStorage, new PlayerStateListener(this),
                 new PortalListener(this), new PlayerJoinInArenaWorldListener(this),
                 new CommandWhitelistListener(this), new BuildingLimiter(this),
-                new MobSpawnDisable(), chatListener);
+                new MobSpawnDisable(), chatListener, signListener);
         enabledCorrectly = true;
     }
 
@@ -443,5 +450,9 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
 
     public KitApplyListener getKitApplyListener() {
         return kitApplyListener;
+    }
+
+    public SignListener getSignListener() {
+        return signListener;
     }
 }

@@ -63,6 +63,7 @@ public class GameEventDistributor {
             plugin.getBroadcaster().broadcastStart(info);
             plugin.getTeamScoreBoardListener().onGameStart(info);
             plugin.getAttackerStorage().onGameStart(info);
+            plugin.getSignListener().onGameStart(info);
             // -- Before gameStart1 --
             plugin.getWorldHandler().onGameStart0(info);
             // -- After gameStart0 --
@@ -175,6 +176,7 @@ public class GameEventDistributor {
             // -- Normal --
             plugin.getPlayers().onJoinQueue(info);
             plugin.getKitQueueNotifier().onQueueJoin(info);
+            plugin.getSignListener().onQueueJoin(info);
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new PlayerEnterQueueEvent(plugin, info.getPlayer()));
         } catch (Throwable t) {
@@ -188,6 +190,7 @@ public class GameEventDistributor {
         try {
             // -- Normal --
             plugin.getPlayers().onLeaveQueue(info);
+            plugin.getSignListener().onQueueLeave(info);
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new PlayerLeaveQueueEvent(plugin, info.getPlayer()));
         } catch (Throwable t) {

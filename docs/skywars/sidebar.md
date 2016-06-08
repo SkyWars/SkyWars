@@ -14,6 +14,8 @@
 
 [Random Chests](https://dabo.guru/projects/skywars/configuring-chests)
 
+[Join Signs & Portals](https://dabo.guru/projects/skywars/signs-and-portals)
+
 [Download](http://dev.bukkit.org/bukkit-plugins/skywars/)
 
 [GitHub](https://github.com/SkyWars/SkyWars/)

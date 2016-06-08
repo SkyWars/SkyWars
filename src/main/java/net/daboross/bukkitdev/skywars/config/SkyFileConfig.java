@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -198,6 +199,30 @@ public class SkyFileConfig {
                 section.set(entry.getKey(), entry.getValue());
             }
             return section;
+        }
+    }
+
+    public String[] getSetFixedArray(final String path, final String[] defaultValues) throws InvalidConfigurationException {
+        if (config.isList(path)) {
+            List<?> list = config.getList(path);
+            if (list.isEmpty()) {
+                config.set(path, Arrays.asList(defaultValues));
+                return defaultValues.clone();
+            } else if (list.size() < defaultValues.length) {
+                throw new InvalidConfigurationException("Too few strings in list " + path + " in file " + configFile + ": expected " + defaultValues.length + ", found " + list.size() + ".");
+            } else if (list.size() > defaultValues.length) {
+                throw new InvalidConfigurationException("Too many strings in list " + path + " in file " + configFile + ": expected " + defaultValues.length + ", found " + list.size() + ".");
+            }
+            String[] result = new String[defaultValues.length];
+            for (int i = 0; i < defaultValues.length; i++) {
+                result[i] = String.valueOf(list.get(i));
+            }
+            return result;
+        } else if (config.contains(path)) {
+            throw new InvalidConfigurationException("Object " + config.get(path) + " found under " + path + " in file " + configFile + " is not an array.");
+        } else {
+            config.set(path, Arrays.asList(defaultValues));
+            return defaultValues.clone();
         }
     }
 
