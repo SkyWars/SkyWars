@@ -1,6 +1,14 @@
 Changelog
 =========
 
+2.1.4
+-----
+
+SkyWars:
+- Add join signs with auto-updating queue information. See https://dabo.guru/projects/skywars/signs-and-portals!
+- Fixed up documentation for join portals.
+- Fix a possible bug which would cause SkyWars to not save scores to JSON when using Java 7 instead of Java 8.
+
 2.1.3
 -----
 
