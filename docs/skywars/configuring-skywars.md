@@ -176,4 +176,44 @@ command-whitelist:
   - /skywars
   - /sw
   - /me
+
+# Join sign appearance
+#
+# When the queue length changes or a game is started, every sign is updated
+# with "{name}" set to the next arena's name, "{count}" set to the number of
+# players in the queue, and "{max}" set to the maximum number of players to
+# join the arena before SkyWars will start the game.
+#
+# This must be a list of four lines used for the four lines on the sign.
+# If you want less than four lines, simply have the last lines be blank.
+#
+# When placing a sign, the sign will turn into a SkyWars Join Sign if the
+# first "static" line of the template matches. "static" in this case means
+# there are no changing elements such as "{name}", "{count}" and "{max}".
+#
+# For example, if you have the following configuration:
+# join-sign-lines:
+# - 'Players: {count}'
+# - 'Arena: {name}'
+# - 'Waiting for: {max}'
+# - 'Click to join!'
+#
+# Then in order to create a join sign, you would have to write a sign
+# with the first three lines blank, and the last line with "Click to join!"
+# in it.
+#
+# With the default configuration, simply make a sign with the first line being
+# "[SkyWars]" and it will turn into a join sign.
+#
+# NOTE! When you change this setting, all currently existing join signs
+# will no longer function or update - SkyWars uses the lines in this
+# setting to tell which signs are still join signs when updating. (all
+# signs are also stored in locations.yml, but SkyWars double-checks them
+# with the join sign line format to avoid overwriting rewritten signs).
+join-sign-lines:
+- '&8[&cSkyWars&8]'
+- '&8Next Game: &c{name}'
+- '&8Players: &2{count}&3/&2{max}'
+- '&cClick to join!'
+
 ```

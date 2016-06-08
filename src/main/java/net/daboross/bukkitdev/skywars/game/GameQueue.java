@@ -122,4 +122,9 @@ public class GameQueue implements SkyGameQueue {
     public int getNumPlayersInQueue() {
         return currentlyQueued.size();
     }
+
+    @Override
+    public SkyArena getPlannedArena() {
+        return nextArena;
+    }
 }

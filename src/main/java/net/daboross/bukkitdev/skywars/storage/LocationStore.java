@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
 import net.daboross.bukkitdev.skywars.api.location.SkyLocationStore;
@@ -40,11 +41,12 @@ public class LocationStore implements Listener, SkyLocationStore {
 
     private final JavaPlugin plugin;
     private final List<SkyBlockLocation> portals = new ArrayList<>();
+    private final List<SkyBlockLocation> signs = new ArrayList<>();
     private SkyPlayerLocation lobbyPosition;
     private FileConfiguration storage;
     private Path configFile;
 
-    public LocationStore(JavaPlugin plugin) {
+    public LocationStore(JavaPlugin plugin) throws SkyConfigurationException {
         this.plugin = plugin;
         ConfigurationSerialization.registerClass(SkyBlockLocation.class);
         ConfigurationSerialization.registerClass(SkyPlayerLocation.class);
@@ -52,11 +54,15 @@ public class LocationStore implements Listener, SkyLocationStore {
         load();
     }
 
-    private void load() {
+    private void load() throws SkyConfigurationException {
         if (configFile == null) {
             configFile = plugin.getDataFolder().toPath().resolve("locations.yml");
         }
         storage = YamlConfiguration.loadConfiguration(configFile.toFile());
+        int configVersion = storage.getInt("storage-specification-version");
+        if (configVersion > 1) {
+            throw new SkyConfigurationException("Unknown configuration version for locations.yml. Did you downgrade? If so, delete or move locations.yml to reset.");
+        }
         Object lobbyO = storage.get("lobby");
         if (lobbyO != null) {
             if (lobbyO instanceof SkyBlockLocation) {
@@ -64,7 +70,7 @@ public class LocationStore implements Listener, SkyLocationStore {
             } else if (lobbyO instanceof SkyPlayerLocation) {
                 lobbyPosition = (SkyPlayerLocation) lobbyO;
             } else {
-                plugin.getLogger().warning("Lobby is not ArenaLocation");
+                plugin.getLogger().log(Level.WARNING, "Expected SkyBlockLocation, found {} as lobby in {}! Removing item from config file.", new Object[]{lobbyO, configFile});
             }
         } else {
             List<World> worlds = Bukkit.getWorlds();
@@ -75,14 +81,23 @@ public class LocationStore implements Listener, SkyLocationStore {
                 lobbyPosition = new SkyPlayerLocation(spawn);
             }
         }
-        List<?> list = storage.getList("portals");
-        if (list
-                != null) {
-            for (Object obj : list) {
+        List<?> portalList = storage.getList("portals");
+        if (portalList != null) {
+            for (Object obj : portalList) {
                 if (obj instanceof SkyBlockLocation) {
                     portals.add((SkyBlockLocation) obj);
                 } else {
-                    plugin.getLogger().warning("Non-ArenaLocation found in portals list");
+                    plugin.getLogger().log(Level.WARNING, "Expected SkyBlockLocation, found {} in portals list in {}! Removing item from config file.", new Object[]{obj, configFile});
+                }
+            }
+        }
+        List<?> signList = storage.getList("signs");
+        if (signList != null) {
+            for (Object object : signList) {
+                if (object instanceof SkyBlockLocation) {
+                    signs.add((SkyBlockLocation) object);
+                } else {
+                    plugin.getLogger().log(Level.WARNING, "Expected SkyBlockLocation, found {} in signs list in {}! Removing item from config file.", new Object[]{object, configFile});
                 }
             }
         }
@@ -94,6 +109,8 @@ public class LocationStore implements Listener, SkyLocationStore {
             plugin.getLogger().log(Level.INFO, "Saving configuration");
             storage.set("portals", portals);
             storage.set("lobby", lobbyPosition);
+            storage.set("signs", signs);
+            storage.set("storage-specification-version", 1);
             try {
                 storage.save(configFile.toFile());
             } catch (IOException ex) {
@@ -119,4 +136,7 @@ public class LocationStore implements Listener, SkyLocationStore {
     public List<SkyBlockLocation> getPortals() {
         return portals;
     }
+
+    @Override
+    public List<SkyBlockLocation> getSigns() { return signs; }
 }
