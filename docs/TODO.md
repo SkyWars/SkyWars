@@ -15,6 +15,33 @@ SkyWars Tasks
 [ ] Force start on a timer
 [x] "Update arena" option for when arenas are stored as .blocks files?
 [ ] Import schematics into .blocks files.
-[ ] Respawn immediately
+[x] Respawning immediately
 [x] Implement `/sws createkit`
 [ ] Figure out what potion extra effect "duration" is counted in.
+
+Future Feature Poll Features
+============================
+
+New:
+
+[ ] Option to place a specific block to mark spawn location, rather than using `/sws addspawn`
+[ ] Option to allow spectating on ongoing games
+    - Note if this is implemented: ensure to update code which limits game start/end/death messages to people in arena.
+
+On last poll, but not yet added:
+
+[ ] Inventory GUI for choosing a kit
+[ ] Timer to start arena (w/ setting for minimum player count)
+[ ] Voting on what map to play
+[ ] Queued players waiting in map
+[ ] Limiting arena chat & messages to players playing
+[ ] Signs to pick kits (w/ kit cost shown)
+[ ] Queued players waiting inside map
+[ ] Ability to select large area where stepping will join the queue (currently only 1 block spaces are supported)
+
+Finished:
+
+[x] Signs to join (w/ auto-updated queue information)
+[x] Filling chests with random items
+[x] Command to view top 10 players ranked by score
+[x] Limiting death & game start messages to players playing

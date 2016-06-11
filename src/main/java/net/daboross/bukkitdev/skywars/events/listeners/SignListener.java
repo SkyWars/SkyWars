@@ -38,6 +38,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+/**
+ * TODO: This class should probably be split into three separate ones.
+ * <p>
+ * Keeping track of signs should be in SignManager in "skywars.game", sign updating events should be in
+ * "SignUpdateListener" in "skywars.events.listeners" and sign creation events should be in "SignCreateListener" in
+ * "skywars.listeners".
+ */
 public class SignListener implements Listener {
 
     private final SkyWars plugin;

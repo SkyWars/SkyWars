@@ -152,7 +152,7 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
                         if (skyPlayer.getState() == SkyPlayerState.DEAD_WAITING_FOR_RESPAWN) {
                             // Health is set anyways with respawnPlayer, but setting health before teleporting
                             // *might* be neccessary to cleanly remove the respawn screen?
-                            // I'm unsure if that's really the case, but can't hurt to do it cleany.
+                            // I'm unsure if that's really the case, but can't hurt to do it like this.
                             CrossVersion.setHealth(player, 20);
                             plugin.getGameHandler().respawnPlayer(player);
                         }
