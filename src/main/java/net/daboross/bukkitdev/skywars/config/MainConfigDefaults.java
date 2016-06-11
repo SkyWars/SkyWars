@@ -46,8 +46,9 @@ public class MainConfigDefaults {
             "&8Players: &2{count}&3/&2{max}",
             "&cClick to join!",
     };
-//    public static final boolean PER_ARENA_DEATH_MESSAGES_ENABLED = true;
-//    public static final boolean PER_ARENA_WIN_MESSAGES_ENABLED = false;
+    public static final boolean LIMIT_START_MESSAGES_TO_ARENA = false;
+    public static final boolean LIMIT_DEATH_MESSAGES_TO_ARENA = true;
+    public static final boolean LIMIT_END_MESSAGES_TO_ARENA = false;
 
     static {
         Map<String, String> defaultArenaGamerules = new HashMap<>(1);

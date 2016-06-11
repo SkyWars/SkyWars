@@ -35,9 +35,9 @@ public class MainConfigKeys {
     public static final String DEVELOPER_OPTIONS = "developer-options";
     public static final String DISABLE_SCORE_RECOVERY = "disable-score-recovery";
     public static final String JOIN_SIGN_LINES = "join-sign-lines";
-//    public static final String PER_ARENA_DEATH_MESSAGES_ENABLED = "enable-per-arena-death-messages";
-//    public static final String PER_ARENA_WIN_MESSAGES_ENABLED = "enable-per-arena-win-messages";
-
+    public static final String LIMIT_START_MESSAGES_TO_ARENA = "only-broadcast-to-players-in-arena.start";
+    public static final String LIMIT_DEATH_MESSAGES_TO_ARENA = "only-broadcast-to-players-in-arena.death";
+    public static final String LIMIT_END_MESSAGES_TO_ARENA = "only-broadcast-to-players-in-arena.end";
     private MainConfigKeys() {
     }
 

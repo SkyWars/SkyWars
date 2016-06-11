@@ -35,6 +35,7 @@ import net.daboross.bukkitdev.skywars.events.events.PlayerDeathInArenaInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerKillPlayerInfo;
 import net.daboross.bukkitdev.skywars.game.KillMessages;
 import net.daboross.bukkitdev.skywars.util.CrossVersion;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.LivingEntity;
@@ -128,9 +129,28 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
         }
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onDeath(PlayerDeathEvent evt) {
         String name = evt.getEntity().getName();
+        UUID uuid = evt.getEntity().getUniqueId();
+        SkyGame game = plugin.getIDHandler().getGame(plugin.getCurrentGameTracker().getGameId(uuid));
+        if (game != null) {
+            String killerName = lastHitName.get(uuid);
+            UUID killerUuid = lastHitUuid.get(uuid);
+            String message = KillMessages.getMessage(name, killerUuid == uuid ? null : killerName, causedVoid.contains(uuid) ? KillMessages.KillReason.VOID : KillMessages.KillReason.OTHER);
+            if (plugin.getConfiguration().shouldLimitDeathMessagesToArenaPlayers()) {
+                evt.setDeathMessage(null);
+                for (UUID sendToUuid : game.getAlivePlayers()) {
+                    Bukkit.getPlayer(sendToUuid).sendMessage(message);
+                }
+            } else {
+                evt.setDeathMessage(message);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onDeathMonitor(PlayerDeathEvent evt) {
         UUID uuid = evt.getEntity().getUniqueId();
         SkyGame game = plugin.getIDHandler().getGame(plugin.getCurrentGameTracker().getGameId(uuid));
         if (game != null) {
@@ -141,8 +161,6 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
                 plugin.getDistributor().distribute(new PlayerKillPlayerInfo(game.getId(), killerUuid, killerName, evt.getEntity()));
             }
             plugin.getGameHandler().removePlayerFromGame(evt.getEntity(), LeaveGameReason.DIED, false, false);
-            // TODO: merge code with something else.
-            evt.setDeathMessage(KillMessages.getMessage(name, killerUuid == uuid ? null : killerName, causedVoid.contains(uuid) ? KillMessages.KillReason.VOID : KillMessages.KillReason.OTHER));
             if (plugin.getConfiguration().isRespawnPlayersImmediately()) {
                 final Player player = evt.getEntity();
                 final SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(player);

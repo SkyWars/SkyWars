@@ -151,7 +151,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         SkyTrans.setInstance(translations);
         currentGameTracker = new CurrentGames();
         idHandler = new GameIDHandler();
-        broadcaster = new GameBroadcaster();
+        broadcaster = new GameBroadcaster(this);
         worldHandler = new SkyWorldHandler(this);
         inventorySaveListener = new InventorySaveListener(this);
         resetHealth = new ResetHealthListener(this);

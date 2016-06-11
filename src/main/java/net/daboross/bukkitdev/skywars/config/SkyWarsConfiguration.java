@@ -73,9 +73,9 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private boolean respawnPlayersImmediately;
     private boolean economyRewardMessages;
     private String[] joinSignLines;
-    //
-//    private boolean perArenaDeathMessagesEnabled;
-//    private boolean perArenaWinMessagesEnabled;
+    private boolean limitStartMessagesToArenaPlayers;
+    private boolean limitDeathMessagesToArenaPlayers;
+    private boolean limitEndMessagesToArenaPlayers;
     private boolean multiverseCoreHookEnabled;
     private boolean worldeditHookEnabled;
     private boolean disableReport;
@@ -173,13 +173,14 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
         joinSignLines = mainConfig.getSetFixedArray(MainConfigKeys.JOIN_SIGN_LINES, MainConfigDefaults.JOIN_SIGN_LINES);
 
+        // per-arena messages
+        limitStartMessagesToArenaPlayers = mainConfig.getSetBoolean(MainConfigKeys.LIMIT_START_MESSAGES_TO_ARENA, MainConfigDefaults.LIMIT_START_MESSAGES_TO_ARENA);
+        limitDeathMessagesToArenaPlayers = mainConfig.getSetBoolean(MainConfigKeys.LIMIT_DEATH_MESSAGES_TO_ARENA, MainConfigDefaults.LIMIT_DEATH_MESSAGES_TO_ARENA);
+        limitEndMessagesToArenaPlayers = mainConfig.getSetBoolean(MainConfigKeys.LIMIT_END_MESSAGES_TO_ARENA, MainConfigDefaults.LIMIT_END_MESSAGES_TO_ARENA);
+
         // Report disable
         disableReport = mainConfig.getConfig().getBoolean(MainConfigKeys.DISABLE_REPORT, MainConfigDefaults.DISABLE_REPORT);
         recoverFromScoreErrors = !mainConfig.getConfig().getBoolean(MainConfigKeys.DISABLE_SCORE_RECOVERY, MainConfigDefaults.DISABLE_SCORE_RECOVERY);
-
-        // per-arena messages
-//        perArenaDeathMessagesEnabled = mainConfig.getSetBoolean(MainConfigKeys.PER_ARENA_DEATH_MESSAGES_ENABLED, MainConfigDefaults.PER_ARENA_DEATH_MESSAGES_ENABLED);
-//        perArenaWinMessagesEnabled = mainConfig.getSetBoolean(MainConfigKeys.PER_ARENA_WIN_MESSAGES_ENABLED, MainConfigDefaults.PER_ARENA_WIN_MESSAGES_ENABLED);
 
         // Hooks
         multiverseCoreHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.MULTIVERSE_CORE, MainConfigDefaults.Hooks.MULTIVERSE_CORE);
@@ -256,15 +257,20 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         saveArena(arena.getFile(), arena, String.format(Headers.ARENA, arena.getArenaName()));
     }
 
-//    @Override
-//    public boolean arePerArenaDeathMessagesEnabled() {
-//        return perArenaDeathMessagesEnabled;
-//    }
+    @Override
+    public boolean shouldLimitStartMessagesToArenaPlayers() {
+        return limitStartMessagesToArenaPlayers;
+    }
 
-//    @Override
-//    public boolean arePerArenaWinMessagesEnabled() {
-//        return perArenaWinMessagesEnabled;
-//    }
+    @Override
+    public boolean shouldLimitDeathMessagesToArenaPlayers() {
+        return limitDeathMessagesToArenaPlayers;
+    }
+
+    @Override
+    public boolean shouldLimitEndMessagesToArenaPlayers() {
+        return limitEndMessagesToArenaPlayers;
+    }
 
     @Override
     public List<SkyArenaConfig> getEnabledArenas() {

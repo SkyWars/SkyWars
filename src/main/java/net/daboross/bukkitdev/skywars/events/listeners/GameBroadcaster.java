@@ -19,6 +19,7 @@ package net.daboross.bukkitdev.skywars.events.listeners;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
@@ -28,6 +29,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class GameBroadcaster {
+
+    private final SkyWars plugin;
+
+    public GameBroadcaster(final SkyWars plugin) {
+        this.plugin = plugin;
+    }
 
     public void broadcastStart(GameStartInfo info) {
         List<Player> players = info.getPlayers();
@@ -40,7 +47,14 @@ public class GameBroadcaster {
             }
             playerNames.append(players.get(i).getName());
         }
-        Bukkit.broadcastMessage(SkyTrans.get(TransKey.GAME_STARTING_GAMESTARTING, playerNames));
+        String message = SkyTrans.get(TransKey.GAME_STARTING_GAMESTARTING, playerNames);
+        if (plugin.getConfiguration().shouldLimitStartMessagesToArenaPlayers()) {
+            for (Player player : players) {
+                player.sendMessage(message);
+            }
+        } else {
+            Bukkit.broadcastMessage(message);
+        }
         // TODO: should team message broadcasts really be in here?
         SkyGame game = info.getGame();
         if (game.areTeamsEnabled()) {
@@ -94,7 +108,13 @@ public class GameBroadcaster {
                 }
                 message = SkyTrans.get(TransKey.GAME_WINNING_MULTI_WON, winnerBuilder);
             }
-            Bukkit.broadcastMessage(message);
+            if (plugin.getConfiguration().shouldLimitEndMessagesToArenaPlayers()) {
+                for (Player player : winners) {
+                    player.sendMessage(message);
+                }
+            } else {
+                Bukkit.broadcastMessage(message);
+            }
         }
     }
 }

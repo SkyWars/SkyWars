@@ -90,11 +90,18 @@ public class GameHandler implements SkyGameHandler {
         Validate.isTrue(id != -1, String.format("Player %s not in game", player.getName()));
         GameIDHandler idh = plugin.getIDHandler();
         ArenaGame game = idh.getGame(id);
-        game.removePlayer(playerUuid);
         if (broadcast) {
             // This needs to happen before destributing PlayerLeaveGame so as to still have attacker stored!
-            Bukkit.broadcastMessage(KillMessages.getMessage(player.getName(), plugin.getAttackerStorage().getKillerName(playerUuid), KillMessages.KillReason.LEFT));
+            String message = KillMessages.getMessage(player.getName(), plugin.getAttackerStorage().getKillerName(playerUuid), KillMessages.KillReason.LEFT);
+            if (plugin.getConfiguration().shouldLimitDeathMessagesToArenaPlayers()) {
+                for (UUID uuid : game.getAlivePlayers()) {
+                    Bukkit.getPlayer(uuid).sendMessage(message);
+                }
+            } else {
+                Bukkit.broadcastMessage(message);
+            }
         }
+        game.removePlayer(playerUuid);
         plugin.getDistributor().distribute(new PlayerLeaveGameInfo(id, player, reason));
         if (respawn) {
             respawnPlayer(player);
