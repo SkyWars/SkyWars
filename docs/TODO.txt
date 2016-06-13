@@ -27,6 +27,8 @@ New:
 [ ] Option to place a specific block to mark spawn location, rather than using `/sws addspawn`
 [ ] Option to allow spectating on ongoing games
     - Note if this is implemented: ensure to update code which limits game start/end/death messages to people in arena.
+[ ] Win/kill/death scoreboard w/ optional scoreboard GUI
+    - Note: maybe also option to sort leaderboard by wins or kill/death ratio?
 
 On last poll, but not yet added:
 
