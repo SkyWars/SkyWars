@@ -22,7 +22,7 @@ import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
-import net.daboross.bukkitdev.skywars.api.kits.SkyKitBukkitDecode;
+import net.daboross.bukkitdev.skywars.kits.SkyKitBukkitDecode;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKits;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
