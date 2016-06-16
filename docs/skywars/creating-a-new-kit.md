@@ -1,7 +1,7 @@
 Creating a new kit
 ==================
 
-See [Configuring Kits](https://dabo.guru/projects/skywars/configuring-kits) on how to manually make a kit by entering config values.
+See [Configuring Kits](https://dabo.guru/projects/skywars/configuring-kits) on how to manually make a kit by entering config values, and how to add a description to your custom kit.
 
 Warning: Make sure you've restarted the server since the last time you edited `kits.yml`. Using **/sws createkit** will overwrite any changes made to `kits.yml` since the last restart.
 
@@ -12,6 +12,8 @@ Warning: Make sure you've restarted the server since the last time you edited `k
    You can choose to create a kit with a cost, a permission, both or neither. If it doesn't have a cost, it will be free to use. If it doesn't have a permission, anyone will be able to use it.
 
 3. Use **/sws createkit** while you have all the items in your inventory. This will save all items to the kit file, and the kit will be available immediately after you use this successfully.
+
+4. If you have the Kit GUI enabled on your server, the item in your main hand will be used as the Kit's totem, the item representing the kit in the GUI. You can modify the description for the kit and change the totem in the configuration, `kits.yml`.
 
 4. You're done! The kit will be available immediately.
 

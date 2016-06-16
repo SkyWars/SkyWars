@@ -26,7 +26,14 @@ Before testing:
  * BOSEconomy works for pre-1.9 minecraft versions, and is simple to test and work with.
  * RoyalEconomy requires manual compilation, as it isn't a released plugin. However, it's an open source project, and it works well.
 * Set `economy.enabled` to `true` in `plugins/SkyWars/main-config.yml`
-* Add `skywars.kit:\n    default: true` to `permissions.yml` to enable usage of `/sw kit` by non-ops
+* Update `permissions.yml` to enable usage of `/sw kit` by non-ops.
+
+```yaml
+skywars.kit:
+    default: true
+skywars.kitgui:
+    default: true
+```
 
 And now, testing!
 
@@ -71,6 +78,10 @@ And now, testing!
 * Create a join sign, and confirm the sign is formatted
  * Confirm clicking on the sign enters you into the queue
  * Confirm the sign is updated when `/sw join` is used to enter the queue.
+* Confirm `/sw kitgui` opens a kit GUI.
+ * Confirm nothing happens and no errors occur when clicking on an empty spot and when clicking on an item in your inventory.
+ * Confirm clicking on an available kit selects it and closes the window.
+ * Confirm clicking on an unavailable kit gives an error message in chat and closes the window.
 * Confirm in-game death messages display correctly when someone is directly killed
 * Confirm in-game death messages display correctly when someone is pushed into the void
 * Confirm in-game death messages display correctly when someone kills themself through drowning

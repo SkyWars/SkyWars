@@ -35,6 +35,8 @@ import net.daboross.bukkitdev.skywars.api.kits.impl.SkyKitItemConfig;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyNameLoreMeta;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyPotionMeta;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyRawDataMeta;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -43,6 +45,7 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
+import static net.daboross.bukkitdev.skywars.kits.KitConstants.DEFAULT_TOTEM;
 
 public class SkyKitDecoder {
 
@@ -64,7 +67,22 @@ public class SkyKitDecoder {
         }
         String permission = section.getString("permission");
         int cost = section.getInt("cost");
-        return new SkyKitConfig(items, Arrays.asList(armor), name, cost, permission);
+        String description = section.getString("description");
+        if (description == null) {
+            description = SkyTrans.get(TransKey.CONFIG_KIT_DEFAULT_DESCRIPTION, name);
+        }
+        String totemString = section.getString("totem");
+        Material totem;
+        if (totemString == null) {
+            totem = DEFAULT_TOTEM;
+        } else {
+            totem = Material.matchMaterial(totemString);
+            if (totem == null) {
+                throw new SkyConfigurationException("The type string '" + totemString + "' is not valid. Check https://dabo.guru/projects/skywars/configuring-kits for a list of valid material names.");
+            }
+        }
+
+        return new SkyKitConfig(items, Arrays.asList(armor), name, description, totem, cost, permission);
     }
 
     private static List<SkyKitItem> decodeInventory(ConfigurationSection section) throws SkyConfigurationException {

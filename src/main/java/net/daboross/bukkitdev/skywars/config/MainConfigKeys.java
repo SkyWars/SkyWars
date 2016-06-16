@@ -38,6 +38,10 @@ public class MainConfigKeys {
     public static final String LIMIT_START_MESSAGES_TO_ARENA = "only-broadcast-to-players-in-arena.start";
     public static final String LIMIT_DEATH_MESSAGES_TO_ARENA = "only-broadcast-to-players-in-arena.death";
     public static final String LIMIT_END_MESSAGES_TO_ARENA = "only-broadcast-to-players-in-arena.end";
+    public static final String KIT_GUI_SHOW_UNAVAILABLE_KITS = "kit-gui.show-unavailable-kits";
+    public static final String KIT_GUI_REPLACE_KIT_COMMAND = "kit-gui.replace-kit-command";
+    public static final String KIT_GUI_AUTO_SHOW_ON_JOIN = "kit-gui.auto-show-on-join";
+
     private MainConfigKeys() {
     }
 

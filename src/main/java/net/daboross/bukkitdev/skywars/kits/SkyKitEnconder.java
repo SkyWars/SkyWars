@@ -41,6 +41,8 @@ public class SkyKitEnconder {
         ConfigurationSection kitRoot = configRoot.createSection(config.getName());
         encodeArmorToConfig(config.getArmorContents(), kitRoot);
         encodeInventory(config.getInventoryContents(), kitRoot);
+        kitRoot.set("description", config.getDescription());
+        kitRoot.set("totem", config.getTotem().toString());
         String permission = config.getPermission();
         if (permission != null) {
             kitRoot.set("permission", permission);

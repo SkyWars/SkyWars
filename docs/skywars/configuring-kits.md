@@ -16,10 +16,19 @@ The following is a version of the default kits.yml config, annotated with commen
 # https://dabo.guru/projects/skywars/configuring-kits
 # #########
 
+# This is the version of the configuration.
+# If this line is changed or removed, SkyWars may overwrite some of the newer settings when
+# the server is next restarted.
+configuration-version: 1
+
 # Note that to enable most of these kits, you must enable economy support in main-config.yml.
 bowman:
   # This kit has a cost of $100. The cost is charged every game in which it is used.
   cost: 100
+  # This kit is represented by a bow when shown in the kit inventory-GUI.
+  totem: BOW
+  # This is shown in the lore of the totem.
+  description: "&4Just a bow."
   items:
     # You can list any number of items here.
     # Each item has a type section. It also may optionally have an enchantments
@@ -31,12 +40,20 @@ bowman:
     - {type: BOW}
 whacker:
   cost: 20
+  totem: STICK
+  description: "&4Knockback 3."
   items:
     - {type: STICK, enchantments: {KNOCKBACK: 3},
         name: "Whacking Stick", lore: ["&2Whacking", "&4and hacking"]}
 potions:
   # This kit demonstrates how to enter potions into kits.
   cost: 100
+  totem: POTION
+  # A multiline description
+  description: |
+    &cInvisibility&4, &cspeed&4,
+    &cposion&4 and &chealing&4.
+    &4What more could you need?
   items:
     # Potions:
     # There are two ways to add potions to an item:
@@ -76,11 +93,18 @@ diamond-swordsman:
   # When you define a permission, the kit is only shown to people with that
   # permission. This allows you to make kits only available to donors.
   permission: server.donor
+  totem: DIAMOND_SWORD
+  description: "&4Server donors only."
   items:
     - {type: DIAMOND_SWORD, amount: 1}
+  chestplate:
+    type: LEATHER_CHESTPLATE
+    armor-color: CC7700
 full-donor-armor:
   # This kit is only available to donors, but it also costs $500 each game!
   permission: server.donor
+  totem: DIAMOND_HELMET
+  description: "&4Rich server donors only."
   cost: 500
   # You can define a helmet, chestplate, leggings and boots.
   # These will automatically be placed in the armor slots of the player.

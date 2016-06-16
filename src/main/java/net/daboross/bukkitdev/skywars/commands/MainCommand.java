@@ -25,6 +25,7 @@ import net.daboross.bukkitdev.skywars.commands.mainsubcommands.CancelCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.ForceStartCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.JoinCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.KitCommand;
+import net.daboross.bukkitdev.skywars.commands.mainsubcommands.KitGuiCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.LeaveCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.LobbyCommand;
 import net.daboross.bukkitdev.skywars.commands.mainsubcommands.RankCommand;
@@ -51,7 +52,12 @@ public class MainCommand {
 
     private void initCommands() {
         base.addSubCommand(new JoinCommand(plugin));
-        base.addSubCommand(new KitCommand(plugin));
+        if (plugin.getConfiguration().isReplaceKitCommandWithGui()) {
+            base.addSubCommand(new KitGuiCommand(plugin, true));
+        } else {
+            base.addSubCommand(new KitCommand(plugin));
+            base.addSubCommand(new KitGuiCommand(plugin, false));
+        }
         base.addSubCommand(new LeaveCommand(plugin));
         base.addSubCommand(new StatusCommand(plugin));
         if (plugin.getConfiguration().isEnableScore()) {

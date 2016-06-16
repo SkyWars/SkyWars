@@ -49,6 +49,9 @@ public class MainConfigDefaults {
     public static final boolean LIMIT_START_MESSAGES_TO_ARENA = false;
     public static final boolean LIMIT_DEATH_MESSAGES_TO_ARENA = true;
     public static final boolean LIMIT_END_MESSAGES_TO_ARENA = false;
+    public static final boolean KIT_GUI_SHOW_UNAVAILABLE_KITS = true;
+    public static final boolean KIT_GUI_REPLACE_KIT_COMMAND = false;
+    public static final boolean KIT_GUI_AUTO_SHOW_ON_JOIN = true;
 
     static {
         Map<String, String> defaultArenaGamerules = new HashMap<>(1);

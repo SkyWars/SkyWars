@@ -17,6 +17,9 @@
 package net.daboross.bukkitdev.skywars.kits;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -32,7 +35,12 @@ import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKits;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.apache.commons.lang.Validate;
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -43,19 +51,27 @@ public class SkyKitConfiguration implements SkyKits {
     private final Map<String, SkyKit> kits = new LinkedHashMap<>();
     private final List<SkyKit> disabledKits = new ArrayList<>();
 
-    public SkyKitConfiguration(SkyWars plugin) {
+    public SkyKitConfiguration(SkyWars plugin) throws IOException, InvalidConfigurationException {
         this.plugin = plugin;
         load();
     }
 
-    private void load() {
+    private void load() throws IOException, InvalidConfigurationException {
         SkyStatic.debug("Loading kits");
         Path kitFile = plugin.getDataFolder().toPath().resolve("kits.yml");
         if (!Files.exists(kitFile)) {
             plugin.saveResource("kits.yml", true);
         }
-        FileConfiguration config = YamlConfiguration.loadConfiguration(kitFile.toFile());
+        YamlConfiguration config = new YamlConfiguration();
+        config.load(kitFile.toFile());
+        if (config.getInt("configuration-version") <= 0) {
+            updateVersion0To1(config);
+            config.options().header(String.format(KIT_HEADER)).indent(2);
+            config.save(kitFile.toFile());
+        }
+
         for (String key : config.getKeys(false)) {
+            if (key.equals("configuration-version")) continue;
             if (config.isConfigurationSection(key)) {
                 SkyKit kit;
                 try {
@@ -69,12 +85,44 @@ public class SkyKitConfiguration implements SkyKits {
                     disabledKits.add(kit);
                     continue;
                 }
-                kits.put(key.toLowerCase(), kit);
+                kits.put(ChatColor.stripColor(key.toLowerCase()), kit);
                 SkyStatic.debug("Loaded kit %s", kit);
             } else {
                 plugin.getLogger().log(Level.WARNING, "There is a non-kit value in the kits.yml file ''{0}''.", config.get(key));
             }
         }
+    }
+
+    private void updateVersion0To1(FileConfiguration config) throws IOException, InvalidConfigurationException {
+        FileConfiguration defaultConfig = new YamlConfiguration();
+        try (InputStream stream = plugin.getResourceAsStream("kits.yml"); Reader reader = new InputStreamReader(stream)) {
+            defaultConfig.load(reader);
+        }
+
+        for (String key : config.getKeys(false)) {
+            ConfigurationSection section = config.getConfigurationSection(key);
+            ConfigurationSection defaultSection = defaultConfig.getConfigurationSection(key);
+            if (section == null) {
+                // This will be warned against when actually loading the configuration.
+                // For now, let's just focus on updating the values which we can access.
+                continue;
+            }
+            if (!section.contains("description")) {
+                if (defaultSection != null && defaultSection.contains("description")) {
+                    section.set("description", defaultSection.get("description"));
+                } else {
+                    section.set("description", SkyTrans.get(TransKey.CONFIG_KIT_DEFAULT_DESCRIPTION, key));
+                }
+            }
+            if (!section.contains("totem")) {
+                if (defaultSection != null && defaultSection.contains("totem")) {
+                    section.set("totem", defaultSection.get("totem"));
+                } else {
+                    section.set("totem", KitConstants.DEFAULT_TOTEM);
+                }
+            }
+        }
+        config.set("configuration-version", 1);
     }
 
     @Override
@@ -113,7 +161,7 @@ public class SkyKitConfiguration implements SkyKits {
 
     @Override
     public SkyKit getKit(String name) {
-        return kits.get(name.toLowerCase());
+        return kits.get(ChatColor.stripColor(name.toLowerCase()));
     }
 
     @Override

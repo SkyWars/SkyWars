@@ -76,6 +76,9 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private boolean limitStartMessagesToArenaPlayers;
     private boolean limitDeathMessagesToArenaPlayers;
     private boolean limitEndMessagesToArenaPlayers;
+    private boolean showUnavailableKitsInGui;
+    private boolean replaceKitCommandWithGui;
+    private boolean showKitGuiOnJoin;
     private boolean multiverseCoreHookEnabled;
     private boolean worldeditHookEnabled;
     private boolean disableReport;
@@ -177,6 +180,11 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         limitStartMessagesToArenaPlayers = mainConfig.getSetBoolean(MainConfigKeys.LIMIT_START_MESSAGES_TO_ARENA, MainConfigDefaults.LIMIT_START_MESSAGES_TO_ARENA);
         limitDeathMessagesToArenaPlayers = mainConfig.getSetBoolean(MainConfigKeys.LIMIT_DEATH_MESSAGES_TO_ARENA, MainConfigDefaults.LIMIT_DEATH_MESSAGES_TO_ARENA);
         limitEndMessagesToArenaPlayers = mainConfig.getSetBoolean(MainConfigKeys.LIMIT_END_MESSAGES_TO_ARENA, MainConfigDefaults.LIMIT_END_MESSAGES_TO_ARENA);
+
+        // Kit GUI
+        showUnavailableKitsInGui = mainConfig.getSetBoolean(MainConfigKeys.KIT_GUI_SHOW_UNAVAILABLE_KITS, MainConfigDefaults.KIT_GUI_SHOW_UNAVAILABLE_KITS);
+        replaceKitCommandWithGui = mainConfig.getSetBoolean(MainConfigKeys.KIT_GUI_REPLACE_KIT_COMMAND, MainConfigDefaults.KIT_GUI_REPLACE_KIT_COMMAND);
+        showKitGuiOnJoin = mainConfig.getSetBoolean(MainConfigKeys.KIT_GUI_AUTO_SHOW_ON_JOIN, MainConfigDefaults.KIT_GUI_AUTO_SHOW_ON_JOIN);
 
         // Report disable
         disableReport = mainConfig.getConfig().getBoolean(MainConfigKeys.DISABLE_REPORT, MainConfigDefaults.DISABLE_REPORT);
@@ -455,6 +463,21 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     @Override
     public String[] getJoinSignLines() {
         return joinSignLines;
+    }
+
+    @Override
+    public boolean isShowUnavailableKitsInGui() {
+        return showUnavailableKitsInGui;
+    }
+
+    @Override
+    public boolean isReplaceKitCommandWithGui() {
+        return replaceKitCommandWithGui;
+    }
+
+    @Override
+    public boolean isShowKitGuiOnJoin() {
+        return showKitGuiOnJoin;
     }
 
     private static class Names {

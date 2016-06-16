@@ -31,6 +31,9 @@ import net.daboross.bukkitdev.skywars.api.kits.impl.SkyKitItemConfig;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyNameLoreMeta;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyPotionMeta;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyRawDataMeta;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
+import net.daboross.bukkitdev.skywars.util.CrossVersion;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -40,6 +43,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
+import static net.daboross.bukkitdev.skywars.kits.KitConstants.DEFAULT_TOTEM;
 
 public class SkyKitBukkitDecode {
 
@@ -52,7 +56,25 @@ public class SkyKitBukkitDecode {
                 items.add(decodeItem(rawItem));
             }
         }
-        return new SkyKitConfig(items, Arrays.asList(armor), name, cost, permission);
+        ItemStack totem = CrossVersion.getItemInHand(inventory);
+        Material totemType = totem == null ? null : totem.getType();
+        if (totemType == null) {
+            if (items.isEmpty()) {
+                for (SkyKitItem item : armor) {
+                    if (item != null) {
+                        totemType = item.getMaterial();
+                        break;
+                    }
+                }
+                if (totemType == null) {
+                    totemType = DEFAULT_TOTEM;
+                }
+            } else {
+                totemType = items.get(0).getMaterial();
+            }
+        }
+        String description = SkyTrans.get(TransKey.CONFIG_KIT_DEFAULT_DESCRIPTION, name);
+        return new SkyKitConfig(items, Arrays.asList(armor), name, description, totemType, cost, permission);
     }
 
     private static SkyKitItem[] decodeArmor(ItemStack[] itemStacks) {

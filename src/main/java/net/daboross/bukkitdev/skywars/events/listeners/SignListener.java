@@ -125,10 +125,17 @@ public class SignListener implements Listener {
                 if (!plugin.getCurrentGameTracker().isInGame(uuid) && !plugin.getGameQueue().inQueue(uuid)) {
                     p.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_CONFIRMATION));
                     plugin.getGameQueue().queuePlayer(p);
+                    if (plugin.getConfiguration().isShowKitGuiOnJoin() && p.hasPermission("skywars.kitgui")) {
+                        plugin.getKitGui().openKitGui(p);
+                    }
                 } else {
                     // Should be pretty impossible to click a join sign while already in a game,
                     // so just assuming this message is correct should be fine.
                     p.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_ALREADY_QUEUED));
+                    // Show them the kit GUI anyways.
+                    if (plugin.getConfiguration().isShowKitGuiOnJoin() && p.hasPermission("skywars.kitgui")) {
+                        plugin.getKitGui().openKitGui(p);
+                    }
                 }
             }
         }

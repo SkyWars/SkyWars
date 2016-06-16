@@ -242,6 +242,28 @@ only-broadcast-to-players-in-arena:
   # player(s) who won the game, and the last player who died.
   end: false
 
+# Kit GUI subsection
+kit-gui:
+  # The Kit GUI is an visual "inventory" menu shown which contains one "totem"
+  # item per kit.
+
+  # If true, kits unavailable to the player (either due to lack of permission
+  # or lack of funds) will be shown in the bottom of the kit GUI, with a
+  # 9-space row separating them from the available kits.
+  show-unavailable-kits: true
+
+  # By default, the kit GUI is accessible via a command: `/sw kitgui`. If this
+  # is enabled, the `kitgui` command will no longer exist, and `/sw kit` will
+  # launch the kit GUI rather than show a list of kits available.
+  replace-kit-command: false
+
+  # If this is true, the kit GUI will be launched (shown to the player)
+  # whenever the player joins the queue or clicks a join sign. Note that the
+  # GUI will be shown even if the player is already in the queue: if this is
+  # enabled, join signs can also be used as a "kit sign" which launches the
+  # kit GUI when clicked.
+  auto-show-on-join: true
+
 # Hooks available to hook into separate plugins
 hooks:
   # This hook is supposed to be for hooking into the Multiverse plugin, but it

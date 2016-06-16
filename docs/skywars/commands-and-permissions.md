@@ -8,10 +8,15 @@ Commands and Permissions
 | **/sw** **join**      | skywars.join       | Joins the queue for the next game |
 | **/sw** **leave**     | skywars.leave      | Removes you from the queue or the game you're in |
 | **/sw** **kit**       | skywars.kit        | Lists kits, and lets you choose one |
+| **/sw** **kitgui**    | skywars.kitgui     | Opens up a visual kit menu. |
 | **/sw** **status**    | skywars.status     | Displays information on current games and queue status |
 | **/sw** **version**   | skywars.version    | Displays the plugin's version |
 | **/sw** **rank** `<name>` | skywars.rank   | Displays player stats for yourself or someone else |
 | **/sw** **top**       | skywars.top        | Shows top 10 players with most score |
+
+Note: If **kit-gui.replace-kit-command** is enabled in **main-config.yml**,
+the **/sw kit** will be replaced with **/sw kitgui** and **/sw kitgui** will
+no longer function as a command.
 
 ### Admin Commands
 
@@ -58,6 +63,7 @@ For a full guide on **/sws createkit**, check out [Creating a new kit](https://d
 | skywars.rank      | Everyone          | **/sw rank**          |
 | skywars.rank.other | Everyone         | **/sw rank <name>**   |
 | skywars.kit       | OP Only           | **/sw kit**           |
+| skywars.kitgui    | OP Only           | **/sw kitgui**        |
 | skywars.lobby     | OP Only           | **/sw lobby**         |
 | skywars.testkit   | OP Only           | **/sw testkit**       |
 | skywars.setlobby  | OP Only           | **/sw setlobby**      |
@@ -72,4 +78,5 @@ For a full guide on **/sws createkit**, check out [Creating a new kit](https://d
 Note: some permissions have extra functionality:
 
 | Permission | Function |
+| skywars.kitgui    | This permission also allows having a Kit GUI shown automatically when joining with `kit-gui.auto-show-on-join` enabled in `main-config.yml` |
 | skywars.join      | This permission also allows joining the game by clicking on join signs |

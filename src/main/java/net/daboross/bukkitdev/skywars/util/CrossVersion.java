@@ -28,6 +28,8 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scoreboard.Team;
 
 public class CrossVersion {
@@ -113,6 +115,18 @@ public class CrossVersion {
             team.removeEntry(player.getName());
         } catch (NoSuchMethodError ignored) {
             team.removePlayer(player);
+        }
+    }
+
+    /**
+     * Supports Bukkit earlier than Minecraft 1.9
+     */
+    @SuppressWarnings("deprecation")
+    public static ItemStack getItemInHand(PlayerInventory inventory) {
+        try {
+            return inventory.getItemInMainHand();
+        } catch (NoSuchMethodError ignored) {
+            return inventory.getItemInHand();
         }
     }
 }

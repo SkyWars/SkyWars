@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014 Dabo Ross <http://www.daboross.net/>
+ * Copyright (C) 2016 Dabo Ross <http://www.daboross.net/>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,7 +16,6 @@
  */
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
-import java.util.UUID;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -26,32 +25,18 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class JoinCommand extends SubCommand {
+public class KitGuiCommand extends SubCommand {
 
     private final SkyWars plugin;
 
-    public JoinCommand(SkyWars plugin) {
-        super("join", false, "skywars.join", SkyTrans.get(TransKey.CMD_JOIN_DESCRIPTION));
+    public KitGuiCommand(SkyWars plugin, boolean replaceKitCommand) {
+        super(replaceKitCommand ? "kit" : "kitgui", false, "skywars.kitgui", SkyTrans.get(TransKey.CMD_KIT_GUI_DESCRIPTION));
         this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
         this.plugin = plugin;
     }
 
     @Override
-    public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        UUID uuid = ((Player) sender).getUniqueId();
-        if (plugin.getCurrentGameTracker().isInGame(uuid)) {
-            sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_IN_GAME));
-        } else if (plugin.getGameQueue().inQueue(uuid)) {
-            sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_ALREADY_QUEUED));
-            if (plugin.getConfiguration().isShowKitGuiOnJoin() && sender.hasPermission("skywars.kitgui")) {
-                plugin.getKitGui().openKitGui((Player) sender);
-            }
-        } else {
-            sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_CONFIRMATION));
-            plugin.getGameQueue().queuePlayer((Player) sender);
-            if (plugin.getConfiguration().isShowKitGuiOnJoin() && sender.hasPermission("skywars.kitgui")) {
-                plugin.getKitGui().openKitGui((Player) sender);
-            }
-        }
+    public void runCommand(final CommandSender sender, final Command baseCommand, final String baseCommandLabel, final String subCommandLabel, final String[] subCommandArgs) {
+        plugin.getKitGui().openKitGui((Player) sender);
     }
 }

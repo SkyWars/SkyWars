@@ -5,6 +5,8 @@ Complete Reference: kits.yml
 KIT_NAME:
     cost: KIT_COST
     permission: KIT_PERMISSION
+    totem: ITEM_TYPE
+    description: KIT_DESCRIPTION
     items:
         - {
             type: ITEM_TYPE,
@@ -48,6 +50,7 @@ KIT_NAME:
 | KIT_NAME | N/A | Name that identifies the kit. Can be any YAML valid string, as long as it can be typed by players using **/sw kit**. |
 | KIT_COST | 0   | Cost to use the kit. This is charged to any player using the kit each game they use it. Can be any integer equal to or more than 0. |
 | KIT_PERMISSION | N/A | Permission to use the kit. Only players with this permission will be able to choose this kit. Can be any string accepted by your permissions plugin. If not specified, anyone with access to **/sw kit** will be able to use the kit. |
+| KIT_DESCRIPTION | &4A kit: &8<name>&4. | A description to show in the kit GUI in the item lore of the kit totem. |
 | items: | [] | List of items to be given to players using the kit, in the inventory. Any number of items can be specified. Default is an empty list. |
 | ITEM_TYPE | N/A | Material of the item to be included in the kit. Needs to be a valid [Bukkit Material](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html) value. |
 | ITEM_AMOUNT | 1 | Size of item stack to be placed in inventory. This can be any integer between 1 and 64, and is not limited by regular stack size of items. |

@@ -30,6 +30,7 @@ import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
 import net.daboross.bukkitdev.skywars.api.game.SkyGameHandler;
+import net.daboross.bukkitdev.skywars.api.kits.SkyKitGui;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKits;
 import net.daboross.bukkitdev.skywars.api.location.SkyLocationStore;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
@@ -54,10 +55,12 @@ import net.daboross.bukkitdev.skywars.game.CurrentGames;
 import net.daboross.bukkitdev.skywars.game.GameHandler;
 import net.daboross.bukkitdev.skywars.game.GameIDHandler;
 import net.daboross.bukkitdev.skywars.game.GameQueue;
+import net.daboross.bukkitdev.skywars.kits.KitGuiManager;
 import net.daboross.bukkitdev.skywars.kits.SkyKitConfiguration;
 import net.daboross.bukkitdev.skywars.listeners.AttackerStorageListener;
 import net.daboross.bukkitdev.skywars.listeners.BuildingLimiter;
 import net.daboross.bukkitdev.skywars.listeners.CommandWhitelistListener;
+import net.daboross.bukkitdev.skywars.listeners.KitGuiListener;
 import net.daboross.bukkitdev.skywars.listeners.MobSpawnDisable;
 import net.daboross.bukkitdev.skywars.listeners.PlayerJoinInArenaWorldListener;
 import net.daboross.bukkitdev.skywars.listeners.PlayerStateListener;
@@ -91,6 +94,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     private SkyEconomyHook economyHook;
     private SkyEconomyGameRewards ecoRewards;
     private SkyKits kits;
+    private SkyKitGui kitGui;
     private GameQueue gameQueue;
     private CurrentGames currentGameTracker;
     private GameIDHandler idHandler;
@@ -189,7 +193,12 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         } catch (IOException | InvalidConfigurationException | SkyConfigurationException ex) {
             throw new StartupFailedException("Failed to load chest configuration", ex);
         }
-        kits = new SkyKitConfiguration(this);
+        try {
+            kits = new SkyKitConfiguration(this);
+        } catch (IOException | InvalidConfigurationException ex) {
+            throw new StartupFailedException("Failed to load kit configuration", ex);
+        }
+        kitGui = new KitGuiManager(this);
         kitQueueNotifier = new KitQueueNotifier(this);
         kitApplyListener = new KitApplyListener(this);
         new BukkitRunnable() {
@@ -205,7 +214,8 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         registerListeners(pm, attackerStorage, new PlayerStateListener(this),
                 new PortalListener(this), new PlayerJoinInArenaWorldListener(this),
                 new CommandWhitelistListener(this), new BuildingLimiter(this),
-                new MobSpawnDisable(), chatListener, signListener);
+                new MobSpawnDisable(), new KitGuiListener(this), chatListener,
+                signListener);
         enabledCorrectly = true;
     }
 
@@ -399,6 +409,11 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     @Override
     public SkyKits getKits() {
         return kits;
+    }
+
+    @Override
+    public SkyKitGui getKitGui() {
+        return kitGui;
     }
 
     @Override
