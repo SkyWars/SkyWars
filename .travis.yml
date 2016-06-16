@@ -1,8 +1,15 @@
 language: java
-install: mvn --fail-never clean package
-script: mvn clean package
+sudo: false
+install:
+  - git clone https://github.com/SkyWars/SkyWars-Translations.git
+  - git clone https://github.com/SkyWars/SkyWars-API.git
+# `|| true` should stop travis from recognizing any build failures at this point.
+  - (cd SkyWars-Translations && mvn) && (cd SkyWars-API && mvn) && mvn || true
+script:
+  - (cd SkyWars-Translations && mvn)
+  - (cd SkyWars-API && mvn)
+  - mvn
 jdk:
-  - oraclejdk8
-  - oraclejdk7
   - openjdk7
-  - openjdk8
+  - oraclejdk7
+  - oraclejdk8
