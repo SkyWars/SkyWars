@@ -1,5 +1,7 @@
 ![SkyWars](https://dabo.guru/logo/SkyWars.png)
 
+[![Travis](https://travis-ci.org/SkyWars/SkyWars.svg?branch=develop)](https://travis-ci.org/SkyWars/SkyWars)
+
 ### SkyWars is back!
 
 SkyWars is back! The first publicly released SkyWars plugin is now receiving intermittent updates, and has full support for Minecraft 1.9.
