@@ -116,6 +116,12 @@ public class SignListener implements Listener {
                     && testSign((Sign) state)) {
                 Player p = evt.getPlayer();
                 UUID uuid = p.getUniqueId();
+
+                if (!p.hasPermission("skywars.join")) {
+                    p.sendMessage(SkyTrans.get(TransKey.NO_PERMISSION_CANNOT_USE_JOIN_SIGN));
+                    return;
+                }
+
                 if (!plugin.getCurrentGameTracker().isInGame(uuid) && !plugin.getGameQueue().inQueue(uuid)) {
                     p.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_CONFIRMATION));
                     plugin.getGameQueue().queuePlayer(p);

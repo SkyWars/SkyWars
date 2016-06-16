@@ -68,3 +68,8 @@ For a full guide on **/sws createkit**, check out [Creating a new kit](https://d
 | skywars.setup     | OP Only           | **/sws**              |
 | skywars.forcestart| OP Only           | **/sw forcestart**    |
 | skywars.setsign   | OP Only           | Placing join signs    |
+
+Note: some permissions have extra functionality:
+
+| Permission | Function |
+| skywars.join      | This permission also allows joining the game by clicking on join signs |
