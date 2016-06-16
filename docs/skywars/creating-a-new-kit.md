@@ -15,7 +15,7 @@ Warning: Make sure you've restarted the server since the last time you edited `k
 
 4. If you have the Kit GUI enabled on your server, the item in your main hand will be used as the Kit's totem, the item representing the kit in the GUI. You can modify the description for the kit and change the totem in the configuration, `kits.yml`.
 
-4. You're done! The kit will be available immediately.
+5. You're done! The kit will be available immediately.
 
 Example usages:
 
