@@ -1,7 +1,5 @@
 ![SkyWars](https://dabo.guru/logo/SkyWars.png)
 
-[![Travis](https://travis-ci.org/SkyWars/SkyWars.svg?branch=develop)](https://travis-ci.org/SkyWars/SkyWars)
-
 ### SkyWars is back!
 
 SkyWars is back! The first publicly released SkyWars plugin is now receiving intermittent updates, and has full support for Minecraft 1.9.
@@ -12,7 +10,9 @@ If you were previously using SkyWars v2.0.1 or earlier, SkyWars will transfer al
 
 ### PSA: Vote on new features
 
-I haven't been completely active lately with updates, but I'll be adding things when I can! This [poll](https://strawpoll.me/7055798) will help decide what exactly I work on first, so if you've used SkyWars, or plan to, please vote!
+I haven't been completely active lately with updates, but I'll be adding things when I can. Due to my limited time, I'll be implementing the features with the highest votes first, on the [feature poll](http://www.strawpoll.me/embed_1/10498111).
+
+Note: There's a new poll as of June 15th, 2016! If you haven't voted since then, [click here](http://www.strawpoll.me/embed_1/10498111)!
 
 ### Features
 * Integrates seamlessly into any server, survival, creative or otherwise.

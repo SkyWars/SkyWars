@@ -22,25 +22,24 @@ SkyWars Tasks
 Future Feature Poll Features
 ============================
 
-New:
+Not on the feature poll:
 
-[ ] Option to place a specific block to mark spawn location, rather than using `/sws addspawn`
-[ ] Option to allow spectating on ongoing games
-    - Note if this is implemented: ensure to update code which limits game start/end/death messages to people in arena.
-[ ] Win/kill/death scoreboard w/ optional scoreboard GUI
-    - Note: maybe also option to sort leaderboard by wins or kill/death ratio?
-[ ] Sidebar in game showing players left on each team
+[ ] Option to place a specific block type to determine spawn rather than using a command when creating custom arenas.
 
-On last poll, but not yet added:
+Current Feature Poll:
 
-[ ] Inventory GUI for choosing a kit
-[ ] Timer to start arena (w/ setting for minimum player count)
-[ ] Voting on what map to play
+[ ] Spectating on games after death & via a spectate command
+[ ] Win/Kill/Death Scoreboard on side of screen
+[ ] Sidebar in game showing players left in game & kill counts
+[ ] Timer to start arena & setting for minimum player count
+[ ] Voting on which map to play next
 [ ] Queued players waiting in map
-[ ] Limiting arena chat & messages to players playing
-[ ] Signs to pick kits (w/ kit cost shown)
-[ ] Queued players waiting inside map
-[ ] Ability to select large area where stepping will join the queue (currently only 1 block spaces are supported)
+[ ] Separate in-game chat rooms
+[ ] Ability to use large area as portal to join queue
+[ ] Command to reload configurations
+[ ] Buy-once use-forever kits
+[ ] BungeeCord Integration: Join signs & commands on other servers
+[ ] Signs which select a kit when clicked
 
 Finished:
 
@@ -48,3 +47,4 @@ Finished:
 [x] Filling chests with random items
 [x] Command to view top 10 players ranked by score
 [x] Limiting death & game start messages to players playing
+[x] Inventory GUI for choosing a kit

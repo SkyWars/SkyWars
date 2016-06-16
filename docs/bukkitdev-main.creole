@@ -10,7 +10,9 @@ If you were previously using SkyWars v2.0.1 or earlier, SkyWars will transfer al
 
 == PSA: Vote on new features
 
-I haven't been completely active lately with updates, but I'll be adding things when I can! This [[https://strawpoll.me/7055798|poll]] will help decide what exactly I work on first, so if you've used SkyWars, or plan to, please vote!
+I haven't been completely active lately with updates, but I'll be adding things when I can. Due to my limited time, I'll be implementing the features with the highest votes first, on the [[http://www.strawpoll.me/embed_1/10498111|feature poll]].
+
+Note: There's a new poll as of June 15th, 2016! If you haven't voted since then, [[http://www.strawpoll.me/embed_1/10498111|click here]]!
 
 == Features
 
