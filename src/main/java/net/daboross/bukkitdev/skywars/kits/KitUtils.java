@@ -22,6 +22,9 @@ import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 
 public class KitUtils {
 
+    private KitUtils() {
+    }
+
     public static String formatKitList(Iterable<SkyKit> kits) {
         StringBuilder builder = new StringBuilder();
         String comma = SkyTrans.get(TransKey.KITS_KIT_LIST_COMMA);

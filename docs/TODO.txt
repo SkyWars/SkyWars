@@ -29,6 +29,7 @@ New:
     - Note if this is implemented: ensure to update code which limits game start/end/death messages to people in arena.
 [ ] Win/kill/death scoreboard w/ optional scoreboard GUI
     - Note: maybe also option to sort leaderboard by wins or kill/death ratio?
+[ ] Sidebar in game showing players left on each team
 
 On last poll, but not yet added:
 

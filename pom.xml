@@ -49,6 +49,8 @@
     </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.worldedit-version>6.1</project.worldedit-version>
+        <project.bukkit-version>1.9.4-R0.1-SNAPSHOT</project.bukkit-version>
     </properties>
 
     <repositories>
@@ -89,7 +91,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.9.4-R0.1-SNAPSHOT</version>
+            <version>${project.bukkit-version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -101,7 +103,7 @@
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
-            <version>6.1</version>
+            <version>${project.worldedit-version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -275,7 +277,7 @@
                         <lib>${java.home}/lib/rt.jar</lib>
 
                         <!-- Bukkit -->
-                        <lib>${settings.localRepository}/org/bukkit/bukkit/1.8.8-R0.1-SNAPSHOT/bukkit-1.8.8-R0.1-SNAPSHOT.jar</lib>
+                        <lib>${settings.localRepository}/org/bukkit/bukkit/${project.bukkit-version}/bukkit-${project.bukkit-version}.jar</lib>
 
                         <!-- Bukkit Apache Library -->
                         <lib>${settings.localRepository}/commons-lang/commons-lang/2.6/commons-lang-2.6.jar</lib>
@@ -284,8 +286,8 @@
                         <lib>${settings.localRepository}/net/milkbowl/vault/VaultAPI/1.5/VaultAPI-1.5.jar</lib>
 
                         <!-- WorldEdit -->
-                        <lib>${settings.localRepository}/com/sk89q/worldedit/worldedit-bukkit/6.1/worldedit-bukkit-6.1.jar</lib>
-                        <lib>${settings.localRepository}/com/sk89q/worldedit/worldedit-core/6.1/worldedit-core-6.1.jar</lib>
+                        <lib>${settings.localRepository}/com/sk89q/worldedit/worldedit-bukkit/${project.worldedit-version}/worldedit-bukkit-${project.worldedit-version}.jar</lib>
+                        <lib>${settings.localRepository}/com/sk89q/worldedit/worldedit-core/${project.worldedit-version}/worldedit-core-${project.worldedit-version}.jar</lib>
                     </libs>
                     <options>
                         <!-- Keep plugin classes -->

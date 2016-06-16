@@ -68,6 +68,9 @@ And now, testing!
 * Confirm `/sw status` accurately displays both people in queue and running games
 * Confirm `/sw status` doesn't display games after they have ended
 * Confirm `/sw version` accurately displays plugin version
+* Create a join sign, and confirm the sign is formatted
+ * Confirm clicking on the sign enters you into the queue
+ * Confirm the sign is updated when `/sw join` is used to enter the queue.
 * Confirm in-game death messages display correctly when someone is directly killed
 * Confirm in-game death messages display correctly when someone is pushed into the void
 * Confirm in-game death messages display correctly when someone kills themself through drowning

@@ -16,7 +16,6 @@
  */
 package net.daboross.bukkitdev.skywars.score;
 
-import com.google.common.base.Strings;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -44,6 +43,7 @@ import net.daboross.bukkitdev.skywars.api.storage.Callback;
 import net.daboross.bukkitdev.skywars.api.storage.ScoreCallback;
 import net.daboross.bukkitdev.skywars.api.storage.SkyStorageBackend;
 import net.daboross.bukkitdev.skywars.player.AbstractSkyPlayer;
+import net.daboross.bukkitdev.skywars.util.CopiedStringUtils;
 import org.bukkit.entity.Player;
 
 public class SQLScoreStorage extends SkyStorageBackend {
@@ -345,7 +345,7 @@ public class SQLScoreStorage extends SkyStorageBackend {
                                 "     FROM `" + tableName + "`" +
                                 "     JOIN (SELECT @rownum := 0) r" +
                                 "   ORDER BY user_score DESC, uuid) ranked_user" +
-                                " WHERE ranked_user.uuid IN (" + Strings.repeat("?, ", uuidList.size() - 1) + "?);"
+                                " WHERE ranked_user.uuid IN (" + CopiedStringUtils.repeat("?, ", uuidList.size() - 1) + "?);"
                 )) {
                     // This is avoiding using statement.setArray(connection.createArrayOf()), which is not supported by jdbc.
                     int parameterNum = 1;

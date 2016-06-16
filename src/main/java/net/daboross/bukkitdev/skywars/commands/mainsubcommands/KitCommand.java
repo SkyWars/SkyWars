@@ -66,16 +66,16 @@ public class KitCommand extends SubCommand {
                 return;
             }
             if (kit.getPermission() != null && !p.hasPermission(kit.getPermission())) {
-                p.sendMessage(SkyTrans.get(TransKey.CMD_KIT_NO_ACCESS, kit.getName()));
+                sender.sendMessage(SkyTrans.get(TransKey.CMD_KIT_NO_ACCESS, kit.getName()));
                 return;
             }
             int cost = kit.getCost();
             if (cost == 0 || plugin.getEconomyHook().canAfford(p, cost)) {
                 skyPlayer.setSelectedKit(kit);
                 if (cost == 0) {
-                    p.sendMessage(SkyTrans.get(TransKey.CMD_KIT_CHOSE_KIT, kit.getName()));
+                    sender.sendMessage(SkyTrans.get(TransKey.CMD_KIT_CHOSE_KIT, kit.getName()));
                 } else {
-                    p.sendMessage(SkyTrans.get(TransKey.CMD_KIT_CHOSE_KIT_WITH_COST, kit.getName(), kit.getCost()));
+                    sender.sendMessage(SkyTrans.get(TransKey.CMD_KIT_CHOSE_KIT_WITH_COST, kit.getName(), kit.getCost()));
                 }
             } else {
                 double diff = cost - plugin.getEconomyHook().getAmount(p);
