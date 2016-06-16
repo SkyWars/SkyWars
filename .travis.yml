@@ -1,0 +1,8 @@
+language: java
+install: mvn --fail-never clean package
+script: mvn clean package
+jdk:
+  - oraclejdk8
+  - oraclejdk7
+  - openjdk7
+  - openjdk8
