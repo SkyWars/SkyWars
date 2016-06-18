@@ -138,5 +138,7 @@ public class LocationStore implements Listener, SkyLocationStore {
     }
 
     @Override
-    public List<SkyBlockLocation> getSigns() { return signs; }
+    public List<SkyBlockLocation> getSigns() {
+        return signs;
+    }
 }
