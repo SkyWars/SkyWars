@@ -54,7 +54,7 @@ public class GistReport {
     private static final Object GIST_API_URL_LOCK = new Object();
     private static final String GIST_API = "https://api.github.com/gists";
     private static URL GIST_API_URL;
-    private static final String ISGD_API = "http://is.gd/create.php?format=simple&url=%s";
+    private static final String ISGD_API = "https://is.gd/create.php?format=simple&url=%s";
 
     private GistReport() {
     }
@@ -230,7 +230,13 @@ public class GistReport {
         URLConnection connection;
         try {
             connection = requestUrl.openConnection();
-            return readConnection(connection);
+            String isGdUrl = readConnection(connection);
+            if (isGdUrl.length() > url.length()) {
+                logger.log(Level.FINE, "[SkyGistReport] is.gd response longer than actual url.");
+                return url; // Perhaps isgd is malfunctioning, and an error message has been returned?
+            } else {
+                return isGdUrl;
+            }
         } catch (IOException ex) {
             logger.log(Level.FINE, "[SkyGistReport] Failed to read is.gd response", ex);
             return url;
