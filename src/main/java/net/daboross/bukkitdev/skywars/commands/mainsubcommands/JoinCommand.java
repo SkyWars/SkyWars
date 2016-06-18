@@ -43,15 +43,11 @@ public class JoinCommand extends SubCommand {
             sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_IN_GAME));
         } else if (plugin.getGameQueue().inQueue(uuid)) {
             sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_ALREADY_QUEUED));
-            if (plugin.getConfiguration().isShowKitGuiOnJoin() && sender.hasPermission("skywars.kitgui")) {
-                plugin.getKitGui().openKitGui((Player) sender);
-            }
+            // Kit GUI is automatically shown when joining, but it should also be shown if already queued.
+            plugin.getKitGui().autoOpenGuiIfApplicable((Player) sender);
         } else {
             sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_CONFIRMATION));
             plugin.getGameQueue().queuePlayer((Player) sender);
-            if (plugin.getConfiguration().isShowKitGuiOnJoin() && sender.hasPermission("skywars.kitgui")) {
-                plugin.getKitGui().openKitGui((Player) sender);
-            }
         }
     }
 }

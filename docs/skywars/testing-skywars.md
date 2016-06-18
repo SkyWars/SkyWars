@@ -26,13 +26,14 @@ Before testing:
  * BOSEconomy works for pre-1.9 minecraft versions, and is simple to test and work with.
  * RoyalEconomy requires manual compilation, as it isn't a released plugin. However, it's an open source project, and it works well.
 * Set `economy.enabled` to `true` in `plugins/SkyWars/main-config.yml`
-* Update `permissions.yml` to enable usage of `/sw kit` by non-ops.
+* Update `permissions.yml` to enable usage of `/sw kit` and `/sw kitgui` by non-ops:
 
 ```yaml
-skywars.kit:
+player.basics:
     default: true
-skywars.kitgui:
-    default: true
+    children:
+        skywars.kit: true
+        skywars.kitgui: true
 ```
 
 And now, testing!

@@ -125,6 +125,15 @@ public class KitGuiManager implements SkyKitGui {
     }
 
     @Override
+    public boolean autoOpenGuiIfApplicable(final Player player) {
+        if (plugin.getConfiguration().isShowKitGuiOnJoin() && player.hasPermission("skywars.kitgui")) {
+            openKitGui(player);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public String getKitGuiTitle() {
         return kitGuiTitle;
     }
