@@ -185,7 +185,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
                 economyHook = new SkyEconomyHook(this);
                 ecoRewards = new SkyEconomyGameRewards(this);
             } catch (EconomyFailedException ex) {
-                getLogger().log(Level.WARNING, "{0}. Couldn't enable economy hook.", ex.getMessage());
+                getLogger().log(Level.WARNING, "{0}. Could not enable economy hook.", ex.getMessage());
             }
         }
         try {
