@@ -82,13 +82,16 @@ public class GistReport {
         appendRawConfig(build, plugin);
 
         build.append("\n```\n\n#### kits.yml\n```\n");
-        appendFile(build, plugin.getDataFolder().toPath().resolve("kits.yml"));
+        appendFile(build, plugin.getDataPath().resolve("kits.yml"));
 
         build.append("\n```\n\n#### messages.yml\n```\n");
-        appendFile(build, plugin.getDataFolder().toPath().resolve("messages.yml"));
+        appendFile(build, plugin.getDataPath().resolve("messages.yml"));
 
         build.append("\n```\n\n#### locations.yml\n```\n");
-        appendFile(build, plugin.getDataFolder().toPath().resolve("locations.yml"));
+        appendFile(build, plugin.getDataPath().resolve("locations.yml"));
+
+        build.append("\n```\n\n#### chests.yml\n```\n");
+        appendFile(build, plugin.getDataPath().resolve("chests.yml"));
         build.append("\n```\n");
 
         for (SkyArenaConfig arena : configuration.getEnabledArenas()) {
@@ -233,7 +236,9 @@ public class GistReport {
             String isGdUrl = readConnection(connection);
             if (isGdUrl.length() > url.length()) {
                 logger.log(Level.FINE, "[SkyGistReport] is.gd response longer than actual url.");
-                return url; // Perhaps isgd is malfunctioning, and an error message has been returned?
+                // In the past, is.gd has errored sometimes and returned a large HTML error page.
+                // If that happens again, it'll be a better idea just to return *a* working url, even if it isn't shortened.
+                return url;
             } else {
                 return isGdUrl;
             }
