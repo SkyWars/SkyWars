@@ -50,7 +50,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.worldedit-version>6.1</project.worldedit-version>
-        <project.bukkit-version>1.9.4-R0.1-SNAPSHOT</project.bukkit-version>
+        <project.bukkit-dir-version>1.9.4-R0.1-SNAPSHOT</project.bukkit-dir-version>
+        <project.bukkit-version>1.9.4-R0.1-20160603.113520-25</project.bukkit-version>
     </properties>
 
     <repositories>
@@ -277,7 +278,7 @@
                         <lib>${java.home}/lib/rt.jar</lib>
 
                         <!-- Bukkit -->
-                        <lib>${settings.localRepository}/org/bukkit/bukkit/${project.bukkit-version}/bukkit-${project.bukkit-version}.jar</lib>
+                        <lib>${settings.localRepository}/org/bukkit/bukkit/${project.bukkit-dir-version}/bukkit-${project.bukkit-version}.jar</lib>
 
                         <!-- Bukkit Apache Library -->
                         <lib>${settings.localRepository}/commons-lang/commons-lang/2.6/commons-lang-2.6.jar</lib>
@@ -310,8 +311,8 @@
                         <option>-keepattributes *Annotation*</option>
 
                         <!-- Don't obfuscate or optimize, we just want to remove unused classes/methods -->
+						<!-- Actually, optimizing seems to be OK. It makes the jar smaller, and doesn't mess with the public API at all -->
                         <option>-dontobfuscate</option>
-                        <option>-dontoptimize</option>
 
                         <!-- This is for the errors caused by nmsblocks/ in WorldEdit -->
                         <option>-ignorewarnings</option>
