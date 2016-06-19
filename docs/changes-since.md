@@ -1,3 +1,24 @@
+Changes since 2.1.4
+-------------------
+
+SkyWars:
+- Add support for limiting start/win/death in an arena to only players in that arena
+  - Enable death-message-limiting by default - deaths in game will only be displayed to those in that game.
+- Fix players without the `skywars.join` permission being able to use join signs
+- Implement an inventory-based kit-choosing GUI.
+  - Each kit now has a "totem," and "description" configuration setting, which are used as the display item and lore for the kit in the kitGUI, respectively.
+  - Add configuration options to display kit gui...:
+    - with a `/sw kitgui` command
+    - with the `/sw kit` command (replacing the command kit interface completely)
+    - or, automatically whenever joining the queue (or clicking a join sign when already in the queue)
+  - The `/sw kitgui` and automatic-showing are enabled by default for players with the `skywars.kitgui` permission (OP-only by default)
+- Fix `/sw report` not working with the new `is.gd` API changes.
+- Fix players always facing one direction when teleporting to the lobby. SkyWars now correctly applies the pitch/yaw.
+
+SkyWars-API:
+- Allow more optimization for the final SkyWars plugin jar file. This means a possibly faster and definitely smaller jar, but if you've been depending on SkyWars.jar from another plugin, this may break that dependency.
+- Note that as long as you are depending on SkyWars-API.jar, and using all the public interfaces defined in that, you'll be fine. All of the API interfaces and methods are exempt from the optimization, and will work fine in any setting.
+
 Changes since 2.1.3
 -------------------
 
@@ -16,33 +37,3 @@ SkyWars:
 
 SkyWars-Translations:
 - Add a second line to the `/sws save` saved message, to clarify when SkyWars renames arena to avoid naming conflict.
-
-Changes since 2.1.1
--------------------
-
-SkyWars:
-- Add score leaderboard system!
-- Add `/sw top` command to show top 10 highest ranked players (with most score).
-- Add `/sw rank` command to view your own or someone else's score and rank.
-  - Add new configuration option for how often personal rank is updated when using SQL score backend.
-- Add support for replacing `{skywars.userrank}` with rank in any chat format (added to chat format via separate chat plugin).
-- Add chest randomization, with new `chests.yml` configuration file.
-  - Chest randomization is not enabled at all by default.
-  - Default `chests.yml` contains a minimal number of items this update. It is recommended to add more items if you enable it.
-- Add enabling chest randomizer per-chest with configuration options in each `arena-name.yml` file.
-  - Chests are identified by their relative x, y and z positions in the arena.
-- Add ability to configure items with different chance to occur and different values in chest randomization, and ability to set total "value" each chest will contain when using randomizer.
-- Remove unused multiverse-inventories hook configuration option.
-- Fix `/sws update-arena` to actually successfully run.
-- Fix bug where all kit costs were removed when using `/sws createkit`.
-- Fix inaccurate death messages when player is damaged before entering a match, and then jumps into void.
-- Fix NullPointerException which occurs after using `/reload` or a plugin manager to reload SkyWars.
-
-SkyWars-API:
-- Add easy-to-access API method for getting top players with most score.
-
-SkyWars-Translations:
-- Update Dutch translations - thanks @riassmismans!
-- Add new translations for `/sw top` and `/sw rank`.
-- Add message to `/sw cancelall` for when there are no arenas running.
-- Modify English `/sws` messages to be less confusing, changes not translated yet.
