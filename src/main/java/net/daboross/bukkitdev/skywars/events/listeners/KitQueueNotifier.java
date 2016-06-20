@@ -41,12 +41,14 @@ public class KitQueueNotifier {
         SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(info.getPlayer());
         SkyKit kit = skyPlayer.getSelectedKit();
         if (kit == null) {
-            SkyKits kits = plugin.getKits();
-            List<SkyKit> availableKits = kits.getAvailableKits(info.getPlayer());
-            if (!availableKits.isEmpty() && !shownKitGui) {
-                // This message shouldn't be sent if the kit GUI is opened.
-                info.getPlayer().sendMessage(SkyTrans.get(TransKey.KITS_CHOOSE_A_KIT));
-                info.getPlayer().sendMessage(generateKitList(availableKits));
+            if (info.getPlayer().hasPermission("skywars.kit") && !shownKitGui) {
+                SkyKits kits = plugin.getKits();
+                List<SkyKit> availableKits = kits.getAvailableKits(info.getPlayer());
+                if (!availableKits.isEmpty()) {
+                    // This message shouldn't be sent if the kit GUI is opened.
+                    info.getPlayer().sendMessage(SkyTrans.get(TransKey.KITS_CHOOSE_A_KIT));
+                    info.getPlayer().sendMessage(generateKitList(availableKits));
+                }
             }
         } else {
             Player player = info.getPlayer();
