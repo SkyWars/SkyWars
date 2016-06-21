@@ -108,8 +108,9 @@ public class SignListener implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent evt) {
-        if (!evt.isCancelled() && (evt.getClickedBlock().getType() == Material.WALL_SIGN
-                || evt.getClickedBlock().getType() == Material.SIGN_POST)) {
+        if (!evt.isCancelled() && evt.getClickedBlock() != null && (
+                evt.getClickedBlock().getType() == Material.WALL_SIGN
+                        || evt.getClickedBlock().getType() == Material.SIGN_POST)) {
             BlockState state = evt.getClickedBlock().getState();
             if (state instanceof Sign
                     && plugin.getLocationStore().getSigns().contains(new SkyBlockLocation(evt.getClickedBlock()))
