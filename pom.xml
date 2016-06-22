@@ -328,8 +328,4 @@
         <system>Github Issues</system>
         <url>https://github.com/SkyWars/SkyWars/issues</url>
     </issueManagement>
-    <ciManagement>
-        <system>teamcity</system>
-        <url>http://ci.dabo.guru/p/SkyWarsParent_SkyWars</url>
-    </ciManagement>
 </project>
