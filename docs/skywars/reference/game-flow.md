@@ -28,8 +28,8 @@ It should be a good initial plan, but there might be some changes required. One 
 
 If you have any feedback on this plan, or you just have something to say, please comment!
 
-The SkyWars resource thread on the Spigot forums is a good place to talk, or you can comment below with discus!
+The SkyWars resource thread on the Spigot forums is a good place to talk, or you can comment below with disqus!
 
 ---
 
-[discus-thread]
+[disqus-thread]
