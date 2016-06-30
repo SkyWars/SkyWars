@@ -7,3 +7,7 @@ dependencies:
 general:
   artifacts:
     target/SkyWars.jar
+  branches:
+    only:
+      - develop
+      - start-timer
