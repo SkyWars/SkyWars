@@ -1,0 +1,9 @@
+dependencies:
+  pre:
+    - git clone https://github.com/SkyWars/SkyWars-Translations.git
+    - (cd SkyWars-Translations && mvn clean install)
+    - git clone https://github.com/SkyWars/SkyWars-API.git
+    - (cd SkyWars-API && mvn clean install)
+general:
+  artifacts:
+    target/SkyWars.jar
