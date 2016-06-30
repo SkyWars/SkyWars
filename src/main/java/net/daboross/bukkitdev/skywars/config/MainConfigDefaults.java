@@ -52,6 +52,10 @@ public class MainConfigDefaults {
     public static final boolean KIT_GUI_SHOW_UNAVAILABLE_KITS = true;
     public static final boolean KIT_GUI_REPLACE_KIT_COMMAND = false;
     public static final boolean KIT_GUI_AUTO_SHOW_ON_JOIN = true;
+    public static final long TIME_TILL_START_AFTER_MAX_PLAYERS = 30;
+    public static final long TIME_TILL_START_AFTER_MIN_PLAYERS = 180;
+    public static final long TIME_BEFORE_GAME_STARTS_TO_COPY_ARENA = 10;
+    public static final long IN_GAME_PLAYER_FREEZE_TIME = 5;
 
     static {
         Map<String, String> defaultArenaGamerules = new HashMap<>(1);

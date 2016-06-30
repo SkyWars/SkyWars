@@ -84,6 +84,10 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private boolean disableReport;
     private boolean recoverFromScoreErrors;
     private boolean developerOptions;
+    private long timeTillStartAfterMaxPlayers;
+    private long timeTillStartAfterMinPlayers;
+    private long timeBeforeGameStartsToCopyArena;
+    private long inGamePlayerFreezeTime;
 
     public SkyWarsConfiguration(SkyWars plugin) throws IOException, InvalidConfigurationException, SkyConfigurationException {
         this.plugin = plugin;
@@ -478,6 +482,26 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     @Override
     public boolean isShowKitGuiOnJoin() {
         return showKitGuiOnJoin;
+    }
+
+    @Override
+    public long getTimeTillStartAfterMaxPlayers() {
+        return 0;
+    }
+
+    @Override
+    public long getTimeTillStartAfterMinPlayers() {
+        return 0;
+    }
+
+    @Override
+    public long getTimeBeforeGameStartToCopyArena() {
+        return 0;
+    }
+
+    @Override
+    public long getInGamePlayerFreezeTime() {
+        return 0;
     }
 
     private static class Names {
