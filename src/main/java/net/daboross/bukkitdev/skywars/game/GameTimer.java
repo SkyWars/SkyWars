@@ -19,9 +19,14 @@ package net.daboross.bukkitdev.skywars.game;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 
 public class GameTimer {
+
     private final SkyWars plugin;
 
     public GameTimer(final SkyWars plugin) {
         this.plugin = plugin;
+    }
+
+    public void newPlayerJoined() {
+
     }
 }
