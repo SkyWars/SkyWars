@@ -19,6 +19,7 @@ package net.daboross.bukkitdev.skywars.events.listeners;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
@@ -66,23 +67,27 @@ public class GameBroadcaster {
                 for (UUID uuid : team.getPlayers()) {
                     teamPlayers.add(Bukkit.getPlayer(uuid));
                 }
-                for (Player p : teamPlayers) {
-                    List<String> teamNames = new ArrayList<>(teamPlayers.size() - 1);
-                    for (Player teamPlayer : teamPlayers) {
-                        if (teamPlayer != p) {
-                            teamNames.add(teamPlayer.getName());
+                if (teamPlayers.size() == 1) {
+                    teamPlayers.get(0).sendMessage(SkyTrans.get(TransKey.GAME_STARTING_TEAM_ALONE, team.getName()));
+                } else {
+                    for (Player p : teamPlayers) {
+                        List<String> teamNames = new ArrayList<>(teamPlayers.size() - 1);
+                        for (Player teamPlayer : teamPlayers) {
+                            if (teamPlayer != p) {
+                                teamNames.add(teamPlayer.getName());
+                            }
                         }
-                    }
-                    StringBuilder nameBuilder = new StringBuilder(teamNames.get(0));
-                    for (int i = 1; i < teamNames.size(); i++) {
-                        if (i < teamNames.size() - 1) {
-                            nameBuilder.append(SkyTrans.get(TransKey.GAME_STARTING_TEAM_COMMA));
-                        } else {
-                            nameBuilder.append(SkyTrans.get(TransKey.GAME_STARTING_TEAM_FINAL_COMMA));
+                        StringBuilder nameBuilder = new StringBuilder(teamNames.get(0));
+                        for (int i = 1; i < teamNames.size(); i++) {
+                            if (i < teamNames.size() - 1) {
+                                nameBuilder.append(SkyTrans.get(TransKey.GAME_STARTING_TEAM_COMMA));
+                            } else {
+                                nameBuilder.append(SkyTrans.get(TransKey.GAME_STARTING_TEAM_FINAL_COMMA));
+                            }
+                            nameBuilder.append(teamNames.get(i));
                         }
-                        nameBuilder.append(teamNames.get(i));
+                        p.sendMessage(SkyTrans.get(TransKey.GAME_STARTING_TEAM_MESSAGE, team.getName(), nameBuilder));
                     }
-                    p.sendMessage(SkyTrans.get(TransKey.GAME_STARTING_TEAM_MESSAGE, team.getName(), nameBuilder));
                 }
             }
         }
