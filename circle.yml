@@ -7,3 +7,5 @@ dependencies:
 test:
     post:
         - mv target/SkyWars.jar "$CIRCLE_ARTIFACTS/"
+        - mkdir -p "$CIRCLE_TEST_REPORTS/junit/"
+        - cp SkyWars-API/target/surefire-reports/*.xml "$CIRCLE_TEST_REPORTS/junit/"
