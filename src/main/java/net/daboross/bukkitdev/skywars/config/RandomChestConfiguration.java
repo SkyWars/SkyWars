@@ -216,22 +216,6 @@ public class RandomChestConfiguration implements RandomChests {
             Validate.notNull(level, "Never null"); // should never be null
             SkyStatic.debug("[RandomChests] Choosing level %s", level);
             SkyKitItem item = level.items.get(random.nextInt(level.items.size()));
-            if (inventory.size() < 27) {
-                inventory.add(item.toItem());
-            } else {
-                // Since we're already full, try and fit in any extra items
-                // by adding to item stack amounts. However, do not compress
-                // already filled items.
-                // TODO: maybe we should try and make room with more vigor by compressing all already existing
-                // items when we hit 27?
-                ItemStack compareItem = item.toItem();
-                for (ItemStack testItem : inventory) {
-                    if (testItem.isSimilar(compareItem)) {
-                        testItem.setAmount(testItem.getAmount() + item.getAmount());
-                        break;
-                    }
-                }
-            }
 
             totalValue += level.itemValue;
         }
