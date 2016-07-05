@@ -60,11 +60,12 @@ public class SavedInventory implements SkySavedInventory {
         if (restorePgh) {
             // player hasn't been teleported yet if savePgh is enabled,
             // so we need to apply it first
-            pghData.apply(p);
+            pghData.teleport(p);
         }
         PlayerInventory inv = p.getInventory();
         inv.setContents(items);
         inv.setArmorContents(armor);
+        pghData.apply(p); // I guess setting health can be a problem if armor hasn't been applied yet
         if (restoreExp) {
             p.setTotalExperience(experience);
         }
@@ -74,6 +75,7 @@ public class SavedInventory implements SkySavedInventory {
 
         private final Location location;
         private final double health;
+        private final double maxHealth;
         private final double healthScale;
         private final float fallDistance;
         private final int foodLevel;
@@ -87,6 +89,7 @@ public class SavedInventory implements SkySavedInventory {
         private SavedPghData(Player p) {
             location = p.getLocation();
             health = p.getHealth();
+            maxHealth = p.getMaxHealth();
             healthScale = p.getHealthScale();
             fallDistance = p.getFallDistance();
             foodLevel = p.getFoodLevel();
@@ -98,11 +101,27 @@ public class SavedInventory implements SkySavedInventory {
             effects = new ArrayList<>(p.getActivePotionEffects());
         }
 
-        public void apply(final Player p) {
-            // player hasn't been teleported yet if savePgh is enabled.
+        /**
+         * Player hasn't been teleported yet if savePgh is enabled,
+         * this should be done before any other restoration.
+         *
+         * @param p Player to teleport
+         */
+        private void teleport(final Player p) {
             p.teleport(location);
+        }
+
+        /**
+         * Applies all saved data besides teleportation location.
+         * <p>
+         * This should be used *after* applying armor contents, in order to ensure that setHealth works correctly.
+         *
+         * @param p Player to apply saved data to
+         */
+        private void apply(final Player p) {
             CrossVersion.setHealth(p, health);
             p.setHealthScale(healthScale);
+            p.setMaxHealth(maxHealth);
             p.setFallDistance(fallDistance);
             p.setFoodLevel(foodLevel);
             p.setExhaustion(exhaustion);
