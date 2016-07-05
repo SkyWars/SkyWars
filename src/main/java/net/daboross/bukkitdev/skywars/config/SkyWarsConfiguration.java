@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import net.daboross.bukkitdev.bukkitstorageprotobuf.ProtobufStatic;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
@@ -111,7 +113,12 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         }
         mainConfig.getConfig().set(MainConfigKeys.VERSION, MainConfigDefaults.VERSION);
 
-        SkyStatic.setDebug(mainConfig.getSetBoolean(MainConfigKeys.DEBUG, MainConfigDefaults.DEBUG));
+        boolean debug = mainConfig.getSetBoolean(MainConfigKeys.DEBUG, MainConfigDefaults.DEBUG);
+        SkyStatic.setDebug(debug);
+        if (debug) {
+            ProtobufStatic.setDebugLogger(plugin.getLogger());
+        }
+
         skipUuidCheck = mainConfig.getSetBoolean(MainConfigKeys.SKIP_UUID_CHECK, MainConfigDefaults.SKIP_UUID_CHECK);
         String arenaOrderString = mainConfig.getSetString(MainConfigKeys.ARENA_ORDER, MainConfigDefaults.ARENA_ORDER.toString());
         arenaOrder = ArenaOrder.getOrder(arenaOrderString);
