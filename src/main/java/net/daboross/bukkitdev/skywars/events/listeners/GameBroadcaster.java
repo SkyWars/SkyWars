@@ -53,6 +53,7 @@ public class GameBroadcaster {
             for (Player player : players) {
                 player.sendMessage(message);
             }
+            Bukkit.getConsoleSender().sendMessage(message);
         } else {
             Bukkit.broadcastMessage(message);
         }
@@ -117,6 +118,7 @@ public class GameBroadcaster {
                 for (Player player : winners) {
                     player.sendMessage(message);
                 }
+                Bukkit.getConsoleSender().sendMessage(message);
             } else {
                 Bukkit.broadcastMessage(message);
             }

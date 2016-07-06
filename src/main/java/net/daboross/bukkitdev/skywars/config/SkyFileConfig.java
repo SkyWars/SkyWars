@@ -146,7 +146,7 @@ public class SkyFileConfig {
                 } else if (obj instanceof Double || obj instanceof Integer || obj instanceof Boolean) {
                     stringList.add(obj.toString());
                 } else {
-                    throw new InvalidConfigurationException("Object " + obj + " found in list " + path + " in file " + configFile.toAbsolutePath() + " is not an integerr");
+                    throw new InvalidConfigurationException("Object " + obj + " found in list " + path + " in file " + configFile.toAbsolutePath() + " is not a string");
                 }
             }
             return stringList;
@@ -157,6 +157,28 @@ public class SkyFileConfig {
             config.set(path, defaultList);
             return defaultList;
         }
+    }
+
+    public List<Long> getSetLongList(String path, List<Long> defaultList) throws InvalidConfigurationException {
+        if (config.isList(path)) {
+            List<?> unknownList = config.getList(path);
+            List<Long> longList = new ArrayList<>(unknownList.size());
+            for (Object obj : unknownList) {
+                if (obj instanceof Number) {
+                    longList.add(((Number) obj).longValue());
+                } else {
+                    throw new InvalidConfigurationException("Object " + obj + " found in list " + path + " in file " + configFile.toAbsolutePath() + " is not a number");
+                }
+            }
+            return longList;
+        } else if (config.contains(path)) {
+            throw new InvalidConfigurationException("Object " + config.get(path) + " found under " + path + " in file " + configFile + " is not a list");
+        } else {
+            logger.log(Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, defaultList, configFile});
+            config.set(path, defaultList);
+            return defaultList;
+        }
+
     }
 
     public Map<String, String> getSetStringMap(String path, Map<String, String> defaultValues) throws InvalidConfigurationException {
@@ -247,4 +269,5 @@ public class SkyFileConfig {
     public YamlConfiguration getConfig() {
         return config;
     }
+
 }

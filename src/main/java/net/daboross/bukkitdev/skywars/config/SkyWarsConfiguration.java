@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import net.daboross.bukkitdev.bukkitstorageprotobuf.ProtobufStatic;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -78,18 +77,20 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private boolean limitStartMessagesToArenaPlayers;
     private boolean limitDeathMessagesToArenaPlayers;
     private boolean limitEndMessagesToArenaPlayers;
+    private boolean limitStartTimerMessagesToArenaPlayers;
     private boolean showUnavailableKitsInGui;
     private boolean replaceKitCommandWithGui;
     private boolean showKitGuiOnJoin;
+    private long timeTillStartAfterMaxPlayers;
+    private long timeTillStartAfterMinPlayers;
+    private long timeBeforeGameStartsToCopyArena;
+    private long inGamePlayerFreezeTime;
+    private List<Long> startTimerMessageTimes;
     private boolean multiverseCoreHookEnabled;
     private boolean worldeditHookEnabled;
     private boolean disableReport;
     private boolean recoverFromScoreErrors;
     private boolean developerOptions;
-    private long timeTillStartAfterMaxPlayers;
-    private long timeTillStartAfterMinPlayers;
-    private long timeBeforeGameStartsToCopyArena;
-    private long inGamePlayerFreezeTime;
 
     public SkyWarsConfiguration(SkyWars plugin) throws IOException, InvalidConfigurationException, SkyConfigurationException {
         this.plugin = plugin;
@@ -191,11 +192,19 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         limitStartMessagesToArenaPlayers = mainConfig.getSetBoolean(MainConfigKeys.LIMIT_START_MESSAGES_TO_ARENA, MainConfigDefaults.LIMIT_START_MESSAGES_TO_ARENA);
         limitDeathMessagesToArenaPlayers = mainConfig.getSetBoolean(MainConfigKeys.LIMIT_DEATH_MESSAGES_TO_ARENA, MainConfigDefaults.LIMIT_DEATH_MESSAGES_TO_ARENA);
         limitEndMessagesToArenaPlayers = mainConfig.getSetBoolean(MainConfigKeys.LIMIT_END_MESSAGES_TO_ARENA, MainConfigDefaults.LIMIT_END_MESSAGES_TO_ARENA);
+        limitStartTimerMessagesToArenaPlayers = mainConfig.getSetBoolean(MainConfigKeys.LIMIT_START_TIMER_MESSAGES_TO_ARENA, MainConfigDefaults.LIMIT_START_TIMER_MESSAGES_TO_ARENA);
 
         // Kit GUI
         showUnavailableKitsInGui = mainConfig.getSetBoolean(MainConfigKeys.KIT_GUI_SHOW_UNAVAILABLE_KITS, MainConfigDefaults.KIT_GUI_SHOW_UNAVAILABLE_KITS);
         replaceKitCommandWithGui = mainConfig.getSetBoolean(MainConfigKeys.KIT_GUI_REPLACE_KIT_COMMAND, MainConfigDefaults.KIT_GUI_REPLACE_KIT_COMMAND);
         showKitGuiOnJoin = mainConfig.getSetBoolean(MainConfigKeys.KIT_GUI_AUTO_SHOW_ON_JOIN, MainConfigDefaults.KIT_GUI_AUTO_SHOW_ON_JOIN);
+
+        // Start timer
+        timeTillStartAfterMaxPlayers = mainConfig.getSetLong(MainConfigKeys.TIME_TILL_START_AFTER_MAX_PLAYERS, MainConfigDefaults.TIME_TILL_START_AFTER_MAX_PLAYERS);
+        timeTillStartAfterMinPlayers = mainConfig.getSetLong(MainConfigKeys.TIME_TILL_START_AFTER_MIN_PLAYERS, MainConfigDefaults.TIME_TILL_START_AFTER_MIN_PLAYERS);
+        timeBeforeGameStartsToCopyArena = mainConfig.getSetLong(MainConfigKeys.TIME_BEFORE_GAME_STARTS_TO_COPY_ARENA, MainConfigDefaults.TIME_BEFORE_GAME_STARTS_TO_COPY_ARENA);
+        inGamePlayerFreezeTime = mainConfig.getSetLong(MainConfigKeys.IN_GAME_PLAYER_FREEZE_TIME, MainConfigDefaults.IN_GAME_PLAYER_FREEZE_TIME);
+        startTimerMessageTimes = mainConfig.getSetLongList(MainConfigKeys.START_TIMER_MESSAGE_TIMES, MainConfigDefaults.START_TIMER_MESSAGE_TIMES);
 
         // Report disable
         disableReport = mainConfig.getConfig().getBoolean(MainConfigKeys.DISABLE_REPORT, MainConfigDefaults.DISABLE_REPORT);
@@ -289,6 +298,11 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     @Override
     public boolean shouldLimitEndMessagesToArenaPlayers() {
         return limitEndMessagesToArenaPlayers;
+    }
+
+    @Override
+    public boolean shouldLimitStartTimerMessagesToArenaPlayers() {
+        return limitStartTimerMessagesToArenaPlayers;
     }
 
     @Override
@@ -493,23 +507,29 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
     @Override
     public long getTimeTillStartAfterMaxPlayers() {
-        return 0;
+        return timeTillStartAfterMaxPlayers;
     }
 
     @Override
     public long getTimeTillStartAfterMinPlayers() {
-        return 0;
+        return timeTillStartAfterMinPlayers;
     }
 
     @Override
     public long getTimeBeforeGameStartToCopyArena() {
-        return 0;
+        return timeBeforeGameStartsToCopyArena;
     }
 
     @Override
     public long getInGamePlayerFreezeTime() {
-        return 0;
+        return inGamePlayerFreezeTime;
     }
+
+    @Override
+    public List<Long> getStartTimerMessageTimes() {
+        return startTimerMessageTimes;
+    }
+
 
     private static class Names {
 

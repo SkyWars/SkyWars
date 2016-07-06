@@ -175,6 +175,7 @@ public class GameEventDistributor {
         try {
             // -- Normal --
             plugin.getPlayers().onJoinQueue(info);
+            plugin.getGameQueueTimer().onJoinQueue(info);
             plugin.getKitQueueNotifier().onQueueJoin(info);
             plugin.getSignListener().onQueueJoin(info);
             // -- After --
@@ -190,6 +191,7 @@ public class GameEventDistributor {
         try {
             // -- Normal --
             plugin.getPlayers().onLeaveQueue(info);
+            plugin.getGameQueueTimer().onLeaveQueue(info);
             plugin.getSignListener().onQueueLeave(info);
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new PlayerLeaveQueueEvent(plugin, info.getPlayer()));

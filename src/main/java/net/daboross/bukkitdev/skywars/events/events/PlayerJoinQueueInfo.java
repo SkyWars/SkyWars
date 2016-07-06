@@ -22,8 +22,10 @@ import org.bukkit.entity.Player;
 public class PlayerJoinQueueInfo {
 
     private final Player player;
+    private final boolean queueFull;
 
-    public PlayerJoinQueueInfo(final Player player) {
+    public PlayerJoinQueueInfo(final Player player, boolean queueFull) {
+        this.queueFull = queueFull;
         Validate.notNull(player, "Player cannot be null");
         this.player = player;
     }
@@ -32,10 +34,16 @@ public class PlayerJoinQueueInfo {
         return player;
     }
 
+
+    public boolean isQueueFull() {
+        return queueFull;
+    }
+
     @Override
     public String toString() {
         return "PlayerJoinQueueInfo{" +
                 "player=" + player +
+                ", queueFull=" + queueFull +
                 '}';
     }
 }

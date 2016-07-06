@@ -143,6 +143,7 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
                 for (UUID sendToUuid : game.getAlivePlayers()) {
                     Bukkit.getPlayer(sendToUuid).sendMessage(message);
                 }
+                Bukkit.getConsoleSender().sendMessage(message);
             } else {
                 evt.setDeathMessage(message);
             }

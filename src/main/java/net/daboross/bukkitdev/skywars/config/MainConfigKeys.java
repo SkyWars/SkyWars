@@ -38,6 +38,7 @@ public class MainConfigKeys {
     public static final String LIMIT_START_MESSAGES_TO_ARENA = "only-broadcast-to-players-in-arena.start";
     public static final String LIMIT_DEATH_MESSAGES_TO_ARENA = "only-broadcast-to-players-in-arena.death";
     public static final String LIMIT_END_MESSAGES_TO_ARENA = "only-broadcast-to-players-in-arena.end";
+    public static final String LIMIT_START_TIMER_MESSAGES_TO_ARENA = "only-broadcast-to-players-in-arena.starting-in-start-timer";
     public static final String KIT_GUI_SHOW_UNAVAILABLE_KITS = "kit-gui.show-unavailable-kits";
     public static final String KIT_GUI_REPLACE_KIT_COMMAND = "kit-gui.replace-kit-command";
     public static final String KIT_GUI_AUTO_SHOW_ON_JOIN = "kit-gui.auto-show-on-join";
@@ -45,7 +46,7 @@ public class MainConfigKeys {
     public static final String TIME_TILL_START_AFTER_MIN_PLAYERS = "game-timer.time-till-start-after-any-join";
     public static final String TIME_BEFORE_GAME_STARTS_TO_COPY_ARENA = "game-timer.time-before-start-to-freeze-map-votes";
     public static final String IN_GAME_PLAYER_FREEZE_TIME = "game-timer.time-after-start-to-freeze-players";
-
+    public static final String START_TIMER_MESSAGE_TIMES = "game-timer.times-to-message-before-start";
     private MainConfigKeys() {
     }
 

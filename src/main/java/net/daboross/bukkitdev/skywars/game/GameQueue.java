@@ -27,15 +27,16 @@ import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.game.SkyGameQueue;
-import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerJoinQueueInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveQueueInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class GameQueue implements SkyGameQueue {
 
     private final SkyWarsPlugin plugin;
+    private List<UUID> queueNext; // TODO: lots of message changes for this!
     private List<UUID> currentlyQueued;
     private SkyArena nextArena;
     private int nextArenaOrderedNumber = 0;
@@ -51,20 +52,21 @@ public class GameQueue implements SkyGameQueue {
     }
 
     @Override
-    public void queuePlayer(Player playerUuid) {
-        UUID uuid = playerUuid.getUniqueId();
-        if (!currentlyQueued.contains(uuid)) {
-            currentlyQueued.add(uuid);
-        }
-        plugin.getDistributor().distribute(new PlayerJoinQueueInfo(playerUuid));
-        if (currentlyQueued.size() >= nextArena.getNumPlayers()) {
-            plugin.getDistributor().distribute(new GameStartInfo(getNextGame()));
-        }
+    public void queuePlayer(UUID uuid) {
+        queuePlayer(Bukkit.getPlayer(uuid));
     }
 
     @Override
-    public void queuePlayer(UUID uuid) {
-        queuePlayer(Bukkit.getPlayer(uuid));
+    public void queuePlayer(Player player) {
+        UUID uuid = player.getUniqueId();
+        if (isQueueFull()) {
+            queueNext.add(uuid);
+            return;
+        }
+        if (!currentlyQueued.contains(uuid)) {
+            currentlyQueued.add(uuid);
+        }
+        plugin.getDistributor().distribute(new PlayerJoinQueueInfo(player, isQueueFull()));
     }
 
     @Override
@@ -74,8 +76,11 @@ public class GameQueue implements SkyGameQueue {
 
     @Override
     public void removePlayer(Player player) {
-        currentlyQueued.remove(player.getUniqueId());
-        plugin.getDistributor().distribute(new PlayerLeaveQueueInfo(player));
+        if (currentlyQueued.remove(player.getUniqueId())) {
+            plugin.getDistributor().distribute(new PlayerLeaveQueueInfo(player, areMinPlayersPresent()));
+        } else {
+            queueNext.remove(player.getUniqueId());
+        }
     }
 
     public ArenaGame getNextGame() {
@@ -111,6 +116,21 @@ public class GameQueue implements SkyGameQueue {
                 throw new IllegalStateException("Invalid ArenaOrder found in config");
         }
         currentlyQueued = new ArrayList<>(nextArena.getNumPlayers());
+        final List<UUID> joinNext = queueNext;
+        this.queueNext = new ArrayList<>();
+        if (joinNext != null) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    for (UUID uuid : joinNext) {
+                        Player p = Bukkit.getPlayer(uuid);
+                        if (p != null) {
+                            queuePlayer(p);
+                        }
+                    }
+                }
+            }.runTask(plugin);
+        }
     }
 
     @Override
@@ -126,5 +146,16 @@ public class GameQueue implements SkyGameQueue {
     @Override
     public SkyArena getPlannedArena() {
         return nextArena;
+    }
+
+    @Override
+    public boolean isQueueFull() {
+        return currentlyQueued.size() >= nextArena.getNumPlayers();
+    }
+
+    @Override
+    public boolean areMinPlayersPresent() {
+        // TODO: min players currently defaulted to '2'
+        return currentlyQueued.size() >= 2;
     }
 }

@@ -19,14 +19,12 @@ package net.daboross.bukkitdev.skywars;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.logging.Level;
-
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
@@ -48,6 +46,7 @@ import net.daboross.bukkitdev.skywars.economy.SkyEconomyGameRewards;
 import net.daboross.bukkitdev.skywars.economy.SkyEconomyHook;
 import net.daboross.bukkitdev.skywars.events.GameEventDistributor;
 import net.daboross.bukkitdev.skywars.events.listeners.GameBroadcaster;
+import net.daboross.bukkitdev.skywars.events.listeners.GameQueueTimer;
 import net.daboross.bukkitdev.skywars.events.listeners.InventorySaveListener;
 import net.daboross.bukkitdev.skywars.events.listeners.KitApplyListener;
 import net.daboross.bukkitdev.skywars.events.listeners.KitQueueNotifier;
@@ -98,6 +97,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     private SkyKits kits;
     private SkyKitGui kitGui;
     private GameQueue gameQueue;
+    private GameQueueTimer gameQueueTimer;
     private CurrentGames currentGameTracker;
     private GameIDHandler idHandler;
     private GameBroadcaster broadcaster;
@@ -167,6 +167,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
             throw new StartupFailedException("Failed to load locations", ex);
         }
         gameQueue = new GameQueue(this);
+        gameQueueTimer = new GameQueueTimer(this);
         gameHandler = new GameHandler(this);
         attackerStorage = new AttackerStorageListener(this);
         distributor = new GameEventDistributor(this);
@@ -471,5 +472,9 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
 
     public SignListener getSignListener() {
         return signListener;
+    }
+
+    public GameQueueTimer getGameQueueTimer() {
+        return gameQueueTimer;
     }
 }
