@@ -16,7 +16,9 @@
  */
 package net.daboross.bukkitdev.skywars.world;
 
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -46,6 +48,7 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 public class SkyWorldHandler {
 
@@ -55,23 +58,47 @@ public class SkyWorldHandler {
 
     public SkyWorldHandler(SkyWars plugin) {
         this.plugin = plugin;
+        boolean useWorldEdit = false;
         if (plugin.getConfiguration().isWorldeditHookEnabled() && plugin.getServer().getPluginManager().isPluginEnabled("WorldEdit")) {
-            boolean upToDate;
+            useWorldEdit = true;
             try {
                 Class.forName("com.sk89q.worldedit.world.AbstractWorld");
-                upToDate = true;
             } catch (ClassNotFoundException ignored) {
-                upToDate = false;
+                plugin.getLogger().info("Unsupported WorldEdit version (out of date); falling back to internal backend.");
+                useWorldEdit = false;
             }
-            if (upToDate) {
-                plugin.getLogger().info("Using WorldEdit hook for arena creation.");
-                this.provider = new WorldEditProtobufStorageProvider(plugin);
-            } else {
-                plugin.getLogger().info("WorldEdit outdated! Using slower non-worldedit backend for arena creation.");
-                this.provider = new ProtobufStorageProvider(plugin);
+            if (useWorldEdit) {
+                Plugin worldEditBukkitPlugin = plugin.getServer().getPluginManager().getPlugin("WorldEdit");
+                if (worldEditBukkitPlugin instanceof WorldEditPlugin) {
+                    WorldEditPlugin worldEdit = (WorldEditPlugin) worldEditBukkitPlugin;
+                    Object adapter;
+                    try {
+                        Field adapterField = WorldEditPlugin.class.getDeclaredField("bukkitAdapter");
+                        adapterField.setAccessible(true);
+                        adapter = adapterField.get(worldEdit);
+                    } catch (IllegalAccessException | NoSuchFieldException ex) {
+                        SkyStatic.debug("Couldn't access bukkitAdapter in WorldEdit plugin! %s", ex);
+                        plugin.getLogger().info("Error determining if WorldEdit supports the server implementation; falling back to internal backend.");
+                        adapter = new Object(); // Don't show the info message for if adapter == null
+                        useWorldEdit = false;
+                    }
+                    // if getBukkitImplAdapter() returns null, it means there's a version mismatch and WorldEdit doesn't
+                    // support the current server implementation.
+                    if (adapter == null) {
+                        plugin.getLogger().info("WorldEdit version does not support current server fully; falling back to internal backend.");
+                        useWorldEdit = false;
+                    }
+                } else {
+                    plugin.getLogger().info("WorldEdit is an unknown version; falling back to internal backend.");
+                    useWorldEdit = false;
+                }
             }
+        }
+        if (useWorldEdit) {
+            plugin.getLogger().info("Using WorldEdit backend for arena creation.");
+            this.provider = new WorldEditProtobufStorageProvider(plugin);
         } else {
-            plugin.getLogger().info("Using slower non-worldedit backend for arena creation.");
+            plugin.getLogger().info("Using internal (non-WorldEdit) backend for arena creation.");
             this.provider = new ProtobufStorageProvider(plugin);
         }
     }
