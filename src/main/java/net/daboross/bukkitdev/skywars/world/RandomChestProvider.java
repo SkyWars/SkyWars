@@ -42,7 +42,8 @@ public class RandomChestProvider implements ChestProvider {
                 chest = testChest;
             }
         }
-        // No filling? this should only happen if things are deleted from the config!
+        // Note: this occurs if things are deleted from the configuration, or a new chest is added via the update-arena
+        // command, or a non-chest storage item is placed in the arena, like a dispenser or hopper.
         if (chest == null) {
             return null;
         }

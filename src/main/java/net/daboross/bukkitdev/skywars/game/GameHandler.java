@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.game.LeaveGameReason;
 import net.daboross.bukkitdev.skywars.api.game.SkyCurrentGameTracker;
@@ -91,11 +92,18 @@ public class GameHandler implements SkyGameHandler {
         GameIDHandler idh = plugin.getIDHandler();
         ArenaGame game = idh.getGame(id);
         if (broadcast) {
-            // This needs to happen before destributing PlayerLeaveGame so as to still have attacker stored!
+            // This needs to happen before distributing PlayerLeaveGame so as to still have attacker stored!
             String message = KillMessages.getMessage(player.getName(), plugin.getAttackerStorage().getKillerName(playerUuid), KillMessages.KillReason.LEFT);
             if (plugin.getConfiguration().shouldLimitDeathMessagesToArenaPlayers()) {
                 for (UUID uuid : game.getAlivePlayers()) {
-                    Bukkit.getPlayer(uuid).sendMessage(message);
+                    if (uuid == player.getUniqueId()) {
+                        // Apparently Bukkit.getPlayer(uuid) returns null during PlayerQuitEvent,
+                        // which is one time this method is called. That may only be the case for Glowstone,
+                        // but this can't hurt on CraftBukkit either.
+                        player.sendMessage(message);
+                    } else {
+                        Bukkit.getPlayer(uuid).sendMessage(message);
+                    }
                 }
             } else {
                 Bukkit.broadcastMessage(message);

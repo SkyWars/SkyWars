@@ -147,7 +147,7 @@
         <dependency>
             <groupId>net.daboross.bukkitdev.bukkit-storage-protobuf</groupId>
             <artifactId>bukkit-storage-protobuf</artifactId>
-            <version>0.0.3</version>
+            <version>0.0.4</version>
         </dependency>
     </dependencies>
 
@@ -313,6 +313,7 @@
                         <!-- Don't obfuscate or optimize, we just want to remove unused classes/methods -->
 						<!-- Actually, optimizing seems to be OK. It makes the jar smaller, and doesn't mess with the public API at all -->
                         <option>-dontobfuscate</option>
+                        <option>-dontoptimize</option>
 
                         <!-- This is for the errors caused by nmsblocks/ in WorldEdit -->
                         <option>-ignorewarnings</option>

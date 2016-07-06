@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+
 import net.daboross.bukkitdev.bukkitstorageprotobuf.MemoryBlockArea;
 import net.daboross.bukkitdev.bukkitstorageprotobuf.ProtobufStorage;
 import net.daboross.bukkitdev.bukkitstorageprotobuf.compiled.BlockStorage;
@@ -123,7 +124,8 @@ public class ProtobufStorageProvider implements WorldProvider {
                 length_z:
                 for (int z = 0; z < area.lengthZ; z++) {
                     BlockStorage.Block block = area.blocks[y][x][z];
-                    if (block.getId() == Material.CHEST.getId()) {
+                    if (block.getId() == Material.CHEST.getId()
+                            || block.getId() == Material.TRAPPED_CHEST.getId()) {
                         SkyBlockLocation location = new SkyBlockLocation(x, y, z, null);
 
                         // Check for existing configurations for this chest, and keep them if they exist.

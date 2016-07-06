@@ -19,12 +19,14 @@ package net.daboross.bukkitdev.skywars;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.logging.Level;
+
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
@@ -229,8 +231,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         }
         String[] split = version.split("_");
         if (split.length != 3) {
-            broadcastUnknownVersionMessage(version);
-            return true;
+            return backupUuidCheck();
         }
         int first, second, third;
         try {
@@ -238,18 +239,19 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
             second = Integer.parseInt(split[1]);
             third = Integer.parseInt(split[2].substring(1)); // substring for R1 -> 1
         } catch (NumberFormatException ignored) {
-            broadcastUnknownVersionMessage(version);
-            return true;
+            return backupUuidCheck();
         }
         // if we're on minecraft v2.X, the other version parts don't matter
         return first > 1 || second > 7 || (second == 7 && third >= 3);
     }
 
-    private void broadcastUnknownVersionMessage(String version) {
-        getLogger().log(Level.SEVERE, "Package version specifier of unknown format found: '" + version + "' - this will prevent SkyWars from confirming server version.");
-        getLogger().log(Level.SEVERE, "Please confirm you are running CraftBukkit version 1.7.8 or newer, or the equivilant for your server software. If you have already done so, you can ignore this message.");
-        getLogger().log(Level.SEVERE, "Proceed with caution! SkyWars v" + SkyStatic.getVersion() + " will not function on minecraft versions below 1.7.8!");
-        getLogger().log(Level.SEVERE, "If you wish to ignore this, and remove this message, set 'skip-uuid-version-check' to true in plugins/SkyWars/main-config.yml");
+    private boolean backupUuidCheck() {
+        try {
+            Bukkit.class.getMethod("getPlayer", UUID.class);
+            return true;
+        } catch (NoSuchMethodException ignored) {
+            return false;
+        }
     }
 
     private void registerListeners(PluginManager pm, Listener... listeners) {

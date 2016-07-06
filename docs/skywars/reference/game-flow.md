@@ -5,7 +5,7 @@ This is a general idea of how games should (eventually) happen in SkyWars:
 
 - Player joins the queue
   - If there are the maximum number of players (for the biggest map), a game timer starts for 30 seconds
-  - If there are at least the minimum number of players (for the biggest map), a game timers starts for 3 minutes
+  - If there are at least the minimum number of players (for the biggest map), a game timer starts for 3 minutes
   - In any case, the player is shown a kit-picking GUI, and then a map-picking GUI.
     - Unless they joined by clicking a map-voting sign, in which case only a kit-picking GUI is shown.
 - When a game timer starts, any previous game timers are canceled (only the latest matters)
