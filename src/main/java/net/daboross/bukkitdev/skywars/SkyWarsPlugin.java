@@ -19,14 +19,12 @@ package net.daboross.bukkitdev.skywars;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.logging.Level;
-
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;

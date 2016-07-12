@@ -23,6 +23,7 @@ import java.util.Map;
 import net.daboross.bukkitdev.skywars.api.kits.SkyItemMeta;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKitItem;
+import net.daboross.bukkitdev.skywars.api.kits.SkyPotionData;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyArmorColorMeta;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyDurabilityMeta;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyExtraEffectsMeta;
@@ -32,8 +33,8 @@ import net.daboross.bukkitdev.skywars.api.kits.impl.SkyRawDataMeta;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class SkyKitEnconder {
 
@@ -146,16 +147,25 @@ public class SkyKitEnconder {
         return result;
     }
 
-    public static Map<String, Object> encodePotion(Potion potion) {
+    public static Map<String, Object> encodePotion(SkyPotionData potion) {
         Map<String, Object> result = new HashMap<>();
-        result.put("type", potion.getType().getEffectType().getName()); // prefer effect type name
-        result.put("level", potion.getLevel());
-        // don't store default values
-        if (potion.hasExtendedDuration()) {
+        PotionEffectType effectType = potion.getPotionType().toBukkit().getEffectType();
+        if (effectType != null) {
+            result.put("type", effectType.getName()); // prefer effect type name
+        } else {
+            result.put("type", potion.getPotionType().toString());
+        }
+        if (potion.isUpgraded()) {
+            result.put("upgraded", true);
+        }
+        if (potion.isExtended()) {
             result.put("extended", true);
         }
         if (potion.isSplash()) {
             result.put("splash", true);
+        }
+        if (potion.isLingering()) {
+            result.put("lingering", true);
         }
         return result;
     }

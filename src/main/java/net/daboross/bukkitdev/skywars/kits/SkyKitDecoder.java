@@ -27,6 +27,7 @@ import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
 import net.daboross.bukkitdev.skywars.api.kits.SkyItemMeta;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKitItem;
+import net.daboross.bukkitdev.skywars.api.kits.SkyPotionData;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyArmorColorMeta;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyDurabilityMeta;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyExtraEffectsMeta;
@@ -41,10 +42,8 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionType;
 import static net.daboross.bukkitdev.skywars.kits.KitConstants.DEFAULT_TOTEM;
 
 public class SkyKitDecoder {
@@ -255,31 +254,19 @@ public class SkyKitDecoder {
         return type.createEffect(duration, amplifier);
     }
 
-    private static Potion decodePotion(MapSection map) throws SkyConfigurationException {
+    private static SkyPotionData decodePotion(MapSection map) throws SkyConfigurationException {
         String typeName = map.getTypeString("The potion");
-        PotionType type = PotionType.getByEffect(PotionEffectType.getByName(typeName));
-        if (type == null) {
-            try {
-                type = PotionType.valueOf(typeName);
-            } catch (IllegalArgumentException ex) {
-                throw new SkyConfigurationException("Unknown potion type: " + typeName);
-            }
+        SkyPotionData.FullPotionType type;
+        try {
+            type = SkyPotionData.FullPotionType.fromString(typeName);
+        } catch (IllegalArgumentException ex) {
+            throw new SkyConfigurationException("Unknown potion type: " + typeName);
         }
         boolean extended = map.getBoolean("extended", false);
+        boolean upgraded = map.getBoolean("upgraded", false);
         boolean splash = map.getBoolean("splash", false);
-        int level = map.getInt("level", 1, "Potion level is not an integer!");
-        if (level < 1 || level > 2) {
-            throw new SkyConfigurationException("Potion level must be either 1 or 2. Use extra-effects for effects with higher amplifiers");
-        }
-        Potion potion;
-        try {
-            potion = new Potion(type, level);
-            if (splash) potion.splash();
-            if (extended) potion.extend();
-        } catch (IllegalArgumentException ex) {
-            throw new SkyConfigurationException("Failed to create potion of type: " + type + " with splash: " + splash + ", extended: " + extended + ", level: " + level, ex);
-        }
-        return potion;
+        boolean lingering = map.getBoolean("lingering", false);
+        return new SkyPotionData(type, extended, upgraded, splash, lingering);
     }
 
     private static abstract class MapSection {

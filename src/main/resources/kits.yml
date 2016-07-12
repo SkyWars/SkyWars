@@ -48,7 +48,7 @@ potions:
     # Potions:
     # There are two ways to add potions to an item:
     #
-    # Using `potion: {TYPE, extended: true/false, splash: true/false, level: 1/2}`
+    # Using `potion: {TYPE, extended: true/false, upgraded: true/false splash: true/false, lingering: true/false}`
     # will turn the item into one of the set potions in minecraft, and update the
     # item name and lore accordingly. TYPE in this case is a PotionType, see links below.
     #
