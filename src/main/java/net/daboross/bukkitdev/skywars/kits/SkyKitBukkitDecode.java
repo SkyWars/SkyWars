@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.kits.SkyItemMeta;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKitItem;
@@ -50,8 +49,12 @@ public class SkyKitBukkitDecode {
     public static SkyKit inventoryToKit(PlayerInventory inventory, String name, String permission, int cost) {
         SkyKitItem[] armor = decodeArmor(inventory.getArmorContents());
         ItemStack[] rawItems = inventory.getContents();
-        List<SkyKitItem> items = new ArrayList<>(rawItems.length);
-        for (ItemStack rawItem : rawItems) {
+        // In 1.9+, getContents() returns armor contents as well as inventory,
+        // and only things with index 36 and below should be saved.
+        int size = rawItems.length > 36 ? 36 : rawItems.length;
+        List<SkyKitItem> items = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            ItemStack rawItem = rawItems[i];
             if (rawItem != null && rawItem.getType() != Material.AIR) {
                 items.add(decodeItem(rawItem));
             }
