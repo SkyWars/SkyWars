@@ -23,6 +23,7 @@ import java.util.Map;
 import net.daboross.bukkitdev.skywars.api.kits.SkyItemMeta;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKitItem;
+import net.daboross.bukkitdev.skywars.api.kits.SkyPotionData;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyArmorColorMeta;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyDurabilityMeta;
 import net.daboross.bukkitdev.skywars.api.kits.impl.SkyExtraEffectsMeta;
@@ -41,8 +42,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.Potion;
-import org.bukkit.potion.PotionType;
 import static net.daboross.bukkitdev.skywars.kits.KitConstants.DEFAULT_TOTEM;
 
 public class SkyKitBukkitDecode {
@@ -50,14 +49,18 @@ public class SkyKitBukkitDecode {
     public static SkyKit inventoryToKit(PlayerInventory inventory, String name, String permission, int cost) {
         SkyKitItem[] armor = decodeArmor(inventory.getArmorContents());
         ItemStack[] rawItems = inventory.getContents();
-        List<SkyKitItem> items = new ArrayList<>(rawItems.length);
-        for (ItemStack rawItem : rawItems) {
+        // In 1.9+, getContents() returns armor contents as well as inventory,
+        // and only things with index 36 and below should be saved.
+        int size = rawItems.length > 36 ? 36 : rawItems.length;
+        List<SkyKitItem> items = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            ItemStack rawItem = rawItems[i];
             if (rawItem != null && rawItem.getType() != Material.AIR) {
                 items.add(decodeItem(rawItem));
             }
         }
         ItemStack totem = CrossVersion.getItemInHand(inventory);
-        Material totemType = totem == null ? null : totem.getType();
+        Material totemType = (totem == null || totem.getType() == Material.AIR) ? null : totem.getType();
         if (totemType == null) {
             if (items.isEmpty()) {
                 for (SkyKitItem item : armor) {
@@ -112,11 +115,22 @@ public class SkyKitBukkitDecode {
         if (name != null || lore != null) {
             skyMetaList.add(new SkyNameLoreMeta(name, lore));
         }
-        if (type == Material.POTION) {
-            Potion potion = Potion.fromItemStack(itemStack);
-            if (potion.getType() != null && potion.getType() != PotionType.WATER) {
-                skyMetaList.add(new SkyPotionMeta(potion));
+        if (itemMeta instanceof PotionMeta) {
+            SkyPotionData potionData = SkyPotionData.extractData(itemStack);
+            if (potionData.getPotionType() != SkyPotionData.FullPotionType.WATER
+                    || potionData.isSplash() || potionData.isLingering()) {
+                skyMetaList.add(new SkyPotionMeta(potionData));
             }
+            if (SkyPotionData.modernApiSupported) {
+                if (type == Material.SPLASH_POTION || type == Material.LINGERING_POTION) {
+                    // The SkyPotionData will store if it's splash or lingering, and this way
+                    // the kit file is backwards compatible with pre-1.9 Minecraft versions.
+                    type = Material.POTION;
+                }
+            }
+            // No need for these if the potion data is stored in a SkyPotionMeta.
+            skyMetaList.remove(new SkyRawDataMeta(itemData));
+            skyMetaList.remove(new SkyDurabilityMeta(durability));
             PotionMeta potionMeta = (PotionMeta) itemMeta;
             if (potionMeta.hasCustomEffects()) {
                 skyMetaList.add(new SkyExtraEffectsMeta(potionMeta.getCustomEffects()));

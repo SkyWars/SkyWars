@@ -64,8 +64,11 @@ public class SkyKitConfiguration implements SkyKits {
         }
         YamlConfiguration config = new YamlConfiguration();
         config.load(kitFile.toFile());
-        if (config.getInt("configuration-version") <= 0) {
-            updateVersion0To1(config);
+        if (config.getInt("configuration-version") <= 1) {
+            if (config.getInt("configuration-version") <= 0) {
+                updateVersion0To1(config);
+            }
+            updateVersion1To2(config);
             config.options().header(String.format(KIT_HEADER)).indent(2);
             config.save(kitFile.toFile());
         }
@@ -77,7 +80,7 @@ public class SkyKitConfiguration implements SkyKits {
                 try {
                     kit = SkyKitDecoder.decodeKit(config.getConfigurationSection(key), key);
                 } catch (SkyConfigurationException ex) {
-                    plugin.getLogger().log(Level.SEVERE, "Error loading kit! " + key + " won't be accessible until this is fixed!");
+                    plugin.getLogger().log(Level.SEVERE, "Error loading kit! " + key + " won't be accessible until this is fixed!", ex);
                     continue;
                 }
                 if (kit.getCost() != 0 && plugin.getEconomyHook() == null) {
@@ -123,6 +126,42 @@ public class SkyKitConfiguration implements SkyKits {
             }
         }
         config.set("configuration-version", 1);
+    }
+
+    private void updateVersion1To2(FileConfiguration config) throws IOException, InvalidConfigurationException {
+        FileConfiguration defaultConfig = new YamlConfiguration();
+        try (InputStream stream = plugin.getResourceAsStream("kits.yml"); Reader reader = new InputStreamReader(stream)) {
+            defaultConfig.load(reader);
+        }
+
+        for (String key : config.getKeys(false)) {
+            ConfigurationSection kitSection = config.getConfigurationSection(key);
+            if (kitSection == null) {
+                // This will be warned against when actually loading the configuration.
+                // For now, let's just focus on updating the values which we can access.
+                continue;
+            }
+            List<Map<?, ?>> items = kitSection.getMapList("items");
+            for (Map<?, ?> itemMap : items) {
+                if (itemMap.containsKey("potion")) {
+                    Object potionMapO = itemMap.get("potion");
+                    if (!(potionMapO instanceof Map)) {
+                        continue;
+                    }
+
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> potionMap = (Map<String, Object>) potionMapO;
+                    if (potionMap.containsKey("level")) {
+                        int level = Integer.parseInt(String.valueOf(potionMap.get("level")));
+                        if (level > 1) {
+                            potionMap.put("upgraded", true);
+                        }
+                        potionMap.remove("level");
+                    }
+                }
+            }
+        }
+        config.set("configuration-version", 2);
     }
 
     @Override

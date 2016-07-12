@@ -1,6 +1,33 @@
 Changelog
 =========
 
+2.1.6
+-----
+
+### SkyWars:
+- Fix kit messages & GUI being shown to those without the skywars.kit permission
+- Fix right clicking on join signs not doing anything
+- Add full support for all MC 1.9 variations of potions in custom arenas.
+- Fix potions not working in kits and random chests in MC 1.9+.
+- Fix armor not being applied in kits on MC 1.9+.
+- Fix tab completion for all SkyWars commands with arguments (/sw kit, etc.)
+- Fix multiple possible NullPointerExceptions errors when:
+  - team mode is enabled, and a game is started without the maximum number of players
+  - checking player interactions with other plugins
+  - a player leaves the server while in a game
+  - kits with no non-armor inventory items are used
+- Fix errors starting arena when:
+  - random chests with a high total level are used
+  - double chests are placed in a custom arena
+- Fix random chest configuration sections only being created for regular chests, not trapped chests
+- Fix errors on leaving game when maximum player health is increased by armor or other items.
+- Fix outdated WorldEdit versions causing glitches in SkyWars.
+- Fix chests in custom arenas on Glowstone
+- Remove UUID warning message on Glowstone and other non-CraftBukkit servers when UUIDs are supported
+
+### SkyWars-Translations:
+- Make all game message punctuation consistent between all translated languages.
+
 2.1.5
 -----
 

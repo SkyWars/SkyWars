@@ -19,7 +19,7 @@
 
     <groupId>net.daboross.bukkitdev</groupId>
     <artifactId>skywars</artifactId>
-    <version>2.1.6-SNAPSHOT</version>
+    <version>2.1.7-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>SkyWars</name>
@@ -116,12 +116,12 @@
         <dependency>
             <groupId>net.daboross.bukkitdev</groupId>
             <artifactId>skywars-api</artifactId>
-            <version>2.1.6-SNAPSHOT</version>
+            <version>2.1.7-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.daboross.bukkitdev</groupId>
             <artifactId>skywars-translations</artifactId>
-            <version>2.1.6-SNAPSHOT</version>
+            <version>2.1.7-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.mcstats.bukkit</groupId>
@@ -147,7 +147,7 @@
         <dependency>
             <groupId>net.daboross.bukkitdev.bukkit-storage-protobuf</groupId>
             <artifactId>bukkit-storage-protobuf</artifactId>
-            <version>0.0.4</version>
+            <version>0.0.5</version>
         </dependency>
     </dependencies>
 

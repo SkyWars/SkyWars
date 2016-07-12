@@ -16,6 +16,10 @@
  */
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -47,5 +51,21 @@ public class TestKitCommand extends SubCommand {
             kit.applyTo((Player) sender);
             sender.sendMessage(SkyTrans.get(TransKey.CMD_TESTKIT_APPLIED, subCommandArgs[0]));
         }
+    }
+
+    @Override
+    public List<String> tabComplete(CommandSender sender, Command baseCommand, String baseCommandLabel, SubCommand subCommand, String subCommandLabel, String[] subCommandArgs) {
+        if (subCommandArgs.length > 1) {
+            return Collections.emptyList();
+        }
+        Set<String> possibleKits = plugin.getKits().getKitNames();
+        ArrayList<String> resultList = new ArrayList<>();
+        String argument = subCommandArgs[0].toLowerCase();
+        for (String name : possibleKits) {
+            if (name.startsWith(argument)) {
+                resultList.add(name);
+            }
+        }
+        return resultList;
     }
 }
