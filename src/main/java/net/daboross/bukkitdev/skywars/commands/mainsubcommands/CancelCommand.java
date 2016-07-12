@@ -16,6 +16,10 @@
  */
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -53,5 +57,21 @@ public class CancelCommand extends SubCommand {
         }
         sender.sendMessage(SkyTrans.get(TransKey.CMD_CANCEL_CONFIRMATION, id));
         plugin.getGameHandler().endGame(id, true);
+    }
+
+    @Override
+    public List<String> tabComplete(final CommandSender sender, final Command baseCommand, final String baseCommandLabel, final SubCommand subCommand, final String subCommandLabel, final String[] subCommandArgs) {
+        if (subCommandArgs.length > 1) {
+            return Collections.emptyList();
+        }
+        ArrayList<String> resultList = new ArrayList<>();
+        Collection<Integer> currentIds = plugin.getIDHandler().getCurrentIDs();
+        for (Integer id : currentIds) {
+            String idString = id.toString();
+            if (idString.startsWith(subCommandArgs[0])) {
+                resultList.add(idString);
+            }
+        }
+        return resultList;
     }
 }

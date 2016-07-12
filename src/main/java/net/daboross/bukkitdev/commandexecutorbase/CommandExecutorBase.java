@@ -61,26 +61,28 @@ public class CommandExecutorBase implements TabExecutor {
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length == 0 || args[0].isEmpty()) {
             ArrayList<String> resultList = new ArrayList<>();
-            for (String alias : aliasToCommandMap.keySet()) {
-                resultList.add(alias);
+            for (Map.Entry<String, SubCommand> entry : aliasToCommandMap.entrySet()) {
+                if (hasHelpConditions(sender, entry.getValue())) {
+                    resultList.add(entry.getKey());
+                }
             }
             return resultList;
         } else if (args.length == 1) {
             ArrayList<String> resultList = new ArrayList<>();
-            for (String alias : aliasToCommandMap.keySet()) {
-                if (alias.startsWith(args[0].toLowerCase())) {
-                    if (hasHelpConditions(sender, aliasToCommandMap.get(alias))) {
-                        resultList.add(alias);
+            for (Map.Entry<String, SubCommand> entry : aliasToCommandMap.entrySet()) {
+                if (entry.getKey().startsWith(args[0].toLowerCase())) {
+                    if (hasHelpConditions(sender, entry.getValue())) {
+                        resultList.add(entry.getKey());
                     }
                 }
             }
             return resultList;
         } else {
             SubCommand subCommand = aliasToCommandMap.get(args[0].toLowerCase());
-            if (subCommand == null) {
-                return Collections.emptyList();
-            } else {
+            if (subCommand != null && hasHelpConditions(sender, subCommand)) {
                 return subCommand.tabComplete(sender, cmd, label, subCommand, args[0], ArrayHelpers.getSubArray(args, 1, args.length - 1));
+            } else {
+                return Collections.emptyList();
             }
         }
     }

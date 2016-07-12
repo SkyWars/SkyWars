@@ -16,6 +16,8 @@
  */
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
@@ -26,6 +28,7 @@ import net.daboross.bukkitdev.skywars.api.players.SkyPlayerState;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.kits.KitUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -82,6 +85,29 @@ public class KitCommand extends SubCommand {
                 sender.sendMessage(SkyTrans.get(TransKey.CMD_KIT_NOT_ENOUGH_MONEY, plugin.getEconomyHook().getCurrencySymbolWord(diff), kit.getName(), diff));
             }
         }
+    }
+
+    @Override
+    public List<String> tabComplete(CommandSender sender, Command baseCommand, String baseCommandLabel, SubCommand subCommand, String subCommandLabel, String[] subCommandArgs) {
+        if (subCommandArgs.length > 1) {
+            return Collections.emptyList();
+        }
+        Player p = (Player) sender;
+        SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(p);
+        if (skyPlayer.getState() == SkyPlayerState.IN_RUNNING_GAME) {
+            sender.sendMessage(SkyTrans.get(TransKey.GENERIC_IN_GAME));
+            return Collections.emptyList();
+        }
+        List<SkyKit> availableKits = plugin.getKits().getAvailableKits(p);
+        ArrayList<String> resultList = new ArrayList<>();
+        String check = subCommandArgs[0].toLowerCase();
+        for (SkyKit kit : availableKits) {
+            String name = ChatColor.stripColor(kit.getName().toLowerCase());
+            if (name.startsWith(check)) {
+                resultList.add(name);
+            }
+        }
+        return resultList;
     }
 
     private void sendKitList(Player p, SkyPlayer skyPlayer) {

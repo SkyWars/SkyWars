@@ -16,6 +16,8 @@
  */
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
+import java.util.Collections;
+import java.util.List;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -62,6 +64,16 @@ public class RankCommand extends SubCommand {
                 }
             });
         }
+    }
+
+    @Override
+    public List<String> tabComplete(final CommandSender sender, final Command baseCommand, final String baseCommandLabel, final SubCommand subCommand, final String subCommandLabel, final String[] subCommandArgs) {
+        if (subCommandArgs.length > 1) {
+            return Collections.emptyList();
+        }
+        // The default (Collections.emptyList()) does not give any completions,
+        // but returning null will activate the automatic online username completion.
+        return null;
     }
 
     private void displayResult(CommandSender sender, OfflineSkyPlayer playerToDisplay) {

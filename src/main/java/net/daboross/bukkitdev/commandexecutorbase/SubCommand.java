@@ -119,6 +119,6 @@ public abstract class SubCommand {
      * @return a list of possible completes for the given argument (the last one in subCommandArgs)
      */
     public List<String> tabComplete(CommandSender sender, Command baseCommand, String baseCommandLabel, SubCommand subCommand, String subCommandLabel, String[] subCommandArgs) {
-        return null;
+        return Collections.emptyList();
     }
 }

@@ -17,6 +17,9 @@
 package net.daboross.bukkitdev.skywars.commands.setupsubcommands;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
@@ -80,5 +83,21 @@ public class UpdateArena extends SubCommand {
             return;
         }
         sender.sendMessage(SkyTrans.get(TransKey.SWS_UPDATEARENA_COMPLETED, realArena.getArenaName()));
+    }
+
+    @Override
+    public List<String> tabComplete(final CommandSender sender, final Command baseCommand, final String baseCommandLabel, final SubCommand subCommand, final String subCommandLabel, final String[] subCommandArgs) {
+        if (subCommandArgs.length > 1) {
+            return Collections.emptyList();
+        }
+        ArrayList<String> resultList = new ArrayList<>();
+        String argument = subCommandArgs[0].toLowerCase();
+        for (SkyArenaConfig arenaConfig : plugin.getConfiguration().getEnabledArenas()) {
+            String name = arenaConfig.getArenaName().toLowerCase();
+            if (name.startsWith(argument)) {
+                resultList.add(name);
+            }
+        }
+        return resultList;
     }
 }
