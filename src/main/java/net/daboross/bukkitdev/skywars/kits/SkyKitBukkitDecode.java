@@ -60,7 +60,7 @@ public class SkyKitBukkitDecode {
             }
         }
         ItemStack totem = CrossVersion.getItemInHand(inventory);
-        Material totemType = totem == null ? null : totem.getType();
+        Material totemType = (totem == null || totem.getType() == Material.AIR) ? null : totem.getType();
         if (totemType == null) {
             if (items.isEmpty()) {
                 for (SkyKitItem item : armor) {

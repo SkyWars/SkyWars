@@ -18,6 +18,7 @@ package net.daboross.bukkitdev.skywars.kits;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKitGui;

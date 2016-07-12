@@ -79,6 +79,9 @@ public class SkyKitDecoder {
             if (totem == null) {
                 throw new SkyConfigurationException("The type string '" + totemString + "' is not valid. Check https://dabo.guru/projects/skywars/configuring-kits for a list of valid material names.");
             }
+            if (totem == Material.AIR) {
+                totem = DEFAULT_TOTEM;
+            }
         }
 
         return new SkyKitConfig(items, Arrays.asList(armor), name, description, totem, cost, permission);
