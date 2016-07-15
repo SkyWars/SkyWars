@@ -55,7 +55,7 @@ public class PluginStatistics {
                 return;
             }
             long intervalTicks = INTERVAL_SECONDS * 20;
-            taskId = new ReportRunnable().runTaskTimerAsynchronously(plugin, 200, intervalTicks).getTaskId();
+            taskId = new ReportRunnable().runTaskTimerAsynchronously(plugin, intervalTicks, intervalTicks).getTaskId();
         }
     }
 
