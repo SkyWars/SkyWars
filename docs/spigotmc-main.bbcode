@@ -83,15 +83,15 @@ To help out SkyWars by translating it into your local language, go to [URL='http
 [B][SIZE=5]MCStats / Plugin metrics[/SIZE][/B]
 SkyWars uses two services to report statistics. The first service, MCStats / Plugin Metrics, reports data to http://mcstats.org every 15 minutes. As of version 2.1.7, the second service, plugin-statistics, reports a small subset of that data to https://dabo.guru every hour.
 
-All data gathered by MCStats can be viewed at [[http://mcstats.org/plugin/SkyWars|http://mcstats.org/plugin/SkyWars]]. As MCStats is a relatively well-known service, I'll let you visit their website for more information.
+All data gathered by MCStats can be viewed at [URL='http://mcstats.org/plugin/SkyWars']http://mcstats.org/plugin/SkyWars[/URL]. As MCStats is a relatively well-known service, I'll let you visit their website for more information.
 
 To opt out from MCStats, change [B]opt-out: false[/B] to [B]opt-out: true[/B] in [B]plugins/PluginMetrics/config.yml[/B].
 
 The other service, plugin-statistics, is currently unique to SkyWars. It reports data every hour, starting one hour from server startup. The data reported consists solely of: the plugin name, the plugin version, the server version, the online player count, and an instance UUID. The plugin-statistics UUID is reset every server startup to a random number, and is not stored in any file.
 
-All data gathered can be viewed at https://dabo.guru/statistics/skywars/.
+All data gathered can be viewed at [URL='https://dabo.guru/statistics/skywars/']https://dabo.guru/statistics/skywars/[/URL].
 
-For more information, and a copy of both the plugin-side and server-side code, visit https://github.com/daboross/plugin-statistics#plugin-statistics.
+For more information, and a copy of both the plugin-side and server-side code, visit [URL='https://github.com/daboross/plugin-statistics#plugin-statistics']https://github.com/daboross/plugin-statistics[/URL].
 
 To disable plugin-statistics, change [B]report-statistics: true[/B] to [B]report-statistics: false[/B] in [B]plugins/SkyWars/main-config.yml[/B].
 
