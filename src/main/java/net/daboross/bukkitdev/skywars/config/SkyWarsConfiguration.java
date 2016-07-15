@@ -122,7 +122,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
         reportPluginStatistics = mainConfig.getSetBoolean(MainConfigKeys.REPORT_STATISTICS, MainConfigDefaults.REPORT_STATISTICS);
 
-        skipUuidCheck = mainConfig.getSetBoolean(MainConfigKeys.SKIP_UUID_CHECK, MainConfigDefaults.SKIP_UUID_CHECK);
+        skipUuidCheck = mainConfig.getConfig().getBoolean(MainConfigKeys.SKIP_UUID_CHECK, MainConfigDefaults.SKIP_UUID_CHECK);
         String arenaOrderString = mainConfig.getSetString(MainConfigKeys.ARENA_ORDER, MainConfigDefaults.ARENA_ORDER.toString());
         arenaOrder = ArenaOrder.getOrder(arenaOrderString);
         if (arenaOrder == null) {
