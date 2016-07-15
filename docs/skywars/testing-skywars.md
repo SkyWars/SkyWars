@@ -120,5 +120,7 @@ And now, testing!
    * Colored leather armor
    * Different spawn eggs
    * Potions with and without custom effects
+ * Ensure chests are filled when random chests are enabled for a custom arena
+ * Ensure double chests are filled with random chests enabled for both parts.
 * Test starting up from a fresh server on Linux and Windows to ensure there are no OS dependencies
  * No need to do a full test on both, just be sure to test that there are no immediate crashes when first loading arenas.

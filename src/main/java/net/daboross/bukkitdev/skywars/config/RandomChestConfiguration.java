@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
-
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.RandomChests;
@@ -216,7 +215,7 @@ public class RandomChestConfiguration implements RandomChests {
             Validate.notNull(level, "Never null"); // should never be null
             SkyStatic.debug("[RandomChests] Choosing level %s", level);
             SkyKitItem item = level.items.get(random.nextInt(level.items.size()));
-
+            inventory.add(item.toItem());
             totalValue += level.itemValue;
         }
 
