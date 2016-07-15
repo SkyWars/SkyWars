@@ -29,6 +29,7 @@ public class MainConfigDefaults {
     public static final int VERSION = 2;
     public static final String MESSAGE_PREFIX = "&8[&cSkyWars&8]&a ";
     public static final boolean DEBUG = false;
+    public static final boolean REPORT_STATISTICS = true;
     public static final boolean SKIP_UUID_CHECK = false;
     public static final SkyConfiguration.ArenaOrder ARENA_ORDER = SkyConfiguration.ArenaOrder.RANDOM;
     public static final List<String> ENABLED_ARENAS = Arrays.asList("skyblock-warriors", "water-warriors");

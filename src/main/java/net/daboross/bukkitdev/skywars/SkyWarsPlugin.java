@@ -57,6 +57,7 @@ import net.daboross.bukkitdev.skywars.game.GameIDHandler;
 import net.daboross.bukkitdev.skywars.game.GameQueue;
 import net.daboross.bukkitdev.skywars.kits.KitGuiManager;
 import net.daboross.bukkitdev.skywars.kits.SkyKitConfiguration;
+import net.daboross.bukkitdev.skywars.libraries.pluginstatistics.PluginStatistics;
 import net.daboross.bukkitdev.skywars.listeners.AttackerStorageListener;
 import net.daboross.bukkitdev.skywars.listeners.BuildingLimiter;
 import net.daboross.bukkitdev.skywars.listeners.CommandWhitelistListener;
@@ -127,6 +128,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         try {
             startPlugin();
             metrics();
+            pluginStatistics();
         } catch (Throwable ex) {
             getLogger().log(Level.SEVERE, "Startup failed", ex);
             enabledCorrectly = false;
@@ -316,8 +318,24 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
                 return;
             }
             metrics.start();
-        } catch (Throwable ignored) {
-            // We just won't do metrics now
+        } catch (Throwable ex) {
+            if (configuration.isDebug()) {
+                getLogger().log(Level.WARNING, "Failed to start plugin metrics!", ex);
+            }
+        }
+    }
+
+    private void pluginStatistics() {
+        try {
+            if (!configuration.isReportPluginStatistics()) {
+                return;
+            }
+            PluginStatistics statistics = new PluginStatistics(this, configuration.isDebug());
+            statistics.start();
+        } catch (Throwable ex) {
+            if (configuration.isDebug()) {
+                getLogger().log(Level.WARNING, "Failed to start plugin-statistics!", ex);
+            }
         }
     }
 
