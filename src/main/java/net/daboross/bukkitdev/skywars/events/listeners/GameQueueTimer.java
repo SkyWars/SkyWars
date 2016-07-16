@@ -76,8 +76,8 @@ public class GameQueueTimer {
         startTimer.cancelAll(); // in case of force start
     }
 
-
     private class MessageRunnable implements Runnable {
+
         private final boolean displayInMinutes;
         private final long displayTime;
 
@@ -109,7 +109,10 @@ public class GameQueueTimer {
             }
             String message = SkyTrans.get(transKey, displayTime);
             if (plugin.getConfiguration().shouldLimitStartTimerMessagesToArenaPlayers()) {
-                for (UUID uuid : plugin.getGameQueue().getCopy()) {
+                for (UUID uuid : plugin.getGameQueue().getInQueue()) {
+                    Bukkit.getPlayer(uuid).sendMessage(message);
+                }
+                for (UUID uuid : plugin.getGameQueue().getInSecondaryQueue()) {
                     Bukkit.getPlayer(uuid).sendMessage(message);
                 }
                 Bukkit.getConsoleSender().sendMessage(message);

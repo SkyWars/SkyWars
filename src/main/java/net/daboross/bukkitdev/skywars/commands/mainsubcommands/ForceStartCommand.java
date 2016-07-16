@@ -36,10 +36,10 @@ public class ForceStartCommand extends SubCommand {
 
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        if (plugin.getGameQueue().getNumPlayersInQueue() < 2) {
-            sender.sendMessage(SkyTrans.get(TransKey.CMD_FORCESTART_NOT_ENOUGH));
-        } else {
+        if (plugin.getGameQueue().areMinPlayersPresent()) {
             plugin.getGameHandler().startNewGame();
+        } else {
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_FORCESTART_NOT_ENOUGH));
         }
     }
 }

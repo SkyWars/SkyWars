@@ -50,7 +50,7 @@ public class SkyArenaConfigLoader {
 
     private boolean checkVersion(ConfigurationSection config) {
         int version = config.getInt("config-version", 0);
-        if (version == 0) {
+        if (version <= 0) {
             version0To1(config);
             version = 1;
         }
@@ -58,7 +58,11 @@ public class SkyArenaConfigLoader {
             version1To2(config);
             version = 2;
         }
-        return version == 2;
+        if (version == 2) {
+            version2To3(config);
+            version = 3;
+        }
+        return version == 3;
     }
 
     private void version0To1(ConfigurationSection config) {
@@ -72,5 +76,10 @@ public class SkyArenaConfigLoader {
 
     private void version1To2(final ConfigurationSection config) {
         config.set("config-version", 2);
+    }
+
+    private void version2To3(final ConfigurationSection config) {
+        config.set("min-players", 2);
+        config.set("config-version", 3);
     }
 }

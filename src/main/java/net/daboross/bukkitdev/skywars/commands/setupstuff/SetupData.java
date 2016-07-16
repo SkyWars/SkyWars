@@ -89,6 +89,7 @@ public class SetupData {
                 processedSpawns,
                 spawns.size(), // Number of teams
                 1, // Team size
+                2, // min players
                 20, // Placement Y
                 boundaries, null);
         config.setFile(saveFile);

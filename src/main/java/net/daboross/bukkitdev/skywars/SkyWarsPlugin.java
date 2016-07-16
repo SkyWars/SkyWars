@@ -271,6 +271,11 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
             locationStore.save();
             idHandler.saveAndUnload(this);
             // For better transparency when using /reload.
+            for (UUID uuid : gameQueue.getSecondaryCopy()) {
+                Player player = getServer().getPlayer(uuid);
+                gameQueue.removePlayer(player);
+                player.sendMessage(SkyTrans.get(TransKey.CMD_LEAVE_REMOVED_FROM_SECONDARY_QUEUE));
+            }
             for (UUID uuid : gameQueue.getCopy()) {
                 Player player = getServer().getPlayer(uuid);
                 gameQueue.removePlayer(player);

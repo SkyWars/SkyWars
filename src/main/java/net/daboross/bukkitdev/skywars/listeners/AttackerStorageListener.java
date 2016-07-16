@@ -181,6 +181,9 @@ public class AttackerStorageListener implements Listener, SkyAttackerStorage {
         } else if (plugin.getGameQueue().inQueue(uuid)) {
             plugin.getGameQueue().removePlayer(evt.getEntity());
             evt.getEntity().sendMessage(SkyTrans.get(TransKey.QUEUE_DEATH));
+        } else if (plugin.getGameQueue().inSecondaryQueue(uuid)) {
+            plugin.getGameQueue().removePlayer(evt.getEntity());
+            evt.getEntity().sendMessage(SkyTrans.get(TransKey.SECONDARY_QUEUE_DEATH));
         }
     }
 

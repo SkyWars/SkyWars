@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import net.daboross.bukkitdev.commandexecutorbase.ArrayHelpers;
@@ -46,7 +47,11 @@ public class StatusCommand extends SubCommand {
         SkyIDHandler idh = plugin.getIDHandler();
         sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_HEADER));
         sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_IN_QUEUE,
-                ArrayHelpers.combinedWithSeperator(getNames(plugin.getGameQueue().getCopy()), SkyTrans.get(TransKey.CMD_STATUS_COMMA))));
+                ArrayHelpers.combinedWithSeperator(getNames(plugin.getGameQueue().getInQueue()), SkyTrans.get(TransKey.CMD_STATUS_COMMA))));
+        if (!plugin.getGameQueue().getInSecondaryQueue().isEmpty()) {
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_IN_SECONDARY_QUEUE,
+                    ArrayHelpers.combinedWithSeperator(getNames(plugin.getGameQueue().getInSecondaryQueue()), SkyTrans.get(TransKey.CMD_STATUS_COMMA))));
+        }
         sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_ARENA_HEADER));
         for (Integer id : idh.getCurrentIDs()) {
             SkyGame game = idh.getGame(id);
@@ -57,11 +62,12 @@ public class StatusCommand extends SubCommand {
         }
     }
 
-    private String[] getNames(UUID[] uuids) {
+    private String[] getNames(Collection<UUID> uuids) {
         SkyPlayers players = plugin.getPlayers();
-        String[] names = new String[uuids.length];
-        for (int i = 0; i < uuids.length; i++) {
-            names[i] = players.getPlayer(uuids[i]).getName();
+        String[] names = new String[uuids.size()];
+        int i = 0;
+        for (UUID uuid : uuids) {
+            names[i++] = players.getPlayer(uuid).getName();
         }
         return names;
     }

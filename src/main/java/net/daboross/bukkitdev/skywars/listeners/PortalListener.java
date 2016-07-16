@@ -18,6 +18,7 @@ package net.daboross.bukkitdev.skywars.listeners;
 
 import java.util.UUID;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import net.daboross.bukkitdev.skywars.api.game.SkyGameQueue;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
@@ -42,8 +43,15 @@ public class PortalListener implements Listener {
             if (loc.isNear(location)) {
                 Player p = evt.getPlayer();
                 UUID uuid = p.getUniqueId();
-                if (!plugin.getCurrentGameTracker().isInGame(uuid) && !plugin.getGameQueue().inQueue(uuid)) {
-                    p.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_CONFIRMATION));
+                SkyGameQueue gameQueue = plugin.getGameQueue();
+                if (!plugin.getCurrentGameTracker().isInGame(uuid)
+                        && !gameQueue.inQueue(uuid) && !gameQueue.inSecondaryQueue(uuid)) {
+                    if (gameQueue.isQueueFull()) {
+                        p.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_JOINED_SECONDARY_QUEUE));
+                        p.sendMessage(SkyTrans.get(TransKey.SECONDARY_QUEUE_EXPLANATION));
+                    } else {
+                        p.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_CONFIRMATION));
+                    }
                     plugin.getGameQueue().queuePlayer(p);
                 }
             }

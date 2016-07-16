@@ -17,6 +17,7 @@
 package net.daboross.bukkitdev.skywars.game;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -27,6 +28,8 @@ import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
 import net.daboross.bukkitdev.skywars.api.game.SkyGameQueue;
+import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
+import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.events.events.PlayerJoinQueueInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveQueueInfo;
 import org.bukkit.Bukkit;
@@ -52,40 +55,39 @@ public class GameQueue implements SkyGameQueue {
     }
 
     @Override
-    public void queuePlayer(UUID uuid) {
-        queuePlayer(Bukkit.getPlayer(uuid));
+    public boolean inSecondaryQueue(final UUID uuid) {
+        return queueNext.contains(uuid);
     }
 
     @Override
-    public void queuePlayer(Player player) {
+    public boolean queuePlayer(Player player) {
         UUID uuid = player.getUniqueId();
         if (isQueueFull()) {
             queueNext.add(uuid);
-            return;
+            return false;
         }
         if (!currentlyQueued.contains(uuid)) {
             currentlyQueued.add(uuid);
         }
         plugin.getDistributor().distribute(new PlayerJoinQueueInfo(player, isQueueFull()));
-    }
-
-    @Override
-    public void removePlayer(UUID uuid) {
-        removePlayer(Bukkit.getPlayer(uuid));
+        return true;
     }
 
     @Override
     public void removePlayer(Player player) {
         if (currentlyQueued.remove(player.getUniqueId())) {
             plugin.getDistributor().distribute(new PlayerLeaveQueueInfo(player, areMinPlayersPresent()));
+            if (!queueNext.isEmpty()) {
+                queuePlayer(Bukkit.getPlayer(queueNext.remove(0)));
+            }
         } else {
             queueNext.remove(player.getUniqueId());
         }
     }
 
     public ArenaGame getNextGame() {
-        if (currentlyQueued.size() < 2) {
-            throw new IllegalStateException("Queue size smaller than 2");
+        if (currentlyQueued.size() < nextArena.getMinPlayers()) {
+            throw new IllegalStateException("Queue size smaller than minimum player count (" + currentlyQueued.size() + " < " + nextArena.getMinPlayers() + ")");
         }
         Collections.shuffle(currentlyQueued);
         UUID[] queueCopy = currentlyQueued.toArray(new UUID[currentlyQueued.size()]);
@@ -125,6 +127,7 @@ public class GameQueue implements SkyGameQueue {
                     for (UUID uuid : joinNext) {
                         Player p = Bukkit.getPlayer(uuid);
                         if (p != null) {
+                            p.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_CONFIRMATION));
                             queuePlayer(p);
                         }
                     }
@@ -136,6 +139,20 @@ public class GameQueue implements SkyGameQueue {
     @Override
     public UUID[] getCopy() {
         return currentlyQueued.toArray(new UUID[currentlyQueued.size()]);
+    }
+
+    public UUID[] getSecondaryCopy() {
+        return queueNext.toArray(new UUID[queueNext.size()]);
+    }
+
+    @Override
+    public Collection<UUID> getInQueue() {
+        return Collections.unmodifiableCollection(currentlyQueued);
+    }
+
+    @Override
+    public Collection<UUID> getInSecondaryQueue() {
+        return Collections.unmodifiableCollection(queueNext);
     }
 
     @Override
@@ -155,7 +172,6 @@ public class GameQueue implements SkyGameQueue {
 
     @Override
     public boolean areMinPlayersPresent() {
-        // TODO: min players currently defaulted to '2'
-        return currentlyQueued.size() >= 2;
+        return currentlyQueued.size() >= nextArena.getMinPlayers();
     }
 }

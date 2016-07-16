@@ -41,6 +41,9 @@ public class LeaveCommand extends SubCommand {
         if (plugin.getGameQueue().inQueue(((Player) sender).getUniqueId())) {
             plugin.getGameQueue().removePlayer((Player) sender);
             sender.sendMessage(SkyTrans.get(TransKey.CMD_LEAVE_REMOVED_FROM_QUEUE));
+        } else if (plugin.getGameQueue().inSecondaryQueue(((Player) sender).getUniqueId())) {
+            plugin.getGameQueue().removePlayer((Player) sender);
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_LEAVE_REMOVED_FROM_SECONDARY_QUEUE));
         } else if (plugin.getCurrentGameTracker().isInGame(((Player) sender).getUniqueId())) {
             plugin.getGameHandler().removePlayerFromGame((Player) sender, LeaveGameReason.LEAVE_COMMAND, true, true);
             sender.sendMessage(SkyTrans.get(TransKey.CMD_LEAVE_REMOVED_FROM_GAME));

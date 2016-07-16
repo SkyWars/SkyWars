@@ -123,15 +123,18 @@ public class SignListener implements Listener {
                     return;
                 }
 
-                if (!plugin.getCurrentGameTracker().isInGame(uuid) && !plugin.getGameQueue().inQueue(uuid)) {
-                    p.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_CONFIRMATION));
-                    plugin.getGameQueue().queuePlayer(p);
-                } else {
-                    // Should be pretty impossible to click a join sign while already in a game,
-                    // so just assuming this message is correct should be fine.
+
+                if (plugin.getGameQueue().inQueue(uuid)) {
                     p.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_ALREADY_QUEUED));
                     // Kit GUI is automatically shown when joining, but it should also be shown if already queued.
                     plugin.getKitGui().autoOpenGuiIfApplicable(p);
+                } else if (plugin.getGameQueue().inSecondaryQueue(uuid)) {
+                    p.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_ALREADY_IN_SECONDARY_QUEUE));
+                    p.sendMessage(SkyTrans.get(TransKey.SECONDARY_QUEUE_EXPLANATION));
+                } else if (!plugin.getCurrentGameTracker().isInGame(uuid)) {
+                    // Should be pretty impossible to click a join sign while already in a game.
+                    p.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_CONFIRMATION));
+                    plugin.getGameQueue().queuePlayer(p);
                 }
             }
         }
