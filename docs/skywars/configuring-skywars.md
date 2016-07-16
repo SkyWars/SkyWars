@@ -15,9 +15,24 @@ To configure randomized chests, go to https://dabo.guru/projects/skywars/configu
 config-version: 2
 
 # Whether or not to enable debug mode. In debug mode, SkyWars will print a
-# huge amount of information to the server console. There is no need to enable
-# this unless you are asked to by support.
+# huge amount of information to the server console. There is usually no need
+# to enable this unless you are asked to by the developer.
 debug: false
+
+# When enabled, SkyWars will report statistics to https://dabo.guru, using the
+# custom "plugin-statistics" system. This is similar to PluginMetrics/MCStats,
+# but reports vastly less data, and does not use any persistent GUID for the
+# server.
+#
+# If enabled, every hour, starting one hour from server startup, the plugin
+# will send the plugin version, server version, online player count, and an
+# instance UUID to https://dabo.guru/statistics/skywars/. The instance UUID is
+# reset every server startup, and is not stored in any persistent files.
+#
+# If disabled, no data will be sent.
+#
+# For more information, see https://github.com/daboross/plugin-statistics.
+report-statistics: true
 
 # This represents the order that the arenas are started in. Whenever enough
 # people join the queue, a new arena is chosen either at RANDOM, or ORDERED.

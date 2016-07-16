@@ -23,6 +23,7 @@ public class MainConfigKeys {
     public static final String ARENA_ORDER = "arena-order";
     public static final String MESSAGE_PREFIX = "message-prefix";
     public static final String DEBUG = "debug";
+    public static final String REPORT_STATISTICS = "report-statistics";
     public static final String SKIP_UUID_CHECK = "skip-uuid-version-check";
     public static final String SAVE_INVENTORY = "save-inventory";
     public static final String SAVE_EXPERIENCE = "save-experience";

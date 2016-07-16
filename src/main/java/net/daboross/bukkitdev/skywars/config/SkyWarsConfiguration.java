@@ -45,8 +45,10 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private Map<String, String> arenaGamerules;
     private final SkyWars plugin;
     private Path arenaFolder;
-    private ArenaOrder arenaOrder;
+    private boolean debug;
     private boolean skipUuidCheck;
+    private boolean reportPluginStatistics;
+    private ArenaOrder arenaOrder;
     private String messagePrefix;
     private boolean inventorySaveEnabled;
     private boolean experienceSaveEnabled;
@@ -118,13 +120,15 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         }
         mainConfig.getConfig().set(MainConfigKeys.VERSION, MainConfigDefaults.VERSION);
 
-        boolean debug = mainConfig.getSetBoolean(MainConfigKeys.DEBUG, MainConfigDefaults.DEBUG);
+        debug = mainConfig.getSetBoolean(MainConfigKeys.DEBUG, MainConfigDefaults.DEBUG);
         SkyStatic.setDebug(debug);
         if (debug) {
             ProtobufStatic.setDebugLogger(plugin.getLogger());
         }
 
-        skipUuidCheck = mainConfig.getSetBoolean(MainConfigKeys.SKIP_UUID_CHECK, MainConfigDefaults.SKIP_UUID_CHECK);
+        reportPluginStatistics = mainConfig.getSetBoolean(MainConfigKeys.REPORT_STATISTICS, MainConfigDefaults.REPORT_STATISTICS);
+
+        skipUuidCheck = mainConfig.getConfig().getBoolean(MainConfigKeys.SKIP_UUID_CHECK, MainConfigDefaults.SKIP_UUID_CHECK);
         String arenaOrderString = mainConfig.getSetString(MainConfigKeys.ARENA_ORDER, MainConfigDefaults.ARENA_ORDER.toString());
         arenaOrder = ArenaOrder.getOrder(arenaOrderString);
         if (arenaOrder == null) {
@@ -506,6 +510,16 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     }
 
     @Override
+    public boolean isDebug() {
+        return debug;
+    }
+
+    @Override
+    public boolean isReportPluginStatistics() {
+        return reportPluginStatistics;
+    }
+
+    @Override
     public long getTimeTillStartAfterMaxPlayers() {
         return timeTillStartAfterMaxPlayers;
     }
@@ -529,7 +543,6 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     public List<Long> getStartTimerMessageTimes() {
         return startTimerMessageTimes;
     }
-
 
     private static class Names {
 

@@ -73,10 +73,19 @@ To help out SkyWars by translating it into your local language, go to [[https://
 
 === MCStats / Plugin metrics
 
-SkyWars uses plugin metrics to keep track of people using the plugin.
-All gathered data can be viewed at [[http://mcstats.org/plugin/SkyWars|http://mcstats.org/plugin/SkyWars]].
+SkyWars uses two services to report statistics. The first service, MCStats / Plugin Metrics, reports data to http://mcstats.org every 15 minutes. As of version 2.1.7, the second service, plugin-statistics, reports a small subset of that data to https://dabo.guru every hour.
 
-To opt out, change **opt-out: false** to **opt-out: true** in **plugins/PluginMetrics/config.yml**
+All data gathered by MCStats can be viewed at http://mcstats.org/plugin/SkyWars. As MCStats is a relatively well-known service, I'll let you visit their website for more information.
+
+To opt out from MCStats, change **opt-out: false** to **opt-out: true** in **plugins/PluginMetrics/config.yml**
+
+The other service, plugin-statistics, is currently unique to SkyWars. It reports data every hour, starting one hour from server startup. The data reported consists solely of: the plugin name, the plugin version, the server version, the online player count, and an instance UUID. The plugin-statistics UUID is reset every server startup to a random number, and is not stored in any file.
+
+All data gathered can be viewed at https://dabo.guru/statistics/skywars/.
+
+For more information, and a copy of both the plugin-side and server-side code, visit [[https://github.com/daboross/plugin-statistics#plugin-statistics|https://github.com/daboross/plugin-statistics]].
+
+To disable plugin-statistics, change **report-statistics: true** to **report-statistics: false** in **plugins/SkyWars/main-config.yml**.
 
 === SkyWars Report
 

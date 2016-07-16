@@ -1,3 +1,13 @@
+Changes since 2.1.6
+-------------------
+
+SkyWars:
+- Fix bug introduced in v2.1.6 where chest randomization does not fill any chests.
+- Add secondary plugin statistics system, reporting to https://dabo.guru
+  - I meant to wait until v2.2.0 to include plugin-statistics, but this bugfix release needs to happen, and since the statistics is done I thought I might as well include it now.
+  - For details on what data is reported, and how to opt out, see statistics section of https://dabo.guru/projects/skywars/, or "report-statistics" option in https://dabo.guru/projects/skywars/configuring-skywars.
+  - To see recorded data (the same data I have access to), see https://dabo.guru/statistics/skywars/.
+
 Changes since 2.1.5
 -------------------
 
@@ -45,11 +55,3 @@ SkyWars:
 SkyWars-API:
 - Allow more optimization for the final SkyWars plugin jar file. This means a possibly faster and definitely smaller jar, but if you've been depending on SkyWars.jar from another plugin, this may break that dependency.
 - Note that as long as you are depending on SkyWars-API.jar, and using all the public interfaces defined in that, you'll be fine. All of the API interfaces and methods are exempt from the optimization, and will work fine in any setting.
-
-Changes since 2.1.3
--------------------
-
-SkyWars:
-- Add join signs with auto-updating queue information. See https://dabo.guru/projects/skywars/signs-and-portals!
-- Fixed up documentation for join portals.
-- Fix a possible bug which would cause SkyWars to not save scores to JSON when using Java 7 instead of Java 8.
