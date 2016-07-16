@@ -1,6 +1,16 @@
 Changelog
 =========
 
+2.1.7
+-----
+
+### SkyWars:
+- Fix bug introduced in v2.1.6 where chest randomization does not fill any chests.
+- Add secondary plugin statistics system, reporting to https://dabo.guru
+  - I meant to wait until v2.2.0 to include plugin-statistics, but this bugfix release needs to happen, and since the statistics is done I thought I might as well include it now.
+  - For details on what data is reported, and how to opt out, see statistics section of https://dabo.guru/projects/skywars/, or "report-statistics" option in https://dabo.guru/projects/skywars/configuring-skywars.
+  - To see recorded data (the same data I have access to), see https://dabo.guru/statistics/skywars/.
+
 2.1.6
 -----
 
