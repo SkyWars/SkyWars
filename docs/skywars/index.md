@@ -36,6 +36,7 @@ Note: There's a new poll as of June 15th, 2016! If you haven't voted since then,
 * SkyWars is now functional with the two default arenas!
 
 #### Documentation
+* [SkyWars Functions Guide (Start Here)](https://dabo.guru/projects/skywars/functions-guide)
 * [Commands and Permissions](https://dabo.guru/projects/skywars/commands-and-permissions)
 * [Configuring SkyWars](https://dabo.guru/projects/skywars/configuring-skywars)
 * [SkyWars Score System](https://dabo.guru/projects/skywars/score)
