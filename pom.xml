@@ -147,7 +147,7 @@
         <dependency>
             <groupId>net.daboross.bukkitdev.bukkit-storage-protobuf</groupId>
             <artifactId>bukkit-storage-protobuf</artifactId>
-            <version>0.0.5</version>
+            <version>0.0.6-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

@@ -25,6 +25,7 @@ import java.nio.file.Path;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.logging.Level;
+import net.daboross.bukkitdev.bukkitstorageprotobuf.ProtobufStatic;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfiguration;
@@ -123,6 +124,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         SkyStatic.setPluginName(this.getDescription().getName());
         SkyStatic.setVersion(this.getDescription().getVersion());
         SkyStatic.setLogger(this.getLogger());
+        ProtobufStatic.setLogger(this.getLogger());
     }
 
     @Override
@@ -291,6 +293,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
             getLogger().log(Level.INFO, "Unloading arena world - without saving");
             worldHandler.destroyArenaWorld();
             SkyStatic.setLogger(null);
+            ProtobufStatic.setLogger(null);
             getLogger().log(Level.INFO, "SkyWars disabled successfully");
         }
     }

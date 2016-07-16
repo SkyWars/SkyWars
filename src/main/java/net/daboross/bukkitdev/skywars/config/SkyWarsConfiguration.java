@@ -122,9 +122,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
 
         debug = mainConfig.getSetBoolean(MainConfigKeys.DEBUG, MainConfigDefaults.DEBUG);
         SkyStatic.setDebug(debug);
-        if (debug) {
-            ProtobufStatic.setDebugLogger(plugin.getLogger());
-        }
+        ProtobufStatic.setDebug(debug);
 
         reportPluginStatistics = mainConfig.getSetBoolean(MainConfigKeys.REPORT_STATISTICS, MainConfigDefaults.REPORT_STATISTICS);
 
