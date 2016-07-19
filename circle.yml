@@ -5,7 +5,7 @@ dependencies:
         - git clone -b "$CIRCLE_BRANCH" https://github.com/SkyWars/SkyWars-API.git
         - (cd SkyWars-API && mvn clean install)
 test:
-	override:
+    override:
         - mvn clean package test integration-test
     post:
         - mv target/SkyWars.jar "$CIRCLE_ARTIFACTS/"
