@@ -57,6 +57,10 @@ public class WorldEditProtobufStorageProvider extends ProtobufStorageProvider {
     public OperationHandle startCopyOperation(final World arenaWorld, final SkyArena arena, final SkyBlockLocation target, final long ticksTillCompletion) {
         Validate.isTrue(target.world.equals(arenaWorld.getName()), "Destination world is not arena world.");
 
+        if (editWorld == null) {
+            editWorld = new BukkitWorld(arenaWorld);
+        }
+
         MemoryBlockArea area = cache.get(arena.getArenaName());
         Validate.notNull(area, "Arena " + arena.getArenaName() + " not loaded.");
 
@@ -95,6 +99,10 @@ public class WorldEditProtobufStorageProvider extends ProtobufStorageProvider {
     @Override
     public OperationHandle startDestroyOperation(final World arenaWorld, final SkyArena arena, final SkyBlockLocation target, final long ticksTillCompletion) {
         Validate.isTrue(target.world.equals(arenaWorld.getName()), "Destination world is not arena world.");
+
+        if (editWorld == null) {
+            editWorld = new BukkitWorld(arenaWorld);
+        }
 
         SkyBlockLocationRange clearingArea = arena.getBoundaries().getClearing();
         final SkyBlockLocation clearingMin = new SkyBlockLocation(target.x + clearingArea.min.x, target.y + clearingArea.min.y, target.z + clearingArea.min.z, null);
