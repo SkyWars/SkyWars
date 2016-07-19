@@ -93,6 +93,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private boolean disableReport;
     private boolean recoverFromScoreErrors;
     private boolean developerOptions;
+    private int arenaCopyingBlockSize;
 
     public SkyWarsConfiguration(SkyWars plugin) throws IOException, InvalidConfigurationException, SkyConfigurationException {
         this.plugin = plugin;
@@ -183,6 +184,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         economyRewardMessages = mainConfig.getSetBoolean(MainConfigKeys.Economy.MESSAGE, MainConfigDefaults.Economy.MESSAGE);
 
         arenaDistanceApart = mainConfig.getSetInt(MainConfigKeys.ARENA_DISTANCE_APART, MainConfigDefaults.ARENA_DISTANCE_APART);
+        arenaCopyingBlockSize = mainConfig.getSetInt(MainConfigKeys.ARENA_COPYING_BLOCK_SIZE, MainConfigDefaults.ARENA_COPYING_BLOCK_SIZE);
 
         commandWhitelistEnabled = mainConfig.getSetBoolean(MainConfigKeys.CommandWhitelist.WHITELIST_ENABLED, MainConfigDefaults.CommandWhitelist.WHITELIST_ENABLED);
         commandWhitelistABlacklist = mainConfig.getSetBoolean(MainConfigKeys.CommandWhitelist.IS_BLACKLIST, MainConfigDefaults.CommandWhitelist.IS_BLACKLIST);
@@ -540,6 +542,11 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     @Override
     public List<Long> getStartTimerMessageTimes() {
         return startTimerMessageTimes;
+    }
+
+    @Override
+    public int getArenaCopyingBlockSize() {
+        return arenaCopyingBlockSize;
     }
 
     private static class Names {

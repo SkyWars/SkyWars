@@ -25,6 +25,7 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -39,6 +40,7 @@ import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
 import net.daboross.bukkitdev.skywars.events.events.GameEndInfo;
 import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.game.ArenaGame;
+import net.daboross.bukkitdev.skywars.util.ReusableIdHandler;
 import net.daboross.bukkitdev.skywars.world.providers.ProtobufStorageProvider;
 import net.daboross.bukkitdev.skywars.world.providers.WorldEditProtobufStorageProvider;
 import org.bukkit.Bukkit;
@@ -54,6 +56,8 @@ public class SkyWorldHandler {
 
     private final SkyWars plugin;
     private final WorldProvider provider;
+    private final HashMap<SkyArena, OperationHandle> currentlyCopyingArenas = new HashMap<>();
+    private final ReusableIdHandler locationIdHandler = new ReusableIdHandler();
     private World arenaWorld;
 
     public SkyWorldHandler(SkyWars plugin) {
@@ -159,12 +163,35 @@ public class SkyWorldHandler {
         }
     }
 
+    public void startCopyingArena(SkyArena arena, final long ticksTillCompletion) {
+        synchronized (currentlyCopyingArenas) {
+            OperationHandle handle = currentlyCopyingArenas.get(arena);
+            if (handle == null) {
+                int newLocationId = locationIdHandler.getNextId();
+                handle = provider.startCopyOperation(arenaWorld, arena, getMinLocation(newLocationId, arena), ticksTillCompletion);
+                handle.setTargetLocationId(newLocationId);
+                currentlyCopyingArenas.put(arena, handle);
+            }
+        }
+    }
+
     public void onGameStart0(GameStartInfo info) {
         // Copy arena *first* before doing anything else.
         ArenaGame game = info.getGame();
-        SkyBlockLocation min = getMinLocation(game);
-        game.setMin(min);
-        provider.copyArena(arenaWorld, game.getArena(), min);
+        SkyArena arena = game.getArena();
+        if (currentlyCopyingArenas.containsKey(arena)) {
+            SkyStatic.debug("Finishing existing arena copy operation for %s.", arena.getArenaName());
+            OperationHandle copyOperation = currentlyCopyingArenas.remove(arena);
+            copyOperation.completeOperationNow();
+            game.setLocationId(copyOperation.getTargetLocationId());
+            game.setMin(copyOperation.getZeroLocation());
+        } else {
+            SkyStatic.debug("Didn't find an already-running copy operation for %s!", arena.getArenaName());
+            game.setLocationId(locationIdHandler.getNextId());
+            SkyBlockLocation min = getMinLocation(game);
+            game.setMin(min);
+            provider.copyArena(arenaWorld, game.getArena(), min);
+        }
     }
 
     public void onGameStart1(GameStartInfo info) {
@@ -200,12 +227,22 @@ public class SkyWorldHandler {
     }
 
     public void onGameEnd(GameEndInfo info) {
-        SkyBlockLocation min = info.getGame().getMin();
-        provider.destroyArena(arenaWorld, info.getGame().getArena(), min);
+        ArenaGame game = info.getGame();
+        final int locationId = info.getGame().getId();
+        SkyStatic.debug("Starting destroy operation for arena at %s.", locationId);
+        // TODO: 2 minutes for destroying each arena is currently hardcoded.
+        OperationHandle handle = provider.startDestroyOperation(arenaWorld, game.getArena(), game.getMin(), 2 * 60 * 20); // nice delayed execution.
+        handle.runOnFinish(new Runnable() {
+            @Override
+            public void run() {
+                SkyStatic.debug("Finished destroying arena at %s.", locationId);
+                locationIdHandler.recycleId(locationId);
+            }
+        });
     }
 
     private SkyBlockLocation getMinLocation(SkyGame game) {
-        return getMinLocation(game.getId(), game.getArena());
+        return getMinLocation(game.getLocationId(), game.getArena());
     }
 
     private SkyBlockLocation getMinLocation(int id, SkyArena arena) {

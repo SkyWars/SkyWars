@@ -59,6 +59,7 @@ public class MainConfigDefaults {
     public static final long TIME_BEFORE_GAME_STARTS_TO_COPY_ARENA = 10;
     public static final long IN_GAME_PLAYER_FREEZE_TIME = 5;
     public static final List<Long> START_TIMER_MESSAGE_TIMES = Arrays.asList(600l, 300l, 180l, 60l, 45l, 30l, 15l, 5l, 3l, 2l, 1l);
+    public static final int ARENA_COPYING_BLOCK_SIZE = 500;
 
     static {
         Map<String, String> defaultArenaGamerules = new HashMap<>(1);

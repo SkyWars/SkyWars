@@ -28,7 +28,35 @@ public interface WorldProvider {
 
     void clearLoadedArenas();
 
+    /**
+     * Starts a multi-part copy operation of the arena, which will complete in around ticksTillCompletion.
+     * <p>
+     * If you *need* it to be done at a certain time, set another timer for that time and run {@code
+     * operation.completeOperationNow()} on the returned operation.
+     *
+     * @param arenaWorld          The world to copy to.
+     * @param arena               The arena to copy.
+     * @param target              The target location to copy the arena to,
+     * @param ticksTillCompletion Time (in server ticks) before the provider should try and finish the copying
+     *                            completely
+     * @return an operation handle, which can be used to complete or cancel the copy operation.
+     */
+    OperationHandle startCopyOperation(World arenaWorld, SkyArena arena, SkyBlockLocation target, long ticksTillCompletion);
+
     void copyArena(World arenaWorld, SkyArena arena, SkyBlockLocation target);
+
+    /**
+     * Starts a multi-part destroy operation, similar to startCopyOperation().
+     * <p>
+     * This won't neccessarily be done by ticksTillCompletion, but it will be done shortly after if it isn't.
+     *
+     * @param arenaWorld          The world to copy to.
+     * @param arena               The arena to get destruction parameters from
+     * @param target              The target location which the arena was copied to.
+     * @param ticksTillCompletion Time (in server ticks) with which to give the provider to complete the operation.
+     * @return an operation handle, which can be used to complete or cancel the copy operation.
+     */
+    OperationHandle startDestroyOperation(World arenaWorld, SkyArena arena, SkyBlockLocation target, long ticksTillCompletion);
 
     void destroyArena(World arenaWorld, SkyArena arena, SkyBlockLocation target);
 }

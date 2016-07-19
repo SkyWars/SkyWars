@@ -41,6 +41,7 @@ public class ArenaGame implements SkyGame {
     private final Map<UUID, Integer> playerTeams;
     private final Team[] teams;
     private final int numTeams;
+    private int locationId = -5; // TODO: It would be better to set this in the constructor!
 
     public ArenaGame(SkyArena arena, int id, UUID[] originalPlayers) {
         Validate.notNull(arena, "Arena cannot be null");
@@ -178,6 +179,19 @@ public class ArenaGame implements SkyGame {
             }
         }
         return alive;
+    }
+
+    public void setLocationId(final int locationId) {
+        this.locationId = locationId;
+    }
+
+    @Override
+    public int getLocationId() {
+        if (locationId == -5) {
+            // it hasn't been set
+            throw new IllegalStateException("No location id set!");
+        }
+        return locationId;
     }
 
     public class Team implements SkyGameTeam {

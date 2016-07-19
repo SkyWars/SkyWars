@@ -30,8 +30,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-
+import net.daboross.bukkitdev.bukkitstorageprotobuf.AreaClearing;
 import net.daboross.bukkitdev.bukkitstorageprotobuf.MemoryBlockArea;
+import net.daboross.bukkitdev.bukkitstorageprotobuf.MultiPartOperation;
 import net.daboross.bukkitdev.bukkitstorageprotobuf.ProtobufStorage;
 import net.daboross.bukkitdev.bukkitstorageprotobuf.compiled.BlockStorage;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
@@ -43,6 +44,7 @@ import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArenaConfig;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
 import net.daboross.bukkitdev.skywars.util.CrossVersion;
+import net.daboross.bukkitdev.skywars.world.OperationHandle;
 import net.daboross.bukkitdev.skywars.world.RandomChestProvider;
 import net.daboross.bukkitdev.skywars.world.VoidGenerator;
 import net.daboross.bukkitdev.skywars.world.WorldProvider;
@@ -185,8 +187,50 @@ public class ProtobufStorageProvider implements WorldProvider {
     }
 
     @Override
-    public void destroyArena(final World arenaWorld, final SkyArena arena, final SkyBlockLocation target) {
+    public OperationHandle startCopyOperation(final World arenaWorld, final SkyArena arena, final SkyBlockLocation target, final long ticksTillCompletion) {
         Validate.isTrue(target.world.equals(arenaWorld.getName()), "Destination world is not arena world.");
+
+        MemoryBlockArea area = cache.get(arena.getArenaName());
+        Validate.notNull(area, "Arena " + arena.getArenaName() + " not loaded.");
+
+        MultiPartOperation storageOperation = area.applyMultiPart(arenaWorld, target.x, target.y, target.z,
+                new RandomChestProvider(plugin.getChestRandomizer(), arena),
+                plugin.getConfiguration().getArenaCopyingBlockSize());
+
+        OperationTimer timer = new OperationTimer(storageOperation, ticksTillCompletion, target);
+        timer.start();
+        return timer;
+    }
+
+    @Override
+    public OperationHandle startDestroyOperation(final World arenaWorld, final SkyArena arena, final SkyBlockLocation target, final long ticksTillCompletion) {
+        Validate.isTrue(target.world.equals(arenaWorld.getName()), "Destination world is not arena world.");
+
+        SkyBlockLocationRange clearingArea = arena.getBoundaries().getClearing();
+        final SkyBlockLocation clearingMin = new SkyBlockLocation(target.x + clearingArea.min.x, target.y + clearingArea.min.y, target.z + clearingArea.min.z, null);
+        final SkyBlockLocation clearingMax = new SkyBlockLocation(target.x + clearingArea.max.x, target.y + clearingArea.max.y, target.z + clearingArea.max.z, null);
+
+        MultiPartOperation storageOperation = AreaClearing.clearMultiPart(arenaWorld, clearingMin.x, clearingMin.y, clearingMin.z,
+                clearingMax.x - clearingMin.x, clearingMax.y - clearingMin.y, clearingMax.z - clearingMin.z,
+                plugin.getConfiguration().getArenaDistanceApart());
+
+        OperationTimer timer = new OperationTimer(storageOperation, ticksTillCompletion, clearingMin);
+        timer.runOnFinish(new Runnable() {
+            @Override
+            public void run() {
+                SkyBlockLocation halfDistance = new SkyBlockLocation((clearingMax.x - clearingMin.x) / 2, (clearingMax.y - clearingMin.y) / 2, (clearingMax.z - clearingMin.z) / 2, null);
+                Location center = clearingMin.add(halfDistance).toLocationWithWorldObj(arenaWorld);
+                for (Entity entity : CrossVersion.getNearbyEntities(center, halfDistance.x, halfDistance.y, halfDistance.z)) {
+                    entity.remove();
+                }
+            }
+        });
+        timer.start();
+        return timer;
+    }
+
+    @Override
+    public void destroyArena(final World arenaWorld, final SkyArena arena, final SkyBlockLocation target) {
 
         SkyBlockLocationRange clearingArea = arena.getBoundaries().getClearing();
         SkyBlockLocation clearingMin = new SkyBlockLocation(target.x + clearingArea.min.x, target.y + clearingArea.min.y, target.z + clearingArea.min.z, null);
@@ -203,6 +247,121 @@ public class ProtobufStorageProvider implements WorldProvider {
         Location center = clearingMin.add(halfDistance).toLocationWithWorldObj(arenaWorld);
         for (Entity entity : CrossVersion.getNearbyEntities(center, halfDistance.x, halfDistance.y, halfDistance.z)) {
             entity.remove();
+        }
+    }
+
+    protected class OperationTimer implements OperationHandle, Runnable {
+
+        private final MultiPartOperation storageOperation;
+        private final ArrayList<Runnable> runOnCompletion;
+        private final long ticksBetweenSteps;
+        private final SkyBlockLocation zeroLocation;
+        private boolean finished;
+        private int taskId = -1;
+        private int locationId;
+
+        /**
+         * @param storageOperation Operation to run.
+         * @param ticks            Ticks to run operation in.
+         * @param zeroLocation     location to return when getZeroLocation() is called (no internal usage).
+         */
+        public OperationTimer(final MultiPartOperation storageOperation, long ticks, SkyBlockLocation zeroLocation) {
+            this.storageOperation = storageOperation;
+            this.zeroLocation = zeroLocation;
+            this.runOnCompletion = new ArrayList<>(2);
+            this.finished = false;
+
+            // Add one to steps because we aren't doing one immediately, nor do we want to be doing one
+            // in the last tick available.
+            int steps = storageOperation.getPartsLeft() + 1;
+            ticksBetweenSteps = (long) Math.floor(((double) ticks) / ((double) steps));
+        }
+
+        public void start() {
+            synchronized (this) {
+                if (finished) {
+                    return;
+                }
+                if (this.taskId == -1) {
+                    taskId = Bukkit.getScheduler().runTaskTimer(plugin, this, ticksBetweenSteps, ticksBetweenSteps).getTaskId();
+                }
+            }
+        }
+
+        @Override
+        public void run() {
+            synchronized (this) {
+                if (finished) {
+                    return; // completeOperationNow() called
+                }
+                // TODO: This debug is a bit excessive, remove it after testing!
+                SkyStatic.debug("Running next part of arena operation at %s", locationId);
+                storageOperation.performNextPart();
+                if (storageOperation.getPartsLeft() <= 0) {
+                    SkyStatic.debug("Finished arena operation at %s!", locationId);
+                    finished = true;
+                    for (Runnable runnable : runOnCompletion) {
+                        runnable.run();
+                    }
+                    Bukkit.getScheduler().cancelTask(taskId);
+                    taskId = -1;
+                }
+            }
+        }
+
+        @Override
+        public void cancelOperation() {
+            synchronized (this) {
+                if (taskId != -1) {
+                    Bukkit.getScheduler().cancelTask(taskId);
+                    taskId = -1;
+                }
+            }
+        }
+
+        @Override
+        public void completeOperationNow() {
+            synchronized (this) {
+                if (finished) {
+                    return;
+                }
+                if (taskId != -1) {
+                    Bukkit.getScheduler().cancelTask(taskId);
+                }
+                while (storageOperation.getPartsLeft() > 0) {
+                    storageOperation.performNextPart();
+                }
+                finished = true;
+                for (Runnable runnable : runOnCompletion) {
+                    runnable.run();
+                }
+            }
+        }
+
+        @Override
+        public void setTargetLocationId(final int locationId) {
+            this.locationId = locationId;
+        }
+
+        @Override
+        public int getTargetLocationId() {
+            return locationId;
+        }
+
+        @Override
+        public SkyBlockLocation getZeroLocation() {
+            return zeroLocation;
+        }
+
+        @Override
+        public void runOnFinish(final Runnable runnable) {
+            synchronized (this) {
+                if (finished) {
+                    runnable.run();
+                } else {
+                    runOnCompletion.add(runnable);
+                }
+            }
         }
     }
 }

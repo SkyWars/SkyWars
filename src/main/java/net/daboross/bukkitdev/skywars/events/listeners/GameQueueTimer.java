@@ -19,6 +19,7 @@ package net.daboross.bukkitdev.skywars.events.listeners;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
@@ -33,7 +34,7 @@ public class GameQueueTimer {
     private final SkyWars plugin;
     private final GenericTimer startTimer;
 
-    public GameQueueTimer(final SkyWars plugin) {
+    public GameQueueTimer(final SkyWarsPlugin plugin) {
         this.plugin = plugin;
         List<Long> timesToMessage = plugin.getConfiguration().getStartTimerMessageTimes();
         List<GenericTimer.TaskDefinition> tasks = new ArrayList<>(timesToMessage.size() + 2);
@@ -46,7 +47,8 @@ public class GameQueueTimer {
         tasks.add(new GenericTimer.TaskDefinition(plugin.getConfiguration().getTimeBeforeGameStartToCopyArena(), new Runnable() {
             @Override
             public void run() {
-                // TODO: Copy arena? Requires more re-configuring of everything.
+                plugin.getWorldHandler().startCopyingArena(plugin.getGameQueue().getPlannedArena(),
+                        plugin.getConfiguration().getTimeBeforeGameStartToCopyArena());
             }
         }));
         for (Long timeTillStart : timesToMessage) {
