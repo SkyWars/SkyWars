@@ -121,7 +121,7 @@ public class SkyKitConfiguration implements SkyKits {
                 if (defaultSection != null && defaultSection.contains("totem")) {
                     section.set("totem", defaultSection.get("totem"));
                 } else {
-                    section.set("totem", KitConstants.DEFAULT_TOTEM);
+                    section.set("totem", KitConstants.DEFAULT_TOTEM.toString());
                 }
             }
         }
