@@ -31,9 +31,11 @@ import net.daboross.bukkitdev.skywars.events.events.GameEndInfo;
 import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerDeathInArenaInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerJoinQueueInfo;
+import net.daboross.bukkitdev.skywars.events.events.PlayerJoinSecondaryQueueInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerKillPlayerInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveGameInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveQueueInfo;
+import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveSecondaryQueueInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerRespawnAfterGameEndInfo;
 import org.apache.commons.lang.Validate;
 
@@ -197,6 +199,32 @@ public class GameEventDistributor {
             plugin.getServer().getPluginManager().callEvent(new PlayerLeaveQueueEvent(plugin, info.getPlayer()));
         } catch (Throwable t) {
             plugin.getLogger().log(Level.SEVERE, String.format(errorFormat, "PlayerLeaveQueue"), t);
+        }
+    }
+
+    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
+    public void distribute(PlayerJoinSecondaryQueueInfo info) {
+        Validate.notNull(info, "Info cannot be null");
+        try {
+            // -- Normal --
+            plugin.getPlayers().onJoinSecondaryQueue(info);
+            // -- After --
+            // TODO: Do we want an event for this?
+        } catch (Throwable t) {
+            plugin.getLogger().log(Level.SEVERE, String.format(errorFormat, "PlayerJoinSecondaryQueue"), t);
+        }
+    }
+
+    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"})
+    public void distribute(PlayerLeaveSecondaryQueueInfo info) {
+        Validate.notNull(info, "Info cannot be null");
+        try {
+            // -- Normal --
+            plugin.getPlayers().onLeaveSecondaryQueue(info);
+            // -- After --
+            // TODO: Do we want an event for this?
+        } catch (Throwable t) {
+            plugin.getLogger().log(Level.SEVERE, String.format(errorFormat, "PlayerLeaveSecondaryQueue"), t);
         }
     }
 }

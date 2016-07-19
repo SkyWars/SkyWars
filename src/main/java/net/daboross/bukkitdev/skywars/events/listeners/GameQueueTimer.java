@@ -58,7 +58,7 @@ public class GameQueueTimer {
     public void onJoinQueue(PlayerJoinQueueInfo info) {
         if (info.isQueueFull()) {
             startTimer.startIn(plugin.getConfiguration().getTimeTillStartAfterMaxPlayers());
-        } else {
+        } else if (info.areMinPlayersPresent() && !startTimer.isRunning()) {
             startTimer.startIn(plugin.getConfiguration().getTimeTillStartAfterMinPlayers());
         }
     }
@@ -72,6 +72,7 @@ public class GameQueueTimer {
         }
     }
 
+    @SuppressWarnings("UnusedParameters")
     public void onGameStart(GameStartInfo info) {
         startTimer.cancelAll(); // in case of force start
     }
@@ -94,18 +95,10 @@ public class GameQueueTimer {
         @Override
         public void run() {
             TransKey transKey;
-            if (plugin.getGameQueue().isQueueFull()) {
-                if (displayInMinutes) {
-                    transKey = TransKey.GAME_TIMER_STARTING_IN_MINUTES;
-                } else {
-                    transKey = TransKey.GAME_TIMER_STARTING_IN_SECONDS;
-                }
+            if (displayInMinutes) {
+                transKey = TransKey.GAME_TIMER_STARTING_IN_MINUTES;
             } else {
-                if (displayInMinutes) {
-                    transKey = TransKey.GAME_TIMER_STARTING_IN_MINUTES_UNLESS;
-                } else {
-                    transKey = TransKey.GAME_TIMER_STARTING_IN_SECONDS_UNLESS;
-                }
+                transKey = TransKey.GAME_TIMER_STARTING_IN_SECONDS;
             }
             String message = SkyTrans.get(transKey, displayTime);
             if (plugin.getConfiguration().shouldLimitStartTimerMessagesToArenaPlayers()) {

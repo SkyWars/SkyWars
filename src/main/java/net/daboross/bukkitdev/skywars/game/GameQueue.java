@@ -31,7 +31,9 @@ import net.daboross.bukkitdev.skywars.api.game.SkyGameQueue;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.events.events.PlayerJoinQueueInfo;
+import net.daboross.bukkitdev.skywars.events.events.PlayerJoinSecondaryQueueInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveQueueInfo;
+import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveSecondaryQueueInfo;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -39,7 +41,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class GameQueue implements SkyGameQueue {
 
     private final SkyWarsPlugin plugin;
-    private List<UUID> queueNext; // TODO: lots of message changes for this!
+    private List<UUID> queueNext;
     private List<UUID> currentlyQueued;
     private SkyArena nextArena;
     private int nextArenaOrderedNumber = 0;
@@ -62,26 +64,31 @@ public class GameQueue implements SkyGameQueue {
     @Override
     public boolean queuePlayer(Player player) {
         UUID uuid = player.getUniqueId();
-        if (isQueueFull()) {
-            queueNext.add(uuid);
-            return false;
-        }
         if (!currentlyQueued.contains(uuid)) {
-            currentlyQueued.add(uuid);
+            if (isQueueFull()) {
+                queueNext.add(uuid);
+                plugin.getDistributor().distribute(new PlayerJoinSecondaryQueueInfo(player));
+                return false;
+            } else {
+                currentlyQueued.add(uuid);
+                plugin.getDistributor().distribute(new PlayerJoinQueueInfo(player, isQueueFull(), areMinPlayersPresent()));
+                return true;
+            }
         }
-        plugin.getDistributor().distribute(new PlayerJoinQueueInfo(player, isQueueFull()));
         return true;
     }
 
     @Override
     public void removePlayer(Player player) {
-        if (currentlyQueued.remove(player.getUniqueId())) {
+        if (queueNext.remove(player.getUniqueId())) {
+            plugin.getDistributor().distribute(new PlayerLeaveSecondaryQueueInfo(player));
+        } else if (currentlyQueued.remove(player.getUniqueId())) {
             plugin.getDistributor().distribute(new PlayerLeaveQueueInfo(player, areMinPlayersPresent()));
             if (!queueNext.isEmpty()) {
-                queuePlayer(Bukkit.getPlayer(queueNext.remove(0)));
+                Player p = Bukkit.getPlayer(queueNext.remove(0));
+                plugin.getDistributor().distribute(new PlayerLeaveSecondaryQueueInfo(player));
+                queuePlayer(p);
             }
-        } else {
-            queueNext.remove(player.getUniqueId());
         }
     }
 

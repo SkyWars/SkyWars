@@ -48,6 +48,9 @@ public class PlayerStateListener implements Listener {
             case IN_QUEUE:
                 plugin.getGameQueue().removePlayer(player);
                 break;
+            case IN_SECONDARY_QUEUE:
+                plugin.getGameQueue().removePlayer(player);
+                break;
             case IN_RUNNING_GAME:
                 plugin.getGameHandler().removePlayerFromGame(player, LeaveGameReason.DISCONNECTED, true, true);
                 break;

@@ -32,13 +32,18 @@ public class GenericTimer {
     private final Object taskLock = new Object();
     private int bukkitTaskId = -1;
 
-
     public GenericTimer(Plugin plugin, List<TaskDefinition> tasksBeforeFinish, boolean runTaskAsync) {
         this.plugin = plugin;
         this.runTaskAsync = runTaskAsync;
         List<TaskDefinition> tasks = new ArrayList<>(tasksBeforeFinish);
         Collections.sort(tasks);
         this.firstTask = new TaskChainPart(tasks);
+    }
+
+    public boolean isRunning() {
+        synchronized (taskLock) {
+            return bukkitTaskId != -1;
+        }
     }
 
     /**
@@ -70,6 +75,7 @@ public class GenericTimer {
     }
 
     private class GenericTimerRunnable implements Runnable {
+
         private TaskChainPart nextTask;
 
         public GenericTimerRunnable(TaskChainPart firstTask) {
@@ -102,6 +108,7 @@ public class GenericTimer {
     }
 
     private class TaskChainPart {
+
         private final long secondsBeforeEndToExecuteThis;
         private final TaskChainPart nextPart;
         private final Runnable runnable;
@@ -123,8 +130,8 @@ public class GenericTimer {
          * Returns the next task that would execute with the remaining seconds.
          *
          * @param secondsRemaining Time till timer end.
-         * @return The first task in the task chain (maybe this) for which
-         * secondsRemaining => secondsBeforeEndToExecuteThis
+         * @return The first task in the task chain (maybe this) for which secondsRemaining =>
+         * secondsBeforeEndToExecuteThis
          */
         public TaskChainPart getNextTaskForRemainingTime(long secondsRemaining) {
             Validate.isTrue(secondsRemaining >= 0);
@@ -151,6 +158,7 @@ public class GenericTimer {
     }
 
     public static class TaskDefinition implements Comparable<TaskDefinition> {
+
         private final long secondsBeforeEndToExecuteThis;
         private final Runnable runnableToExecute;
 

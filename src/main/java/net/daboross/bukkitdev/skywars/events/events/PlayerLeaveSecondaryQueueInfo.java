@@ -19,15 +19,11 @@ package net.daboross.bukkitdev.skywars.events.events;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 
-public class PlayerJoinQueueInfo {
+public class PlayerLeaveSecondaryQueueInfo {
 
     private final Player player;
-    private final boolean queueFull;
-    private final boolean minPlayersPresent;
 
-    public PlayerJoinQueueInfo(final Player player, boolean queueFull, final boolean minPlayersPresent) {
-        this.queueFull = queueFull;
-        this.minPlayersPresent = minPlayersPresent;
+    public PlayerLeaveSecondaryQueueInfo(final Player player) {
         Validate.notNull(player, "Player cannot be null");
         this.player = player;
     }
@@ -36,20 +32,10 @@ public class PlayerJoinQueueInfo {
         return player;
     }
 
-    public boolean isQueueFull() {
-        return queueFull;
-    }
-
-    public boolean areMinPlayersPresent() {
-        return minPlayersPresent;
-    }
-
     @Override
     public String toString() {
-        return "PlayerJoinQueueInfo{" +
+        return "PlayerJoinSecondaryQueueInfo{" +
                 "player=" + player +
-                ", queueFull=" + queueFull +
-                ", minPlayersPresent=" + minPlayersPresent +
                 '}';
     }
 }

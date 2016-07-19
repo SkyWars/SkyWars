@@ -26,8 +26,10 @@ import net.daboross.bukkitdev.skywars.api.players.SkyPlayers;
 import net.daboross.bukkitdev.skywars.api.storage.SkyInternalPlayer;
 import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerJoinQueueInfo;
+import net.daboross.bukkitdev.skywars.events.events.PlayerJoinSecondaryQueueInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveGameInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveQueueInfo;
+import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveSecondaryQueueInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerRespawnAfterGameEndInfo;
 import org.bukkit.entity.Player;
 
@@ -45,6 +47,15 @@ public class OnlineSkyPlayers implements SkyPlayers {
     public void onJoinQueue(PlayerJoinQueueInfo info) {
         SkyInternalPlayer skyPlayer = getPlayer(info.getPlayer());
         skyPlayer.setState(SkyPlayerState.IN_QUEUE);
+    }
+
+    public void onJoinSecondaryQueue(PlayerJoinSecondaryQueueInfo info) {
+        SkyInternalPlayer skyPlayer = getPlayer(info.getPlayer());
+        skyPlayer.setState(SkyPlayerState.IN_SECONDARY_QUEUE);
+    }
+    public void onLeaveSecondaryQueue(PlayerLeaveSecondaryQueueInfo info) {
+        SkyInternalPlayer skyPlayer = getPlayer(info.getPlayer());
+        skyPlayer.setState(SkyPlayerState.NOT_IN_GAME);
     }
 
     public void onLeaveQueue(PlayerLeaveQueueInfo info) {
