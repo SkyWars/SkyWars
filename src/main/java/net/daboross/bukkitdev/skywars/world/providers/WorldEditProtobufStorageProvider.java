@@ -18,17 +18,17 @@ package net.daboross.bukkitdev.skywars.world.providers;
 
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
+import net.daboross.bukkitdev.bukkitstorageprotobuf.AreaClearing;
 import net.daboross.bukkitdev.bukkitstorageprotobuf.MemoryBlockArea;
+import net.daboross.bukkitdev.bukkitstorageprotobuf.MultiPartOperation;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
-import net.daboross.bukkitdev.skywars.util.CrossVersion;
+import net.daboross.bukkitdev.skywars.world.OperationHandle;
 import net.daboross.bukkitdev.skywars.world.RandomChestProvider;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
 
 public class WorldEditProtobufStorageProvider extends ProtobufStorageProvider {
 
@@ -54,6 +54,22 @@ public class WorldEditProtobufStorageProvider extends ProtobufStorageProvider {
     }
 
     @Override
+    public OperationHandle startCopyOperation(final World arenaWorld, final SkyArena arena, final SkyBlockLocation target, final long ticksTillCompletion) {
+        Validate.isTrue(target.world.equals(arenaWorld.getName()), "Destination world is not arena world.");
+
+        MemoryBlockArea area = cache.get(arena.getArenaName());
+        Validate.notNull(area, "Arena " + arena.getArenaName() + " not loaded.");
+
+        MultiPartOperation storageOperation = area.applyMultiPartWorldEdit(arenaWorld, editWorld, target.x, target.y, target.z,
+                new RandomChestProvider(plugin.getChestRandomizer(), arena),
+                plugin.getConfiguration().getArenaCopyingBlockSize());
+
+        OperationTimer timer = new OperationTimer(storageOperation, ticksTillCompletion, target);
+        timer.start();
+        return timer;
+    }
+
+    @Override
     public void destroyArena(final World arenaWorld, final SkyArena arena, final SkyBlockLocation target) {
         Validate.isTrue(target.world.equals(arenaWorld.getName()), "Destination world not arena world.");
 
@@ -73,10 +89,29 @@ public class WorldEditProtobufStorageProvider extends ProtobufStorageProvider {
             }
         }
         // TODO: do this part with WorldEdit too
-        SkyBlockLocation halfDistance = new SkyBlockLocation((clearingMax.x - clearingMin.x) / 2, (clearingMax.y - clearingMin.y) / 2, (clearingMax.z - clearingMin.z) / 2, null);
-        Location center = clearingMin.add(halfDistance).toLocationWithWorldObj(arenaWorld);
-        for (Entity entity : CrossVersion.getNearbyEntities(center, halfDistance.x, halfDistance.y, halfDistance.z)) {
-            entity.remove();
-        }
+        clearEntities(arenaWorld, clearingMin, clearingMax);
+    }
+
+    @Override
+    public OperationHandle startDestroyOperation(final World arenaWorld, final SkyArena arena, final SkyBlockLocation target, final long ticksTillCompletion) {
+        Validate.isTrue(target.world.equals(arenaWorld.getName()), "Destination world is not arena world.");
+
+        SkyBlockLocationRange clearingArea = arena.getBoundaries().getClearing();
+        final SkyBlockLocation clearingMin = new SkyBlockLocation(target.x + clearingArea.min.x, target.y + clearingArea.min.y, target.z + clearingArea.min.z, null);
+        final SkyBlockLocation clearingMax = new SkyBlockLocation(target.x + clearingArea.max.x, target.y + clearingArea.max.y, target.z + clearingArea.max.z, null);
+
+        MultiPartOperation storageOperation = AreaClearing.clearMultiPartWorldEdit(arenaWorld, editWorld, clearingMin.x, clearingMin.y, clearingMin.z,
+                clearingMax.x - clearingMin.x, clearingMax.y - clearingMin.y, clearingMax.z - clearingMin.z,
+                plugin.getConfiguration().getArenaDistanceApart());
+
+        OperationTimer timer = new OperationTimer(storageOperation, ticksTillCompletion, clearingMin);
+        timer.runOnFinish(new Runnable() {
+            @Override
+            public void run() {
+                clearEntities(arenaWorld, clearingMin, clearingMax);
+            }
+        });
+        timer.start();
+        return timer;
     }
 }

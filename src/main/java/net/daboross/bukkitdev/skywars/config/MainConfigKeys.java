@@ -45,7 +45,7 @@ public class MainConfigKeys {
     public static final String KIT_GUI_AUTO_SHOW_ON_JOIN = "kit-gui.auto-show-on-join";
     public static final String TIME_TILL_START_AFTER_MAX_PLAYERS = "game-timer.time-till-start-after-max-join";
     public static final String TIME_TILL_START_AFTER_MIN_PLAYERS = "game-timer.time-till-start-after-any-join";
-    public static final String TIME_BEFORE_GAME_STARTS_TO_COPY_ARENA = "game-timer.time-before-start-to-freeze-map-votes";
+    public static final String TIME_BEFORE_GAME_STARTS_TO_COPY_ARENA = "game-timer.time-before-start-to-start-arena-copy-operation";
     public static final String IN_GAME_PLAYER_FREEZE_TIME = "game-timer.time-after-start-to-freeze-players";
     public static final String START_TIMER_MESSAGE_TIMES = "game-timer.times-to-message-before-start";
     public static final String ARENA_COPYING_BLOCK_SIZE = "arena-copying.number-of-blocks-to-copy-at-once";

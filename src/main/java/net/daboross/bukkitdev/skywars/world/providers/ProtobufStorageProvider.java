@@ -218,11 +218,7 @@ public class ProtobufStorageProvider implements WorldProvider {
         timer.runOnFinish(new Runnable() {
             @Override
             public void run() {
-                SkyBlockLocation halfDistance = new SkyBlockLocation((clearingMax.x - clearingMin.x) / 2, (clearingMax.y - clearingMin.y) / 2, (clearingMax.z - clearingMin.z) / 2, null);
-                Location center = clearingMin.add(halfDistance).toLocationWithWorldObj(arenaWorld);
-                for (Entity entity : CrossVersion.getNearbyEntities(center, halfDistance.x, halfDistance.y, halfDistance.z)) {
-                    entity.remove();
-                }
+                clearEntities(arenaWorld, clearingMin, clearingMax);
             }
         });
         timer.start();
@@ -243,6 +239,10 @@ public class ProtobufStorageProvider implements WorldProvider {
                 }
             }
         }
+        clearEntities(arenaWorld, clearingMin, clearingMax);
+    }
+
+    protected void clearEntities(World arenaWorld, SkyBlockLocation clearingMin, SkyBlockLocation clearingMax) {
         SkyBlockLocation halfDistance = new SkyBlockLocation((clearingMax.x - clearingMin.x) / 2, (clearingMax.y - clearingMin.y) / 2, (clearingMax.z - clearingMin.z) / 2, null);
         Location center = clearingMin.add(halfDistance).toLocationWithWorldObj(arenaWorld);
         for (Entity entity : CrossVersion.getNearbyEntities(center, halfDistance.x, halfDistance.y, halfDistance.z)) {
@@ -294,11 +294,8 @@ public class ProtobufStorageProvider implements WorldProvider {
                 if (finished) {
                     return; // completeOperationNow() called
                 }
-                // TODO: This debug is a bit excessive, remove it after testing!
-                SkyStatic.debug("Running next part of arena operation at %s", locationId);
                 storageOperation.performNextPart();
                 if (storageOperation.getPartsLeft() <= 0) {
-                    SkyStatic.debug("Finished arena operation at %s!", locationId);
                     finished = true;
                     for (Runnable runnable : runOnCompletion) {
                         runnable.run();
@@ -328,6 +325,7 @@ public class ProtobufStorageProvider implements WorldProvider {
                 if (taskId != -1) {
                     Bukkit.getScheduler().cancelTask(taskId);
                 }
+                SkyStatic.debug("[Timer] completeOperationNow performing %s parts in one tick.", storageOperation.getPartsLeft());
                 while (storageOperation.getPartsLeft() > 0) {
                     storageOperation.performNextPart();
                 }

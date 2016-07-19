@@ -19,7 +19,7 @@ All game timers counts down every second until it reaches zero, at which point p
 
 In addition to this however, the game timer will broadcast messages at intervals configured in seconds left on the timer. The default value for this configuration setting (`game-timer.times-to-message-before-start`) is the list [600, 300, 180, 60, 45, 30, 15, 5, 3, 2, 1], each in seconds. When the timer reaches each of these intervals left, it will broadcast a message to either the entire server, or the players in the queue, depending on the `only-broadcast-to-players-in-arena.starting-in-start-timer` setting.
 
-When the timer reaches 30 seconds remaining (`game-timer.time-before-start-to-freeze-map-votes`), the plugin will start to create the arena by copying small chunks from the stored blocks file to a new location in the SkyWarsArenaWorld. The configuration option is named "time-before-start-to-freeze-map-votes", not because the plugin has support for voting on maps, but because that's what the setting will do once map voting is implemented.
+When the timer reaches 45 seconds remaining (`game-timer.time-before-start-to-start-arena-copy-operation`), the plugin will start to create the arena by copying small chunks from the stored blocks file to a new location in the SkyWarsArenaWorld.
 
 When the timer reaches zero, SkyWars will have finished copying all block sections to SkyWarsArenaWorld, and all the players in the queue will be teleported to the arena.
 

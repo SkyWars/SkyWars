@@ -47,7 +47,7 @@ import net.daboross.bukkitdev.skywars.economy.SkyEconomyGameRewards;
 import net.daboross.bukkitdev.skywars.economy.SkyEconomyHook;
 import net.daboross.bukkitdev.skywars.events.GameEventDistributor;
 import net.daboross.bukkitdev.skywars.events.listeners.GameBroadcaster;
-import net.daboross.bukkitdev.skywars.events.listeners.GameQueueTimer;
+import net.daboross.bukkitdev.skywars.game.GameQueueTimer;
 import net.daboross.bukkitdev.skywars.events.listeners.InventorySaveListener;
 import net.daboross.bukkitdev.skywars.events.listeners.KitApplyListener;
 import net.daboross.bukkitdev.skywars.events.listeners.KitQueueNotifier;

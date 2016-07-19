@@ -14,24 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package net.daboross.bukkitdev.skywars.events.listeners;
+package net.daboross.bukkitdev.skywars.game;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
-import net.daboross.bukkitdev.skywars.api.SkyWars;
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerJoinQueueInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveQueueInfo;
-import net.daboross.bukkitdev.skywars.game.GenericTimer;
 import org.bukkit.Bukkit;
 
 public class GameQueueTimer {
 
-    private final SkyWars plugin;
+    private final SkyWarsPlugin plugin;
     private final GenericTimer startTimer;
 
     public GameQueueTimer(final SkyWarsPlugin plugin) {
@@ -47,8 +46,7 @@ public class GameQueueTimer {
         tasks.add(new GenericTimer.TaskDefinition(plugin.getConfiguration().getTimeBeforeGameStartToCopyArena(), new Runnable() {
             @Override
             public void run() {
-                plugin.getWorldHandler().startCopyingArena(plugin.getGameQueue().getPlannedArena(),
-                        plugin.getConfiguration().getTimeBeforeGameStartToCopyArena());
+                startArenaCopy();
             }
         }));
         for (Long timeTillStart : timesToMessage) {
@@ -60,8 +58,15 @@ public class GameQueueTimer {
     public void onJoinQueue(PlayerJoinQueueInfo info) {
         if (info.isQueueFull()) {
             startTimer.startIn(plugin.getConfiguration().getTimeTillStartAfterMaxPlayers());
+            if (plugin.getConfiguration().getTimeTillStartAfterMaxPlayers() < plugin.getConfiguration().getTimeBeforeGameStartToCopyArena()) {
+                // Already passed this time, start copying immediately.
+                startArenaCopy();
+            }
         } else if (info.areMinPlayersPresent() && !startTimer.isRunning()) {
             startTimer.startIn(plugin.getConfiguration().getTimeTillStartAfterMinPlayers());
+            if (plugin.getConfiguration().getTimeTillStartAfterMinPlayers() < plugin.getConfiguration().getTimeBeforeGameStartToCopyArena()) {
+                startArenaCopy();
+            }
         }
     }
 
@@ -77,6 +82,12 @@ public class GameQueueTimer {
     @SuppressWarnings("UnusedParameters")
     public void onGameStart(GameStartInfo info) {
         startTimer.cancelAll(); // in case of force start
+    }
+
+    private void startArenaCopy() {
+        SkyStatic.debug("[Timer] Starting arena copy for %s.", plugin.getGameQueue().getPlannedArena().getArenaName());
+        plugin.getWorldHandler().startCopyingArena(plugin.getGameQueue().getPlannedArena(),
+                plugin.getConfiguration().getTimeBeforeGameStartToCopyArena());
     }
 
     private class MessageRunnable implements Runnable {
