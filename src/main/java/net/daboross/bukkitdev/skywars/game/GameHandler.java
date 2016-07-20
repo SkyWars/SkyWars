@@ -74,13 +74,6 @@ public class GameHandler implements SkyGameHandler {
         gamesCurrentlyEnding.remove(id);
     }
 
-    @Override
-    public void removePlayerFromGame(UUID playerUuid, LeaveGameReason reason, boolean respawn, boolean broadcast) {
-        Validate.notNull(playerUuid, "Player uuid cannot be null");
-        Player p = plugin.getServer().getPlayer(playerUuid);
-        Validate.isTrue(p != null, String.format("Player (uuid: %s) not online", playerUuid));
-        this.removePlayerFromGame(p, reason, respawn, broadcast);
-    }
 
     @Override
     public void removePlayerFromGame(Player player, LeaveGameReason reason, boolean respawn, boolean broadcast) {
