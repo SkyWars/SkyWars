@@ -75,7 +75,6 @@ save-experience: true
 # hunger are completely reset upon leaving a game.
 save-position-gamemode-health: true
 
-
 # A list of enabled arenas. Each of the items in this list corresponds to a
 # file in the arenas/ folder. When SkyWars loads, it will take each item in
 # this list, look for a file in the arenas/ folder who's name is this followed
@@ -187,6 +186,13 @@ economy:
 # the next, not the inner edges.
 arena-distance-apart: 200
 
+arena-copying:
+  # If a multi-operation arena copy is enabled, this will be how many blocks
+  # each copy operation copies. If you feel that SkyWars is causing your server
+  # lag on game start and game end, adjusting this value and/or
+  # time-before-start-to-start-arena-copy-operation may help.
+  number-of-blocks-to-copy-at-once: 500
+
 # Command whitelist sub-section
 command-whitelist:
 
@@ -256,6 +262,9 @@ only-broadcast-to-players-in-arena:
   # If true, end/winning messages for games will only be shown to the
   # player(s) who won the game, and the last player who died.
   end: false
+  # If true, "start timer" messages will only be shown to to the players who
+  # are already in the arena queue.
+  starting-in-start-timer: false
 
 # Kit GUI subsection
 kit-gui:
@@ -278,6 +287,37 @@ kit-gui:
   # enabled, join signs can also be used as a "kit sign" which launches the
   # kit GUI when clicked.
   auto-show-on-join: true
+
+# Settings related to the game timer, the SkyWars start timer.
+# All sub-settings under 'game-timer' are in seconds
+game-timer:
+  # Time before the game starts after the maximum number of players have joined.
+  time-till-start-after-max-join: 30
+  # Time before the game starts after the minimum number of players have joined.
+  time-till-start-after-any-join: 200
+  # Time before the game starts to start copying the arena, in preparation of the game starting.
+  time-before-start-to-start-arena-copy-operation: 45
+  # Currently unused. In the future, this will be how long after players are teleported into the arena before they are
+  # allowed to move.
+  time-after-start-to-freeze-players: 5
+  # This is a list of times, in seconds, to broadcast "game starting in X minutes/seconds" messages.
+  #
+  # Each of these times is in seconds before the game starts.
+  #
+  # For each time, if the time is divisible by 60, the message will be displayed as "start in X minutes". If it isn't,
+  # the message will be "starting in X seconds."
+  times-to-message-before-start:
+  - 600
+  - 300
+  - 180
+  - 60
+  - 45
+  - 30
+  - 15
+  - 5
+  - 3
+  - 2
+  - 1
 
 # Hooks available to hook into separate plugins
 hooks:

@@ -39,6 +39,7 @@ Note: There's a new poll as of June 15th, 2016! If you haven't voted since then,
 
 === Documentation
 
+* [[https://dabo.guru/projects/skywars/functions-guide|SkyWars Functions Guide (Start Here)]]
 * [[https://dabo.guru/projects/skywars/commands-and-permissions|Commands and Permissions]]
 * [[https://dabo.guru/projects/skywars/configuring-skywars|Configuring SkyWars]]
 * [[https://dabo.guru/projects/skywars/score|SkyWars Score System]]

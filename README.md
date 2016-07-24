@@ -36,6 +36,7 @@ Note: There's a new poll as of June 15th, 2016! If you haven't voted since then,
 * SkyWars is now functional with the two default arenas!
 
 #### Documentation
+* [SkyWars Functions Guide (Start Here)](https://dabo.guru/projects/skywars/functions-guide)
 * [Commands and Permissions](https://dabo.guru/projects/skywars/commands-and-permissions)
 * [Configuring SkyWars](https://dabo.guru/projects/skywars/configuring-skywars)
 * [SkyWars Score System](https://dabo.guru/projects/skywars/score)
@@ -77,7 +78,7 @@ The other service, plugin-statistics, is currently unique to SkyWars. It reports
 
 All data gathered can be viewed at https://dabo.guru/statistics/skywars/.
 
-For more information, and a copy of both the plugin-side and server-side code, visit https://github.com/daboross/plugin-statistics#plugin-statistics.
+For more information, and a copy of both the plugin-side and server-side code, visit [https://github.com/daboross/plugin-statistics](https://github.com/daboross/plugin-statistics#plugin-statistics).
 
 To disable plugin-statistics, change **report-statistics: true** to **report-statistics: false** in **plugins/SkyWars/main-config.yml**.
 

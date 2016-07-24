@@ -1,3 +1,17 @@
+Changes since 2.1.7
+-------------------
+
+SkyWars:
+- Add a timer to start games, and a minimum-player configuration for each arena
+  - The timer will start when the queue reaches the minimum player count, but will automatically advance to 30 seconds left if the maximum number of players have joined
+  - When the queue is full, any extra players who try to join are added to a "secondary queue", and are advanced to the main queue when either a game starts, or another player leaves the main queue.
+  - All timings are completely configurable, as well as the times before game start which SkyWars broadcasts start messages.
+- Add a piece-by-piece arena copying mechanism, similar to the kind used by AsyncWorldEdit. This greatly reduces server load caused by games starting and stopping, eliminating virtually all server lag caused by SkyWars.
+  - The parameters of this method can be tweaked by adjusting the "time-before-start-to-start-arena-copy-operation" and "number-of-blocks-to-copy-at-once" options in the configuration. To disable, set "time-before-start-to-start-arena-copy-operation" to "-1".
+  - When enabled, SkyWars will perform the arena operations in evenly spaced operations, starting at "time-before-start-to-start-arena-copy-operation", and ending exactly when the game starts. Each operation will copy "number-of-blocks-to-copy-at-once" blocks, and the number of operations is calculated based on how big each arena is.
+
+While this version only contains two features, there have been many internal changes made to accommodate these two additions, and I hope these two features will greatly expand the use case and usefulness of the plugin.
+
 Changes since 2.1.6
 -------------------
 
@@ -34,24 +48,3 @@ SkyWars:
 
 SkyWars-Translations:
 - Make all game message punctuation consistent between all translated languages.
-
-Changes since 2.1.4
--------------------
-
-SkyWars:
-- Add support for limiting start/win/death in an arena to only players in that arena
-  - Enable death-message-limiting by default - deaths in game will only be displayed to those in that game.
-- Fix players without the `skywars.join` permission being able to use join signs
-- Implement an inventory-based kit-choosing GUI.
-  - Each kit now has a "totem," and "description" configuration setting, which are used as the display item and lore for the kit in the kitGUI, respectively.
-  - Add configuration options to display kit gui...:
-    - with a `/sw kitgui` command
-    - with the `/sw kit` command (replacing the command kit interface completely)
-    - or, automatically whenever joining the queue (or clicking a join sign when already in the queue)
-  - The `/sw kitgui` and automatic-showing are enabled by default for players with the `skywars.kitgui` permission (OP-only by default)
-- Fix `/sw report` not working with the new `is.gd` API changes.
-- Fix players always facing one direction when teleporting to the lobby. SkyWars now correctly applies the pitch/yaw.
-
-SkyWars-API:
-- Allow more optimization for the final SkyWars plugin jar file. This means a possibly faster and definitely smaller jar, but if you've been depending on SkyWars.jar from another plugin, this may break that dependency.
-- Note that as long as you are depending on SkyWars-API.jar, and using all the public interfaces defined in that, you'll be fine. All of the API interfaces and methods are exempt from the optimization, and will work fine in any setting.
