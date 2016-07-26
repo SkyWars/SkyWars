@@ -75,7 +75,7 @@ public class LocationStore implements Listener, SkyLocationStore {
         } else {
             List<World> worlds = Bukkit.getWorlds();
             if (worlds.isEmpty()) {
-                lobbyPosition = new SkyPlayerLocation(0, 0, 0, Statics.ARENA_WORLD_NAME);
+                lobbyPosition = null;
             } else {
                 Location spawn = worlds.get(0).getSpawnLocation();
                 lobbyPosition = new SkyPlayerLocation(spawn);
@@ -123,6 +123,11 @@ public class LocationStore implements Listener, SkyLocationStore {
 
     @Override
     public SkyPlayerLocation getLobbyPosition() {
+        if (lobbyPosition == null || Bukkit.getWorld(lobbyPosition.world) == null) {
+            List<World> worlds = Bukkit.getWorlds();
+            plugin.getLogger().log(Level.WARNING, "Lobby location not defined, or lobby world not loaded! Creating new lobby location from {0}'s spawn.", worlds.get(0).getSpawnLocation());
+            lobbyPosition = new SkyPlayerLocation(worlds.get(0).getSpawnLocation());
+        }
         return lobbyPosition;
     }
 
