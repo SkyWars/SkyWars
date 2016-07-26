@@ -66,6 +66,7 @@ public class GameEventDistributor {
             plugin.getTeamScoreBoardListener().onGameStart(info);
             plugin.getAttackerStorage().onGameStart(info);
             plugin.getSignListener().onGameStart(info);
+            plugin.getGameQueueTimer().onGameStart(info);
             // -- Before gameStart1 --
             plugin.getWorldHandler().onGameStart0(info);
             // -- After gameStart0 --
