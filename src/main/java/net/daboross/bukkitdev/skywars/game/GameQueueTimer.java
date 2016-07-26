@@ -40,7 +40,9 @@ public class GameQueueTimer {
         tasks.add(new GenericTimer.TaskDefinition(0, new Runnable() {
             @Override
             public void run() {
-                plugin.getGameHandler().startNewGame();
+                if (plugin.getGameQueue().areMinPlayersPresent()) {
+                    plugin.getGameHandler().startNewGame();
+                }
             }
         }));
         tasks.add(new GenericTimer.TaskDefinition(plugin.getConfiguration().getTimeBeforeGameStartToCopyArena(), new Runnable() {
@@ -107,6 +109,11 @@ public class GameQueueTimer {
 
         @Override
         public void run() {
+            if (!plugin.getGameQueue().areMinPlayersPresent()) {
+                SkyStatic.debug("[Timer] Canceling timer as min players are not present.");
+                startTimer.cancelAll();
+                return;
+            }
             TransKey transKey;
             if (displayInMinutes) {
                 transKey = TransKey.GAME_TIMER_STARTING_IN_MINUTES;
