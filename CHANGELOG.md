@@ -1,6 +1,14 @@
 Changelog
 =========
 
+2.2.1
+-----
+
+### SkyWars:
+- Fix timer not stopping when force started
+- Fix errors if lobby location is not set
+- Fix console errors which did not affect gameplay but were related to start timer
+
 2.2.0
 -----
 

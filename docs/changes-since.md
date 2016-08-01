@@ -1,3 +1,12 @@
+Changes since 2.2.0:
+--------------------
+
+SkyWars:
+- Fix timer not stopping when force started
+- Fix errors if lobby location is not set
+- Fix console errors which did not affect gameplay but were related to start timer
+
+
 Changes since 2.1.7
 -------------------
 
@@ -21,30 +30,3 @@ SkyWars:
   - I meant to wait until v2.2.0 to include plugin-statistics, but this bugfix release needs to happen, and since the statistics is done I thought I might as well include it now.
   - For details on what data is reported, and how to opt out, see statistics section of https://dabo.guru/projects/skywars/, or "report-statistics" option in https://dabo.guru/projects/skywars/configuring-skywars.
   - To see recorded data (the same data I have access to), see https://dabo.guru/statistics/skywars/.
-
-Changes since 2.1.5
--------------------
-
-SkyWars:
-- Fix kit messages & GUI being shown to those without the skywars.kit permission
-- Fix right clicking on join signs not doing anything
-- Add full support for all MC 1.9 variations of potions in custom arenas.
-- Fix potions not working in kits and random chests in MC 1.9+.
-- Fix armor not being applied in kits on MC 1.9+.
-- Fix tab completion for all SkyWars commands with arguments (/sw kit, etc.)
-- Fix multiple possible NullPointerExceptions errors when:
-  - team mode is enabled, and a game is started without the maximum number of players
-  - checking player interactions with other plugins
-  - a player leaves the server while in a game
-  - kits with no non-armor inventory items are used
-- Fix errors starting arena when:
-  - random chests with a high total level are used
-  - double chests are placed in a custom arena
-- Fix random chest configuration sections only being created for regular chests, not trapped chests
-- Fix errors on leaving game when maximum player health is increased by armor or other items.
-- Fix outdated WorldEdit versions causing glitches in SkyWars.
-- Fix chests in custom arenas on Glowstone
-- Remove UUID warning message on Glowstone and other non-CraftBukkit servers when UUIDs are supported
-
-SkyWars-Translations:
-- Make all game message punctuation consistent between all translated languages.
