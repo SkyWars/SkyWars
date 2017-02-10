@@ -17,6 +17,7 @@
 package net.daboross.bukkitdev.skywars.world;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.DirectoryStream;
@@ -150,8 +151,13 @@ public class SkyWorldHandler {
     }
 
     public void destroyArenaWorld() {
-        Path worldFolder = arenaWorld.getWorldFolder().toPath();
-        Bukkit.unloadWorld(arenaWorld, false);
+        File folder = arenaWorld.getWorldFolder();
+        if (folder == null) {
+            Bukkit.unloadWorld(arenaWorld, false);
+            return;
+        }
+        Path worldFolder = folder.toPath();
+        Bukkit.unloadWorld(arenaWorld,false);
         arenaWorld = null;
         if (Files.exists(worldFolder)) {
             plugin.getLogger().info("Cleaning up: Deleting " + worldFolder);
