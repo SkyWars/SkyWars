@@ -37,6 +37,9 @@ public class KitGuiCommand extends SubCommand {
 
     @Override
     public void runCommand(final CommandSender sender, final Command baseCommand, final String baseCommandLabel, final String subCommandLabel, final String[] subCommandArgs) {
-        plugin.getKitGui().openKitGui((Player) sender);
+        boolean opened = plugin.getKitGui().openKitGui((Player) sender);
+        if (!opened) {
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_KIT_NO_KITS_AVAILABLE));
+        }
     }
 }

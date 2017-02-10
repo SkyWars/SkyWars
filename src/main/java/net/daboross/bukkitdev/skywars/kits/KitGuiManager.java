@@ -47,9 +47,13 @@ public class KitGuiManager implements SkyKitGui {
     }
 
     @Override
-    public void openKitGui(Player player) {
+    public boolean openKitGui(Player player) {
         List<SkyKit> kits = plugin.getKits().getAvailableKits(player);
         List<SkyKit> unavailableKits = plugin.getKits().getUnavailableKits(player);
+
+        if (kits.size() <= 0 && (!plugin.getConfiguration().isShowUnavailableKitsInGui() || unavailableKits.size() <= 0)) {
+            return false;
+        }
 
         int availableKitsSize = ((kits.size() + 8) / 9) * 9;
         int unavailableKitsSize = ((unavailableKits.size() + 8) / 9) * 9;
@@ -123,13 +127,14 @@ public class KitGuiManager implements SkyKitGui {
         }
 
         player.openInventory(inventory);
+
+        return true;
     }
 
     @Override
     public boolean autoOpenGuiIfApplicable(final Player player) {
         if (plugin.getConfiguration().isShowKitGuiOnJoin() && player.hasPermission("skywars.kitgui")) {
-            openKitGui(player);
-            return true;
+            return openKitGui(player);
         }
         return false;
     }
