@@ -173,7 +173,12 @@ public class JSONScoreStorage extends SkyStorageBackend {
 
     @Override
     public void updateLeaderboard() {
-        // Nothing needs to be done here
+        // Java should be fairly efficient about this, since it is mostly sorted.
+        // It should also be completed sorted, and if that's the case, this is just two iterations of the list.
+        Collections.sort(topPlayers, Collections.<OfflineJsonPlayer>reverseOrder());
+        for (int i = 0; i < topPlayers.size(); i++) {
+            topPlayers.get(i).setRank(i);
+        }
     }
 
     @Override
