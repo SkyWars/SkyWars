@@ -73,11 +73,11 @@ public class GameEventDistributor {
             plugin.getInventorySaveListener().onGameStart(info);
             // -- After InventorySaveListener --
             plugin.getWorldHandler().onGameStart1(info);
+            // -- After WorldHandler, InventorySaveListener --
+            plugin.getResetHealth().onGameStart(info);
             // -- After InventorySaveListener --
             plugin.getPlayers().onGameStart(info);
             plugin.getKitApplyListener().onGameStart(info);
-            // -- After WorldHandler --
-            plugin.getResetHealth().onGameStart(info);
             // -- After All --
             plugin.getServer().getPluginManager().callEvent(new GameStartEvent(plugin, info.getGame(), info.getPlayers()));
         } catch (Throwable t) {
