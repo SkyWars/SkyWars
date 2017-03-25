@@ -187,7 +187,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
             inGame.loadPlayer(online);
         }
         if (configuration.isEconomyEnabled()) {
-            SkyStatic.debug("Enabling economy support");
+            SkyStatic.debug("[SkyWars] Enabling economy support");
             try {
                 economyHook = new SkyEconomyHook(this);
                 ecoRewards = new SkyEconomyGameRewards(this);

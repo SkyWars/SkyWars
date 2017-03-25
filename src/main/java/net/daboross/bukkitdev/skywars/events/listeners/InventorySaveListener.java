@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.events.listeners;
 
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.players.SkyPlayer;
 import net.daboross.bukkitdev.skywars.api.players.SkySavedInventory;
@@ -44,6 +45,7 @@ public class InventorySaveListener {
                 SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(p);
                 skyPlayer.setSavedInventory(new SavedInventory(p, savePgh));
             }
+            SkyStatic.debug("Clearing %s's inventory. [InventorySaveListener.onGameStart]", p.getUniqueId());
             PlayerInventory inv = p.getInventory();
             inv.clear();
             inv.setArmorContents(new ItemStack[inv.getArmorContents().length]);
@@ -56,6 +58,7 @@ public class InventorySaveListener {
      */
     public void onPlayerLeaveGame(PlayerLeaveGameInfo info) {
         Player player = info.getPlayer();
+        SkyStatic.debug("Clearing %s's inventory. [InventorySaveListener.onPlayerLeaveGame]", player.getUniqueId());
         PlayerInventory inv = player.getInventory();
         inv.clear();
         inv.setArmorContents(new ItemStack[inv.getArmorContents().length]);
@@ -66,6 +69,7 @@ public class InventorySaveListener {
         boolean restoreExp = plugin.getConfiguration().isExperienceSaveEnabled();
         boolean restorePgh = plugin.getConfiguration().isPghSaveEnabled();
         Player player = info.getPlayer();
+        SkyStatic.debug("Clearing %s's inventory. [InventorySaveListener.onPlayerRespawn]", player.getUniqueId());
         PlayerInventory inv = player.getInventory();
         inv.clear();
         inv.setArmorContents(new ItemStack[inv.getArmorContents().length]);

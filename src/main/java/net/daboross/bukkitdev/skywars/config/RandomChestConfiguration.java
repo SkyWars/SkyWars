@@ -58,7 +58,7 @@ public class RandomChestConfiguration implements RandomChests {
     }
 
     private void load() throws IOException, InvalidConfigurationException, SkyConfigurationException {
-        SkyStatic.debug("Loading chests.yml");
+        SkyStatic.debug("[RandomChests] Loading chests.yml");
         Path chestsFile = plugin.getDataFolder().toPath().resolve("chests.yml");
         if (!Files.exists(chestsFile)) {
             plugin.saveResource("chests.yml", true);
@@ -184,7 +184,7 @@ public class RandomChestConfiguration implements RandomChests {
 
     @Override
     public ItemStack[] getItems(final int size, final int chestLevel, final int minValue, final int maxValue) {
-        SkyStatic.debug("Filling with size: %s, level: %s, min: %s, max: %s", size, chestLevel, minValue, maxValue);
+        SkyStatic.debug("[RandomChests] Filling with size: %s, level: %s, min: %s, max: %s", size, chestLevel, minValue, maxValue);
         int totalChance = 0;
         List<ChestLevel> acceptableLevels = new ArrayList<>();
         for (ChestLevel level : levels) {

@@ -113,11 +113,11 @@ public class GameQueue implements SkyGameQueue {
                     nextArenaOrderedNumber = 0;
                 }
                 nextArena = enabledArenas.get(nextArenaOrderedNumber++);
-                SkyStatic.debug("ORDERED: Choosing arena %s", nextArena.getArenaName());
+                SkyStatic.debug("[GameQueue] Chose random arena %s", nextArena.getArenaName());
                 break;
             case RANDOM:
                 nextArena = Randomation.getRandom(enabledArenas);
-                SkyStatic.debug("RANDOM: Choosing arena %s", nextArena.getArenaName());
+                SkyStatic.debug("[GameQueue] Chose ordered arena %s", nextArena.getArenaName());
                 break;
             default:
                 plugin.getLogger().log(Level.WARNING, "[GameQueue] Invalid ArenaOrder found in config!");

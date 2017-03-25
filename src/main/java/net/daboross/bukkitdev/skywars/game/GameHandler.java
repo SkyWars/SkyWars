@@ -20,8 +20,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.game.LeaveGameReason;
 import net.daboross.bukkitdev.skywars.api.game.SkyCurrentGameTracker;
 import net.daboross.bukkitdev.skywars.api.game.SkyGame;
@@ -36,6 +36,7 @@ import net.daboross.bukkitdev.skywars.events.events.PlayerRespawnAfterGameEndInf
 import net.daboross.bukkitdev.skywars.util.ForceRespawn;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class GameHandler implements SkyGameHandler {
@@ -156,7 +157,9 @@ public class GameHandler implements SkyGameHandler {
     public void respawnPlayer(Player p) {
         Validate.notNull(p, "Player cannot be null");
         if (!plugin.getConfiguration().isInventorySaveEnabled() || !plugin.getConfiguration().isPghSaveEnabled()) {
-            p.teleport(plugin.getLocationStore().getLobbyPosition().toLocation());
+            Location lobby = plugin.getLocationStore().getLobbyPosition().toLocation();
+            SkyStatic.debug("Teleporting %s to %s. [GameHandler.respawnPlayer]", p.getUniqueId(), lobby);
+            p.teleport(lobby);
         }
         plugin.getDistributor().distribute(new PlayerRespawnAfterGameEndInfo(p));
     }

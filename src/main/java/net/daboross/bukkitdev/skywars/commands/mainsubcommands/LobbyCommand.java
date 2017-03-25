@@ -18,9 +18,11 @@ package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -41,7 +43,9 @@ public class LobbyCommand extends SubCommand {
         if (plugin.getCurrentGameTracker().isInGame(player.getUniqueId())) {
             sender.sendMessage(SkyTrans.get(TransKey.CMD_LOBBY_IN_GAME));
         } else {
-            player.teleport(plugin.getLocationStore().getLobbyPosition().toLocation());
+            Location lobby = plugin.getLocationStore().getLobbyPosition().toLocation();
+            SkyStatic.debug("[LobbyCommand] Teleporting %s to %s.", player.getUniqueId(), lobby);
+            player.teleport(lobby);
             sender.sendMessage(SkyTrans.get(TransKey.CMD_LOBBY_CONFIRMATION));
         }
     }

@@ -214,6 +214,7 @@ public class SkyWorldHandler {
                     Player p = Bukkit.getPlayer(uuid);
                     if (p != null) {
                         SkyStatic.debug("Sending %s (uuid: %s) to that spawn", p.getName(), uuid);
+                        SkyStatic.debug("Teleporting %s to %s. [SkyWorldHandler.onGameStart1]", p.getUniqueId(), spawn);
                         p.teleport(spawn);
                     }
                 }
@@ -224,7 +225,10 @@ public class SkyWorldHandler {
         } else {
             List<Player> players = info.getPlayers();
             for (int i = 0, currentSpawn = 0; i < players.size(); i++) {
-                players.get(i).teleport(min.add(spawns.get(currentSpawn++)).toLocation());
+                Player player = players.get(i);
+                Location spawn = min.add(spawns.get(currentSpawn++)).toLocation();
+                SkyStatic.debug("Teleporting %s to %s. [SkyWorldHandler.onGamestart1]", player.getUniqueId(), spawn);
+                player.teleport(spawn);
                 if (currentSpawn >= spawns.size()) {
                     currentSpawn = 0;
                 }

@@ -18,6 +18,7 @@ package net.daboross.bukkitdev.skywars.player;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.players.SkySavedInventory;
 import net.daboross.bukkitdev.skywars.util.CrossVersion;
 import org.bukkit.GameMode;
@@ -35,6 +36,7 @@ public class SavedInventory implements SkySavedInventory {
     private final SavedPghData pghData;
 
     public SavedInventory(Player p, boolean savePgh) {
+        SkyStatic.debug("Saving %s's inventory. [SavedInventory.constructor]", p.getUniqueId());
         PlayerInventory inv = p.getInventory();
         ItemStack[] contents = inv.getContents();
         items = new ItemStack[contents.length];
@@ -62,6 +64,7 @@ public class SavedInventory implements SkySavedInventory {
             // so we need to apply it first
             pghData.teleport(p);
         }
+        SkyStatic.debug("Applying %s's saved inventory. [SavedInventory.apply]", p.getUniqueId());
         PlayerInventory inv = p.getInventory();
         inv.setContents(items);
         inv.setArmorContents(armor);
@@ -108,6 +111,7 @@ public class SavedInventory implements SkySavedInventory {
          * @param p Player to teleport
          */
         private void teleport(final Player p) {
+            SkyStatic.debug("Teleporting %s to %s. [SavedInventory.teleport]", p.getUniqueId(), location);
             p.teleport(location);
         }
 
