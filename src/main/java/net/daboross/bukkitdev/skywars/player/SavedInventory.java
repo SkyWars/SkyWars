@@ -59,18 +59,32 @@ public class SavedInventory implements SkySavedInventory {
 
     @Override
     public void apply(final Player p, boolean restoreExp, boolean restorePgh) {
-        if (restorePgh) {
-            // player hasn't been teleported yet if savePgh is enabled,
-            // so we need to apply it first
-            pghData.teleport(p);
-        }
         SkyStatic.debug("Applying %s's saved inventory. [SavedInventory.apply]", p.getUniqueId());
+        // use these two methods to avoid code duplication.
+        //
+        // player hasn't been teleported yet if savePgh is enabled,
+        // so we need to apply it first
+        teleportOnlyAndIfPgh(p, restoreExp, restorePgh);
+        applyNoTeleportation(p, restoreExp, restorePgh);
+    }
+
+    @Override
+    public void applyNoTeleportation(final Player p, final boolean restoreExp, final boolean restorePgh) {
+        SkyStatic.debug("Applying %s's saved inventory. [SavedInventory.applyNoTeleportation]", p.getUniqueId());
         PlayerInventory inv = p.getInventory();
         inv.setContents(items);
         inv.setArmorContents(armor);
         pghData.apply(p); // I guess setting health can be a problem if armor hasn't been applied yet
         if (restoreExp) {
             p.setTotalExperience(experience);
+        }
+    }
+
+    @Override
+    public void teleportOnlyAndIfPgh(final Player p, final boolean restoreExp, final boolean restorePgh) {
+        if (restorePgh) {
+            SkyStatic.debug("Teleporting %s's to saved location if location was saved. [SavedInventory.teleportOnlyAndIfPgh]", p.getUniqueId());
+            pghData.teleport(p);
         }
     }
 

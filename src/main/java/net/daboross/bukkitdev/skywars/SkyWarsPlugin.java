@@ -46,8 +46,8 @@ import net.daboross.bukkitdev.skywars.economy.EconomyFailedException;
 import net.daboross.bukkitdev.skywars.economy.SkyEconomyGameRewards;
 import net.daboross.bukkitdev.skywars.economy.SkyEconomyHook;
 import net.daboross.bukkitdev.skywars.events.GameEventDistributor;
+import net.daboross.bukkitdev.skywars.events.listeners.BackupInventoryClearListener;
 import net.daboross.bukkitdev.skywars.events.listeners.GameBroadcaster;
-import net.daboross.bukkitdev.skywars.game.GameQueueTimer;
 import net.daboross.bukkitdev.skywars.events.listeners.InventorySaveListener;
 import net.daboross.bukkitdev.skywars.events.listeners.KitApplyListener;
 import net.daboross.bukkitdev.skywars.events.listeners.KitQueueNotifier;
@@ -57,6 +57,7 @@ import net.daboross.bukkitdev.skywars.game.CurrentGames;
 import net.daboross.bukkitdev.skywars.game.GameHandler;
 import net.daboross.bukkitdev.skywars.game.GameIDHandler;
 import net.daboross.bukkitdev.skywars.game.GameQueue;
+import net.daboross.bukkitdev.skywars.game.GameQueueTimer;
 import net.daboross.bukkitdev.skywars.kits.KitGuiManager;
 import net.daboross.bukkitdev.skywars.kits.SkyKitConfiguration;
 import net.daboross.bukkitdev.skywars.libraries.pluginstatistics.PluginStatistics;
@@ -107,6 +108,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     private ScoreStorage score;
     private KitQueueNotifier kitQueueNotifier;
     private SignListener signListener;
+    private BackupInventoryClearListener backupInventoryClearListener;
 
     private OnlineSkyPlayers inGame;
     private TeamScoreboardListener teamListener;
@@ -118,6 +120,9 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
     // Bukkit listeners
     private ScoreReplaceChatListener chatListener;
     private boolean enabledCorrectly = false;
+
+    // Workaround variables
+    private boolean multiinvWorkaroundEnabled = false;
 
     @Override
     public void onLoad() {
@@ -153,6 +158,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
             getLogger().log(Level.SEVERE, "Download SkyWars v1.4.4 if you want to run on an older version of Minecraft.");
             throw new StartupFailedException("See above");
         }
+        multiinvWorkaroundEnabled = testForMultiinvWorkaround(configuration.isMultiinvWorkaroundPossible(), configuration.isMultiinvWorkaroundForced());
         try {
             translations = new TranslationsConfiguration(this);
         } catch (SkyConfigurationException ex) {
@@ -178,6 +184,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         teamListener = new TeamScoreboardListener();
         inGame = new OnlineSkyPlayers(this);
         signListener = new SignListener(this);
+        backupInventoryClearListener = new BackupInventoryClearListener(this);
         if (configuration.isEnableScore()) {
             score = new ScoreStorage(this);
             chatListener = new ScoreReplaceChatListener(this);
@@ -224,6 +231,23 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
                 new MobSpawnDisable(), new KitGuiListener(this), chatListener,
                 signListener);
         enabledCorrectly = true;
+    }
+
+    private boolean testForMultiinvWorkaround(boolean possiblyEnable, boolean alwaysEnable) {
+        // since it's a workaround and not a hook, we don't actually need the plugin instance. We just need to know if it is loaded or not.
+        if (alwaysEnable) {
+            SkyStatic.debug("[SkyWars] Enabling MultiInv workaround: workaround enabled without check in config.");
+            return true;
+        }
+        if (!possiblyEnable) {
+            SkyStatic.debug("[SkyWars] Not enabling MultiInv workaround: check disabled in config.");
+            return false;
+        }
+        if (getServer().getPluginManager().isPluginEnabled("MultiInv")) {
+            SkyStatic.debug("[SkyWars] Enabling MultiInv workaround: check enabled in config, plugin found.");
+            return true;
+        }
+        return false;
     }
 
     private boolean supportsUuids() {
@@ -500,7 +524,16 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
         return signListener;
     }
 
+    public BackupInventoryClearListener getBackupInvClearListener() {
+        return backupInventoryClearListener;
+    }
+
     public GameQueueTimer getGameQueueTimer() {
         return gameQueueTimer;
+    }
+
+    @Override
+    public boolean isMultiinvWorkaroundEnabled() {
+        return multiinvWorkaroundEnabled;
     }
 }

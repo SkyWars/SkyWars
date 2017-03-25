@@ -72,9 +72,10 @@ public class GameEventDistributor {
             // -- After gameStart0 --
             plugin.getInventorySaveListener().onGameStart(info);
             // -- After InventorySaveListener --
-            plugin.getWorldHandler().onGameStart1(info);
+            plugin.getWorldHandler().onGameStart1(info); // teleports players
             // -- After WorldHandler, InventorySaveListener --
             plugin.getResetHealth().onGameStart(info);
+            plugin.getBackupInvClearListener().onGameStart(info); // total backup, can be useful if an inventory saving plugin for some reason saves inventory for old game.
             // -- After InventorySaveListener --
             plugin.getPlayers().onGameStart(info);
             plugin.getKitApplyListener().onGameStart(info);

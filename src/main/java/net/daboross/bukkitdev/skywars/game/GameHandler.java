@@ -61,7 +61,7 @@ public class GameHandler implements SkyGameHandler {
         GameEndInfo gameEndInfo = new GameEndInfo(game, broadcast, endSyncNowPluginShutdown);
         for (Player player : gameEndInfo.getAlivePlayers()) {
             plugin.getDistributor().distribute(new PlayerLeaveGameInfo(id, player, LeaveGameReason.GAME_ENDED));
-            respawnPlayer(player);
+            respawnPlayer(player, endSyncNowPluginShutdown);
         }
         for (UUID uuid : gameEndInfo.getGame().getDeadPlayers()) {
             SkyPlayer player = plugin.getPlayers().getPlayer(uuid);
@@ -155,12 +155,17 @@ public class GameHandler implements SkyGameHandler {
 
     @Override
     public void respawnPlayer(Player p) {
+        this.respawnPlayer(p, false);
+    }
+
+    @Override
+    public void respawnPlayer(final Player p, final boolean forceEverythingInSync) {
         Validate.notNull(p, "Player cannot be null");
         if (!plugin.getConfiguration().isInventorySaveEnabled() || !plugin.getConfiguration().isPghSaveEnabled()) {
             Location lobby = plugin.getLocationStore().getLobbyPosition().toLocation();
             SkyStatic.debug("Teleporting %s to %s. [GameHandler.respawnPlayer]", p.getUniqueId(), lobby);
             p.teleport(lobby);
         }
-        plugin.getDistributor().distribute(new PlayerRespawnAfterGameEndInfo(p));
+        plugin.getDistributor().distribute(new PlayerRespawnAfterGameEndInfo(p, forceEverythingInSync));
     }
 }

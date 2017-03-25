@@ -90,6 +90,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private List<Long> startTimerMessageTimes;
     private boolean multiverseCoreHookEnabled;
     private boolean worldeditHookEnabled;
+    private boolean multiinvWorkaroundPossible;
+    private boolean multiinvWorkaroundForced;
     private boolean disableReport;
     private boolean recoverFromScoreErrors;
     private boolean developerOptions;
@@ -217,6 +219,9 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         // Hooks
         multiverseCoreHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.MULTIVERSE_CORE, MainConfigDefaults.Hooks.MULTIVERSE_CORE);
         worldeditHookEnabled = mainConfig.getSetBoolean(MainConfigKeys.Hooks.WORLDEDIT, MainConfigDefaults.Hooks.WORLDEDIT);
+
+        multiinvWorkaroundPossible = mainConfig.getSetBoolean(MainConfigKeys.Hooks.MULTIINV_WORKAROUND, MainConfigDefaults.Hooks.MULTIINV_WORKAROUND_WHEN_FOUND);
+        multiinvWorkaroundForced = mainConfig.getSetBoolean(MainConfigKeys.Hooks.FORCE_MULTIINV_WORKAROUND, MainConfigDefaults.Hooks.FORCE_MULTIINV_WORKAROUND);
 
         // Developer options
         developerOptions = mainConfig.getConfig().getBoolean(MainConfigKeys.DEVELOPER_OPTIONS, MainConfigDefaults.DEVELOPER_OPTIONS);
@@ -462,6 +467,16 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     @Override
     public boolean isMultiverseCoreHookEnabled() {
         return multiverseCoreHookEnabled;
+    }
+
+    @Override
+    public boolean isMultiinvWorkaroundPossible() {
+        return multiinvWorkaroundPossible;
+    }
+
+    @Override
+    public boolean isMultiinvWorkaroundForced() {
+        return multiinvWorkaroundForced;
     }
 
     @Override

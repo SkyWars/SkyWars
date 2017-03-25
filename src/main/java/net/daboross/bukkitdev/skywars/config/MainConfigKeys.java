@@ -97,6 +97,8 @@ public class MainConfigKeys {
 
         public static final String MULTIVERSE_CORE = "hooks.multiverse-core-hook";
         public static final String WORLDEDIT = "hooks.worldedit-hook";
+        public static final String MULTIINV_WORKAROUND = "hooks.multiinv-workaround-when-plugin-found";
+        public static final String FORCE_MULTIINV_WORKAROUND = "hooks.multiinv-workaround-always";
 
         private Hooks() {
         }

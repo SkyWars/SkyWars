@@ -22,8 +22,10 @@ import org.bukkit.entity.Player;
 public class PlayerRespawnAfterGameEndInfo {
 
     private final Player player;
+    private final boolean ensureAllIsSync;
 
-    public PlayerRespawnAfterGameEndInfo(final Player player) {
+    public PlayerRespawnAfterGameEndInfo(final Player player, final boolean ensureAllIsSync) {
+        this.ensureAllIsSync = ensureAllIsSync;
         Validate.notNull(player, "Player cannot be null");
         this.player = player;
     }
@@ -37,5 +39,9 @@ public class PlayerRespawnAfterGameEndInfo {
         return "PlayerRespawnAfterGameEndInfo{" +
                 "player=" + player +
                 '}';
+    }
+
+    public boolean ensureAllIsSync() {
+        return ensureAllIsSync;
     }
 }

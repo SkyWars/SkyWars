@@ -16,6 +16,10 @@
  */
 package net.daboross.bukkitdev.skywars.events.listeners;
 
+import java.util.Objects;
+import java.util.UUID;
+import java.util.logging.Level;
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.kits.SkyKit;
 import net.daboross.bukkitdev.skywars.api.players.SkyPlayer;
@@ -46,11 +50,11 @@ public class KitApplyListener {
                 int cost = kit.getCost();
                 if (cost == 0) {
                     p.sendMessage(SkyTrans.get(TransKey.KITS_APPLIED_KIT, kit.getName()));
-                    kit.applyTo(p);
+                    applyKit(kit, p);
                 } else if (plugin.getEconomyHook().canAfford(p, cost)) {
                     p.sendMessage(SkyTrans.get(TransKey.KITS_APPLIED_KIT_WITH_COST, kit.getName(), kit.getCost()));
                     if (plugin.getEconomyHook().charge(p, cost)) {
-                        kit.applyTo(p);
+                        applyKit(kit, p);
                     } else {
                         skyPlayer.setSelectedKit(null);
                         p.sendMessage(SkyTrans.get(TransKey.KITS_NOT_ENOUGH_MONEY, kit.getName()));
@@ -60,6 +64,31 @@ public class KitApplyListener {
                     p.sendMessage(SkyTrans.get(TransKey.KITS_NOT_ENOUGH_MONEY, kit.getName()));
                 }
             }
+        }
+    }
+
+    private void applyKit(final SkyKit kit, final Player p) {
+        if (plugin.isMultiinvWorkaroundEnabled()) {
+            SkyStatic.debug("Delaying applying %s's kit (MultiInv workaround). [KitApplyListener.applyKit]", p.getUniqueId());
+            final UUID uuid = p.getUniqueId();
+            final String worldName = p.getWorld().getName();
+            plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    Player player = plugin.getServer().getPlayer(uuid);
+                    if (player != null) {
+                        if (Objects.equals(p.getWorld().getName(), worldName)) {
+                            kit.applyTo(player);
+                        } else {
+                            plugin.getLogger().log(Level.WARNING, "Player {0} no longer in world {1} (now in world {2}), not applying kit! Note: 4 tick delay due to MultiInv workaround being enabled.", new Object[]{worldName, p.getWorld().getName()});
+                        }
+                    } else {
+                        plugin.getLogger().log(Level.WARNING, "Player {0} no longer logged in, not applying kit! Note: 4 tick delay due to MultiInv workaround being enabled.", uuid);
+                    }
+                }
+            }, 5); // Wait 5 because the 'ClearOnEnterGameListener' waits 4.
+        } else {
+            kit.applyTo(p);
         }
     }
 }

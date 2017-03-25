@@ -115,6 +115,8 @@ public class MainConfigDefaults {
 
         public static final boolean MULTIVERSE_CORE = true;
         public static final boolean WORLDEDIT = true;
+        public static final boolean MULTIINV_WORKAROUND_WHEN_FOUND = true;
+        public static final boolean FORCE_MULTIINV_WORKAROUND = false;
 
         private Hooks() {
         }
