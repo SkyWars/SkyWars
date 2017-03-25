@@ -20,6 +20,7 @@ import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.players.SkyPlayer;
 import net.daboross.bukkitdev.skywars.api.players.SkySavedInventory;
 import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
+import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveGameInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerRespawnAfterGameEndInfo;
 import net.daboross.bukkitdev.skywars.player.SavedInventory;
 import org.apache.commons.lang.Validate;
@@ -47,6 +48,17 @@ public class InventorySaveListener {
             inv.clear();
             inv.setArmorContents(new ItemStack[inv.getArmorContents().length]);
         }
+    }
+
+    /**
+     * This is a workaround for when working with MultiInv and other inventory save plugins which may save player
+     * inventory when they leave the SkyWarsArenaWorld. Everything is restored once the player respawns, of course.
+     */
+    public void onPlayerLeaveGame(PlayerLeaveGameInfo info) {
+        Player player = info.getPlayer();
+        PlayerInventory inv = player.getInventory();
+        inv.clear();
+        inv.setArmorContents(new ItemStack[inv.getArmorContents().length]);
     }
 
     public void onPlayerRespawn(PlayerRespawnAfterGameEndInfo info) {

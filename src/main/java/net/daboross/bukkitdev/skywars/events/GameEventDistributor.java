@@ -117,6 +117,7 @@ public class GameEventDistributor {
             plugin.getPlayers().onLeaveGame(info);
             plugin.getCurrentGameTracker().onPlayerLeaveGame(info);
             plugin.getTeamScoreBoardListener().onPlayerLeaveGame(info);
+            plugin.getInventorySaveListener().onPlayerLeaveGame(info); // just clears the inventory.
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new LeaveGameEvent(plugin, info.getId(), info.getPlayer(), info.getReason()));
         } catch (Throwable t) {
