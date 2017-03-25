@@ -68,12 +68,12 @@ public class GistReport {
         SkyConfiguration configuration = plugin.getConfiguration();
         StringBuilder build = new StringBuilder();
 
-        build.append("|SkyWars server information||\n|---|---|\n|Plugin name|").append(SkyStatic.getPluginName())
+        build.append("|Server Information|Data|\n|---|---|\n|Plugin name|").append(SkyStatic.getPluginName())
                 .append("|\n|Plugin version|").append(plugin.getDescription().getVersion())
                 .append("|\n|Implementation version|").append(SkyStatic.getImplementationVersion())
                 .append("|\n|Server software|").append(Bukkit.getName())
                 .append("|\n|Server version|").append(Bukkit.getVersion())
-                .append("|\n\n|Server Plugins||\n|---|---");
+                .append("|\n\n|Plugin Name|Version|\n|---|---");
         for (Plugin otherPlugin : plugin.getServer().getPluginManager().getPlugins()) {
             build.append("|\n|").append(otherPlugin.getName()).append("|").append(otherPlugin.getDescription().getVersion());
         }
