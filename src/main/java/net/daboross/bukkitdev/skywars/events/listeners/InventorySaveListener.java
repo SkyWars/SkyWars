@@ -69,41 +69,67 @@ public class InventorySaveListener {
 
     public void onPlayerRespawn(PlayerRespawnAfterGameEndInfo info) {
         boolean save = plugin.getConfiguration().isInventorySaveEnabled();
-        final boolean restoreExp = plugin.getConfiguration().isExperienceSaveEnabled();
-        final boolean restorePgh = plugin.getConfiguration().isPghSaveEnabled();
         Player player = info.getPlayer();
         SkyStatic.debug("Clearing %s's inventory. [InventorySaveListener.onPlayerRespawn]", player.getUniqueId());
         PlayerInventory inv = player.getInventory();
         inv.clear();
         inv.setArmorContents(new ItemStack[inv.getArmorContents().length]);
         if (save) {
-            SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(player);
-            final SkySavedInventory savedInventory = skyPlayer.getSavedInventory();
-            Validate.notNull(savedInventory, "Saved inventory for " + skyPlayer.getName() + " was null!");
-            if (plugin.isMultiinvWorkaroundEnabled() && !info.ensureAllIsSync()) {
-                SkyStatic.debug("Delaying restoring %s's saved inventory (MultiInv workaround). [InventorySaveListener.onPlayerRespawn]", player.getUniqueId());
-                savedInventory.teleportOnlyAndIfPgh(player, restoreExp, restorePgh);
-                final UUID uuid = player.getUniqueId();
-                final String worldName = player.getWorld().getName();
-                plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
-                    @Override
-                    public void run() {
-                        SkyStatic.debug("Finished delay. Applying %s's saved inventory (MultiInv workaround). [InventorySaveListener.onPlayerRespawn, delayed]", uuid);
-                        Player player = plugin.getServer().getPlayer(uuid);
-                        if (player != null) {
-                            if (Objects.equals(player.getWorld().getName(), worldName)) {
-                                savedInventory.applyNoTeleportation(player, restoreExp, restorePgh);
-                            } else {
-                                plugin.getLogger().log(Level.WARNING, "Player {0} no longer in world {1} (now in world {2}), not restoring saved inventory! Note: 4 tick delay due to MultiInv workaround being enabled.", new Object[]{worldName, player.getWorld().getName()});
-                            }
+            restoreInventory(player, info.ensureAllIsSync(), false);
+        }
+    }
+
+    private void restoreInventory(Player player, boolean ensureAllIsSync, boolean thisIsBackupCall) {
+        SkyPlayer skyPlayer = plugin.getPlayers().getPlayer(player);
+        final SkySavedInventory savedInventory = skyPlayer.getSavedInventory();
+        Validate.notNull(savedInventory, "Saved inventory for " + skyPlayer.getName() + " was null!");
+        final boolean restoreExp = plugin.getConfiguration().isExperienceSaveEnabled();
+        final boolean restorePgh = plugin.getConfiguration().isPghSaveEnabled();
+        if (plugin.isMultiinvWorkaroundEnabled() && !ensureAllIsSync) {
+            SkyStatic.debug("Delaying restoring %s's saved inventory (MultiInv workaround). [InventorySaveListener.restoreInventory]", player.getUniqueId());
+            savedInventory.teleportOnlyAndIfPgh(player, restoreExp, restorePgh);
+            final UUID uuid = player.getUniqueId();
+            final String worldName = player.getWorld().getName();
+            plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    SkyStatic.debug("Finished delay. Applying %s's saved inventory (MultiInv workaround). [InventorySaveListener.restoreInventory, delayed]", uuid);
+                    Player player = plugin.getServer().getPlayer(uuid);
+                    if (player != null) {
+                        if (Objects.equals(player.getWorld().getName(), worldName)) {
+                            savedInventory.applyNoTeleportation(player, restoreExp, restorePgh);
                         } else {
-                            plugin.getLogger().log(Level.WARNING, "Player {0} no longer logged in, not restoring saved inventory! Note: 4 tick delay due to MultiInv workaround being enabled.", uuid);
+                            plugin.getLogger().log(Level.WARNING, "Player {0} no longer in world {1} (now in world {2}), not restoring saved inventory! Note: 4 tick delay due to MultiInv workaround being enabled.", new Object[]{worldName, player.getWorld().getName()});
                         }
+                    } else {
+                        plugin.getLogger().log(Level.WARNING, "Player {0} no longer logged in, not restoring saved inventory! Note: 4 tick delay due to MultiInv workaround being enabled.", uuid);
                     }
-                }, 4);
-            } else {
-                savedInventory.apply(player, restoreExp, restorePgh);
+                }
+            }, 4);
+        } else {
+            boolean success = savedInventory.apply(player, restoreExp, restorePgh);
+            if (success) {
                 skyPlayer.setSavedInventory(null); // no need to keep this around
+            } else {
+                if (ensureAllIsSync || thisIsBackupCall) {
+                    plugin.getLogger().log(Level.WARNING, "Did not successfully teleport player {0} to old position, can not restore saved inventory. [InventorySaveListener.restoreInventory]", player.getUniqueId());
+                    skyPlayer.setSavedInventory(null);
+                } else {
+                    SkyStatic.debug("Delaying teleporting %s due to teleportation failure. [InventorySaveListener.restoreInventory]", player.getUniqueId());
+                    final UUID uuid = player.getUniqueId();
+                    plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
+                        @Override
+                        public void run() {
+                            SkyStatic.debug("Finished delay. Re-attempting apply for %s. [InventorySaveListener.restoreInventory]", uuid);
+                            Player player = plugin.getServer().getPlayer(uuid);
+                            if (player != null) {
+                                restoreInventory(player, false, true);
+                            } else {
+                                plugin.getLogger().log(Level.WARNING, "Player {0} no longer logged in, not restoring saved inventory! Note: 4 tick delay due to workaround for teleportation failure.", uuid);
+                            }
+                        }
+                    }, 4);
+                }
             }
         }
     }

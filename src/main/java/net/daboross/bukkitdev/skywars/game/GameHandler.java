@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.game.LeaveGameReason;
@@ -82,6 +83,11 @@ public class GameHandler implements SkyGameHandler {
 
     @Override
     public void removePlayerFromGame(Player player, LeaveGameReason reason, boolean respawn, boolean broadcast) {
+        removePlayerFromGame(player, reason, respawn, broadcast, false);
+    }
+
+    @Override
+    public void removePlayerFromGame(Player player, LeaveGameReason reason, boolean respawn, boolean broadcast, boolean forceTeleportInSync) {
         Validate.notNull(player, "Player cannot be null");
         UUID playerUuid = player.getUniqueId();
         SkyCurrentGameTracker cg = plugin.getCurrentGameTracker();
@@ -110,7 +116,7 @@ public class GameHandler implements SkyGameHandler {
         game.removePlayer(playerUuid);
         plugin.getDistributor().distribute(new PlayerLeaveGameInfo(id, player, reason));
         if (respawn) {
-            respawnPlayer(player);
+            respawnPlayer(player, forceTeleportInSync);
         }
         if ((!gamesCurrentlyEnding.contains(id)) && isGameWon(game)) {
             gamesCurrentlyEnding.add(id);
@@ -159,13 +165,42 @@ public class GameHandler implements SkyGameHandler {
     }
 
     @Override
-    public void respawnPlayer(final Player p, final boolean forceEverythingInSync) {
+    public void respawnPlayer(Player p, boolean forceEverythingInSync) {
+        this.respawnPlayer(p, forceEverythingInSync, false);
+    }
+
+    public void respawnPlayer(final Player p, final boolean forceEverythingInSync, boolean thisIsBackupCall) {
         Validate.notNull(p, "Player cannot be null");
+        boolean delay = false;
         if (!plugin.getConfiguration().isInventorySaveEnabled() || !plugin.getConfiguration().isPghSaveEnabled()) {
             Location lobby = plugin.getLocationStore().getLobbyPosition().toLocation();
             SkyStatic.debug("Teleporting %s to %s. [GameHandler.respawnPlayer]", p.getUniqueId(), lobby);
-            p.teleport(lobby);
+            boolean success = p.teleport(lobby);
+            if (!success) {
+                if (forceEverythingInSync || thisIsBackupCall) {
+                    plugin.getLogger().log(Level.WARNING, "Did not successfully teleport player {0} to lobby, saved inventory may not be applied successfully if enabled. [InventorySaveListener.restoreInventory]", p.getUniqueId());
+                } else {
+                    SkyStatic.debug("Delaying teleporting %s due to teleportation failure. [GameHandler.respawnPlayer]", p.getUniqueId());
+                    delay = true;
+                }
+            }
         }
-        plugin.getDistributor().distribute(new PlayerRespawnAfterGameEndInfo(p, forceEverythingInSync));
+        if (delay) {
+            final UUID uuid = p.getUniqueId();
+            plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    SkyStatic.debug("Finished delay. Re-attempting apply for %s. [GameHandler.respawnPlayer]", uuid);
+                    Player player = plugin.getServer().getPlayer(uuid);
+                    if (player != null) {
+                        respawnPlayer(player, false, true);
+                    } else {
+                        plugin.getLogger().log(Level.WARNING, "Player {0} no longer logged in, not restoring saved inventory! Note: 4 tick delay due to workaround for teleportation failure.", uuid);
+                    }
+                }
+            }, 4);
+        } else {
+            plugin.getDistributor().distribute(new PlayerRespawnAfterGameEndInfo(p, forceEverythingInSync));
+        }
     }
 }

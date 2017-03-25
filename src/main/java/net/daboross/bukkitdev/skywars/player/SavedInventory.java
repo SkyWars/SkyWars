@@ -58,14 +58,17 @@ public class SavedInventory implements SkySavedInventory {
     }
 
     @Override
-    public void apply(final Player p, boolean restoreExp, boolean restorePgh) {
+    public boolean apply(final Player p, boolean restoreExp, boolean restorePgh) {
         SkyStatic.debug("Applying %s's saved inventory. [SavedInventory.apply]", p.getUniqueId());
         // use these two methods to avoid code duplication.
         //
         // player hasn't been teleported yet if savePgh is enabled,
         // so we need to apply it first
-        teleportOnlyAndIfPgh(p, restoreExp, restorePgh);
-        applyNoTeleportation(p, restoreExp, restorePgh);
+        boolean teleportSuccess = teleportOnlyAndIfPgh(p, restoreExp, restorePgh);
+        if (teleportSuccess) {
+            applyNoTeleportation(p, restoreExp, restorePgh);
+        }
+        return teleportSuccess;
     }
 
     @Override
@@ -81,11 +84,12 @@ public class SavedInventory implements SkySavedInventory {
     }
 
     @Override
-    public void teleportOnlyAndIfPgh(final Player p, final boolean restoreExp, final boolean restorePgh) {
+    public boolean teleportOnlyAndIfPgh(final Player p, final boolean restoreExp, final boolean restorePgh) {
         if (restorePgh) {
             SkyStatic.debug("Teleporting %s's to saved location if location was saved. [SavedInventory.teleportOnlyAndIfPgh]", p.getUniqueId());
-            pghData.teleport(p);
+            return pghData.teleport(p);
         }
+        return true;
     }
 
     private class SavedPghData {
@@ -124,9 +128,9 @@ public class SavedInventory implements SkySavedInventory {
          *
          * @param p Player to teleport
          */
-        private void teleport(final Player p) {
+        private boolean teleport(final Player p) {
             SkyStatic.debug("Teleporting %s to %s. [SavedInventory.teleport]", p.getUniqueId(), location);
-            p.teleport(location);
+            return p.teleport(location);
         }
 
         /**
