@@ -59,7 +59,7 @@ public class GameIDHandler implements SkyIDHandler {
         SkyGameHandler handler = plugin.getGameHandler();
         while (!currentGames.isEmpty()) {
             int id = currentGames.keySet().iterator().next();
-            handler.endGame(id, false);
+            handler.endGame(id, false, true);
         }
     }
 

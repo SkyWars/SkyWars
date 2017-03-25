@@ -157,7 +157,7 @@ public class SkyWorldHandler {
             return;
         }
         Path worldFolder = folder.toPath();
-        Bukkit.unloadWorld(arenaWorld,false);
+        Bukkit.unloadWorld(arenaWorld, false);
         arenaWorld = null;
         if (Files.exists(worldFolder)) {
             plugin.getLogger().info("Cleaning up: Deleting " + worldFolder);
@@ -236,15 +236,19 @@ public class SkyWorldHandler {
         ArenaGame game = info.getGame();
         final int locationId = info.getGame().getId();
         SkyStatic.debug("Starting destroy operation for arena at %s.", locationId);
-        // TODO: 2 minutes for destroying each arena is currently hardcoded.
-        OperationHandle handle = provider.startDestroyOperation(arenaWorld, game.getArena(), game.getMin(), 2 * 60 * 20); // nice delayed execution.
-        handle.runOnFinish(new Runnable() {
-            @Override
-            public void run() {
-                SkyStatic.debug("Finished destroying arena at %s.", locationId);
-                locationIdHandler.recycleId(locationId);
-            }
-        });
+        if (info.isEndSyncNowPluginShutdown()) {
+            provider.destroyArena(arenaWorld, game.getArena(), game.getMin());
+        } else {
+            // TODO: 2 minutes for destroying each arena is currently hardcoded.
+            OperationHandle handle = provider.startDestroyOperation(arenaWorld, game.getArena(), game.getMin(), 2 * 60 * 20); // nice delayed execution.
+            handle.runOnFinish(new Runnable() {
+                @Override
+                public void run() {
+                    SkyStatic.debug("Finished destroying arena at %s.", locationId);
+                    locationIdHandler.recycleId(locationId);
+                }
+            });
+        }
     }
 
     private SkyBlockLocation getMinLocation(SkyGame game) {

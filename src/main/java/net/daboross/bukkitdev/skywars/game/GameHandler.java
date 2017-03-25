@@ -53,11 +53,11 @@ public class GameHandler implements SkyGameHandler {
     }
 
     @Override
-    public void endGame(int id, boolean broadcast) {
+    public void endGame(int id, boolean broadcast, boolean endSyncNowPluginShutdown) {
         SkyIDHandler idHandler = plugin.getIDHandler();
         Validate.isTrue(idHandler.gameRunning(id), "Invalid id %s", id);
         ArenaGame game = plugin.getIDHandler().getGame(id);
-        GameEndInfo gameEndInfo = new GameEndInfo(game, broadcast);
+        GameEndInfo gameEndInfo = new GameEndInfo(game, broadcast, endSyncNowPluginShutdown);
         for (Player player : gameEndInfo.getAlivePlayers()) {
             plugin.getDistributor().distribute(new PlayerLeaveGameInfo(id, player, LeaveGameReason.GAME_ENDED));
             respawnPlayer(player);
@@ -74,6 +74,10 @@ public class GameHandler implements SkyGameHandler {
         gamesCurrentlyEnding.remove(id);
     }
 
+    @Override
+    public void endGame(final int id, final boolean broadcast) {
+        endGame(id, broadcast, false);
+    }
 
     @Override
     public void removePlayerFromGame(Player player, LeaveGameReason reason, boolean respawn, boolean broadcast) {

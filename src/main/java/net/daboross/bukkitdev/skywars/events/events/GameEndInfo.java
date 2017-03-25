@@ -29,11 +29,13 @@ public class GameEndInfo {
     private final ArenaGame game;
     private final List<Player> alivePlayers;
     private final boolean broadcast;
+    private final boolean endSyncNowPluginShutdown;
 
-    public GameEndInfo(ArenaGame game, boolean broadcast) {
+    public GameEndInfo(ArenaGame game, boolean broadcast, boolean endSyncNowPluginShutdown) {
         Validate.notNull(game, "Game cannot be null");
         this.game = game;
         this.broadcast = broadcast;
+        this.endSyncNowPluginShutdown = endSyncNowPluginShutdown;
         List<UUID> alive = game.getAlivePlayers();
         alivePlayers = new ArrayList<>();
         for (UUID uuid : alive) {
@@ -53,5 +55,9 @@ public class GameEndInfo {
 
     public boolean isBroadcast() {
         return broadcast;
+    }
+
+    public boolean isEndSyncNowPluginShutdown() {
+        return endSyncNowPluginShutdown;
     }
 }
