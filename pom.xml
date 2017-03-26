@@ -81,7 +81,7 @@
         </repository>
         <repository>
             <id>vault-repo</id>
-            <url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
+            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
         </repository>
         <repository>
             <id>maven.sk891.com</id>
@@ -98,7 +98,7 @@
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>VaultAPI</artifactId>
-            <version>1.5</version>
+            <version>1.6</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -311,7 +311,7 @@
                         <option>-keepattributes *Annotation*</option>
 
                         <!-- Don't obfuscate or optimize, we just want to remove unused classes/methods -->
-						<!-- Actually, optimizing seems to be OK. It makes the jar smaller, and doesn't mess with the public API at all -->
+                        <!-- Actually, optimizing seems to be OK. It makes the jar smaller, and doesn't mess with the public API at all -->
                         <option>-dontobfuscate</option>
                         <option>-dontoptimize</option>
 
