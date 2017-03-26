@@ -284,7 +284,7 @@
                         <lib>${settings.localRepository}/commons-lang/commons-lang/2.6/commons-lang-2.6.jar</lib>
 
                         <!-- Vault -->
-                        <lib>${settings.localRepository}/net/milkbowl/vault/VaultAPI/1.5/VaultAPI-1.5.jar</lib>
+                        <lib>${settings.localRepository}/net/milkbowl/vault/VaultAPI/1.6/VaultAPI-1.6.jar</lib>
 
                         <!-- WorldEdit -->
                         <lib>${settings.localRepository}/com/sk89q/worldedit/worldedit-bukkit/${project.worldedit-version}/worldedit-bukkit-${project.worldedit-version}.jar</lib>
