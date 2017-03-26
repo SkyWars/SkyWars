@@ -43,7 +43,7 @@ public class MainConfigDefaults {
     public static final boolean RESPAWN_PLAYERS_IMMEDIATELY = false;
     public static final String[] JOIN_SIGN_LINES = new String[]{
             "&8[&cSkyWars&8]",
-            "&8Next Game: &c{name}",
+            "&c{name}",
             "&8Players: &2{count}&3/&2{max}",
             "&cClick to join!",
     };
