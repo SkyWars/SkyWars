@@ -182,7 +182,7 @@ public class GameEventDistributor {
             plugin.getPlayers().onJoinQueue(info);
             plugin.getGameQueueTimer().onJoinQueue(info);
             plugin.getKitQueueNotifier().onQueueJoin(info);
-            plugin.getSignListener().onQueueJoin(info);
+            plugin.getSignListener().onQueueJoin(info); // update sign counts
             // -- After --
             plugin.getServer().getPluginManager().callEvent(new PlayerEnterQueueEvent(plugin, info.getPlayer()));
         } catch (Throwable t) {

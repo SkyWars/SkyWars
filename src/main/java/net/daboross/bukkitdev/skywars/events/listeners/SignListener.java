@@ -19,6 +19,7 @@ package net.daboross.bukkitdev.skywars.events.listeners;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
@@ -92,13 +93,15 @@ public class SignListener implements Listener {
                 signs.add(location);
             }
             SkyArena nextArena = plugin.getGameQueue().getPlannedArena();
+            String arenaName = nextArena.getArenaName();
+            SkyStatic.debug("[SignListener.onSignPlace] Found arena name '%s'", arenaName);
             int current = plugin.getGameQueue().getNumPlayersInQueue();
             for (int i = 0; i < 4; i++) {
                 if (dynamic[i]) {
                     evt.setLine(i, lines[i]
                             .replace("{max}", Integer.toString(nextArena.getNumPlayers()))
                             .replace("{count}", Integer.toString(current))
-                            .replace("{name}", nextArena.getArenaName()));
+                            .replace("{name}", arenaName));
                 } else {
                     evt.setLine(i, lines[i]);
                 }
@@ -122,7 +125,6 @@ public class SignListener implements Listener {
                     p.sendMessage(SkyTrans.get(TransKey.NO_PERMISSION_CANNOT_USE_JOIN_SIGN));
                     return;
                 }
-
 
                 if (plugin.getGameQueue().inQueue(uuid)) {
                     p.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_ALREADY_QUEUED));
@@ -161,9 +163,12 @@ public class SignListener implements Listener {
         SkyArena nextArena = plugin.getGameQueue().getPlannedArena();
         int current = plugin.getGameQueue().getNumPlayersInQueue();
 
+        String arenaName = nextArena.getArenaName();
+        SkyStatic.debug("[SignListener.updateSigns] Found arena name '%s'", arenaName);
         for (SkyBlockLocation location : signs) {
             Block block = location.toBlock();
             if (block != null) {
+                SkyStatic.debug("Updating sign at %s.", location);
                 BlockState state = block.getState();
                 if (!(state instanceof Sign)) {
                     toRemove.add(location);
@@ -176,6 +181,7 @@ public class SignListener implements Listener {
                 // but it might want to be done differently if possible? Maybe it should check the first non-dynamic line
                 // like when placing a sign.
                 if (!testSign(sign)) {
+                    SkyStatic.debug("Sign at %s does not match, removing.", location);
                     toRemove.add(location);
                     continue;
                 }
@@ -184,7 +190,7 @@ public class SignListener implements Listener {
                         sign.setLine(i, lines[i]
                                 .replace("{max}", Integer.toString(nextArena.getNumPlayers()))
                                 .replace("{count}", Integer.toString(current))
-                                .replace("{name}", nextArena.getArenaName()));
+                                .replace("{name}", arenaName));
                     } else {
                         sign.setLine(i, lines[i]);
                     }
@@ -204,6 +210,7 @@ public class SignListener implements Listener {
         for (int i = 0; i < 4; i++) {
             if (!dynamic[i]) {
                 if (!sign.getLine(i).equals(lines[i])) {
+                    SkyStatic.debug("Sign does not match! Non-dynamic line %s has %s on record, %s on sign.", i, lines[i], sign.getLine(i));
                     return false;
                 }
             }
