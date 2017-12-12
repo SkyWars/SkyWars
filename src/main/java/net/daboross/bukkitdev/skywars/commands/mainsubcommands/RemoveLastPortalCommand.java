@@ -21,6 +21,7 @@ import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
+import net.daboross.bukkitdev.skywars.api.location.SkyPortalData;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import org.bukkit.command.Command;
@@ -38,11 +39,11 @@ public class RemoveLastPortalCommand extends SubCommand {
 
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        List<SkyBlockLocation> portals = plugin.getLocationStore().getPortals();
+        List<SkyPortalData> portals = plugin.getLocationStore().getPortals();
         if (portals.isEmpty()) {
             sender.sendMessage(SkyTrans.get(TransKey.CMD_DELPORTAL_NO_PORTAL_ERROR));
         } else {
-            SkyBlockLocation portal = portals.remove(portals.size() - 1);
+            SkyPortalData portal = portals.remove(portals.size() - 1);
             sender.sendMessage(SkyTrans.get(TransKey.CMD_DELPORTAL_CONFIRMATION, portal));
         }
     }

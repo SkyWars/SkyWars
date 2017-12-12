@@ -19,7 +19,11 @@ package net.daboross.bukkitdev.skywars.game;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
@@ -34,6 +38,7 @@ import net.daboross.bukkitdev.skywars.events.events.PlayerJoinQueueInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerJoinSecondaryQueueInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveQueueInfo;
 import net.daboross.bukkitdev.skywars.events.events.PlayerLeaveSecondaryQueueInfo;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -41,72 +46,153 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class GameQueue implements SkyGameQueue {
 
     private final SkyWarsPlugin plugin;
-    private List<UUID> queueNext;
-    private List<UUID> currentlyQueued;
-    private SkyArena nextArena;
-    private int nextArenaOrderedNumber = 0;
+    /**
+     * Primary storage for what players are in what queues.
+     */
+    private final Map<String, List<UUID>> queues;
+    /**
+     * Primary storage for what players are in what secondary queues.
+     */
+    private final Map<String, List<UUID>> secondaryQueues;
+    /**
+     * Quick access for what queue a player is in (always updated to be in sync with queues).
+     */
+    private final Map<UUID, String> playerQueues = new HashMap<>();
+    /**
+     * Quick access for what secondary queue a player is in (always updated to be in sync with queues).
+     */
+    private final Map<UUID, String> playerSecondaryQueues = new HashMap<>();
+    /**
+     * List of next arenas
+     */
+    private final Map<String, SkyArena> nextArenas;
+    private final Map<String, Integer> nextArenaOrderNumbers;
+
+    private final List<String> loadedQueueNames;
 
     public GameQueue(SkyWarsPlugin plugin) {
         this.plugin = plugin;
-        prepareNextArena();
+
+        Set<String> queueNames = plugin.getConfiguration().getQueueNames();
+
+        this.loadedQueueNames = new ArrayList<>(queueNames.size());
+        this.queues = new HashMap<>(queueNames.size());
+        this.secondaryQueues = new HashMap<>(queueNames.size());
+        this.nextArenas = new HashMap<>(queueNames.size());
+        this.nextArenaOrderNumbers = new HashMap<>(queueNames.size());
+        for (String queueName : queueNames) {
+            SkyStatic.debug("[GameQueue] Loading queue %s", queueName);
+            loadedQueueNames.add(queueName);
+            nextArenaOrderNumbers.put(queueName, 0);
+            prepareNextArena(queueName);
+        }
+    }
+
+    @Override
+    public boolean isQueueNameValid(String queueName) {
+        return queues.containsKey(queueName);
     }
 
     @Override
     public boolean inQueue(UUID uuid) {
-        return currentlyQueued.contains(uuid);
+        return playerQueues.containsKey(uuid);
+    }
+
+    @Override
+    public String getPlayerQueue(final UUID playerUuid) {
+        return playerQueues.get(playerUuid);
     }
 
     @Override
     public boolean inSecondaryQueue(final UUID uuid) {
-        return queueNext.contains(uuid);
+        return playerSecondaryQueues.containsKey(uuid);
     }
 
     @Override
-    public boolean queuePlayer(Player player) {
+    public String getPlayerSecondaryQueue(final UUID playerUuid) {
+        return playerSecondaryQueues.get(playerUuid);
+    }
+
+    @Override
+    public boolean queuePlayer(Player player, String queueName) {
+        if (!nextArenas.containsKey(queueName)) {
+            throw new IllegalArgumentException("Invalid queue: " + queueName);
+        }
         UUID uuid = player.getUniqueId();
-        if (!currentlyQueued.contains(uuid)) {
-            if (isQueueFull()) {
-                queueNext.add(uuid);
-                plugin.getDistributor().distribute(new PlayerJoinSecondaryQueueInfo(player));
+        if (playerQueues.containsKey(uuid)) {
+            if (Objects.equals(queueName, playerQueues.get(uuid))) {
+                return true;
+            } else {
+                removePlayer(player);
+            }
+        } else if (playerSecondaryQueues.containsKey(uuid)) {
+            if (Objects.equals(queueName, playerSecondaryQueues.get(uuid))) {
                 return false;
             } else {
-                currentlyQueued.add(uuid);
-                plugin.getDistributor().distribute(new PlayerJoinQueueInfo(player, isQueueFull(), areMinPlayersPresent()));
-                return true;
+                removePlayer(player);
             }
         }
-        return true;
+        if (isQueueFull(queueName)) {
+            secondaryQueues.get(queueName).add(uuid);
+            playerSecondaryQueues.put(uuid, queueName);
+            plugin.getDistributor().distribute(new PlayerJoinSecondaryQueueInfo(player, queueName));
+            return false;
+        } else {
+            queues.get(queueName).add(uuid);
+            playerQueues.put(uuid, queueName);
+            plugin.getDistributor().distribute(new PlayerJoinQueueInfo(player, queueName, isQueueFull(queueName), areMinPlayersPresent(queueName)));
+            return true;
+        }
     }
 
     @Override
     public void removePlayer(Player player) {
-        if (queueNext.remove(player.getUniqueId())) {
-            plugin.getDistributor().distribute(new PlayerLeaveSecondaryQueueInfo(player));
-        } else if (currentlyQueued.remove(player.getUniqueId())) {
-            plugin.getDistributor().distribute(new PlayerLeaveQueueInfo(player, areMinPlayersPresent()));
-            if (!queueNext.isEmpty()) {
-                Player p = Bukkit.getPlayer(queueNext.remove(0));
-                plugin.getDistributor().distribute(new PlayerLeaveSecondaryQueueInfo(player));
-                queuePlayer(p);
+        UUID uuid = player.getUniqueId();
+        if (playerSecondaryQueues.containsKey(uuid)) {
+            String queueName = playerSecondaryQueues.get(uuid);
+            secondaryQueues.get(queueName).remove(uuid);
+            playerSecondaryQueues.remove(uuid);
+            plugin.getDistributor().distribute(new PlayerLeaveSecondaryQueueInfo(player, queueName));
+        } else if (playerQueues.containsKey(uuid)) {
+            String queueName = playerQueues.get(uuid);
+            queues.get(queueName).remove(uuid);
+            playerQueues.remove(uuid);
+            plugin.getDistributor().distribute(new PlayerLeaveQueueInfo(player, queueName, areMinPlayersPresent(queueName)));
+            List<UUID> secondaryQueue = secondaryQueues.get(queueName);
+            if (!secondaryQueue.isEmpty()) {
+                UUID nextUuid = secondaryQueue.remove(0);
+                playerSecondaryQueues.remove(nextUuid);
+                Player nextPlayer = Bukkit.getPlayer(nextUuid);
+                plugin.getDistributor().distribute(new PlayerLeaveSecondaryQueueInfo(nextPlayer, queueName));
+                queuePlayer(nextPlayer, queueName);
             }
         }
     }
 
-    public ArenaGame getNextGame() {
-        if (currentlyQueued.size() < nextArena.getMinPlayers()) {
-            throw new IllegalStateException("Queue size smaller than minimum player count (" + currentlyQueued.size() + " < " + nextArena.getMinPlayers() + ")");
+    public ArenaGame getNextGame(String queueName) {
+        List<UUID> queue = queues.get(queueName);
+        Validate.notNull(queue, "Invalid queue name.");
+        SkyArena nextArena = getPlannedArena(queueName);
+        if (queue.size() < nextArena.getMinPlayers()) {
+            throw new IllegalStateException("Queue size smaller than minimum player count (" + queue.size() + " < " + nextArena.getMinPlayers() + ")");
         }
-        Collections.shuffle(currentlyQueued);
-        UUID[] queueCopy = currentlyQueued.toArray(new UUID[currentlyQueued.size()]);
+        Collections.shuffle(queue);
+        UUID[] queueCopy = queue.toArray(new UUID[queue.size()]);
+        for (UUID uuid : queue) {
+            playerQueues.remove(uuid);
+        }
         int id = plugin.getIDHandler().getNextId();
         ArenaGame game = new ArenaGame(nextArena, id, queueCopy);
-        prepareNextArena();
+        prepareNextArena(queueName);
         return game;
     }
 
-    private void prepareNextArena() {
+    private void prepareNextArena(final String queueName) {
         SkyConfiguration config = plugin.getConfiguration();
-        List<? extends SkyArena> enabledArenas = config.getEnabledArenas();
+        List<? extends SkyArena> enabledArenas = config.getArenasForQueue(queueName);
+        Validate.notEmpty(enabledArenas, "[GameQueue] Invalid queue: no arenas specified!");
+        int nextArenaOrderedNumber = nextArenaOrderNumbers.get(queueName);
+        SkyArena nextArena;
         switch (config.getArenaOrder()) {
             case ORDERED:
                 if (nextArenaOrderedNumber >= enabledArenas.size()) {
@@ -120,13 +206,16 @@ public class GameQueue implements SkyGameQueue {
                 SkyStatic.debug("[GameQueue] Chose ordered arena %s", nextArena.getArenaName());
                 break;
             default:
-                plugin.getLogger().log(Level.WARNING, "[GameQueue] Invalid ArenaOrder found in config!");
-                nextArena = null;
+                plugin.getLogger().log(Level.WARNING, "[GameQueue] Invalid ArenaOrder found in config: {0}!", config.getArenaOrder());
                 throw new IllegalStateException("Invalid ArenaOrder found in config");
         }
-        currentlyQueued = new ArrayList<>(nextArena.getNumPlayers());
-        final List<UUID> joinNext = queueNext;
-        this.queueNext = new ArrayList<>();
+
+        queues.put(queueName, new ArrayList<UUID>(nextArena.getNumPlayers()));
+        nextArenaOrderNumbers.put(queueName, nextArenaOrderedNumber);
+        nextArenas.put(queueName, nextArena);
+
+        final List<UUID> joinNext = secondaryQueues.get(queueName);
+        secondaryQueues.put(queueName, new ArrayList<UUID>());
         if (joinNext != null) {
             new BukkitRunnable() {
                 @Override
@@ -135,7 +224,7 @@ public class GameQueue implements SkyGameQueue {
                         Player p = Bukkit.getPlayer(uuid);
                         if (p != null) {
                             p.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_CONFIRMATION));
-                            queuePlayer(p);
+                            queuePlayer(p, queueName);
                         }
                     }
                 }
@@ -144,41 +233,62 @@ public class GameQueue implements SkyGameQueue {
     }
 
     @Override
-    public UUID[] getCopy() {
-        return currentlyQueued.toArray(new UUID[currentlyQueued.size()]);
+    public UUID[] getCopy(String queueName) {
+        List<UUID> queue = queues.get(queueName);
+        Validate.notNull(queue, "Invalid queue name.");
+        return queue.toArray(new UUID[queue.size()]);
     }
 
-    public UUID[] getSecondaryCopy() {
-        return queueNext.toArray(new UUID[queueNext.size()]);
-    }
-
-    @Override
-    public Collection<UUID> getInQueue() {
-        return Collections.unmodifiableCollection(currentlyQueued);
-    }
-
-    @Override
-    public Collection<UUID> getInSecondaryQueue() {
-        return Collections.unmodifiableCollection(queueNext);
+    public UUID[] getSecondaryCopy(String queueName) {
+        List<UUID> secondaryQueue = secondaryQueues.get(queueName);
+        Validate.notNull(secondaryQueue, "Invalid queue name.");
+        return secondaryQueue.toArray(new UUID[secondaryQueue.size()]);
     }
 
     @Override
-    public int getNumPlayersInQueue() {
-        return currentlyQueued.size();
+    public Collection<UUID> getInQueue(String queueName) {
+        List<UUID> queue = queues.get(queueName);
+        Validate.notNull(queue, "Invalid queue name.");
+        return Collections.unmodifiableCollection(queue);
     }
 
     @Override
-    public SkyArena getPlannedArena() {
-        return nextArena;
+    public Collection<UUID> getInSecondaryQueue(String queueName) {
+        List<UUID> queue = secondaryQueues.get(queueName);
+        Validate.notNull(queue, "Invalid queue name.");
+        return Collections.unmodifiableCollection(queue);
     }
 
     @Override
-    public boolean isQueueFull() {
-        return currentlyQueued.size() >= nextArena.getNumPlayers();
+    public Collection<String> getQueueNames() {
+        return Collections.unmodifiableCollection(loadedQueueNames);
     }
 
     @Override
-    public boolean areMinPlayersPresent() {
-        return currentlyQueued.size() >= nextArena.getMinPlayers();
+    public int getNumPlayersInQueue(String queueName) {
+        List<UUID> queue = queues.get(queueName);
+        Validate.notNull(queue, "Invalid queue name.");
+        return queue.size();
+    }
+
+    @Override
+    public SkyArena getPlannedArena(String queueName) {
+        SkyArena arena = nextArenas.get(queueName);
+        Validate.notNull(arena, "Invalid queue name.");
+        return arena;
+    }
+
+    @Override
+    public boolean isQueueFull(String queueName) {
+        List<UUID> queue = queues.get(queueName);
+        Validate.notNull(queue, "Invalid queue name.");
+        return queue.size() >= getPlannedArena(queueName).getNumPlayers();
+    }
+
+    @Override
+    public boolean areMinPlayersPresent(String queueName) {
+        List<UUID> queue = queues.get(queueName);
+        Validate.notNull(queue, "Invalid queue name.");
+        return queue.size() >= getPlannedArena(queueName).getMinPlayers();
     }
 }

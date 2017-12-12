@@ -16,6 +16,8 @@
  */
 package net.daboross.bukkitdev.commandexecutorbase;
 
+import java.util.Iterator;
+
 public class ArrayHelpers {
 
     public static final String[] EMPTY_STRING = {};
@@ -35,17 +37,21 @@ public class ArrayHelpers {
         return copy;
     }
 
-    public static String combinedWithSeperator(Object[] array, String seperator) {
-        if (array.length == 0) {
+    public static <T> String combinedWithSeperator(Iterable<T> array, String seperator) {
+        Iterator<T> iterator = array.iterator();
+        if (!iterator.hasNext()) {
             return "";
-        } else if (array.length == 1) {
-            return String.valueOf(array[0]);
         } else {
-            StringBuilder resultBuilder = new StringBuilder(String.valueOf(array[0]));
-            for (int i = 1; i < array.length; i++) {
-                resultBuilder.append(seperator).append(array[i]);
+            String first = String.valueOf(iterator.next());
+            if (!iterator.hasNext()) {
+                return first;
+            } else {
+                StringBuilder resultBuilder = new StringBuilder(first);
+                while (iterator.hasNext()) {
+                    resultBuilder.append(seperator).append(iterator.next());
+                }
+                return resultBuilder.toString();
             }
-            return resultBuilder.toString();
         }
     }
 }

@@ -20,8 +20,10 @@ import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
+import net.daboross.bukkitdev.skywars.api.location.SkyPortalData;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
+import net.daboross.bukkitdev.skywars.commands.filters.QueueNameValidFilter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -32,7 +34,14 @@ public class SetPortalCommand extends SubCommand {
 
     public SetPortalCommand(SkyWars plugin) {
         super("setportal", false, "skywars.setportal", SkyTrans.get(TransKey.CMD_SETPORTAL_DESCRIPTION));
-        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
+        if (plugin.getConfiguration().areMultipleQueuesEnabled()) {
+            this.addArgumentNames(SkyTrans.get(TransKey.CMD_ARG_QUEUE_NAME));
+            this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.GREATER_THAN, 0, SkyTrans.get(TransKey.NOT_ENOUGH_PARAMS)));
+            this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.LESS_THAN, 2, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
+            this.addCommandFilter(new QueueNameValidFilter(plugin, 0));
+        } else {
+            this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
+        }
         this.plugin = plugin;
     }
 
@@ -42,7 +51,13 @@ public class SetPortalCommand extends SubCommand {
         if (plugin.getCurrentGameTracker().isInGame(player.getUniqueId())) {
             sender.sendMessage(SkyTrans.get(TransKey.CMD_SETPORTAL_IN_GAME));
         } else {
-            plugin.getLocationStore().getPortals().add(new SkyBlockLocation(player.getLocation()));
+            String queueName;
+            if (plugin.getConfiguration().areMultipleQueuesEnabled()) {
+                queueName = subCommandArgs[0];
+            } else {
+                queueName = null;
+            }
+            plugin.getLocationStore().getPortals().add(new SkyPortalData(new SkyBlockLocation(player.getLocation()), queueName));
             sender.sendMessage(SkyTrans.get(TransKey.CMD_SETPORTAL_CONFIRMATION));
         }
     }

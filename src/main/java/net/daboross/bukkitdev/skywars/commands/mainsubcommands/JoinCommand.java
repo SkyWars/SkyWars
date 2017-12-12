@@ -22,6 +22,7 @@ import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
+import net.daboross.bukkitdev.skywars.commands.filters.QueueNameValidFilter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -32,7 +33,14 @@ public class JoinCommand extends SubCommand {
 
     public JoinCommand(SkyWars plugin) {
         super("join", false, "skywars.join", SkyTrans.get(TransKey.CMD_JOIN_DESCRIPTION));
-        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
+        if (plugin.getConfiguration().areMultipleQueuesEnabled()) {
+            this.addArgumentNames(SkyTrans.get(TransKey.CMD_ARG_QUEUE_NAME));
+            this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.GREATER_THAN, 0, SkyTrans.get(TransKey.NOT_ENOUGH_PARAMS)));
+            this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.LESS_THAN, 2, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
+            this.addCommandFilter(new QueueNameValidFilter(plugin, 0));
+        } else {
+            this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
+        }
         this.plugin = plugin;
     }
 
@@ -42,20 +50,40 @@ public class JoinCommand extends SubCommand {
         if (plugin.getCurrentGameTracker().isInGame(uuid)) {
             sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_IN_GAME));
         } else if (plugin.getGameQueue().inQueue(uuid)) {
-            sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_ALREADY_QUEUED));
+            if (plugin.getConfiguration().areMultipleQueuesEnabled()) {
+                sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_ALREADY_IN_SPECIFIC_QUEUE, plugin.getGameQueue().getPlayerQueue(uuid)));
+            } else {
+                sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_ALREADY_QUEUED));
+            }
             // Kit GUI is automatically shown when joining, but it should also be shown if already queued.
             plugin.getKitGui().autoOpenGuiIfApplicable((Player) sender);
         } else if (plugin.getGameQueue().inSecondaryQueue(uuid)) {
-            sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_ALREADY_IN_SECONDARY_QUEUE));
+            if (plugin.getConfiguration().areMultipleQueuesEnabled()) {
+                sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_ALREADY_IN_SPECIFIC_SECONDARY_QUEUE, plugin.getGameQueue().getPlayerQueue(uuid)));
+            } else {
+                sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_ALREADY_IN_SECONDARY_QUEUE));
+            }
             sender.sendMessage(SkyTrans.get(TransKey.SECONDARY_QUEUE_EXPLANATION));
         } else {
-            if (plugin.getGameQueue().isQueueFull()) {
-                sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_JOINED_SECONDARY_QUEUE));
-                sender.sendMessage(SkyTrans.get(TransKey.SECONDARY_QUEUE_EXPLANATION));
+            String queueName;
+            if (plugin.getConfiguration().areMultipleQueuesEnabled()) {
+                queueName = subCommandArgs[0];
+                if (plugin.getGameQueue().isQueueFull(queueName)) {
+                    sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_JOINED_SPECIFIC_SECONDARY_QUEUE, queueName));
+                    sender.sendMessage(SkyTrans.get(TransKey.SECONDARY_QUEUE_EXPLANATION));
+                } else {
+                    sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_CONFIRMATION_SPECIFIC_QUEUE, queueName));
+                }
             } else {
-                sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_CONFIRMATION));
+                queueName = null;
+                if (plugin.getGameQueue().isQueueFull(null)) {
+                    sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_JOINED_SECONDARY_QUEUE));
+                    sender.sendMessage(SkyTrans.get(TransKey.SECONDARY_QUEUE_EXPLANATION));
+                } else {
+                    sender.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_CONFIRMATION));
+                }
             }
-            plugin.getGameQueue().queuePlayer((Player) sender);
+            plugin.getGameQueue().queuePlayer((Player) sender, queueName);
         }
     }
 }

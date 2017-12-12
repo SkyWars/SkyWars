@@ -27,9 +27,11 @@ import org.bukkit.entity.Player;
 public class GameStartInfo {
 
     private final List<Player> players;
+    private final String queueName;
     private final ArenaGame game;
 
-    public GameStartInfo(ArenaGame game) {
+    public GameStartInfo(final String queueName, ArenaGame game) {
+        this.queueName = queueName;
         Validate.notNull(game, "Game cannot be null");
         this.game = game;
         List<UUID> playersList = game.getAlivePlayers();
@@ -47,5 +49,9 @@ public class GameStartInfo {
 
     public List<Player> getPlayers() {
         return players;
+    }
+
+    public String getQueueName() {
+        return queueName;
     }
 }

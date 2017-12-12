@@ -17,7 +17,10 @@
 package net.daboross.bukkitdev.skywars.game;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import net.daboross.bukkitdev.skywars.SkyWarsPlugin;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
@@ -31,48 +34,87 @@ import org.bukkit.Bukkit;
 public class GameQueueTimer {
 
     private final SkyWarsPlugin plugin;
-    private final GenericTimer startTimer;
+    private final Map<String, GenericTimer> startTimers;
 
     public GameQueueTimer(final SkyWarsPlugin plugin) {
         this.plugin = plugin;
-        List<Long> timesToMessage = plugin.getConfiguration().getStartTimerMessageTimes();
-        List<GenericTimer.TaskDefinition> tasks = new ArrayList<>(timesToMessage.size() + 2);
-        tasks.add(new GenericTimer.TaskDefinition(0, new Runnable() {
-            @Override
-            public void run() {
-                if (plugin.getGameQueue().areMinPlayersPresent()) {
-                    plugin.getGameHandler().startNewGame();
-                }
+        this.startTimers = new HashMap<>();
+
+        Set<String> queueNames = plugin.getConfiguration().getQueueNames();
+        for (String queueName : queueNames) {
+            List<Long> timesToMessage = plugin.getConfiguration().getStartTimerMessageTimes();
+            List<GenericTimer.TaskDefinition> tasks = new ArrayList<>(timesToMessage.size() + 2);
+            tasks.add(new GenericTimer.TaskDefinition(0, new StartGameRunnable(queueName)));
+            tasks.add(new GenericTimer.TaskDefinition(plugin.getConfiguration().getTimeBeforeGameStartToCopyArena(),
+                    new ArenaCopyRunnable(queueName)));
+            for (Long timeTillStart : timesToMessage) {
+                tasks.add(new GenericTimer.TaskDefinition(timeTillStart, new MessageRunnable(timeTillStart, queueName)));
             }
-        }));
-        tasks.add(new GenericTimer.TaskDefinition(plugin.getConfiguration().getTimeBeforeGameStartToCopyArena(), new Runnable() {
-            @Override
-            public void run() {
-                startArenaCopy();
-            }
-        }));
-        for (Long timeTillStart : timesToMessage) {
-            tasks.add(new GenericTimer.TaskDefinition(timeTillStart, new MessageRunnable(timeTillStart)));
+            this.startTimers.put(queueName, new GenericTimer(plugin, tasks, false));
         }
-        this.startTimer = new GenericTimer(plugin, tasks, false);
+    }
+
+    private class StartGameRunnable implements Runnable {
+
+        private final String queueName;
+
+        private StartGameRunnable(final String queueName) {
+            this.queueName = queueName;
+        }
+
+        @Override
+        public void run() {
+            if (plugin.getGameQueue().areMinPlayersPresent(queueName)) {
+                plugin.getGameHandler().startNewGame(queueName);
+            }
+        }
+    }
+
+    private class ArenaCopyRunnable implements Runnable {
+
+        private final String queueName;
+
+        private ArenaCopyRunnable(final String queueName) {
+            this.queueName = queueName;
+        }
+
+        @Override
+        public void run() {
+            startArenaCopy(queueName);
+        }
+    }
+
+    /**
+     * Gets a timer from startTimers and throws an IllegalArgumentException if it does not exist.
+     */
+    private GenericTimer getTimer(String queueName) {
+        GenericTimer timer = startTimers.get(queueName);
+        if (timer == null) {
+            throw new IllegalArgumentException("timer not yet built for queue " + queueName + "! This is unexpected!");
+        }
+        return timer;
     }
 
     public void onJoinQueue(PlayerJoinQueueInfo info) {
         if (info.isQueueFull()) {
-            startTimer.startIn(plugin.getConfiguration().getTimeTillStartAfterMaxPlayers());
+            getTimer(info.getQueueName()).startIn(plugin.getConfiguration().getTimeTillStartAfterMaxPlayers());
             if (plugin.getConfiguration().getTimeTillStartAfterMaxPlayers() < plugin.getConfiguration().getTimeBeforeGameStartToCopyArena()) {
                 // Already passed this time, start copying immediately.
-                startArenaCopy();
+                startArenaCopy(info.getQueueName());
             }
-        } else if (info.areMinPlayersPresent() && !startTimer.isRunning()) {
-            startTimer.startIn(plugin.getConfiguration().getTimeTillStartAfterMinPlayers());
-            if (plugin.getConfiguration().getTimeTillStartAfterMinPlayers() < plugin.getConfiguration().getTimeBeforeGameStartToCopyArena()) {
-                startArenaCopy();
+        } else if (info.areMinPlayersPresent()) {
+            GenericTimer startTimer = getTimer(info.getQueueName());
+            if (!startTimer.isRunning()) {
+                startTimer.startIn(plugin.getConfiguration().getTimeTillStartAfterMinPlayers());
+                if (plugin.getConfiguration().getTimeTillStartAfterMinPlayers() < plugin.getConfiguration().getTimeBeforeGameStartToCopyArena()) {
+                    startArenaCopy(info.getQueueName());
+                }
             }
         }
     }
 
     public void onLeaveQueue(PlayerLeaveQueueInfo info) {
+        GenericTimer startTimer = getTimer(info.getQueueName());
         if (info.areMinPlayersPresent()) {
             startTimer.startIn(plugin.getConfiguration().getTimeTillStartAfterMinPlayers());
         } else {
@@ -81,14 +123,13 @@ public class GameQueueTimer {
         }
     }
 
-    @SuppressWarnings("UnusedParameters")
     public void onGameStart(GameStartInfo info) {
-        startTimer.cancelAll(); // in case of force start
+        getTimer(info.getQueueName()).cancelAll(); // in case of force start
     }
 
-    private void startArenaCopy() {
-        SkyStatic.debug("[Timer] Starting arena copy for %s.", plugin.getGameQueue().getPlannedArena().getArenaName());
-        plugin.getWorldHandler().startCopyingArena(plugin.getGameQueue().getPlannedArena(),
+    private void startArenaCopy(String queueName) {
+        SkyStatic.debug("[Timer] Starting arena copy for %s.", plugin.getGameQueue().getPlannedArena(queueName).getArenaName());
+        plugin.getWorldHandler().startCopyingArena(plugin.getGameQueue().getPlannedArena(queueName),
                 plugin.getConfiguration().getTimeBeforeGameStartToCopyArena());
     }
 
@@ -96,8 +137,10 @@ public class GameQueueTimer {
 
         private final boolean displayInMinutes;
         private final long displayTime;
+        private final String queueName;
 
-        private MessageRunnable(long timeTillStart) {
+        private MessageRunnable(long timeTillStart, final String queueName) {
+            this.queueName = queueName;
             if (timeTillStart % 60 == 0) {
                 displayInMinutes = true;
                 displayTime = timeTillStart / 60;
@@ -109,9 +152,9 @@ public class GameQueueTimer {
 
         @Override
         public void run() {
-            if (!plugin.getGameQueue().areMinPlayersPresent()) {
+            if (!plugin.getGameQueue().areMinPlayersPresent(queueName)) {
                 SkyStatic.debug("[Timer] Canceling timer as min players are not present.");
-                startTimer.cancelAll();
+                getTimer(queueName).cancelAll();
                 return;
             }
             TransKey transKey;
@@ -122,10 +165,10 @@ public class GameQueueTimer {
             }
             String message = SkyTrans.get(transKey, displayTime);
             if (plugin.getConfiguration().shouldLimitStartTimerMessagesToArenaPlayers()) {
-                for (UUID uuid : plugin.getGameQueue().getInQueue()) {
+                for (UUID uuid : plugin.getGameQueue().getInQueue(queueName)) {
                     Bukkit.getPlayer(uuid).sendMessage(message);
                 }
-                for (UUID uuid : plugin.getGameQueue().getInSecondaryQueue()) {
+                for (UUID uuid : plugin.getGameQueue().getInSecondaryQueue(queueName)) {
                     Bukkit.getPlayer(uuid).sendMessage(message);
                 }
                 Bukkit.getConsoleSender().sendMessage(message);

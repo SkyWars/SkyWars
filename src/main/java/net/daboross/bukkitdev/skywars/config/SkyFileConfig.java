@@ -178,7 +178,6 @@ public class SkyFileConfig {
             config.set(path, defaultList);
             return defaultList;
         }
-
     }
 
     public Map<String, String> getSetStringMap(String path, Map<String, String> defaultValues) throws InvalidConfigurationException {
@@ -193,7 +192,7 @@ public class SkyFileConfig {
                 } else if (obj instanceof Double || obj instanceof Integer || obj instanceof Boolean) {
                     values.put(entry.getKey(), obj.toString());
                 } else {
-                    throw new InvalidConfigurationException("Object " + obj + " found in map " + path + " in file " + configFile.toAbsolutePath() + " is not an integerr");
+                    throw new InvalidConfigurationException("Object " + obj + " found in map " + path + " in file " + configFile.toAbsolutePath() + " is not a string");
                 }
             }
             return values;
@@ -204,6 +203,42 @@ public class SkyFileConfig {
             ConfigurationSection section = config.createSection(path);
             for (Map.Entry<String, String> entry : defaultValues.entrySet()) {
                 section.set(entry.getKey(), entry.getValue());
+            }
+            return defaultValues;
+        }
+    }
+
+    public Map<String, List<String>> getSetStringListMap(String path, Map<String, List<String>> defaultValues) throws InvalidConfigurationException {
+        if (config.isConfigurationSection(path)) {
+            ConfigurationSection section = config.getConfigurationSection(path);
+            Map<String, Object> entries = section.getValues(false);
+            Map<String, List<String>> values = new HashMap<>(entries.size());
+            for (Map.Entry<String, Object> entry : entries.entrySet()) {
+                Object listObj = entry.getValue();
+                if (listObj instanceof List) {
+                    List<String> resultList = new ArrayList<>(((List) listObj).size());
+                    for (Object obj : (List) listObj) {
+                        if (obj instanceof String) {
+                            resultList.add((String) obj);
+                        } else if (obj instanceof Double || obj instanceof Integer || obj instanceof Boolean) {
+                            resultList.add(obj.toString());
+                        } else {
+                            throw new InvalidConfigurationException("Object " + obj + " found in list at " + path + "." + entry.getKey() + " in file " + configFile.toAbsolutePath() + " is not a string");
+                        }
+                    }
+                    values.put(entry.getKey(), resultList);
+                } else {
+                    throw new InvalidConfigurationException("Object " + listObj + " found at " + path + "." + entry.getKey() + " in file " + configFile.toAbsolutePath() + " is not a list");
+                }
+            }
+            return values;
+        } else if (config.contains(path)) {
+            throw new InvalidConfigurationException("Object " + config.get(path) + " found at " + path + " in file " + configFile + " is not a map");
+        } else {
+            logger.log(Level.INFO, "Setting {0} to {1} in file {2}", new Object[]{path, defaultValues, configFile});
+            ConfigurationSection section = config.createSection(path);
+            for (Map.Entry<String, List<String>> entry : defaultValues.entrySet()) {
+                section.set(entry.getKey(), new ArrayList<>(entry.getValue()));
             }
             return defaultValues;
         }
@@ -269,5 +304,4 @@ public class SkyFileConfig {
     public YamlConfiguration getConfig() {
         return config;
     }
-
 }

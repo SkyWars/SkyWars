@@ -19,7 +19,9 @@ package net.daboross.bukkitdev.skywars.config;
 public class MainConfigKeys {
 
     public static final String VERSION = "config-version";
+    public static final String ENABLE_MULTIPLE_QUEUES = "enable-multiple-queues";
     public static final String ENABLED_ARENAS = "enabled-arenas";
+    public static final String QUEUE_DESCRIPTIONS = "queue-descriptions";
     public static final String ARENA_ORDER = "arena-order";
     public static final String MESSAGE_PREFIX = "message-prefix";
     public static final String DEBUG = "debug";

@@ -50,8 +50,8 @@ public class GameHandler implements SkyGameHandler {
     }
 
     @Override
-    public void startNewGame() {
-        plugin.getDistributor().distribute(new GameStartInfo(plugin.getGameQueue().getNextGame()));
+    public void startNewGame(String queueName) {
+        plugin.getDistributor().distribute(new GameStartInfo(queueName, plugin.getGameQueue().getNextGame(queueName)));
     }
 
     @Override

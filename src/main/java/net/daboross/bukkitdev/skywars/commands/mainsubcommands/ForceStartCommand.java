@@ -21,6 +21,7 @@ import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
+import net.daboross.bukkitdev.skywars.commands.filters.QueueNameValidFilter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -30,14 +31,27 @@ public class ForceStartCommand extends SubCommand {
 
     public ForceStartCommand(SkyWars plugin) {
         super("forcestart", true, "skywars.forcestart", SkyTrans.get(TransKey.CMD_FORCESTART_DESCRIPTION));
-        this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
+        if (plugin.getConfiguration().areMultipleQueuesEnabled()) {
+            this.addArgumentNames(SkyTrans.get(TransKey.CMD_ARG_QUEUE_NAME));
+            this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.GREATER_THAN, 0, SkyTrans.get(TransKey.NOT_ENOUGH_PARAMS)));
+            this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.LESS_THAN, 2, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
+            this.addCommandFilter(new QueueNameValidFilter(plugin, 0));
+        } else {
+            this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
+        }
         this.plugin = plugin;
     }
 
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        if (plugin.getGameQueue().areMinPlayersPresent()) {
-            plugin.getGameHandler().startNewGame();
+        String queueName;
+        if (plugin.getConfiguration().areMultipleQueuesEnabled()) {
+            queueName = subCommandArgs[0];
+        } else {
+            queueName = null;
+        }
+        if (plugin.getGameQueue().areMinPlayersPresent(queueName)) {
+            plugin.getGameHandler().startNewGame(queueName);
         } else {
             sender.sendMessage(SkyTrans.get(TransKey.CMD_FORCESTART_NOT_ENOUGH));
         }

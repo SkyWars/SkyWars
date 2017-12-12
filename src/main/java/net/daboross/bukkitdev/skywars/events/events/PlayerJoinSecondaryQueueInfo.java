@@ -22,20 +22,27 @@ import org.bukkit.entity.Player;
 public class PlayerJoinSecondaryQueueInfo {
 
     private final Player player;
+    private final String queueName;
 
-    public PlayerJoinSecondaryQueueInfo(final Player player) {
+    public PlayerJoinSecondaryQueueInfo(final Player player, String queueName) {
         Validate.notNull(player, "Player cannot be null");
         this.player = player;
+        this.queueName = queueName;
     }
 
     public Player getPlayer() {
         return player;
     }
 
+    public String getQueueName() {
+        return queueName;
+    }
+
     @Override
     public String toString() {
         return "PlayerJoinSecondaryQueueInfo{" +
                 "player=" + player +
+                ", queueName='" + queueName + '\'' +
                 '}';
     }
 }

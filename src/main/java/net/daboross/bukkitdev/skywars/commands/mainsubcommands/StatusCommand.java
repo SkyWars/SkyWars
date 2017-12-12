@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -46,11 +47,12 @@ public class StatusCommand extends SubCommand {
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         SkyIDHandler idh = plugin.getIDHandler();
         sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_HEADER));
-        sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_IN_QUEUE,
-                ArrayHelpers.combinedWithSeperator(getNames(plugin.getGameQueue().getInQueue()), SkyTrans.get(TransKey.CMD_STATUS_COMMA))));
-        if (!plugin.getGameQueue().getInSecondaryQueue().isEmpty()) {
-            sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_IN_SECONDARY_QUEUE,
-                    ArrayHelpers.combinedWithSeperator(getNames(plugin.getGameQueue().getInSecondaryQueue()), SkyTrans.get(TransKey.CMD_STATUS_COMMA))));
+        if (plugin.getConfiguration().areMultipleQueuesEnabled()) {
+            for (String queueName : plugin.getConfiguration().getQueueNames()) {
+                sendSpecificQueueStatus(sender, queueName);
+            }
+        } else {
+            sendRegularQueueStatus(sender);
         }
         sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_ARENA_HEADER));
         for (Integer id : idh.getCurrentIDs()) {
@@ -62,14 +64,32 @@ public class StatusCommand extends SubCommand {
         }
     }
 
-    private String[] getNames(Collection<UUID> uuids) {
+    private void sendSpecificQueueStatus(CommandSender sender, String queueName) {
+        sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_IN_SPECIFIC_QUEUE, queueName,
+                ArrayHelpers.combinedWithSeperator(getNames(plugin.getGameQueue().getInQueue(queueName)), SkyTrans.get(TransKey.CMD_STATUS_COMMA))));
+        if (!plugin.getGameQueue().getInSecondaryQueue(queueName).isEmpty()) {
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_IN_SPECIFIC_SECONDARY_QUEUE, queueName,
+                    ArrayHelpers.combinedWithSeperator(getNames(plugin.getGameQueue().getInSecondaryQueue(queueName)), SkyTrans.get(TransKey.CMD_STATUS_COMMA))));
+        }
+    }
+
+    private void sendRegularQueueStatus(CommandSender sender) {
+        sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_IN_QUEUE,
+                ArrayHelpers.combinedWithSeperator(getNames(plugin.getGameQueue().getInQueue(null)), SkyTrans.get(TransKey.CMD_STATUS_COMMA))));
+        if (!plugin.getGameQueue().getInSecondaryQueue(null).isEmpty()) {
+            sender.sendMessage(SkyTrans.get(TransKey.CMD_STATUS_IN_SECONDARY_QUEUE,
+                    ArrayHelpers.combinedWithSeperator(getNames(plugin.getGameQueue().getInSecondaryQueue(null)), SkyTrans.get(TransKey.CMD_STATUS_COMMA))));
+        }
+    }
+
+    private List<String> getNames(Collection<UUID> uuids) {
         SkyPlayers players = plugin.getPlayers();
         String[] names = new String[uuids.size()];
         int i = 0;
         for (UUID uuid : uuids) {
             names[i++] = players.getPlayer(uuid).getName();
         }
-        return names;
+        return Arrays.asList(names);
     }
 
     private String getPlayerString(SkyGame game) {

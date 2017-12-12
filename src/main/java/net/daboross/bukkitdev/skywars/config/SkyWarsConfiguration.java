@@ -23,8 +23,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -76,6 +79,8 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     private boolean respawnPlayersImmediately;
     private boolean economyRewardMessages;
     private String[] joinSignLines;
+    private boolean enableMultipleQueues;
+    private Map<String, List<SkyArenaConfig>> arenasPerQueue;
     private boolean limitStartMessagesToArenaPlayers;
     private boolean limitDeathMessagesToArenaPlayers;
     private boolean limitEndMessagesToArenaPlayers;
@@ -145,11 +150,23 @@ public class SkyWarsConfiguration implements SkyConfiguration {
             throw new SkyConfigurationException("Inventory saving must be enabled to enable experience saving or position-health-gamemode saving!");
         }
 
-        List<String> enabledArenaNames = mainConfig.getSetStringList(MainConfigKeys.ENABLED_ARENAS, MainConfigDefaults.ENABLED_ARENAS);
-        enabledArenas = new ArrayList<>(enabledArenaNames.size());
-        if (enabledArenaNames.isEmpty()) {
-            throw new SkyConfigurationException("No arenas enabled");
+        enableMultipleQueues = mainConfig.getSetBoolean(MainConfigKeys.ENABLE_MULTIPLE_QUEUES, MainConfigDefaults.ENABLE_MULTIPLE_QUEUES);
+
+        Map<String, List<String>> queueDescriptions;
+        if (enableMultipleQueues) {
+            queueDescriptions = mainConfig.getSetStringListMap(MainConfigKeys.QUEUE_DESCRIPTIONS, MainConfigDefaults.QUEUE_DESCRIPTIONS);
+            if (queueDescriptions.size() <= 0) {
+                throw new SkyConfigurationException("Multiple queues enabled, yet queue-descriptions is empty.");
+            }
+        } else {
+            List<String> enabledArenaNames = mainConfig.getSetStringList(MainConfigKeys.ENABLED_ARENAS, MainConfigDefaults.ENABLED_ARENAS);
+            queueDescriptions = Collections.singletonMap(null, enabledArenaNames);
+            if (enabledArenaNames.isEmpty()) {
+                throw new SkyConfigurationException("No arenas enabled");
+            }
+            mainConfig.getSetStringListMap(MainConfigKeys.QUEUE_DESCRIPTIONS, MainConfigDefaults.QUEUE_DESCRIPTIONS);
         }
+        enabledArenas = new ArrayList<>();
 
         locale = mainConfig.getSetString(MainConfigKeys.LOCALE, MainConfigDefaults.LOCALE);
 
@@ -236,8 +253,13 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         mainConfig.save(String.format(Headers.CONFIG));
 
         // Arenas
-        for (String arenaName : enabledArenaNames) {
-            loadArena(arenaName);
+        arenasPerQueue = new HashMap<>();
+        for (Map.Entry<String, List<String>> entry : queueDescriptions.entrySet()) {
+            List<SkyArenaConfig> arenas = new ArrayList<>(entry.getValue().size());
+            for (String arenaName : entry.getValue()) {
+                arenas.add(loadArena(arenaName));
+            }
+            arenasPerQueue.put(entry.getKey(), arenas);
         }
     }
 
@@ -259,7 +281,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         load();
     }
 
-    private void loadArena(String name) throws SkyConfigurationException {
+    private SkyArenaConfig loadArena(String name) throws SkyConfigurationException {
         if (enabledArenas == null) {
             throw new IllegalStateException("Enabled arenas null");
         }
@@ -276,6 +298,7 @@ public class SkyWarsConfiguration implements SkyConfiguration {
         enabledArenas.add(arenaConfig);
 
         saveArena(file, arenaConfig, String.format(Headers.ARENA, name));
+        return arenaConfig;
     }
 
     public void saveArena(Path path, SkyArenaConfig arenaConfig, String header) {
@@ -317,6 +340,26 @@ public class SkyWarsConfiguration implements SkyConfiguration {
     @Override
     public List<SkyArenaConfig> getEnabledArenas() {
         return Collections.unmodifiableList(enabledArenas);
+    }
+
+    @Override
+    public boolean areMultipleQueuesEnabled() {
+        return enableMultipleQueues;
+    }
+
+    @Override
+    public Set<String> getQueueNames() {
+        return Collections.unmodifiableSet(arenasPerQueue.keySet());
+    }
+
+    @Override
+    public List<SkyArenaConfig> getArenasForQueue(final String queueName) {
+        List<SkyArenaConfig> list = arenasPerQueue.get(queueName);
+        if (list != null) {
+            return Collections.unmodifiableList(list);
+        } else {
+            return null;
+        }
     }
 
     @Override

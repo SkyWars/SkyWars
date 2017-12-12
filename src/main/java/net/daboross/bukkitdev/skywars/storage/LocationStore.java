@@ -19,38 +19,46 @@ package net.daboross.bukkitdev.skywars.storage;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
+import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.config.SkyConfigurationException;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocationRange;
 import net.daboross.bukkitdev.skywars.api.location.SkyLocationStore;
 import net.daboross.bukkitdev.skywars.api.location.SkyPlayerLocation;
-import net.daboross.bukkitdev.skywars.world.Statics;
+import net.daboross.bukkitdev.skywars.api.location.SkyPortalData;
+import net.daboross.bukkitdev.skywars.api.location.SkySignData;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class LocationStore implements Listener, SkyLocationStore {
 
-    private final JavaPlugin plugin;
-    private final List<SkyBlockLocation> portals = new ArrayList<>();
-    private final List<SkyBlockLocation> signs = new ArrayList<>();
+    private final SkyWars plugin;
+    private final List<SkyPortalData> portals = new ArrayList<>();
+    private final List<SkySignData> allSigns = new ArrayList<>();
+    private final Map<String, List<SkySignData>> signsByQueue = new HashMap<>();
+    private final Map<SkyBlockLocation, SkySignData> signsByLocation = new HashMap<>();
     private SkyPlayerLocation lobbyPosition;
     private FileConfiguration storage;
     private Path configFile;
 
-    public LocationStore(JavaPlugin plugin) throws SkyConfigurationException {
+    public LocationStore(SkyWars plugin) throws SkyConfigurationException {
         this.plugin = plugin;
         ConfigurationSerialization.registerClass(SkyBlockLocation.class);
         ConfigurationSerialization.registerClass(SkyPlayerLocation.class);
         ConfigurationSerialization.registerClass(SkyBlockLocationRange.class);
+        ConfigurationSerialization.registerClass(SkySignData.class);
+        ConfigurationSerialization.registerClass(SkyPortalData.class);
         load();
     }
 
@@ -60,7 +68,7 @@ public class LocationStore implements Listener, SkyLocationStore {
         }
         storage = YamlConfiguration.loadConfiguration(configFile.toFile());
         int configVersion = storage.getInt("storage-specification-version");
-        if (configVersion > 1) {
+        if (configVersion > 2) {
             throw new SkyConfigurationException("Unknown configuration version for locations.yml. Did you downgrade? If so, delete or move locations.yml to reset.");
         }
         Object lobbyO = storage.get("lobby");
@@ -84,23 +92,43 @@ public class LocationStore implements Listener, SkyLocationStore {
         List<?> portalList = storage.getList("portals");
         if (portalList != null) {
             for (Object obj : portalList) {
-                if (obj instanceof SkyBlockLocation) {
-                    portals.add((SkyBlockLocation) obj);
+                if (obj instanceof SkyPortalData) {
+                    portals.add((SkyPortalData) obj);
+                } else if (obj instanceof SkyBlockLocation) {
+                    portals.add(new SkyPortalData((SkyBlockLocation) obj, null));
                 } else {
-                    plugin.getLogger().log(Level.WARNING, "Expected SkyBlockLocation, found {} in portals list in {}! Removing item from config file.", new Object[]{obj, configFile});
+                    plugin.getLogger().log(Level.WARNING, "Expected SkyBlockLocation or SkyPortalData, found {} in portals list in {}! Removing item from config file.", new Object[]{obj, configFile});
                 }
             }
         }
+
         List<?> signList = storage.getList("signs");
         if (signList != null) {
             for (Object object : signList) {
-                if (object instanceof SkyBlockLocation) {
-                    signs.add((SkyBlockLocation) object);
+                // TODO: how to handle signs with old queue names??
+                if (object instanceof SkySignData) {
+                    allSigns.add((SkySignData) object);
+                } else if (object instanceof SkyBlockLocation) {
+                    allSigns.add(migrateOldBlockSign((SkyBlockLocation) object));
                 } else {
-                    plugin.getLogger().log(Level.WARNING, "Expected SkyBlockLocation, found {} in signs list in {}! Removing item from config file.", new Object[]{object, configFile});
+                    plugin.getLogger().log(Level.WARNING, "Expected SkyBlockLocation or SkySignData, found {} in signs list in {}! Removing item from config file.", new Object[]{object, configFile});
                 }
             }
         }
+        for (SkySignData data : allSigns) {
+            signsByLocation.put(data.location, data);
+            List<SkySignData> inThisQueue = signsByQueue.get(data.queueName);
+            if (inThisQueue == null) {
+                inThisQueue = new ArrayList<>();
+                signsByQueue.put(data.queueName, inThisQueue);
+            }
+            inThisQueue.add(data);
+        }
+    }
+
+    private SkySignData migrateOldBlockSign(SkyBlockLocation loc) {
+        plugin.getLogger().log(Level.INFO, "Migrating old sign at {} to new storage format! Downgrading the plugin from now on out will unregister this sign.", new Object[]{loc});
+        return new SkySignData(loc, null, null);
     }
 
     @Override
@@ -109,8 +137,8 @@ public class LocationStore implements Listener, SkyLocationStore {
             plugin.getLogger().log(Level.INFO, "Saving configuration");
             storage.set("portals", portals);
             storage.set("lobby", lobbyPosition);
-            storage.set("signs", signs);
-            storage.set("storage-specification-version", 1);
+            storage.set("signs", allSigns);
+            storage.set("storage-specification-version", 2);
             try {
                 storage.save(configFile.toFile());
             } catch (IOException ex) {
@@ -119,6 +147,37 @@ public class LocationStore implements Listener, SkyLocationStore {
         } else {
             plugin.getLogger().log(Level.WARNING, "For some reason storage is trying to save when storage was never loaded");
         }
+    }
+
+    @Override
+    public SkySignData getSignAt(final SkyBlockLocation loc) {
+        return signsByLocation.get(loc);
+    }
+
+    @Override
+    public List<SkySignData> getQueueSigns(final String queueName) {
+        if (plugin.getConfiguration().areMultipleQueuesEnabled()) {
+            return signsByQueue.get(queueName);
+        } else {
+            return allSigns;
+        }
+    }
+
+    @Override
+    public void registerSign(SkySignData data) {
+        if (signsByLocation.containsKey(data.location)) {
+            removeSign(signsByLocation.get(data.location));
+        }
+        allSigns.add(data);
+        signsByLocation.put(data.location, data);
+        signsByQueue.get(data.queueName).remove(data);
+    }
+
+    @Override
+    public void removeSign(final SkySignData data) {
+        signsByLocation.remove(data.location);
+        signsByQueue.get(data.queueName).remove(data);
+        allSigns.remove(data);
     }
 
     @Override
@@ -138,12 +197,7 @@ public class LocationStore implements Listener, SkyLocationStore {
     }
 
     @Override
-    public List<SkyBlockLocation> getPortals() {
+    public List<SkyPortalData> getPortals() {
         return portals;
-    }
-
-    @Override
-    public List<SkyBlockLocation> getSigns() {
-        return signs;
     }
 }

@@ -32,7 +32,9 @@ public class MainConfigDefaults {
     public static final boolean REPORT_STATISTICS = true;
     public static final boolean SKIP_UUID_CHECK = false;
     public static final SkyConfiguration.ArenaOrder ARENA_ORDER = SkyConfiguration.ArenaOrder.RANDOM;
+    public static final boolean ENABLE_MULTIPLE_QUEUES = false;
     public static final List<String> ENABLED_ARENAS = Arrays.asList("skyblock-warriors", "water-warriors");
+    public static final Map<String, List<String>> QUEUE_DESCRIPTIONS;
     public static final boolean SAVE_INVENTORY = true;
     public static final int ARENA_DISTANCE_APART = 200;
     public static final String LOCALE = Locale.getDefault().getLanguage();
@@ -65,6 +67,10 @@ public class MainConfigDefaults {
         Map<String, String> defaultArenaGamerules = new HashMap<>(1);
         defaultArenaGamerules.put("doDaylightCycle", "false");
         ARENA_GAMERULES = Collections.unmodifiableMap(defaultArenaGamerules);
+        Map<String, List<String>> defaultQueueDescriptions = new HashMap<>(1);
+        defaultQueueDescriptions.put("sbw", Collections.singletonList("skyblock-warriors"));
+        defaultQueueDescriptions.put("sww", Collections.singletonList("water-warriors"));
+        QUEUE_DESCRIPTIONS = defaultQueueDescriptions;
     }
 
     private MainConfigDefaults() {

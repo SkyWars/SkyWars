@@ -22,16 +22,22 @@ import org.bukkit.entity.Player;
 public class PlayerLeaveQueueInfo {
 
     private final Player player;
+    private final String queueName;
     private final boolean minPlayersPresent;
 
-    public PlayerLeaveQueueInfo(final Player player, boolean minPlayersPresent) {
+    public PlayerLeaveQueueInfo(Player player, String queueName, boolean minPlayersPresent) {
         this.minPlayersPresent = minPlayersPresent;
         Validate.notNull(player, "Player cannot be null");
         this.player = player;
+        this.queueName = queueName;
     }
 
     public Player getPlayer() {
         return player;
+    }
+
+    public String getQueueName() {
+        return queueName;
     }
 
     public boolean areMinPlayersPresent() {
@@ -42,6 +48,7 @@ public class PlayerLeaveQueueInfo {
     public String toString() {
         return "PlayerLeaveQueueInfo{" +
                 "player=" + player +
+                ", queueName='" + queueName + '\'' +
                 ", minPlayersPresent=" + minPlayersPresent +
                 '}';
     }

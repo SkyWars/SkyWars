@@ -17,12 +17,16 @@
 package net.daboross.bukkitdev.skywars.events.listeners;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
 import net.daboross.bukkitdev.skywars.api.arenaconfig.SkyArena;
 import net.daboross.bukkitdev.skywars.api.location.SkyBlockLocation;
+import net.daboross.bukkitdev.skywars.api.location.SkyLocationStore;
+import net.daboross.bukkitdev.skywars.api.location.SkySignData;
 import net.daboross.bukkitdev.skywars.api.translations.SkyTrans;
 import net.daboross.bukkitdev.skywars.api.translations.TransKey;
 import net.daboross.bukkitdev.skywars.events.events.GameStartInfo;
@@ -49,7 +53,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 public class SignListener implements Listener {
 
     private final SkyWars plugin;
-    private final List<SkyBlockLocation> toRemove = new ArrayList<>();
     private final String[] lines = new String[4];
     private final boolean[] dynamic = new boolean[4];
 
@@ -58,7 +61,7 @@ public class SignListener implements Listener {
         String[] lineStrings = plugin.getConfiguration().getJoinSignLines();
         for (int i = 0; i < 4; i++) {
             lines[i] = ChatColor.translateAlternateColorCodes('&', lineStrings[i]);
-            dynamic[i] = lineStrings[i].contains("{max}") || lineStrings[i].contains("{count}") || lineStrings[i].contains("{name}");
+            dynamic[i] = lineStrings[i].contains("{max}") || lineStrings[i].contains("{count}") || lineStrings[i].contains("{name}") || lineStrings[i].contains("{queue}");
         }
     }
 
@@ -84,24 +87,34 @@ public class SignListener implements Listener {
                 }
                 return;
             }
-            List<SkyBlockLocation> signs = plugin.getLocationStore().getSigns();
-            SkyBlockLocation location = new SkyBlockLocation(evt.getBlock());
-            if (!signs.contains(location)) {
-                // Since we only remove broken signs when updating, we need to check to ensure
-                // that we don't add a sign twice. If added twice, it would purely slow down updating
-                // signs, and the duplicate would never be removed.
-                signs.add(location);
+
+            // TODO: some way to make signs of custom arenas
+            String queueName;
+            if (plugin.getConfiguration().areMultipleQueuesEnabled()) {
+                // TODO: this is super inefficient.
+                List<String> queueNames = new ArrayList<>(plugin.getConfiguration().getQueueNames());
+                queueName = queueNames.get(ThreadLocalRandom.current().nextInt(queueNames.size()));
+            } else {
+                queueName = null;
             }
-            SkyArena nextArena = plugin.getGameQueue().getPlannedArena();
+            SkySignData newData = new SkySignData(new SkyBlockLocation(evt.getBlock()), new ArrayList<>(Arrays.asList(evt.getLine(0), evt.getLine(1), evt.getLine(2), evt.getLine(3))), queueName);
+
+            plugin.getLocationStore().registerSign(newData);
+
+            SkyArena nextArena = plugin.getGameQueue().getPlannedArena(queueName);
             String arenaName = nextArena.getArenaName();
             SkyStatic.debug("[SignListener.onSignPlace] Found arena name '%s'", arenaName);
-            int current = plugin.getGameQueue().getNumPlayersInQueue();
+            int current = plugin.getGameQueue().getNumPlayersInQueue(queueName);
             for (int i = 0; i < 4; i++) {
                 if (dynamic[i]) {
-                    evt.setLine(i, lines[i]
+                    String replacedLine = lines[i]
                             .replace("{max}", Integer.toString(nextArena.getNumPlayers()))
                             .replace("{count}", Integer.toString(current))
-                            .replace("{name}", arenaName));
+                            .replace("{name}", arenaName);
+                    if (queueName != null) {
+                        replacedLine = replacedLine.replace("{queue}", queueName);
+                    }
+                    evt.setLine(i, replacedLine);
                 } else {
                     evt.setLine(i, lines[i]);
                 }
@@ -115,9 +128,10 @@ public class SignListener implements Listener {
                 && (evt.getClickedBlock().getType() == Material.WALL_SIGN
                 || evt.getClickedBlock().getType() == Material.SIGN_POST)) {
             BlockState state = evt.getClickedBlock().getState();
+            SkySignData dataHere = plugin.getLocationStore().getSignAt(new SkyBlockLocation(evt.getClickedBlock()));
             if (state instanceof Sign
-                    && plugin.getLocationStore().getSigns().contains(new SkyBlockLocation(evt.getClickedBlock()))
-                    && testSign((Sign) state)) {
+                    && dataHere != null
+                    && testSign(dataHere, (Sign) state)) {
                 Player p = evt.getPlayer();
                 UUID uuid = p.getUniqueId();
 
@@ -136,42 +150,45 @@ public class SignListener implements Listener {
                 } else if (!plugin.getCurrentGameTracker().isInGame(uuid)) {
                     // Should be pretty impossible to click a join sign while already in a game.
                     p.sendMessage(SkyTrans.get(TransKey.CMD_JOIN_CONFIRMATION));
-                    plugin.getGameQueue().queuePlayer(p);
+                    plugin.getGameQueue().queuePlayer(p, dataHere.queueName);
                 }
             }
         }
     }
 
     public void onQueueJoin(PlayerJoinQueueInfo info) {
-        updateSigns();
+        updateSigns(info.getQueueName());
     }
 
     public void onQueueLeave(PlayerLeaveQueueInfo info) {
-        updateSigns();
+        updateSigns(info.getQueueName());
     }
 
     public void onGameStart(GameStartInfo info) {
-        updateSigns();
+        updateSigns(info.getQueueName());
     }
 
-    public void updateSigns() {
-        List<SkyBlockLocation> signs = plugin.getLocationStore().getSigns();
-        if (signs.isEmpty()) {
+    public void updateSigns(String queueName) {
+        SkyLocationStore store = plugin.getLocationStore();
+        List<SkySignData> signs = store.getQueueSigns(queueName);
+        if (signs == null || signs.isEmpty()) {
             return;
         }
 
-        SkyArena nextArena = plugin.getGameQueue().getPlannedArena();
-        int current = plugin.getGameQueue().getNumPlayersInQueue();
+        SkyArena nextArena = plugin.getGameQueue().getPlannedArena(queueName);
+        int current = plugin.getGameQueue().getNumPlayersInQueue(queueName);
 
         String arenaName = nextArena.getArenaName();
         SkyStatic.debug("[SignListener.updateSigns] Found arena name '%s'", arenaName);
-        for (SkyBlockLocation location : signs) {
+        List<SkySignData> toRemove = new ArrayList<>();
+        for (SkySignData signData : signs) {
+            SkyBlockLocation location = signData.location;
             Block block = location.toBlock();
             if (block != null) {
                 SkyStatic.debug("Updating sign at %s.", location);
                 BlockState state = block.getState();
                 if (!(state instanceof Sign)) {
-                    toRemove.add(location);
+                    toRemove.add(signData);
                     continue;
                 }
                 Sign sign = (Sign) state;
@@ -180,9 +197,9 @@ public class SignListener implements Listener {
                 // This is done purely so as to avoid needing to catch a PlayerBreakBlockEvent in order to remove signs,
                 // but it might want to be done differently if possible? Maybe it should check the first non-dynamic line
                 // like when placing a sign.
-                if (!testSign(sign)) {
+                if (!testSign(signData, sign)) {
                     SkyStatic.debug("Sign at %s does not match, removing.", location);
-                    toRemove.add(location);
+                    toRemove.add(signData);
                     continue;
                 }
                 for (int i = 0; i < 4; i++) {
@@ -200,16 +217,15 @@ public class SignListener implements Listener {
             }
         }
 
-        for (SkyBlockLocation location : toRemove) {
-            // This collection is not a copy, but rather the original storage for signs.
-            signs.remove(location);
+        for (SkySignData data : toRemove) {
+            store.removeSign(data);
         }
     }
 
-    private boolean testSign(Sign sign) {
+    private boolean testSign(SkySignData expected, Sign sign) {
         for (int i = 0; i < 4; i++) {
             if (!dynamic[i]) {
-                if (!sign.getLine(i).equals(lines[i])) {
+                if (!sign.getLine(i).equals(lines[i]) && !sign.getLine(i).equals(expected.lastLines.get(i))) {
                     SkyStatic.debug("Sign does not match! Non-dynamic line %s has %s on record, %s on sign.", i, lines[i], sign.getLine(i));
                     return false;
                 }
