@@ -1,5 +1,7 @@
 dependencies:
     pre:
+        - git clone https://github.com/daboross/bukkit-storage-protobuf.git
+        - (cd bukkit-storage-protobuf && mvn clean install)
         - git clone https://github.com/SkyWars/SkyWars-Translations.git
         - (cd SkyWars-Translations && mvn clean install)
         - git clone -b "$CIRCLE_BRANCH" https://github.com/SkyWars/SkyWars-API.git
