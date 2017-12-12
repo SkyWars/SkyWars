@@ -18,11 +18,14 @@ package net.daboross.bukkitdev.skywars.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.logging.Level;
 import net.daboross.bukkitdev.skywars.api.SkyStatic;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
+import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
@@ -35,6 +38,29 @@ import org.bukkit.scoreboard.Team;
 public class CrossVersion {
 
     private CrossVersion() {
+    }
+
+    /**
+     * Supports Bukkit earlier than... 1.8?
+     */
+    public static Collection<? extends Player> getOnlinePlayers(Server s) {
+        try {
+            return s.getOnlinePlayers();
+        } catch (NoSuchMethodError ignored) {
+            Class<? extends Server> theClass = s.getClass();
+            try {
+                for (Method method : theClass.getMethods()) {
+                    if ("getOnlinePlayers".equals(method.getName()) && method.getParameterTypes().length == 0
+                            && method.getReturnType().isArray()) {
+                        return Arrays.asList((Player[]) method.invoke(s));
+                    }
+                }
+            } catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                SkyStatic.getLogger().log(Level.WARNING, "Couldn't use fallback .getOnlinePlayers method of Server! Acting as if there are no online players!!", ex);
+            }
+            SkyStatic.getLogger().log(Level.WARNING, "Couldn't find old fallback .getOnlinePlayers method of Server! Acting as if there are no online players!!");
+        }
+        return Collections.emptyList();
     }
 
     /**
