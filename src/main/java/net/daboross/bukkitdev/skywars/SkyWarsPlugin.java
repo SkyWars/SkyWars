@@ -74,6 +74,7 @@ import net.daboross.bukkitdev.skywars.player.OnlineSkyPlayers;
 import net.daboross.bukkitdev.skywars.score.ScoreStorage;
 import net.daboross.bukkitdev.skywars.scoreboards.TeamScoreboardListener;
 import net.daboross.bukkitdev.skywars.storage.LocationStore;
+import net.daboross.bukkitdev.skywars.util.CrossVersion;
 import net.daboross.bukkitdev.skywars.world.SkyWorldHandler;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
@@ -190,7 +191,7 @@ public class SkyWarsPlugin extends JavaPlugin implements SkyWars {
             chatListener = new ScoreReplaceChatListener(this);
         }
         // For supporting /reload or plugin manager reloading.
-        for (Player online : getServer().getOnlinePlayers()) {
+        for (Player online : CrossVersion.getOnlinePlayers(getServer())) {
             inGame.loadPlayer(online);
         }
         if (configuration.isEconomyEnabled()) {
