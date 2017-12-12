@@ -33,9 +33,9 @@ public class ForceStartCommand extends SubCommand {
         super("forcestart", true, "skywars.forcestart", SkyTrans.get(TransKey.CMD_FORCESTART_DESCRIPTION));
         if (plugin.getConfiguration().areMultipleQueuesEnabled()) {
             this.addArgumentNames(SkyTrans.get(TransKey.CMD_ARG_QUEUE_NAME));
+            this.addCommandFilter(new QueueNameValidFilter(plugin, 0));
             this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.GREATER_THAN, 0, SkyTrans.get(TransKey.NOT_ENOUGH_PARAMS)));
             this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.LESS_THAN, 2, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
-            this.addCommandFilter(new QueueNameValidFilter(plugin, 0));
         } else {
             this.addCommandFilter(new ArgumentFilter(ArgumentFilter.ArgumentCondition.EQUALS, 0, SkyTrans.get(TransKey.TOO_MANY_PARAMS)));
         }

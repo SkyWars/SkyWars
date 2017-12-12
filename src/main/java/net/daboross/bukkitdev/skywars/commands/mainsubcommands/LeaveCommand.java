@@ -16,6 +16,7 @@
  */
 package net.daboross.bukkitdev.skywars.commands.mainsubcommands;
 
+import java.util.UUID;
 import net.daboross.bukkitdev.commandexecutorbase.SubCommand;
 import net.daboross.bukkitdev.commandexecutorbase.filters.ArgumentFilter;
 import net.daboross.bukkitdev.skywars.api.SkyWars;
@@ -38,13 +39,22 @@ public class LeaveCommand extends SubCommand {
 
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        if (plugin.getGameQueue().inQueue(((Player) sender).getUniqueId())) {
+        UUID uuid = ((Player) sender).getUniqueId();
+        if (plugin.getGameQueue().inQueue(uuid)) {
             plugin.getGameQueue().removePlayer((Player) sender);
-            sender.sendMessage(SkyTrans.get(TransKey.CMD_LEAVE_REMOVED_FROM_QUEUE));
-        } else if (plugin.getGameQueue().inSecondaryQueue(((Player) sender).getUniqueId())) {
+            if (plugin.getConfiguration().areMultipleQueuesEnabled()) {
+                sender.sendMessage(SkyTrans.get(TransKey.CMD_LEAVE_REMOVED_FROM_SPECIFIC_QUEUE, plugin.getGameQueue().getPlayerQueue(uuid)));
+            } else {
+                sender.sendMessage(SkyTrans.get(TransKey.CMD_LEAVE_REMOVED_FROM_QUEUE));
+            }
+        } else if (plugin.getGameQueue().inSecondaryQueue(uuid)) {
             plugin.getGameQueue().removePlayer((Player) sender);
-            sender.sendMessage(SkyTrans.get(TransKey.CMD_LEAVE_REMOVED_FROM_SECONDARY_QUEUE));
-        } else if (plugin.getCurrentGameTracker().isInGame(((Player) sender).getUniqueId())) {
+            if (plugin.getConfiguration().areMultipleQueuesEnabled()) {
+                sender.sendMessage(SkyTrans.get(TransKey.CMD_LEAVE_REMOVED_FROM_SPECIFIC_SECONDARY_QUEUE, plugin.getGameQueue().getPlayerQueue(uuid)));
+            } else {
+                sender.sendMessage(SkyTrans.get(TransKey.CMD_LEAVE_REMOVED_FROM_SECONDARY_QUEUE));
+            }
+        } else if (plugin.getCurrentGameTracker().isInGame(uuid)) {
             plugin.getGameHandler().removePlayerFromGame((Player) sender, LeaveGameReason.LEAVE_COMMAND, true, true);
             sender.sendMessage(SkyTrans.get(TransKey.CMD_LEAVE_REMOVED_FROM_GAME));
         } else {
