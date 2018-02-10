@@ -97,7 +97,7 @@ public class GistReport {
         for (SkyArenaConfig arena : configuration.getEnabledArenas()) {
             build.append("\n#### ").append(arena.getArenaName());
             if (arena.getFile() != null) {
-                build.append("\n\n#####").append(arena.getFile().toAbsolutePath());
+                build.append("\n\n##### ").append(arena.getFile().toAbsolutePath());
             }
             appendArena(build, arena);
         }
