@@ -100,7 +100,7 @@ And now, testing!
  * Confirm you keep your inventory after dying with `save-inventory: true`
  * Confirm you loose your inventory after dying with `save-inventory: false`
  * Confirm the `/sw` help message changes after setting `locale: es` (or any other language)
- * Confirm SkyWars starts up correctly with locale set to `cz`, `de`, `dk`, `en`, `es`, `fr`, `nl`, `pl`, `pt` and `ru`
+ * Confirm SkyWars starts up correctly with locale set to `cn`, `cz`, `de`, `dk`, `en`, `es`, `fa`, `fr`, `nl`, `pl`, `pt` and `ru`
  * Confirm messages.yml updates after changing locale when auto-update is set to true
  * Confirm messages.new.yml is created after changing locale when auto-update is set to false
  * Confirm messages.yml *does not* update after changing locale when auto-update is set to false
