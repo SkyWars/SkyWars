@@ -12,8 +12,10 @@ Unreleased
 - Fix some errors on shutdown
 - Fix arena name not showing in signs
 - Fix support for Minecraft 1.7.8
+- Fix opening kit GUIs when there are no kits available
 
 ### SkyWars-Translations:
+
 - Add Simplified Chinese translations (thanks @xanderlcq)
 - Improve Dutch translations (thanks @riassmismans, @mcannie97)
 - Add hungarian translations (thanks @montlikadani)
