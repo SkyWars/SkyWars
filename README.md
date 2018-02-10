@@ -1,18 +1,9 @@
 ![SkyWars](https://dabo.guru/logo/SkyWars.png)
 
-### SkyWars is back!
-
-SkyWars is back! The first publicly released SkyWars plugin is now receiving intermittent updates, and has full support for Minecraft 1.9.
-
-SkyWars v2.1.0 and above use a new arena backend, which comes with faster arena creation, and no longer requires SkyWarsBaseWorld.
-
-If you were previously using SkyWars v2.0.1 or earlier, SkyWars will transfer all custom arenas to the new backend, so please **back up all SkyWars and arena data** before updating. If you were previously using SkyWars v1.4.5 or earlier, the update will also convert all user data from name-base to UUID-based storage.
-
-### PSA: Vote on new features
+### SkyWars: status
+SkyWars is currently in maintenance mode, with small feature updates. It will definitely break in the Minecraft 1.13 update, due to how it stores arena files. I won't be investing a ton of time into fixing that until the final Spigot binaries for 1.13 are released, or at least until an API is released that's final.
 
 I haven't been completely active lately with updates, but I'll be adding things when I can. Due to my limited time, I'll be implementing the features with the highest votes first, on the [feature poll](http://www.strawpoll.me/embed_1/10498111).
-
-Note: There's a new poll as of June 15th, 2016! If you haven't voted since then, [click here](http://www.strawpoll.me/embed_1/10498111)!
 
 ### Features
 * Integrates seamlessly into any server, survival, creative or otherwise.
