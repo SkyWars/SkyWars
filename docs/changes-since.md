@@ -1,3 +1,22 @@
+Changes since 2.2.1:
+--------------------
+
+SkyWars:
+- Add support for command blocks in arenas
+- Fix bugs related to world handling
+- Fix some issues which occurred when using both SkyWars and MultiInv
+- Fix some errors on shutdown
+- Fix arena name not showing in signs
+- Fix support for Minecraft 1.7.8
+- Fix opening kit GUIs when there are no kits available
+
+SkyWars-Translations:
+- Add Simplified Chinese translations (thanks @xanderlcq)
+- Improve Dutch translations (thanks @riassmismans, @mcannie97)
+- Add hungarian translations (thanks @montlikadani)
+- Add persian translations (thanks @ShynRhm)
+
+
 Changes since 2.2.0:
 --------------------
 
@@ -20,13 +39,3 @@ SkyWars:
   - When enabled, SkyWars will perform the arena operations in evenly spaced operations, starting at "time-before-start-to-start-arena-copy-operation", and ending exactly when the game starts. Each operation will copy "number-of-blocks-to-copy-at-once" blocks, and the number of operations is calculated based on how big each arena is.
 
 While this version only contains two features, there have been many internal changes made to accommodate these two additions, and I hope these two features will greatly expand the use case and usefulness of the plugin.
-
-Changes since 2.1.6
--------------------
-
-SkyWars:
-- Fix bug introduced in v2.1.6 where chest randomization does not fill any chests.
-- Add secondary plugin statistics system, reporting to https://dabo.guru
-  - I meant to wait until v2.2.0 to include plugin-statistics, but this bugfix release needs to happen, and since the statistics is done I thought I might as well include it now.
-  - For details on what data is reported, and how to opt out, see statistics section of https://dabo.guru/projects/skywars/, or "report-statistics" option in https://dabo.guru/projects/skywars/configuring-skywars.
-  - To see recorded data (the same data I have access to), see https://dabo.guru/statistics/skywars/.

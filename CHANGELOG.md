@@ -4,6 +4,9 @@ Changelog
 Unreleased
 ----------
 
+2.2.2
+-----
+
 ### SkyWars:
 
 - Add support for command blocks in arenas
