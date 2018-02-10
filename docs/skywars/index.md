@@ -56,11 +56,19 @@ I haven't been completely active lately with updates, but I'll be adding things 
 * [Testing SkyWars (for developers)](https://dabo.guru/projects/skywars/testing-skywars)
 
 ### Translations / Localization
-All player messages fully translated to English and German, and partially translated to Spanish, French, Czech, Danish, Dutch, Polish, Portuguese and Russian. Partial translations were at one point complete, but don't have some of the newer messages translated.
+Pleyer messages have been fully translated to other languages by efforts from the community.
 
-Change the locale SkyWars uses by setting **locale** in **main-config.yml**.
+As of 2.2.2, all messages have been translated to English (en), Persian (fa), Traditional Chinese (hk), Hungarian (hu) and Dutch (nl).
 
-To help out SkyWars by translating it into your local language, go to [SkyWars-Translations/Translating](https://github.com/SkyWars/SkyWars-Translations/wiki/Translating). Test out your localization as well by copying into **messages.yml**!
+Most messages, but not all, have been translated to Simplified Chinese (cn), Czech (cz), German (de), Danish (dk), Spanish (es), French (fr), Polish (pl), Portuguese (pt) and Russian (ru).
+
+These incomplete translations were all at one point complete, though most lack 2-3 messages added in the most recent update.
+
+Change the locale by setting **locale** in **main-config.yml**.
+
+You can help SkyWars by creating translations for your language, or updating existing translations. See [SkyWars-Translations/Translating](https://github.com/SkyWars/SkyWars-Translations/wiki/Translating).
+
+Translations can also be locally updated and tested by editing **messages.yml**.
 
 #### MCStats / Plugin metrics
 SkyWars uses two services to report statistics. The first service, MCStats / Plugin Metrics, reports data to http://mcstats.org every 15 minutes. As of version 2.1.7, the second service, plugin-statistics, reports a small subset of that data to https://dabo.guru every hour.
