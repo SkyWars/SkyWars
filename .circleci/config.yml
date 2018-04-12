@@ -1,0 +1,12 @@
+version: 2
+jobs:
+    build:
+        steps:
+        - run: git clone https://github.com/SkyWars/SkyWars-Translations.git
+        - run: git clone -b "$CIRCLE_BRANCH" https://github.com/SkyWars/SkyWars-API.git
+        - run: (cd SkyWars-Translations && mvn clean install)
+        - run: (cd SkyWars-API && mvn clean install)
+        - run: mvn clean package test integration-test
+        - run: mv target/SkyWars.jar "$CIRCLE_ARTIFACTS/"
+        - run: mkdir -p "$CIRCLE_TEST_REPORTS/junit/"
+        - run: cp SkyWars-API/target/surefire-reports/*.xml "$CIRCLE_TEST_REPORTS/junit/"
