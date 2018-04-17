@@ -61,6 +61,8 @@ public class SignListener implements Listener {
         String[] lineStrings = plugin.getConfiguration().getJoinSignLines();
         for (int i = 0; i < 4; i++) {
             lines[i] = ChatColor.translateAlternateColorCodes('&', lineStrings[i]);
+            // TODO: handle edge case where conflicting colors are added, and then sanitized by the game. (or at least just make sure to check if this is the case when checking if a sign is ours)
+            // https://hub.spigotmc.org/stash/projects/SPIGOT/repos/craftbukkit/browse/src/main/java/org/bukkit/craftbukkit/util/CraftChatMessage.java?until=e13d1196863d5dcfea3d17b79238427dfb2c61b2#93
             dynamic[i] = lineStrings[i].contains("{max}") || lineStrings[i].contains("{count}") || lineStrings[i].contains("{name}") || lineStrings[i].contains("{queue}");
         }
     }
